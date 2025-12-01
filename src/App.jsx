@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import Header from './components/Header'
 import NewExpense from './components/NewExpense/NewExpense'
 import Expenses from './components/Expenses/Expenses'
@@ -35,6 +35,11 @@ export default function App(){
   const [dark, setDark] = useState(() => {
     try{ return localStorage.getItem('expense_dark_mode') === '1' } catch { return false }
   })
+
+  const total = useMemo(() => {
+    return expenses.reduce((sum, item) => sum + (item.amount || 0), 0)
+  }, [expenses])
+
 
   useEffect(()=>{
     try{
@@ -96,6 +101,8 @@ export default function App(){
         <Header dark={dark} setDark={setDark} />
 
         <NewExpense onAdd={addExpense} />
+
+        <h2 className="mt-6 text-xl font-semibold text-gray-800 dark:text-gray-100">Total Expenses: ${total.toFixed(2)}</h2>
 
         <Expenses
           items={expenses}
