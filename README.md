@@ -5,7 +5,7 @@ React + Tailwind expense tracker sample app with:
 - filter by year
 - simple monthly summary chart (SVG-like bars)
 - dark mode (toggle)
-- export / import CSV
+- export CSV
 - persistence in localStorage
 
 ## Setup
