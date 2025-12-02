@@ -1,9 +1,11 @@
-import React, { useMemo, useState, useRef } from 'react'
+
+import React, { useMemo, useState } from 'react'
 import Card from '../UI/Card'
 import ExpensesList from './ExpensesList'
 import MonthChart from './MonthChart'
+import { toCSV, downloadCSV } from '../../utils/csv'
 
-export default function Expenses({ items, onDelete, onUpdate, onImport }) {
+export default function Expenses({ items, onDelete, onUpdate }) {
 
   const years = useMemo(() => {
     const set = new Set(items.map(i => i.date?.slice(0, 4) || 'Unknown'))
@@ -11,40 +13,14 @@ export default function Expenses({ items, onDelete, onUpdate, onImport }) {
   }, [items])
 
   const [filter, setFilter] = useState('All')
-  const fileRef = useRef(null)
 
   const filtered = useMemo(() => {
     if (filter === 'All') return items
     return items.filter(i => i.date?.startsWith(filter))
   }, [items, filter])
   function exportCSV() {
-    const headers = ['id', 'title', 'amount', 'date']
-
-    const rows = items.map(e => {
-      const id = e.id ?? ''
-      const title = String(e.title || '').replace(/"/g, '""') // escape quotes
-      const amount = e.amount ?? ''
-      // Format date as YYYY-MM-DD (Excel-friendly). Handle Date or string.
-      let dateStr = ''
-      if (e.date) {
-        const d = (e.date instanceof Date) ? e.date : new Date(e.date)
-        if (!isNaN(d)) dateStr = d.toISOString().slice(0, 10)
-      }
-      // Return CSV-safe row: id as plain number, others quoted
-      return `${id},"${title}",${amount},"${dateStr}"`
-    })
-
-    const csv = [headers.join(','), ...rows].join('\r\n')
-    // Add BOM so Excel recognizes UTF-8
-    const blob = new Blob(["\uFEFF", csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'expenses.csv'
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
+    const csv = toCSV(items)
+    downloadCSV(csv, 'expenses.csv')
   }
 
   return (
