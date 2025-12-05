@@ -1,11 +1,14 @@
+
 # Expense Tracker
 
-A modern expense tracker app built with React, Tailwind CSS, Vite, and a Java/Spring Boot backend.
+A modern finance tracker app built with React, Tailwind CSS, Vite, and a Java/Spring Boot backend.
 
 ## Features
-- Add, edit, delete expenses
-- Monthly chart and CSV export
+- Add, edit, delete transactions (supports both incomes and expenses)
+- Dual monthly charts for incomes and expenses
+- CSV export
 - Responsive UI with dark mode
+- Category management (add, edit, delete categories)
 - Backend integration (Java/Spring Boot)
 - User separation via X-Client-Id header
 - Environment-aware API configuration
@@ -28,11 +31,15 @@ npm run dev
 
 ### Backend
 - The backend is a Java/Spring Boot app with endpoints:
-	- `GET /api/expenses`
-	- `POST /api/expenses`
-	- `GET /api/expenses/{id}`
-	- `PUT /api/expenses/{id}`
-	- `DELETE /api/expenses/{id}`
+	- `GET /api/transactions`
+	- `POST /api/transactions`
+	- `GET /api/transactions/{id}`
+	- `PUT /api/transactions/{id}`
+	- `DELETE /api/transactions/{id}`
+	- `GET /api/categories`
+	- `POST /api/categories`
+	- `PUT /api/categories/{id}`
+	- `DELETE /api/categories/{id}`
 - Deployed backend: `https://expense-tracker-be-tocc.onrender.com/`
 
 ### Environment Configuration
@@ -55,11 +62,27 @@ npm run dev
 ```
 src/
 	components/
-		Expenses/
-		NewExpense/
+		Categories/
+			CategoriesPage.jsx
+		Transaction/
+			NewTransaction.jsx
+			TransactionForm.jsx
+		Transactions/
+			MonthChart.jsx
+			TransactionItem.jsx
+			Transactions.jsx
+			TransactionsList.jsx
 		UI/
+			Button.jsx
+			Card.jsx
+			Input.jsx
 	hooks/
+		useDarkMode.js
 	utils/
+		api.js
+		config.js
+		csv.js
+		idGenerator.js
 	App.jsx
 	index.css
 	main.jsx

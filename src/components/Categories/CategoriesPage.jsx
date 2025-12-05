@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { addCategory, updateCategory, deleteCategory } from '../../utils/api';
-import Button from '../UI/Button';
-import { fetchExpenses } from '../../utils/api';
+import { addCategory, updateCategory, deleteCategory, fetchTransactions } from '../../utils/api';
+import Button from '../UI/Button.jsx';
 
 export default function CategoriesPage({ reloadExpenses, reloadCategories, categories, catError }) {
   // categories is now a prop
-  const [expenses, setExpenses] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [search, setSearch] = useState('');
   const [newName, setNewName] = useState('');
   const [editing, setEditing] = useState(null);
@@ -15,7 +14,7 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
 
 
   useEffect(() => {
-    fetchExpenses().then(setExpenses).catch(() => setExpenses([]));
+    fetchTransactions().then(setTransactions).catch(() => setTransactions([]));
   }, []);
 
   function handleAdd() {
@@ -48,8 +47,8 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
   }
 
   function handleDelete(id) {
-    const hasExpenses = expenses.some(e => e.category.id === id);
-    if (hasExpenses) {
+    const hasTransactions = transactions.some(t => t.category.id === id);
+    if (hasTransactions) {
       setModal({ open: true, categoryId: id });
       return;
     }
@@ -132,7 +131,7 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
             <h3 className="text-lg font-semibold mb-2">Delete Category</h3>
-            <p className="mb-4 text-gray-700">This category contains some expenses. Are you sure you want to delete it?</p>
+            <p className="mb-4 text-gray-700">This category contains some transactions. Are you sure you want to delete it?</p>
             <div className="flex gap-3 justify-end">
               <Button onClick={cancelDelete} className="bg-gray-300">Cancel</Button>
               <Button onClick={confirmDelete} className="bg-red-600 text-white">Confirm</Button>

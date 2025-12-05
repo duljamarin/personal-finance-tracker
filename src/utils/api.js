@@ -63,51 +63,61 @@ export async function getCategory(id) {
 }
 
 
-export async function fetchExpenses() {
-  const res = await fetch(`${API_BASE_URL}/api/expenses`, {
+
+// Fetch transactions, optionally filtered by type ('income', 'expense', or undefined)
+export async function fetchTransactions({ type } = {}) {
+  let url = `${API_BASE_URL}/api/transactions`;
+  if (type && type !== 'all') {
+    url += `?type=${encodeURIComponent(type)}`;
+  }
+  const res = await fetch(url, {
     headers: withClientId(),
   });
-  if (!res.ok) throw new Error('Failed to fetch expenses');
+  if (!res.ok) throw new Error('Failed to fetch transactions');
   return res.json();
 }
 
 
-export async function addExpense(expense) {
-  const res = await fetch(`${API_BASE_URL}/api/expenses`, {
+
+export async function addTransaction(transaction) {
+  const res = await fetch(`${API_BASE_URL}/api/transactions`, {
     method: 'POST',
     headers: withClientId({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify(expense),
+    body: JSON.stringify(transaction),
   });
-  if (!res.ok) throw new Error('Failed to add expense');
+  if (!res.ok) throw new Error('Failed to add transaction');
   return res.json();
 }
 
 
-export async function updateExpense(id, expense) {
-  const res = await fetch(`${API_BASE_URL}/api/expenses/${id}`, {
+
+export async function updateTransaction(id, transaction) {
+  const res = await fetch(`${API_BASE_URL}/api/transactions/${id}`, {
     method: 'PUT',
     headers: withClientId({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify(expense),
+    body: JSON.stringify(transaction),
   });
-  if (!res.ok) throw new Error('Failed to update expense');
+  if (!res.ok) throw new Error('Failed to update transaction');
   return res.json();
 }
 
 
-export async function deleteExpense(id) {
-  const res = await fetch(`${API_BASE_URL}/api/expenses/${id}`, {
+
+export async function deleteTransaction(id) {
+  const res = await fetch(`${API_BASE_URL}/api/transactions/${id}`, {
     method: 'DELETE',
     headers: withClientId(),
   });
-  if (!res.ok) throw new Error('Failed to delete expense');
+  if (!res.ok) throw new Error('Failed to delete transaction');
   return res.text();
 }
 
 
-export async function getExpense(id) {
-  const res = await fetch(`${API_BASE_URL}/api/expenses/${id}`, {
+
+export async function getTransaction(id) {
+  const res = await fetch(`${API_BASE_URL}/api/transactions/${id}`, {
     headers: withClientId(),
   });
-  if (!res.ok) throw new Error('Failed to fetch expense');
+  if (!res.ok) throw new Error('Failed to fetch transaction');
   return res.json();
 }

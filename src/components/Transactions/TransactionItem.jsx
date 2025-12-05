@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
-import ExpenseForm from '../NewExpense/ExpenseForm'
 import Button from '../UI/Button'
-
-export default function ExpenseItem({ item, onDelete, onUpdate }) {
+import TransactionForm from '../Transaction/TransactionForm'
+import { useState } from 'react' 
+export default function TransactionItem({ item, onDelete, onUpdate }) {
   const [editing, setEditing] = useState(false)
 
   function handleSave(updated) {
@@ -10,11 +9,13 @@ export default function ExpenseItem({ item, onDelete, onUpdate }) {
     setEditing(false)
   }
 
+  const amountColor = item.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+
   return (
     <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border">
       <div className="flex-1">
         {editing ? (
-          <ExpenseForm
+          <TransactionForm
             initial={item}
             onSubmit={handleSave}
             onCancel={() => setEditing(false)}
@@ -24,8 +25,9 @@ export default function ExpenseItem({ item, onDelete, onUpdate }) {
             <div className="flex items-baseline gap-3">
               <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">{item.title}</p>
               <p className="text-sm text-gray-500 dark:text-gray-300">{item.date}</p>
+              <span className="ml-2 px-2 py-0.5 rounded text-xs font-bold" style={{background:item.type==='income'?'#d1fae5':'#fee2e2',color:item.type==='income'?'#065f46':'#991b1b'}}>{item.type === 'income' ? 'Income' : 'Expense'}</span>
             </div>
-            <p className="text-indigo-600 dark:text-indigo-300 font-medium mt-1">${Number(item.amount).toFixed(2)}</p>
+            <p className={`${amountColor} font-medium mt-1`}>${Number(item.amount).toFixed(2)}</p>
             {Array.isArray(item.tags) && item.tags.length > 0 && (
               <div className="mt-2 text-sm text-gray-600 dark:text-gray-300 flex flex-wrap gap-2">
                 {item.tags.map((tag, idx) => (
@@ -33,7 +35,7 @@ export default function ExpenseItem({ item, onDelete, onUpdate }) {
                 ))}
               </div>
             )}
-          <p className="text-lg font-semibold text-gray-700 dark:text-gray-100">{item.category.name}</p>
+            <p className="text-lg font-semibold text-gray-700 dark:text-gray-100">{item.category.name}</p>
           </div>
         )}
       </div>

@@ -1,37 +1,38 @@
 import { useEffect, useMemo, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Expenses from './components/Expenses/Expenses.jsx'
+import Transactions from './components/Transactions/Transactions.jsx'
+import MonthChart from './components/Transactions/MonthChart.jsx'
 import Header from './components/Header.jsx'
 import useDarkMode from './hooks/useDarkMode.js'
-import NewExpense from './components/NewExpense/NewExpense.jsx'
+import NewTransaction from './components/Transaction/NewTransaction.jsx'
 import CategoriesPage from './components/Categories/CategoriesPage.jsx'
-import { fetchExpenses, addExpense as apiAddExpense, updateExpense as apiUpdateExpense, deleteExpense as apiDeleteExpense, fetchCategories } from './utils/api'
+import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from './utils/api'
 
-const STORAGE_KEY = 'expense_tracker_items_v1'
-const isProd = process.env.NODE_ENV === 'production'
 
 export default function App(){
-  const [expenses, setExpenses] = useState([])
+  const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [categories, setCategories] = useState([])
   const [catError, setCatError] = useState(null)
+  const [typeFilter, setTypeFilter] = useState('all') // 'all', 'income', 'expense'
 
   const [isDark, setIsDark] = useDarkMode('expense_dark_mode')
 
-  const total = useMemo(() => {
-    return expenses.reduce((sum, item) => sum + (item.amount || 0), 0)
-  }, [expenses])
+  const totalIncome = useMemo(() => transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + (t.amount || 0), 0), [transactions])
+  const totalExpense = useMemo(() => transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + (t.amount || 0), 0), [transactions])
+  const net = totalIncome - totalExpense
 
-  // Load expenses from backend or localStorage
-  async function reloadExpenses() {
+  // Load transactions from backend or localStorage
+  async function reloadTransactions() {
     setLoading(true)
     setError(null)
     try {
-      const expensesData = await fetchExpenses()
-      setExpenses(Array.isArray(expensesData) ? expensesData : [])
+      // fetch all, filter in FE for charts
+      const transactionsData = await fetchTransactions()
+      setTransactions(Array.isArray(transactionsData) ? transactionsData : [])
     } catch (e) {
-      setExpenses([])
+      setTransactions([])
     }
     setLoading(false)
   }
@@ -47,28 +48,28 @@ export default function App(){
   }
 
   useEffect(() => {
-    reloadExpenses()
+    reloadTransactions()
     reloadCategories()
   }, [])
 
-  async function addExpense(item) {
+  async function addTransaction(item) {
     try {
-      const newItem = await apiAddExpense(item)
-      setExpenses(prev => [newItem, ...prev])
+      const newItem = await apiAddTransaction(item)
+      setTransactions(prev => [newItem, ...prev])
     } catch (e) {}
   }
 
-  async function updateExpense(id, updated) {
+  async function updateTransaction(id, updated) {
     try {
-      const newItem = await apiUpdateExpense(id, updated)
-      setExpenses(prev => prev.map(e => e.id === id ? newItem : e))
+      const newItem = await apiUpdateTransaction(id, updated)
+      setTransactions(prev => prev.map(e => e.id === id ? newItem : e))
     } catch (e) {}
   }
 
-  async function deleteExpense(id) {
+  async function deleteTransaction(id) {
     try {
-      await apiDeleteExpense(id)
-      setExpenses(prev => prev.filter(e => e.id !== id))
+      await apiDeleteTransaction(id)
+      setTransactions(prev => prev.filter(e => e.id !== id))
     } catch (e) {}
   }
 
@@ -78,24 +79,40 @@ export default function App(){
         <div className="max-w-3xl mx-auto">
           <Header isDark={isDark} toggleDark={() => setIsDark(d => !d)} />
           <nav className="mb-6 flex gap-4">
-            <Link to="/" className="text-blue-600 hover:underline">Expenses</Link>
+            <Link to="/" className="text-blue-600 hover:underline">Income & Expenses</Link>
             <Link to="/categories" className="text-blue-600 hover:underline">Categories</Link>
           </nav>
           <Routes>
-            <Route path="/categories" element={<CategoriesPage reloadExpenses={reloadExpenses} reloadCategories={reloadCategories} categories={categories} catError={catError} />} />
+            <Route path="/categories" element={<CategoriesPage reloadExpenses={reloadTransactions} reloadCategories={reloadCategories} categories={categories} catError={catError} />} />
             <Route path="/" element={
               <>
-                <NewExpense onAdd={addExpense} />
-                {total > 0 && <h2 className="mt-6 text-xl font-semibold text-gray-800 dark:text-gray-100">Total Expenses: ${total.toFixed(2)}</h2>}
+                <NewTransaction onAdd={addTransaction} />
+                <div className="flex gap-6 mb-4">
+                  <div className="text-green-700 dark:text-green-400 font-semibold">Total Income: ${totalIncome.toFixed(2)}</div>
+                  <div className="text-red-700 dark:text-red-400 font-semibold">Total Expense: ${totalExpense.toFixed(2)}</div>
+                  <div className="text-blue-700 dark:text-blue-400 font-semibold">Balance: ${net.toFixed(2)}</div>
+                </div>
+                <div className="flex gap-4 mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold mb-2 text-green-700 dark:text-green-400">Income by Month</h3>
+                    <MonthChart items={transactions.filter(t => t.type === 'income')} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold mb-2 text-red-700 dark:text-red-400">Expenses by Month</h3>
+                    <MonthChart items={transactions.filter(t => t.type === 'expense')} />
+                  </div>
+                </div>
                 {error && <div className="mb-4 text-red-600">{error}</div>}
                 {loading ? (
                   <div className="text-gray-500 dark:text-gray-300">Loading...</div>
                 ) : (
-                  <Expenses
-                    items={expenses}
-                    onDelete={deleteExpense}
-                    onUpdate={updateExpense}
+                  <Transactions
+                    items={transactions}
+                    onDelete={deleteTransaction}
+                    onUpdate={updateTransaction}
                     categories={categories}
+                    typeFilter={typeFilter}
+                    setTypeFilter={setTypeFilter}
                   />
                 )}
               </>
