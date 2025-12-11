@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function RegisterForm() {
-  const { register } = useAuth();
+  const { register, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -12,7 +12,6 @@ export default function RegisterForm() {
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [formError, setFormError] = useState('');
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   function validate() {
     let valid = true;
@@ -38,14 +37,11 @@ export default function RegisterForm() {
     e.preventDefault();
     setFormError('');
     if (!validate()) return;
-    setLoading(true);
     try {
       await register(email, username, password);
       navigate('/');
     } catch (err) {
-      setFormError(err?.message || 'We couldn’t create your account. Please verify your details or try different credentials.');
-    } finally {
-      setLoading(false);
+      setFormError(err?.message || 'We couldn\'t create your account. Please verify your details or try different credentials.');
     }
   }
 
@@ -134,12 +130,7 @@ export default function RegisterForm() {
             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-3.5 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed mt-2"
             disabled={loading}
           >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                Creating account...
-              </span>
-            ) : 'Create Account'}
+            Create Account
           </button>
         </form>
         <div className="text-center text-sm text-gray-600 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
