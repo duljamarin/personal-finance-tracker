@@ -74,7 +74,7 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
   }
 
   function handleDelete(id) {
-    const hasTransactions = transactions.some(t => t.category.id === id);
+    const hasTransactions = transactions.some(t => t.category?.id === id);
     if (hasTransactions) {
       setModal({ open: true, categoryId: id });
       return;

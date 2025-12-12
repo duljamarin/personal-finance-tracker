@@ -74,6 +74,7 @@ export async function deleteCategory(id) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Please log in to delete categories');
   
+  // Database CASCADE constraint will automatically delete associated transactions
   const { error } = await supabase
     .from('categories')
     .delete()
