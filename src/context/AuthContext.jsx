@@ -17,9 +17,17 @@ export function AuthProvider({ children }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      // Store username in localStorage for display (from user metadata)
+      if (session?.user?.user_metadata?.username) {
+        localStorage.setItem('username', session.user.user_metadata.username);
+      } else if (session?.user?.email) {
+        localStorage.setItem('username', session.user.email.split('@')[0]);
+      } else {
+        localStorage.removeItem('username');
+      }
     });
 
-    // Listen for auth state changes
+    // Listen for auth state changes within this tab
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -34,17 +42,28 @@ export function AuthProvider({ children }) {
       }
     });
 
-    // Cross-tab auth sync: listen for storage events
+    // Cross-tab auth sync: listen for storage events from other tabs
     const handleStorage = (event) => {
-      // Supabase uses localStorage key starting with 'sb-' for session
+      // Supabase uses localStorage keys starting with 'sb-' for session
+      // Only process events from OTHER tabs (event.storageArea is not our window.localStorage)
       if (event.key && event.key.startsWith('sb-')) {
+        // Refresh session from Supabase to sync across tabs
         supabase.auth.getSession().then(({ data: { session } }) => {
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
+          // Update username when auth state changes
+          if (session?.user?.user_metadata?.username) {
+            localStorage.setItem('username', session.user.user_metadata.username);
+          } else if (session?.user?.email) {
+            localStorage.setItem('username', session.user.email);
+          } else {
+            localStorage.removeItem('username');
+          }
         });
       }
     };
+    
     window.addEventListener('storage', handleStorage);
 
     return () => {
