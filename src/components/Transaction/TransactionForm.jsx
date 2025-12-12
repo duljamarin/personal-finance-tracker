@@ -180,7 +180,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 			<div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
 				<Button
 					type="button"
-					className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold py-3 rounded-xl transition-all"
+					className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold py-3 rounded-xl transition-all"
 					onClick={onCancel}
 				>
 					Cancel
