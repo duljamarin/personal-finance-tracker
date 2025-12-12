@@ -170,7 +170,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 						type="date"
 						value={date}
 						onChange={handleDateChange}
-						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.date ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition [color-scheme:light] dark:[color-scheme:dark] ${errors.date ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 						placeholder="mm/dd/yyyy"
 					/>
 					{errors.date && (
