@@ -38,8 +38,17 @@ export default function RegisterForm() {
     setFormError('');
     if (!validate()) return;
     try {
-      await register(email, username, password);
-      navigate('/');
+      const result = await register(email, username, password);
+      
+      // Check if email confirmation is required
+      if (result.session) {
+        // Logged in immediately - redirect to home
+        navigate('/');
+      } else {
+        // Email confirmation required - show message and redirect to login
+        setFormError('Registration successful! Please check your email to confirm your account, then log in.');
+        setTimeout(() => navigate('/login'), 3000);
+      }
     } catch (err) {
       setFormError(err?.message || 'We couldn\'t create your account. Please verify your details or try different credentials.');
     }

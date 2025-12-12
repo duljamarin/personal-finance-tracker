@@ -40,7 +40,7 @@ function AuthGlobalUI() {
 }
 
 function AppContent() {
-  const { accessToken } = useAuth();
+  const { accessToken, loading: authLoading } = useAuth();
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -85,6 +85,9 @@ function AppContent() {
   }
 
   useEffect(() => {
+    // Wait for auth to initialize before fetching data
+    if (authLoading) return;
+    
     if (accessToken) {
       reloadTransactions()
       reloadCategories()
@@ -92,8 +95,9 @@ function AppContent() {
       // Clear data when logged out
       setTransactions([])
       setCategories([])
+      setLoading(false)
     }
-  }, [accessToken])
+  }, [accessToken, authLoading])
 
   async function addTransaction(item) {
     try {

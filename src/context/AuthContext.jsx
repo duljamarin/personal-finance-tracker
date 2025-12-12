@@ -1,44 +1,67 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { API_BASE_URL } from '../utils/config';
+import { supabase } from '../utils/supabaseClient';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken'));
-  const [refreshToken, setRefreshToken] = useState(() => localStorage.getItem('refreshToken'));
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // On mount, if tokens exist, set them in state
+  // Initialize auth state and listen for auth changes
   useEffect(() => {
-    if (accessToken && refreshToken) {
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-    } else {
-      setAccessToken(null);
-      setRefreshToken(null);
-    }
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+      
+      // Store username in localStorage for display (from user metadata)
+      if (session?.user?.user_metadata?.username) {
+        localStorage.setItem('username', session.user.user_metadata.username);
+      } else if (session?.user?.email) {
+        // Fallback to email if no username
+        localStorage.setItem('username', session.user.email.split('@')[0]);
+      } else {
+        localStorage.removeItem('username');
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Login: expects backend to return accessToken and refreshToken in JSON
+  // Login with Supabase Auth
   const login = useCallback(async (email, password) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      if (!res.ok) throw new Error('Login failed');
-      const data = await res.json();
-      setAccessToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      if (data.username) {
-        localStorage.setItem('username', data.username);
+      
+      if (error) throw error;
+      
+      setSession(data.session);
+      setUser(data.user);
+      
+      // Store username for display
+      if (data.user?.user_metadata?.username) {
+        localStorage.setItem('username', data.user.user_metadata.username);
+      } else if (data.user?.email) {
+        localStorage.setItem('username', data.user.email.split('@')[0]);
       }
+      
       return data;
     } catch (err) {
       setError(err.message || 'Login failed');
@@ -48,87 +71,86 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Register: expects backend to return accessToken and refreshToken in JSON
+  // Register with Supabase Auth
   const register = useCallback(async (email, username, password) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, username, password })
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username: username,
+          },
+        },
       });
-      if (!res.ok) throw new Error('We couldn’t create your account. Please verify your details or try different credentials.');
-      const data = await res.json();
-      setAccessToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      if (data.username) {
-        localStorage.setItem('username', data.username);
+      
+      if (error) throw error;
+      
+      // Check if email confirmation is required
+      if (data.session) {
+        // Email confirmation disabled - user is logged in immediately
+        setSession(data.session);
+        setUser(data.user);
+        
+        // Store username for display
+        if (username) {
+          localStorage.setItem('username', username);
+        } else if (data.user?.email) {
+          localStorage.setItem('username', data.user.email.split('@')[0]);
+        }
+      } else if (data.user && !data.session) {
+        // Email confirmation enabled - user created but not logged in
+        // Session will be null until they confirm their email
+        setUser(null);
+        setSession(null);
+        
+        // Throw a specific error to let the UI know
+        throw new Error('Please check your email to confirm your account before logging in.');
       }
+      
       return data;
     } catch (err) {
-      setError(err.message || 'We couldn’t create your account. Please verify your details or try different credentials.');
+      setError(err.message || 'We couldn\'t create your account. Please verify your details or try different credentials.');
       throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Logout: clears tokens in state and storage, backend invalidates refresh token
+  // Logout with Supabase Auth
   const logout = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      if (refreshToken) {
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refreshToken })
-        });
-      }
-      setAccessToken(null);
-      setRefreshToken(null);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      setSession(null);
+      setUser(null);
+      localStorage.removeItem('username');
     } catch (err) {
       setError(err.message || 'Logout failed');
     } finally {
       setLoading(false);
     }
-  }, [refreshToken]);
+  }, []);
 
-  // Refresh token: called by API helpers on 401
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      if (!refreshToken) throw new Error('No refresh token');
-      const res = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken })
-      });
-      if (!res.ok) throw new Error('Refresh failed');
-      const data = await res.json();
-      setAccessToken(data.accessToken);
-      localStorage.setItem('accessToken', data.accessToken);
-      if (data.refreshToken) {
-        setRefreshToken(data.refreshToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-      }
-      return data.accessToken;
-    } catch (err) {
-      setError(err.message || 'Token refresh failed');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [refreshToken]);
+  // Provide accessToken for compatibility with existing components
+  const accessToken = session?.access_token || null;
 
   return (
-    <AuthContext.Provider value={{ accessToken, refreshToken, loading, error, login, register, logout, refresh }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      accessToken, 
+      loading, 
+      error, 
+      login, 
+      register, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );
