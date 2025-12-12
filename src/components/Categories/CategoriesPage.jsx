@@ -115,7 +115,7 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
           placeholder="Search categories"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 rounded-lg w-full text-base focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition"
+          className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 p-3 rounded-lg w-full text-base focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition"
         />
         <Button
           onClick={openAddModal}

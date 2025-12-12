@@ -15,7 +15,12 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 
 function PrivateRoute({ children }) {
   const { accessToken, loading } = useAuth();
-  if (loading) return <div className="text-center py-12">Loading...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+      <p className="text-gray-600 dark:text-gray-400 font-medium">Loading your dashboard...</p>
+    </div>
+  );
   return accessToken ? children : <Navigate to="/login" replace />;
 }
 
@@ -25,14 +30,18 @@ function AuthGlobalUI() {
     <>
       {/* Global error banner */}
       {authError && (
-        <div className="fixed top-0 left-0 w-full z-50 bg-red-600 text-white text-center py-2 font-semibold shadow-lg animate-fade-in">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-50 dark:bg-red-900/90 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-6 py-3 rounded-xl shadow-xl text-sm font-medium animate-fade-in max-w-md text-center backdrop-blur-sm">
+          <span className="inline-block mr-2">⚠️</span>
           {authError}
         </div>
       )}
       {/* Global loading spinner overlay */}
       {authLoading && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl">
+            <div className="w-16 h-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-700 dark:text-gray-300 font-medium text-center">Processing...</p>
+          </div>
         </div>
       )}
     </>
@@ -131,9 +140,9 @@ useEffect(() => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 px-4 py-6 sm:p-6 lg:p-8 relative">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 transition-colors duration-300">
         <AuthGlobalUI />
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Header isDark={isDark} toggleDark={() => setIsDark(d => !d)} />
           <Routes>
             <Route path="/login" element={<LoginForm />} />
@@ -147,21 +156,37 @@ useEffect(() => {
               <PrivateRoute>
                 <>
                   {showGreeting && (
-                    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-2xl text-sm sm:text-base lg:text-lg font-semibold animate-fade-in-out max-w-[90%] sm:max-w-2xl text-center">
-                      Hello {username}! Welcome to your personal finance dashboard.
+                    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white px-6 py-4 rounded-2xl shadow-2xl text-base font-semibold animate-fade-in-out max-w-md text-center border border-white/20">
+                      <span className="text-2xl mr-2">👋</span>
+                      Welcome back, {username}!
                     </div>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-green-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Total Income</p>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">Total Income</p>
+                      </div>
                       <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">${totalIncome.toFixed(2)}</p>
                     </div>
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-red-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Total Expenses</p>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">Total Expenses</p>
+                      </div>
                       <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">${totalExpense.toFixed(2)}</p>
                     </div>
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-blue-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Balance</p>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">Balance</p>
+                      </div>
                       <p className={`text-2xl sm:text-3xl font-bold ${net >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>${net.toFixed(2)}</p>
                     </div>
                   </div>

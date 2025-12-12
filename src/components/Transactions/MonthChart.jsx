@@ -26,8 +26,14 @@ export default function MonthChart({ items, totalIncome = 0, totalExpenses = 0 }
 
   if (data.length === 0) {
     return (
-      <div className="rounded-2xl bg-white dark:bg-gray-800 p-6 text-center text-gray-500 dark:text-gray-400 mb-4">
-        No entries to display
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <p className="text-gray-600 dark:text-gray-400 font-medium">No data yet</p>
+        <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Add transactions to see trends</p>
       </div>
     )
   }
@@ -37,16 +43,29 @@ export default function MonthChart({ items, totalIncome = 0, totalExpenses = 0 }
   const balance = totalIncome - totalExpenses;
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow mb-4">
-      <h2 className="mb-4 text-2xl font-bold text-gray-800 dark:text-white">Monthly Entries</h2>
-      <ResponsiveContainer width="100%" height={300}>
+    <div>
+      <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
-          <Legend />
-          <Bar dataKey="total" fill="#3b82f6" name="Amount ($)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
+          <XAxis 
+            dataKey="month" 
+            tick={{ fontSize: 12, fill: 'currentColor' }}
+            className="text-gray-600 dark:text-gray-400"
+          />
+          <YAxis 
+            tick={{ fontSize: 12, fill: 'currentColor' }}
+            className="text-gray-600 dark:text-gray-400"
+          />
+          <Tooltip 
+            formatter={(value) => `$${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
+            contentStyle={{
+              backgroundColor: 'rgb(31 41 55)',
+              border: 'none',
+              borderRadius: '0.5rem',
+              color: 'white'
+            }}
+          />
+          <Bar dataKey="total" fill="#3b82f6" name="Amount" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

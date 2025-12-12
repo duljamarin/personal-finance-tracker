@@ -80,55 +80,55 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 	}
 
 	return (
-		<form onSubmit={submit} className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow flex flex-col gap-4">
-			<div className="flex flex-col gap-4">
-				<div className="flex flex-col gap-1">
-					<label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+		<form onSubmit={submit} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col gap-6">
+			<div className="flex flex-col gap-6">
+				<div className="flex flex-col gap-2">
+					<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Title</label>
 					<Input
-						placeholder="Title"
+						placeholder="e.g. Grocery shopping, Salary payment"
 						value={title}
 						onChange={handleTitleChange}
-						className={`border p-3 text-base rounded-lg w-full min-w-[200px] max-w-[400px] bg-white dark:bg-white text-gray-900 focus:outline-none ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.title ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					/>
 					{errors.title && (
-						<span className="block mt-1 text-xs text-red-600">
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">
 							{errors.title}
 						</span>
 					)}
 				</div>
-				<div className="flex flex-col gap-1">
-					<label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+				<div className="flex flex-col gap-2">
+					<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Type</label>
 					<select
 						value={type}
 						onChange={e => setType(e.target.value)}
-						className={`border p-3 text-base rounded-lg w-full min-w-[200px] max-w-[400px] bg-white dark:bg-white text-gray-900 focus:outline-none ${errors.type ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition cursor-pointer ${errors.type ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					>
-						<option value="expense">Expense</option>
-						<option value="income">Income</option>
+						<option value="expense">💸 Expense</option>
+						<option value="income">💰 Income</option>
 					</select>
 					{errors.type && (
-						<span className="block mt-1 text-xs text-red-600">{errors.type}</span>
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{errors.type}</span>
 					)}
 				</div>
-				<div className="flex flex-col gap-1">
-					<label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
+				<div className="flex flex-col gap-2">
+					<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Amount</label>
 					<Input
 						type="number"
-						placeholder="Amount"
+						placeholder="0.00"
 						value={amount}
 						onChange={handleAmountChange}
 						min="0"
 						step="0.01"
-						className={`border p-3 text-base rounded-lg w-full min-w-[200px] max-w-[400px] bg-white dark:bg-white text-gray-900 focus:outline-none ${errors.amount ? 'border-red-500' : 'border-gray-300'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.amount ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					/>
 					{errors.amount && (
-						<span className="block mt-1 text-xs text-red-600">
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">
 							{errors.amount}
 						</span>
 					)}
 				</div>
-				<div className="flex flex-col gap-1">
-					<label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+				<div className="flex flex-col gap-2">
+					<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Category</label>
 					<select
 						value={categoryId}
 						onChange={e => {
@@ -141,7 +141,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 								return newErrors;
 							});
 						}}
-						className={`border p-3 text-base rounded-lg w-full min-w-[200px] max-w-[400px] bg-white dark:bg-white text-gray-900 focus:outline-none ${errors.categoryId ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition cursor-pointer ${errors.categoryId ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					>
 						<option value="">Select category</option>
 						{categories.map(cat => (
@@ -149,43 +149,43 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 						))}
 					</select>
 					{errors.categoryId && (
-						<span className="block mt-1 text-xs text-red-600">{errors.categoryId}</span>
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{errors.categoryId}</span>
 					)}
 				</div>
-				<div className="flex flex-col gap-1">
-					<label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (comma separated)</label>
+				<div className="flex flex-col gap-2">
+					<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Tags <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">(optional)</span></label>
 					<Input
 						placeholder="e.g. groceries, food, work"
 						value={tags}
 						onChange={e => setTags(e.target.value)}
-						className={`border p-3 text-base rounded-lg w-full min-w-[200px] max-w-[400px] bg-white dark:bg-white text-gray-900 focus:outline-none ${errors.tags ? 'border-red-500' : 'border-gray-300'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.tags ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					/>
 				</div>
-				<div className="flex flex-col gap-1">
-					<label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
+				<div className="flex flex-col gap-2">
+					<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Date</label>
 					<Input
 						type="date"
 						value={date}
 						onChange={handleDateChange}
-						className={`border p-3 text-base rounded-lg w-full min-w-[200px] max-w-[400px] bg-white dark:bg-white text-gray-900 focus:outline-none ${errors.date ? 'border-red-500' : 'border-gray-300'}`}
+						className={`border p-3 text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.date ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 						placeholder="mm/dd/yyyy"
 					/>
 					{errors.date && (
-						<span className="block mt-1 text-xs text-red-600">
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">
 							{errors.date}
 						</span>
 					)}
 				</div>
 			</div>
-			<div className="flex gap-4 items-end mt-2">
+			<div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
 				<Button
 					type="button"
-					className="border border-gray-300 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+					className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold py-3 rounded-xl transition-all"
 					onClick={onCancel}
 				>
 					Cancel
 				</Button>
-				<Button type="submit" className="bg-green-600 hover:bg-green-700">Save</Button>
+				<Button type="submit" className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg transition-all">Save Transaction</Button>
 			</div>
 		</form>
 	)
