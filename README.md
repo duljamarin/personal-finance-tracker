@@ -206,23 +206,4 @@ src/
 | `VITE_SUPABASE_URL` | Your Supabase project URL | `https://xxxxx.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous/public key | `eyJhbGc...` |
 
-## Common Issues & Solutions
-
-### "Not authenticated" errors
-- Make sure you're logged in
-- Check that your Supabase session is valid
-- Verify RLS policies are set up correctly
-
-### Categories not showing up
-- Ensure you've created at least one category
-- Check that the category belongs to the logged-in user
-
-### Email confirmation required
-- In Supabase dashboard, go to Authentication > Settings
-- Disable "Confirm email" for development
-- For production, set up email templates
-
-## Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
