@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
 import { fetchCategories } from '../../utils/api'
+import { translateCategoryName } from '../../utils/categoryTranslation'
 
 export default function TransactionForm({ onSubmit, onCancel, initial }) {
+	const { t, i18n } = useTranslation();
 	// Get today's date in YYYY-MM-DD format
 	const getTodayDate = () => new Date().toISOString().split('T')[0];
 	
@@ -13,7 +16,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 	const [date, setDate] = useState(initial?.date || getTodayDate())
 	// Remember last used category and type for faster repeated entries
 	const [categoryId, setCategoryId] = useState(
-		initial?.categoryId || initial?.category?.id || localStorage.getItem('lastUsedCategory') || ''
+		initial?.categoryId || initial?.category?.id || ''
 	)
 	const [type, setType] = useState(initial?.type || localStorage.getItem('lastUsedType') || 'expense')
 	const [tags, setTags] = useState(Array.isArray(initial?.tags) ? initial.tags.join(', ') : '')
@@ -31,13 +34,18 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 		// eslint-disable-next-line
 	}, []);
 
+	// Re-render when language changes to update translated validation messages
+	useEffect(() => {
+		// This effect will run whenever language changes
+	}, [i18n.language]);
+
 	function validate() {
 		const newErrors = {}
-		if (!title.trim()) newErrors.title = 'Title is required.'
-		if (!amount || isNaN(amount) || Number(amount) <= 0) newErrors.amount = 'Amount must be a positive number.'
-		if (!date) newErrors.date = 'Date is required.'
-		if (!categoryId) newErrors.categoryId = 'Category is required.'
-		if (!type) newErrors.type = 'Type is required.'
+		if (!title.trim()) newErrors.title = 'transactions.titleError';
+		if (!amount || isNaN(amount) || Number(amount) <= 0) newErrors.amount = 'transactions.amountError';
+		if (!date) newErrors.date = 'transactions.dateError';
+		if (!categoryId || categoryId === '') newErrors.categoryId = 'transactions.categoryError';
+		if (!type) newErrors.type = 'transactions.typeError';
 		// tags are optional
 		return newErrors
 	}
@@ -48,7 +56,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 		setErrors(prev => {
 			const newErrors = { ...prev }
 			if (value.trim()) delete newErrors.title
-			else newErrors.title = 'Title is required.'
+			else newErrors.title = 'transactions.titleError';
 			return newErrors
 		})
 	}
@@ -59,7 +67,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 		setErrors(prev => {
 			const newErrors = { ...prev }
 			if (value && !isNaN(value) && Number(value) > 0) delete newErrors.amount
-			else newErrors.amount = 'Amount must be a positive number.'
+			else newErrors.amount = 'transactions.amountError';
 			return newErrors
 		})
 	}
@@ -70,7 +78,18 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 		setErrors(prev => {
 			const newErrors = { ...prev }
 			if (value) delete newErrors.date
-			else newErrors.date = 'Date is required.'
+			else newErrors.date = 'transactions.dateError';
+			return newErrors
+		})
+	}
+
+	function handleCategoryChange(e) {
+		const value = e.target.value
+		setCategoryId(value)
+		setErrors(prev => {
+			const newErrors = { ...prev }
+			if (value && value !== '') delete newErrors.categoryId
+			else newErrors.categoryId = 'transactions.categoryError';
 			return newErrors
 		})
 	}
@@ -94,90 +113,79 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 	return (
 		<form onSubmit={submit} className="flex flex-col gap-4 sm:gap-6">
 			<h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-2">
-				{initial?.id ? 'Edit Transaction' : 'Add Transaction'}
+				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 			<div className="flex flex-col gap-4 sm:gap-6">
 				<div className="flex flex-col gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Title</label>
+					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.titleLabel')}</label>
 					<Input
-						placeholder="e.g. Grocery shopping, Salary payment"
+						placeholder={t('transactions.titlePlaceholder')}
 						value={title}
 						onChange={handleTitleChange}
 						className={`border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.title ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					/>
 					{errors.title && (
 						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">
-							{errors.title}
+							{t(errors.title)}
 						</span>
 					)}
 				</div>
 				<div className="flex flex-col gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Type</label>
+					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.type')}</label>
 					<select
 						value={type}
 						onChange={e => setType(e.target.value)}
 						className={`border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition cursor-pointer ${errors.type ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					>
-						<option value="expense">💸 Expense</option>
-						<option value="income">💰 Income</option>
+						<option value="expense">💸 {t('transactions.expense')}</option>
+						<option value="income">💰 {t('transactions.income')}</option>
 					</select>
 					{errors.type && (
-						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{errors.type}</span>
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
 					)}
 				</div>
 				<div className="flex flex-col gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Amount</label>
+					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.amountLabel')}</label>
 					<Input
 						type="number"
-						placeholder="0.00"
+						placeholder={t('transactions.amountPlaceholder')}
 						value={amount}
 						onChange={handleAmountChange}
-						min="0"
-						step="0.01"
 						className={`border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.amount ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					/>
 					{errors.amount && (
 						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">
-							{errors.amount}
+							{t(errors.amount)}
 						</span>
 					)}
 				</div>
 				<div className="flex flex-col gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Category</label>
+					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.categoryLabel')}</label>
 					<select
 						value={categoryId}
-						onChange={e => {
-							const value = e.target.value;
-							setCategoryId(value);
-							setErrors(prev => {
-								const newErrors = { ...prev };
-								if (value) delete newErrors.categoryId;
-								else newErrors.categoryId = 'Category is required.';
-								return newErrors;
-							});
-						}}
+						onChange={handleCategoryChange}
 						className={`border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition cursor-pointer ${errors.categoryId ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					>
-						<option value="">Select category</option>
+						<option value="">{t('transactions.selectCategory')}</option>
 						{categories.map(cat => (
-							<option key={cat.id} value={cat.id}>{cat.name}</option>
+							<option key={cat.id} value={cat.id}>{translateCategoryName(cat.name)}</option>
 						))}
 					</select>
 					{errors.categoryId && (
-						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{errors.categoryId}</span>
+						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.categoryId)}</span>
 					)}
 				</div>
 				<div className="flex flex-col gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Tags <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">(optional)</span></label>
+					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.tagsLabel')} <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">{t('transactions.tagsOptional')}</span></label>
 					<Input
-						placeholder="e.g. groceries, food, work"
+						placeholder={t('transactions.tagsPlaceholder')}
 						value={tags}
 						onChange={e => setTags(e.target.value)}
 						className={`border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition ${errors.tags ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'}`}
 					/>
 				</div>
 				<div className="flex flex-col gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Date</label>
+					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.dateLabel')}</label>
 					<Input
 						type="date"
 						value={date}
@@ -187,7 +195,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 					/>
 					{errors.date && (
 						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">
-							{errors.date}
+							{t(errors.date)}
 						</span>
 					)}
 				</div>
@@ -198,9 +206,9 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 					className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
 					onClick={onCancel}
 				>
-					Cancel
+					{t('forms.cancel')}
 				</Button>
-				<Button type="submit" className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-lg transition-all text-sm sm:text-base">Save Transaction</Button>
+				<Button type="submit" className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-lg transition-all text-sm sm:text-base">{t('transactions.saveTransaction')}</Button>
 			</div>
 		</form>
 	)

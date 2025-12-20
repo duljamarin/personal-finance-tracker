@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 export default function LoginForm() {
   const { login, loading, accessToken } = useAuth();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
 
@@ -13,22 +15,28 @@ export default function LoginForm() {
       navigate('/', { replace: true });
     }
   }, [accessToken, navigate]);
+  
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [formError, setFormError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  // Re-render when language changes to update translated validation messages
+  useEffect(() => {
+    // This effect will run whenever language changes
+  }, [i18n.language]);
+
   function validate() {
     let valid = true;
     setEmailError('');
     setPasswordError('');
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError('auth.emailError');
       valid = false;
     }
     if (!password || password.length < 6) {
-      setPasswordError('Password must be at least 6 characters.');
+      setPasswordError('auth.passwordError');
       valid = false;
     }
     return valid;
@@ -42,7 +50,19 @@ export default function LoginForm() {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setFormError(err?.message || 'Login failed.');
+      // Map common Supabase errors to translation keys 
+      // Map common Supabase errors to translation keys (store key, not translated message)
+      let errorKey = 'auth.loginError';
+      const errorMsg = err?.message || '';
+      
+      if (errorMsg.toLowerCase().includes('invalid') || errorMsg.toLowerCase().includes('credentials')) {
+        errorKey = 'auth.invalidCredentials';
+      } else if (errorMsg.toLowerCase().includes('not found')) {
+        errorKey = 'auth.userNotFound';
+      } else if (errorMsg.toLowerCase().includes('too many')) {
+        errorKey = 'auth.tooManyRequests';
+      }
+      setFormError(errorKey);
     }
   }
 
@@ -53,27 +73,27 @@ export default function LoginForm() {
           <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4m-5-4l5-5m0 0l-5-5m5 5H3" /></svg>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent mb-2">Welcome Back</h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">Sign in to continue to your account</p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent mb-2">{t('auth.loginTitle')}</h2>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">{t('auth.signInDescription')}</p>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">Email Address</label>
+            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">{t('auth.email')}</label>
             <input
-              type="email"
+              type="text"
               value={email}
               onChange={e => {
                 setEmail(e.target.value);
                 if (emailError) setEmailError('');
               }}
-              placeholder="you@example.com"
+              placeholder={t('auth.emailPlaceholder')}
               className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${emailError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
             />
-            {emailError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{emailError}</span>}
+            {emailError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(emailError)}</span>}
           </div>
 
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">Password</label>
+            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">{t('auth.password')}</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -82,7 +102,7 @@ export default function LoginForm() {
                   setPassword(e.target.value);
                   if (passwordError) setPasswordError('');
                 }}
-                placeholder="Password"
+                placeholder={t('auth.passwordPlaceholder')}
                 className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
               />
               <button
@@ -90,7 +110,7 @@ export default function LoginForm() {
                 tabIndex={-1}
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 focus:outline-none transition-colors"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
               >
                 {showPassword ? (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -104,22 +124,22 @@ export default function LoginForm() {
                 )}
               </button>
             </div>
-            {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{passwordError}</span>}
+            {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
           </div>
 
-          {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-center text-sm p-3 rounded-xl font-medium">{formError}</div>}
+          {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-center text-sm p-3 rounded-xl font-medium">{t(formError)}</div>}
 
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3.5 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed mt-2"
             disabled={loading}
           >
-            Sign In
+            {t('auth.signIn')}
           </button>
         </form>
         <div className="text-center text-sm text-gray-600 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
-          Don&apos;t have an account?{' '}
-          <Link to="/register" className="text-green-600 dark:text-green-400 font-bold hover:underline transition-colors">Create Account</Link>
+          {t('auth.noAccount')}{' '}
+          <Link to="/register" className="text-green-600 dark:text-green-400 font-bold hover:underline transition-colors">{t('auth.createAccount')}</Link>
         </div>
       </div>
     </div>

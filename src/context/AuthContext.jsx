@@ -94,11 +94,10 @@ export function AuthProvider({ children }) {
         localStorage.setItem('username', data.user.email.split('@')[0]);
       }
       
-
-      
       return data;
     } catch (err) {
-      setError(err.message || 'Login failed');
+      // Pass through Supabase error message for proper translation matching
+      setError(err.message || 'Invalid login credentials');
       throw err;
     } finally {
       setLoading(false);
@@ -149,7 +148,8 @@ export function AuthProvider({ children }) {
       
       return data;
     } catch (err) {
-      setError(err.message || 'We couldn\'t create your account. Please verify your details or try different credentials.');
+      // Pass through Supabase error message for proper translation matching
+      setError(err.message || 'Registration failed');
       throw err;
     } finally {
       setLoading(false);
@@ -168,10 +168,15 @@ export function AuthProvider({ children }) {
       setUser(null);
       localStorage.removeItem('username');
     } catch (err) {
-      setError(err.message || 'Logout failed');
+      setError('Logout failed');
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Clear auth error
+  const clearError = useCallback(() => {
+    setError(null);
   }, []);
 
   // Provide accessToken for compatibility with existing components
@@ -186,7 +191,8 @@ export function AuthProvider({ children }) {
       error, 
       login, 
       register, 
-      logout 
+      logout,
+      clearError
     }}>
       {children}
     </AuthContext.Provider>

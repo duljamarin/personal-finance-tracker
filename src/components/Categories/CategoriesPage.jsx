@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { addCategory, updateCategory, deleteCategory, fetchTransactions } from '../../utils/api';
 import Button from '../UI/Button.jsx';
 import Modal from '../UI/Modal.jsx';
 import { useToast } from '../../context/ToastContext';
+import { translateCategoryName } from '../../utils/categoryTranslation';
 
 export default function CategoriesPage({ reloadExpenses, reloadCategories, categories, catError }) {
   const { addToast } = useToast();
+  const { t } = useTranslation();
   // categories is now a prop
   const [transactions, setTransactions] = useState([]);
   const [search, setSearch] = useState('');
@@ -33,13 +36,14 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
     setModalMode('edit');
     setEditing(id);
     const cat = (categories || []).find(c => c.id === id);
-    setEditName(cat ? cat.name : '');
+    // Show translated name for default categories, original name otherwise
+    setEditName(cat ? translateCategoryName(cat.name) : '');
     setShowModal(true);
   }
 
   async function handleModalSave() {
     if (!editName.trim()) {
-      setModalError('Category name cannot be empty.');
+      setModalError(t('forms.required'));
       return;
     }
     setModalError(null);
@@ -50,13 +54,13 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
         if (reloadExpenses) reloadExpenses();
         setEditName('');
         setShowModal(false);
-        addToast(`Category "${editName.trim()}" created!`, 'success');
+        addToast(t('messages.categoryAdded'), 'success');
       } catch (err) {
         if (err && err.message && (err.message.includes('409') || err.message.toLowerCase().includes('already'))) {
-          setModalError('This category already exists.');
+          setModalError(t('categories.exists'));
         } else {
-          setModalError('Failed to add category');
-          addToast('Failed to add category', 'error');
+          setModalError(t('messages.error'));
+          addToast(t('messages.error'), 'error');
         }
       }
     } else if (modalMode === 'edit' && editing) {
@@ -67,13 +71,13 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
         setEditing(null);
         setEditName('');
         setShowModal(false);
-        addToast(`Category updated to "${editName.trim()}"`, 'success');
+        addToast(t('messages.categoryUpdated'), 'success');
       } catch (err) {
         if (err && err.message && (err.message.includes('409') || err.message.toLowerCase().includes('already'))) {
-          setModalError('This category already exists.');
+          setModalError(t('categories.exists'));
         } else {
-          setModalError('Failed to update category');
-          addToast('Failed to update category', 'error');
+          setModalError(t('messages.error'));
+          addToast(t('messages.error'), 'error');
         }
       }
     }
@@ -89,11 +93,11 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
       .then(() => {
         if (reloadCategories) reloadCategories();
         if (reloadExpenses) reloadExpenses();
-        addToast('Category deleted', 'info');
+        addToast(t('messages.categoryDeleted'), 'info');
       })
       .catch(() => {
-        setError('Failed to delete category');
-        addToast('Failed to delete category', 'error');
+        setError(t('messages.error'));
+        addToast(t('messages.error'), 'error');
       });
   }
 
@@ -104,11 +108,11 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
       .then(() => {
         if (reloadCategories) reloadCategories();
         if (reloadExpenses) reloadExpenses();
-        addToast('Category deleted (with transactions)', 'info');
+        addToast(t('messages.categoryDeleted'), 'info');
       })
       .catch(() => {
-        setError('Failed to delete category');
-        addToast('Failed to delete category', 'error');
+        setError(t('messages.error'));
+        addToast(t('messages.error'), 'error');
       });
   }
 
@@ -120,13 +124,13 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
 
   return (
     <div className="max-w-xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Categories</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">{t('categories.title')}</h2>
       {error && <div className="text-red-600 mb-2">{error}</div>}
       {catError && <div className="text-red-600 mb-2">{catError}</div>}
       <div className="mb-6 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
-          placeholder="Search categories"
+          placeholder={t('categories.name')}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 p-3 rounded-lg w-full text-base focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition"
@@ -136,7 +140,7 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
           className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:from-green-600 hover:to-emerald-700 transition font-semibold text-base"
         >
           <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
-          Add Category
+          {t('categories.addNew')}
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-5">
@@ -145,10 +149,10 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
               key={cat.id}
               className="bg-gradient-to-br from-white via-green-50 to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-emerald-900 rounded-3xl shadow-lg p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between border border-gray-100 dark:border-gray-800 hover:shadow-2xl transition-all duration-200 group"
             >
-              <span className="font-semibold text-lg text-gray-800 dark:text-gray-100 group-hover:text-green-600 transition">{cat.name}</span>
+              <span className="font-semibold text-lg text-gray-800 dark:text-gray-100 group-hover:text-green-600 transition">{translateCategoryName(cat.name)}</span>
               <div className="flex gap-2 mt-4 sm:mt-0">
-                <Button onClick={() => openEditModal(cat.id)} className="bg-yellow-400 text-black px-4 py-3 rounded-xl font-medium shadow hover:bg-yellow-500 transition min-h-[48px]">Edit</Button>
-                <Button onClick={() => handleDelete(cat.id)} className="bg-red-500 text-white px-4 py-3 rounded-xl font-medium shadow hover:bg-red-600 transition min-h-[48px]">Delete</Button>
+                <Button onClick={() => openEditModal(cat.id)} className="bg-yellow-400 text-black px-4 py-3 rounded-xl font-medium shadow hover:bg-yellow-500 transition min-h-[48px]">{t('categories.edit')}</Button>
+                <Button onClick={() => handleDelete(cat.id)} className="bg-red-500 text-white px-4 py-3 rounded-xl font-medium shadow hover:bg-red-600 transition min-h-[48px]">{t('categories.delete')}</Button>
               </div>
             </div>
         ))}
@@ -161,9 +165,9 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
             onSubmit={e => { e.preventDefault(); handleModalSave(); }}
             className="flex flex-col gap-6"
           >
-            <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">{modalMode === 'add' ? 'Add Category' : 'Edit Category'}</h3>
+            <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">{modalMode === 'add' ? t('categories.addNew') : t('categories.edit')}</h3>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category Name</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('categories.name')}</label>
               <input
                 type="text"
                 value={editName}
@@ -176,8 +180,8 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
               )}
             </div>
             <div className="flex gap-4 justify-center">
-              <Button type="button" onClick={() => { setShowModal(false); setEditing(null); setEditName(''); setModalError(null); }} className="bg-gray-300">Cancel</Button>
-              <Button type="submit" className="bg-green-600 text-white">Save</Button>
+              <Button type="button" onClick={() => { setShowModal(false); setEditing(null); setEditName(''); setModalError(null); }} className="bg-gray-300">{t('forms.cancel')}</Button>
+              <Button type="submit" className="bg-green-600 text-white">{t('forms.save')}</Button>
             </div>
           </form>
         </Modal>
@@ -187,11 +191,11 @@ export default function CategoriesPage({ reloadExpenses, reloadCategories, categ
       {modal.open && (
         <Modal onClose={cancelDelete}>
           <div className="flex flex-col gap-4">
-            <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Delete Category</h3>
-            <p className="mb-4 text-gray-700 dark:text-gray-300">This category contains some transactions. Are you sure you want to delete it?</p>
+            <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">{t('categories.delete')}</h3>
+            <p className="mb-4 text-gray-700 dark:text-gray-300">{t('categories.deleteConfirm')}</p>
             <div className="flex gap-3 justify-end">
-              <Button onClick={cancelDelete} className="bg-gray-300">Cancel</Button>
-              <Button onClick={confirmDelete} className="bg-red-600 text-white">Confirm</Button>
+              <Button onClick={cancelDelete} className="bg-gray-300">{t('forms.cancel')}</Button>
+              <Button onClick={confirmDelete} className="bg-red-600 text-white">{t('forms.submit')}</Button>
             </div>
           </div>
         </Modal>

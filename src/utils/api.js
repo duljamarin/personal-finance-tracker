@@ -28,7 +28,7 @@ export async function addCategory(category) {
     .single();
   
   if (existing) {
-    throw new Error('Category already exists (409)');
+    throw new Error('Category already exists.');
   }
   
   const { data, error } = await supabase
@@ -55,7 +55,7 @@ export async function updateCategory(id, category) {
     .single();
   
   if (existing) {
-    throw new Error('Category already exists (409)');
+    throw new Error('Category already exists.');
   }
   
   const { data, error } = await supabase
