@@ -99,7 +99,6 @@ export default function CategoryPieChart({ transactions, type }) {
             label={renderCustomizedLabel}
             outerRadius={80}
             innerRadius={40}
-            paddingAngle={2}
             dataKey="value"
           >
             {data.map((entry, index) => (

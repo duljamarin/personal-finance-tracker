@@ -9,36 +9,24 @@ function LanguageSwitcher() {
   };
 
   return (
-    <div className="language-switcher" style={{ display: 'flex', gap: '0.5rem' }}>
+    <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-gray-700">
       <button
         onClick={() => changeLanguage('sq')}
-        className={`lang-btn ${i18n.language === 'sq' ? 'active' : ''}`}
-        style={{
-          padding: '0.25rem 0.75rem',
-          borderRadius: '0.25rem',
-          border: i18n.language === 'sq' ? '2px solid #3b82f6' : '1px solid #d1d5db',
-          background: i18n.language === 'sq' ? '#3b82f6' : 'transparent',
-          color: i18n.language === 'sq' ? 'white' : 'inherit',
-          cursor: 'pointer',
-          fontSize: '0.875rem',
-          fontWeight: '500'
-        }}
+        className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+          i18n.language === 'sq'
+            ? 'bg-blue-600 text-white shadow-md'
+            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+        }`}
       >
         SQ
       </button>
       <button
         onClick={() => changeLanguage('en')}
-        className={`lang-btn ${i18n.language === 'en' ? 'active' : ''}`}
-        style={{
-          padding: '0.25rem 0.75rem',
-          borderRadius: '0.25rem',
-          border: i18n.language === 'en' ? '2px solid #3b82f6' : '1px solid #d1d5db',
-          background: i18n.language === 'en' ? '#3b82f6' : 'transparent',
-          color: i18n.language === 'en' ? 'white' : 'inherit',
-          cursor: 'pointer',
-          fontSize: '0.875rem',
-          fontWeight: '500'
-        }}
+        className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+          i18n.language === 'en'
+            ? 'bg-blue-600 text-white shadow-md'
+            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+        }`}
       >
         EN
       </button>

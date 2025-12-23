@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -127,7 +127,7 @@ export default function LandingPage() {
               <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
                 {t('landing.preview.categoryBreakdown')}
               </h3>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie
                     data={dummyCategoryData}
@@ -135,7 +135,6 @@ export default function LandingPage() {
                     cy="50%"
                     innerRadius={60}
                     outerRadius={90}
-                    paddingAngle={5}
                     dataKey="value"
                   >
                     {dummyCategoryData.map((entry, index) => (
@@ -151,6 +150,10 @@ export default function LandingPage() {
                       color: '#1f2937',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
+                  />
+                  <Legend 
+                    wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+                    iconType="circle"
                   />
                 </PieChart>
               </ResponsiveContainer>
