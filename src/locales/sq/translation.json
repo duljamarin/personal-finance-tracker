@@ -3,6 +3,10 @@
     "name": "Gjurmues i Financave Personale",
     "shortName": "Financat"
   },
+  "meta": {
+    "title": "Gjurmues i Financave Personale",
+    "description": "Merrni Kontrollin e Financave Tuaja Personale - Ndiqni shpenzimet, vizualizoni modelet dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv"
+  },
   "theme": {
     "light": "Modalidet i çelet",
     "dark": "Modalitet i errët"

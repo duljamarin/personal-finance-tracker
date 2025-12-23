@@ -32,10 +32,25 @@ function AuthGlobalUI() {
   const { error: authError, loading: authLoading } = useAuth();
   const { t, i18n } = useTranslation();
   
-  // Re-render when language changes to update translations
+  // Update meta tags when language changes
   useEffect(() => {
-    // This effect will run whenever language changes
-  }, [i18n.language]);
+    // Update document title
+    document.title = t('meta.title');
+    
+    // Update Open Graph meta tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', t('meta.title'));
+    
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) ogDescription.setAttribute('content', t('meta.description'));
+    
+    // Update Twitter Card meta tags
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) twitterTitle.setAttribute('content', t('meta.title'));
+    
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescription) twitterDescription.setAttribute('content', t('meta.description'));
+  }, [i18n.language, t]);
   
   // Map auth error to translation key based on actual Supabase error messages
   const getErrorMessage = (error) => {

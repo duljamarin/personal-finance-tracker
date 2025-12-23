@@ -3,6 +3,10 @@
     "name": "Personal Finance Tracker",
     "shortName": "Finances"
   },
+  "meta": {
+    "title": "Personal Finance Tracker",
+    "description": "Take Control of Your Personal Finances - Track expenses, visualize spending patterns, and reach your financial goals with our intuitive tracker"
+  },
   "theme": {
     "light": "Light Mode",
     "dark": "Dark Mode"
