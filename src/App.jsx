@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useTranslation } from 'react-i18next';
 import Transactions from './components/Transactions/Transactions.jsx';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
-import MonthChart from './components/Transactions/MonthChart.jsx';
+import CombinedMonthChart from './components/Transactions/CombinedMonthChart.jsx';
+import CategoryPieChart from './components/Transactions/CategoryPieChart.jsx';
 import Header from './components/Header.jsx';
 import useDarkMode from './hooks/useDarkMode.js';
 import CategoriesPage from './components/Categories/CategoriesPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
+import LandingPage from './components/LandingPage.jsx';
 import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from './utils/api';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './context/ToastContext';
@@ -114,9 +116,15 @@ function AppContent() {
 
   const [isDark, setIsDark] = useDarkMode('expense_dark_mode')
 
-  const totalIncome = useMemo(() => transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + (t.amount || 0), 0), [transactions])
-  const totalExpense = useMemo(() => transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + (t.amount || 0), 0), [transactions])
+  // Use base_amount for calculations (supports multi-currency)
+  const totalIncome = useMemo(() => transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + (t.base_amount || t.amount || 0), 0), [transactions])
+  const totalExpense = useMemo(() => transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + (t.base_amount || t.amount || 0), 0), [transactions])
   const net = totalIncome - totalExpense
+  
+  // Check if there are mixed currencies
+  const currencies = new Set(transactions.map(t => t.currency_code || t.currencyCode || 'EUR'));
+  const hasMixedCurrencies = currencies.size > 1;
+  
   const [showGreeting, setShowGreeting] = useState(false);
   const username = localStorage.getItem('username');
   // Load transactions from backend or localStorage
@@ -209,14 +217,14 @@ useEffect(() => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Header isDark={isDark} toggleDark={() => setIsDark(d => !d)} />
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
+            <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
             <Route path="/categories" element={
               <PrivateRoute>
                 <CategoriesPage reloadExpenses={reloadTransactions} reloadCategories={reloadCategories} categories={categories} catError={catError} />
               </PrivateRoute>
             } />
-            <Route path="/" element={
+            <Route path="/dashboard" element={
               <PrivateRoute>
                 <>
                   {showGreeting && (
@@ -233,7 +241,8 @@ useEffect(() => {
                         </div>
                         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.totalIncome')}</p>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">${totalIncome.toFixed(2)}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">€{totalIncome.toFixed(2)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{t('currency.baseCurrency')}</p>
                     </div>
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-red-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                       <div className="flex items-center gap-3 mb-2">
@@ -242,34 +251,63 @@ useEffect(() => {
                         </div>
                         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.totalExpenses')}</p>
                       </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">${totalExpense.toFixed(2)}</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">€{totalExpense.toFixed(2)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{t('currency.baseCurrency')}</p>
                     </div>
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-blue-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 012 2h-2a2 2 0 01-2-2z" /></svg>
                         </div>
                         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.balance')}</p>
                       </div>
-                      <p className={`text-2xl sm:text-3xl font-bold ${net >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>${net.toFixed(2)}</p>
+                      <p className={`text-2xl sm:text-3xl font-bold ${net >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>€{net.toFixed(2)}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{t('currency.baseCurrency')}</p>
                     </div>
                   </div>
+                  
+                  {/* Mixed currency indicator */}
+                  {hasMixedCurrencies && (
+                    <div className="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-2 text-sm text-blue-800 dark:text-blue-200">
+                      <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>{t('currency.mixedCurrencies')}</span>
+                    </div>
+                  )}
+                  
+                  {/* Combined Monthly Chart */}
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 dark:border-gray-700 mb-6">
+                    <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-gray-800 dark:text-white flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      {t('chart.monthlyOverview')}
+                    </h3>
+                    <CombinedMonthChart transactions={transactions} />
+                  </div>
+                  
+                  {/* Two-column layout for income/expense breakdowns */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 dark:border-gray-700">
+                    {/* Income Section */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-green-100 dark:border-gray-700">
                       <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-green-700 dark:text-green-400 flex items-center gap-2">
                         <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                        {t('dashboard.incomeByMonth')}
+                        {t('transactions.income')} {t('chart.byCategory')}
                       </h3>
-                      <MonthChart items={transactions.filter(t => t.type === 'income')} />
+                      <CategoryPieChart transactions={transactions} type="income" />
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 dark:border-gray-700">
+                    
+                    {/* Expense Section */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-red-100 dark:border-gray-700">
                       <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-red-700 dark:text-red-400 flex items-center gap-2">
                         <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                        {t('dashboard.expensesByMonth')}
+                        {t('transactions.expense')} {t('chart.byCategory')}
                       </h3>
-                      <MonthChart items={transactions.filter(t => t.type === 'expense')} />
+                      <CategoryPieChart transactions={transactions} type="expense" />
                     </div>
                   </div>
+                  
                   {/* Page-level error (non-auth) */}
                   {error && <div className="mb-4 sm:mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 font-medium">{error}</div>}
                   {loading ? (
@@ -286,11 +324,13 @@ useEffect(() => {
                       categories={categories}
                       typeFilter={typeFilter}
                       setTypeFilter={setTypeFilter}
+                      reloadCategories={reloadCategories}
                     />
                   )}
                 </>
               </PrivateRoute>
             } />
+            <Route path="/" element={accessToken ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
             {/* Catch-all route: redirect to login if not authenticated, else to home */}
             <Route path="*" element={<CatchAllRedirect />} />
           </Routes>

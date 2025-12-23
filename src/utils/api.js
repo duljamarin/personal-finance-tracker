@@ -130,11 +130,19 @@ export async function addTransaction(transaction) {
   if (!user) throw new Error('Please log in to add transactions');
   
   // Remove category object if present, keep only categoryId
-  const { category, categoryId, ...rest } = transaction;
+  const { category, categoryId, currencyCode, exchangeRate, ...rest } = transaction;
+  
+  // Calculate base_amount: amount * exchange_rate (or just amount if no exchange rate)
+  const rate = exchangeRate || 1.0;
+  const baseAmount = transaction.amount * rate;
+  
   const insertData = {
     ...rest,
     category_id: categoryId,
-    user_id: user.id
+    user_id: user.id,
+    currency_code: currencyCode || 'USD',
+    exchange_rate: rate,
+    base_amount: baseAmount
   };
   
   const { data, error } = await supabase
@@ -155,11 +163,21 @@ export async function updateTransaction(id, transaction) {
   if (!user) throw new Error('Please log in to update transactions');
   
   // Remove category object if present, keep only categoryId
-  const { category, categoryId, ...rest } = transaction;
+  const { category, categoryId, currencyCode, exchangeRate, ...rest } = transaction;
+  
+  // Calculate base_amount: amount * exchange_rate (or just amount if no exchange rate)
+  const rate = exchangeRate !== undefined ? exchangeRate : 1.0;
+  const baseAmount = transaction.amount !== undefined ? transaction.amount * rate : undefined;
+  
   const updateData = {
     ...rest,
     category_id: categoryId
   };
+  
+  // Only include currency fields if provided
+  if (currencyCode !== undefined) updateData.currency_code = currencyCode;
+  if (exchangeRate !== undefined) updateData.exchange_rate = rate;
+  if (baseAmount !== undefined) updateData.base_amount = baseAmount;
   
   const { data, error } = await supabase
     .from('transactions')

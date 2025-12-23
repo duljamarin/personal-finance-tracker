@@ -132,7 +132,98 @@
   "chart": {
     "monthlyOverview": "Monthly Overview",
     "noData": "No data to display",
-    "amount": "Amount"
+    "amount": "Amount",
+    "income": "Income",
+    "expense": "Expense",
+    "byCategory": "By Category",
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Take Control of Your Finances",
+      "subtitle": "Track expenses, visualize spending patterns, and achieve your financial goals with our intuitive finance tracker",
+      "getStarted": "Get Started Free",
+      "signIn": "Sign In"
+    },
+    "preview": {
+      "monthlyOverview": "Monthly Overview",
+      "categoryBreakdown": "Category Breakdown"
+    },
+    "features": {
+      "title": "Everything You Need to Manage Your Money",
+      "tracking": {
+        "title": "Smart Tracking",
+        "desc": "Easily track all your income and expenses with detailed categorization"
+      },
+      "charts": {
+        "title": "Visual Insights",
+        "desc": "Charts and graphs that help you understand your spending habits and make informed decisions"
+      },
+      "categories": {
+        "title": "Custom Categories",
+        "desc": "Create and manage categories that fit your unique financial needs"
+      },
+      "multicurrency": {
+        "title": "Multi-Currency",
+        "desc": "Support for multiple currencies with automatic conversion tracking"
+      }
+    },
+    "cta": {
+      "title": "Ready to Take Control?",
+      "subtitle": "Join others who are already managing their finances better",
+      "button": "Create Your Free Account"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr"
+    },
+    "categories": {
+      "food": "Food",
+      "transport": "Transport",
+      "entertainment": "Entertainment",
+      "utilities": "Utilities"
+    }
+  },
+  "currency": {
+    "label": "Currency",
+    "code": "Currency Code",
+    "exchangeRate": "Exchange Rate to EUR",
+    "exchangeRateOptional": "(optional, defaults to 1.0)",
+    "baseAmount": "Base Amount (EUR)",
+    "baseCurrency": "All totals in EUR",
+    "mixedCurrencies": "Mixed currencies - showing normalized totals in EUR",
+    "USD": "US Dollar",
+    "EUR": "Euro",
+    "GBP": "British Pound",
+    "ALL": "Albanian Lek",
+    "CHF": "Swiss Franc",
+    "JPY": "Japanese Yen",
+    "CAD": "Canadian Dollar",
+    "AUD": "Australian Dollar"
+  },
+  "categoryProposal": {
+    "other": "Other / Add New Category",
+    "proposedName": "New Category Name",
+    "proposedNamePlaceholder": "e.g., Pet Care, Home Improvement",
+    "submit": "Add Category",
+    "submitted": "Category added successfully",
+    "submittedDesc": "Your new category is now available for use.",
+    "error": "Failed to add category"
   },
   "defaultCategories": {
     "Entertainment": "Entertainment",

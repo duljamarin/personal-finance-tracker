@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
-import { fetchCategories } from '../../utils/api'
+import { fetchCategories, addCategory } from '../../utils/api'
 import { translateCategoryName } from '../../utils/categoryTranslation'
+import { useToast } from '../../context/ToastContext'
 
-export default function TransactionForm({ onSubmit, onCancel, initial }) {
+export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded }) {
 	const { t, i18n } = useTranslation();
+	const { addToast } = useToast();
 	// Get today's date in YYYY-MM-DD format
 	const getTodayDate = () => new Date().toISOString().split('T')[0];
 	
@@ -22,6 +24,11 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 	const [tags, setTags] = useState(Array.isArray(initial?.tags) ? initial.tags.join(', ') : '')
 	const [categories, setCategories] = useState([])
 	const [errors, setErrors] = useState({})
+	const [showProposalInput, setShowProposalInput] = useState(false)
+	const [proposedCategoryName, setProposedCategoryName] = useState('')
+	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
+	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || 'EUR')
+	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || 1.0)
 
 	useEffect(() => {
 		fetchCategories().then(cats => {
@@ -45,6 +52,11 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 		if (!amount || isNaN(amount) || Number(amount) <= 0) newErrors.amount = 'transactions.amountError';
 		if (!date) newErrors.date = 'transactions.dateError';
 		if (!categoryId || categoryId === '') newErrors.categoryId = 'transactions.categoryError';
+		// If "other" is selected, user doesn't have to fill the proposal to submit transaction
+		// They can still submit transaction with existing category
+		if (categoryId === 'other') {
+			newErrors.categoryId = 'transactions.categoryError';
+		}
 		if (!type) newErrors.type = 'transactions.typeError';
 		// tags are optional
 		return newErrors
@@ -86,12 +98,53 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 	function handleCategoryChange(e) {
 		const value = e.target.value
 		setCategoryId(value)
-		setErrors(prev => {
-			const newErrors = { ...prev }
-			if (value && value !== '') delete newErrors.categoryId
-			else newErrors.categoryId = 'transactions.categoryError';
-			return newErrors
-		})
+		// Show proposal input if "other" is selected
+		if (value === 'other') {
+			setShowProposalInput(true)
+			setCategoryProposalSuccess(false)
+			setErrors(prev => ({ ...prev, categoryId: undefined }))
+		} else {
+			setShowProposalInput(false)
+			setProposedCategoryName('')
+			setCategoryProposalSuccess(false)
+			setErrors(prev => {
+				const newErrors = { ...prev }
+				if (value && value !== '') delete newErrors.categoryId
+				else newErrors.categoryId = 'transactions.categoryError';
+				return newErrors
+			})
+		}
+	}
+	
+	async function handleSubmitProposal() {
+		if (!proposedCategoryName.trim()) {
+			addToast(t('categoryProposal.error'), 'error')
+			return
+		}
+		
+		try {
+			const newCategory = await addCategory({ name: proposedCategoryName.trim() })
+			addToast(t('categoryProposal.submitted'), 'success')
+			setCategoryProposalSuccess(true)
+			
+			// Refresh categories list
+			const cats = await fetchCategories()
+			setCategories(cats)
+			
+			// Auto-select the newly created category
+			setCategoryId(newCategory.id)
+			setProposedCategoryName('')
+			if (onCategoryAdded) {
+				onCategoryAdded()
+			}
+		} catch (e) {
+			console.error('Failed to add category:', e)
+			if (e.message.includes('already exists')) {
+				addToast(t('categories.exists'), 'error')
+			} else {
+				addToast(t('categoryProposal.error'), 'error')
+			}
+		}
 	}
 
 	function submit(e) {
@@ -107,7 +160,16 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 			localStorage.setItem('lastUsedType', type)
 		}
 		
-		onSubmit({ title: title.trim(), amount: Number(amount), date, categoryId, type, tags: tagsList })
+		onSubmit({ 
+			title: title.trim(), 
+			amount: Number(amount), 
+			date, 
+			categoryId, 
+			type, 
+			tags: tagsList,
+			currencyCode,
+			exchangeRate: Number(exchangeRate)
+		})
 	}
 
 	return (
@@ -159,6 +221,44 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 						</span>
 					)}
 				</div>
+				
+				{/* Currency Fields */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div className="flex flex-col gap-2">
+						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('currency.code')}</label>
+						<select
+							value={currencyCode}
+							onChange={e => setCurrencyCode(e.target.value)}
+							className="border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition cursor-pointer border-gray-300 dark:border-gray-600"
+						>
+							<option value="USD">🇺🇸 {t('currency.USD')}</option>
+							<option value="EUR">🇪🇺 {t('currency.EUR')}</option>
+							<option value="GBP">🇬🇧 {t('currency.GBP')}</option>
+							<option value="ALL">🇦🇱 {t('currency.ALL')}</option>
+							<option value="CHF">🇨🇭 {t('currency.CHF')}</option>
+							<option value="JPY">🇯🇵 {t('currency.JPY')}</option>
+							<option value="CAD">🇨🇦 {t('currency.CAD')}</option>
+							<option value="AUD">🇦🇺 {t('currency.AUD')}</option>
+						</select>
+					</div>
+					<div className="flex flex-col gap-2">
+						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+							{t('currency.exchangeRate')} <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">{t('currency.exchangeRateOptional')}</span>
+						</label>
+						<Input
+							type="number"
+							step="0.000001"
+							placeholder="1.0"
+							value={exchangeRate}
+							onChange={e => setExchangeRate(e.target.value)}
+							className="border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition border-gray-300 dark:border-gray-600"
+						/>
+						<p className="text-xs text-gray-500 dark:text-gray-400">
+							{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
+						</p>
+					</div>
+				</div>
+				
 				<div className="flex flex-col gap-2">
 					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{t('transactions.categoryLabel')}</label>
 					<select
@@ -170,9 +270,37 @@ export default function TransactionForm({ onSubmit, onCancel, initial }) {
 						{categories.map(cat => (
 							<option key={cat.id} value={cat.id}>{translateCategoryName(cat.name)}</option>
 						))}
+						<option value="other">➕ {t('categoryProposal.other')}</option>
 					</select>
 					{errors.categoryId && (
 						<span className="block text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.categoryId)}</span>
+					)}
+					{showProposalInput && (
+						<div className="mt-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+							<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">
+								{t('categoryProposal.proposedName')}
+							</label>
+							<div className="flex gap-2">
+								<Input
+									placeholder={t('categoryProposal.proposedNamePlaceholder')}
+									value={proposedCategoryName}
+									onChange={e => setProposedCategoryName(e.target.value)}
+									className="flex-1 border p-2 text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-gray-600"
+								/>
+								<Button
+									type="button"
+									onClick={handleSubmitProposal}
+									className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm whitespace-nowrap"
+								>
+									{t('categoryProposal.submit')}
+								</Button>
+							</div>
+							{categoryProposalSuccess && (
+								<p className="text-xs text-green-600 dark:text-green-400 mt-2">
+									{t('categoryProposal.submittedDesc')}
+								</p>
+							)}
+						</div>
 					)}
 				</div>
 				<div className="flex flex-col gap-2">

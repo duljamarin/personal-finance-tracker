@@ -15,12 +15,12 @@
   },
   "dashboard": {
     "title": "Përmbledhje Financiare",
-    "totalIncome": "Të Ardhura Totale",
-    "totalExpenses": "Shpenzime Totale",
+    "totalIncome": "Të Ardhurat Totale",
+    "totalExpenses": "Shpenzimet Totale",
     "balance": "Bilanci",
     "welcomeBack": "Mirë se vini përsëri",
-    "incomeByMonth": "Të Ardhura sipas Muajit",
-    "expensesByMonth": "Shpenzime sipas Muajit",
+    "incomeByMonth": "Të Ardhurat sipas Muajit",
+    "expensesByMonth": "Shpenzimet sipas Muajit",
     "loadingData": "Duke ngarkuar të dhënat tuaja...",
     "processing": "Duke procesuar...",
     "loadingDashboard": "Duke ngarkuar tabelën tuaj..."
@@ -34,8 +34,8 @@
     "category": "Kategoria",
     "date": "Data",
     "description": "Përshkrimi",
-    "income": "Të Ardhura",
-    "expense": "Shpenzime",
+    "income": "Të Ardhurat",
+    "expense": "Shpenzimet",
     "edit": "Modifiko",
     "delete": "Fshi",
     "noTransactions": "Nuk u gjetën transaksione",
@@ -132,7 +132,98 @@
   "chart": {
     "monthlyOverview": "Përmbledhje Mujore",
     "noData": "Nuk ka të dhëna për të shfaqur",
-    "amount": "Shuma"
+    "amount": "Shuma",
+    "income": "Të Ardhura",
+    "expense": "Shpenzime",
+    "byCategory": "Sipas Kategorisë",
+    "months": {
+      "jan": "Jan",
+      "feb": "Shk",
+      "mar": "Mar",
+      "apr": "Pri",
+      "may": "Maj",
+      "jun": "Qer",
+      "jul": "Korr",
+      "aug": "Gus",
+      "sep": "Sht",
+      "oct": "Tet",
+      "nov": "Nën",
+      "dec": "Dhj"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Merrni Kontrollin e Financave Tuaja",
+      "subtitle": "Ndiqni shpenzimet, vizualizoni modelet e shpenzimeve dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv",
+      "getStarted": "Filloni Falas",
+      "signIn": "Identifikohu"
+    },
+    "preview": {
+      "monthlyOverview": "Përmbledhje Mujore",
+      "categoryBreakdown": "Ndarje sipas Kategorisë"
+    },
+    "features": {
+      "title": "Gjithçka që Ju Nevojitet për të Menaxhuar Paratë Tuaja",
+      "tracking": {
+        "title": "Gjurmim i Mençur",
+        "desc": "Ndiqni lehtësisht të gjitha të ardhurat dhe shpenzimet tuaja me kategorizim të detajuar"
+      },
+      "charts": {
+        "title": "Njohuri Vizuale",
+        "desc": "Grafikëqë ju ndihmojnë të kuptoni zakonet tuaja të shpenzimeve dhe të merrni vendime të informuara"
+      },
+      "categories": {
+        "title": "Kategori të Personalizuara",
+        "desc": "Krijoni dhe menaxhoni kategoritë që përputhen me nevojat tuaja unike financiare"
+      },
+      "multicurrency": {
+        "title": "Mbështetje për disa valuta",
+        "desc": "Mbështetje për disa valuta me gjurmim automatik të konvertimit"
+      }
+    },
+    "cta": {
+      "title": "Gati të Merrni Kontrollin?",
+      "subtitle": "Bashkohuni me përdorues të tjerë që tashmë po menaxhojnë financat e tyre më mirë",
+      "button": "Krijoni Llogarinë Tuaj Falas"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Shk",
+      "mar": "Mar",
+      "apr": "Pri"
+    },
+    "categories": {
+      "food": "Ushqim",
+      "transport": "Transport",
+      "entertainment": "Argëtim",
+      "utilities": "Shërbime"
+    }
+  },
+  "currency": {
+    "label": "Valuta",
+    "code": "Kodi i Valutës",
+    "exchangeRate": "Kursi i Këmbimit në EUR",
+    "exchangeRateOptional": "(opsionale, parazgjedhja është 1.0)",
+    "baseAmount": "Shuma Bazë (EUR)",
+    "baseCurrency": "Të gjitha totalet në EUR",
+    "mixedCurrencies": "Valuta të përziera - totalet e normalizuara në EUR",
+    "USD": "Dollari Amerikan",
+    "EUR": "Euro",
+    "GBP": "Sterlina Britanike",
+    "ALL": "Leku Shqiptar",
+    "CHF": "Franga Zvicerane",
+    "JPY": "Jeni Japonez",
+    "CAD": "Dollari Kanadez",
+    "AUD": "Dollari Australian"
+  },
+  "categoryProposal": {
+    "other": "Tjetër / Shto Kategori të Re",
+    "proposedName": "Emri i Kategorisë së Re",
+    "proposedNamePlaceholder": "p.sh., Kujdesi për Kafshët, Riparimi Shtëpie",
+    "submit": "Shto Kategorinë",
+    "submitted": "Kategoria u shtua me sukses",
+    "submittedDesc": "Kategoria e re është gati për t'u përdorur.",
+    "error": "Shtimi i kategorisë dështoi"
   },
   "defaultCategories": {
     "Entertainment": "Argëtim",
