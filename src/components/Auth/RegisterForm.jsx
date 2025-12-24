@@ -151,8 +151,8 @@ export default function RegisterForm() {
               onChange={e => setLanguage(e.target.value)}
               className="w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all shadow-sm border-gray-200 dark:border-gray-600"
             >
-              <option value="en">English</option>
-              <option value="sq">Shqip (Albanian)</option>
+              <option value="en">{t('languages.english', 'English')}</option>
+              <option value="sq">{t('languages.albanian', 'Shqip (Albanian)')}</option>
             </select>
           </div>
 
