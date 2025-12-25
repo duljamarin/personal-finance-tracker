@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
+import useDarkMode from '../hooks/useDarkMode';
 
 export default function LandingPage() {
   const { t } = useTranslation();
+  const [dark] = useDarkMode();
 
   // Dummy data for preview charts
   const dummyMonthlyData = [
@@ -100,12 +102,10 @@ export default function LandingPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
                   <XAxis 
                     dataKey="month" 
-                    tick={{ fontSize: 12, fill: 'currentColor' }}
-                    className="text-gray-600 dark:text-gray-400"
+                    tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
                   />
                   <YAxis 
-                    tick={{ fontSize: 12, fill: 'currentColor' }}
-                    className="text-gray-600 dark:text-gray-400"
+                    tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
                   />
                   <Tooltip 
                     formatter={(value, name) => [`€${value}`, t(`transactions.${name}`)]}
@@ -142,8 +142,13 @@ export default function LandingPage() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    formatter={(value) => `$${value}`}
+                  <Tooltip
+                    formatter={(value) => {
+                      // Calculate total from dummyCategoryData
+                      const total = dummyCategoryData.reduce((sum, entry) => sum + (entry.value || 0), 0);
+                      const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+                      return [`€${value} (${percent}%)`];
+                    }}
                     contentStyle={{
                       backgroundColor: 'white',
                       border: '1px solid #e5e7eb',

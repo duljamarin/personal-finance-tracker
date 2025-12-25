@@ -1,6 +1,7 @@
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import useDarkMode from '../../hooks/useDarkMode';
 
 // Month name mapping for translation
 const MONTH_MAP = {
@@ -79,6 +80,7 @@ function CombinedMonthTooltip({ active, payload, label }) {
 
 export default function CombinedMonthChart({ transactions }) {
   const { t } = useTranslation();
+  const [dark] = useDarkMode();
   
   // Aggregate transactions by month for both income and expense
   const monthlyData = {};
@@ -138,12 +140,10 @@ export default function CombinedMonthChart({ transactions }) {
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
           <XAxis 
             dataKey="month" 
-            tick={{ fontSize: 12, fill: 'currentColor' }}
-            className="text-gray-600 dark:text-gray-400"
+            tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
           />
           <YAxis 
-            tick={{ fontSize: 12, fill: 'currentColor' }}
-            className="text-gray-600 dark:text-gray-400"
+            tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
           />
           <Tooltip content={<CombinedMonthTooltip />} />
           <Legend

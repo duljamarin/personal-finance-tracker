@@ -9,7 +9,7 @@
   },
   "meta": {
     "title": "Gjurmues i Financave Personale",
-    "description": "Merrni Kontrollin e Financave Tuaja Personale - Ndiqni shpenzimet, vizualizoni modelet dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv"
+    "description": "Merrni Kontrollin e Financave Tuaja Personale - Ndiqni të ardhurat dhe shpenzimet, vizualizoni modelet dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv"
   },
   "theme": {
     "light": "Modalidet i çelet",
@@ -42,8 +42,10 @@
     "category": "Kategoria",
     "date": "Data",
     "description": "Përshkrimi",
-    "income": "Të Ardhurat",
-    "expense": "Shpenzimet",
+    "income": "E ardhur",
+    "expense": "Shpenzim",
+    "incomes" : "Të Ardhurat",
+    "expenses" : "Shpenzimet",
     "edit": "Modifiko",
     "delete": "Fshi",
     "noTransactions": "Nuk u gjetën transaksione",
@@ -166,7 +168,7 @@
   "landing": {
     "hero": {
       "title": "Merrni Kontrollin e Financave Tuaja Personale",
-      "subtitle": "Ndiqni shpenzimet, vizualizoni modelet e shpenzimeve dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv",
+      "subtitle": "Ndiqni të ardhurat dhe shpenzimet, vizualizoni modelet e shpenzimeve dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv",
       "getStarted": "Filloni Falas",
       "signIn": "Identifikohu"
     },

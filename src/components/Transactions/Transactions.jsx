@@ -35,7 +35,7 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
   }, [items, yearFilter, categoryFilter, typeFilter]);
 
   function exportCSV() {
-    const csv = toCSV(filtered);
+    const csv = toCSV(filtered, t);
     downloadCSV(csv, 'transactions.csv');
   }
 
@@ -126,7 +126,7 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
                         : 'bg-blue-600 text-white border-blue-700 shadow-md scale-105')
                   : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500'}`}
               >
-                {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.income') : t('transactions.expense')}
+                {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.incomes') : t('transactions.expenses')}
               </button>
             ))}
           </div>

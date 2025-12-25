@@ -9,7 +9,7 @@
   },
   "meta": {
     "title": "Personal Finance Tracker",
-    "description": "Take Control of Your Personal Finances - Track expenses, visualize spending patterns, and reach your financial goals with our intuitive tracker"
+    "description": "Take Control of Your Personal Finances - Track incomes and expenses, visualize spending patterns, and reach your financial goals with our intuitive tracker"
   },
   "theme": {
     "light": "Light Mode",
@@ -43,6 +43,8 @@
     "date": "Date",
     "description": "Description",
     "income": "Income",
+     "incomes" : "Incomes",
+    "expenses" : "Expenses",
     "expense": "Expense",
     "edit": "Edit",
     "delete": "Delete",
@@ -166,7 +168,7 @@
   "landing": {
     "hero": {
       "title": "Take Control of Your Personal Finances",
-      "subtitle": "Track expenses, visualize spending patterns, and achieve your financial goals with our intuitive finance tracker",
+      "subtitle": "Track incomes and expenses, visualize spending patterns, and achieve your financial goals with our intuitive finance tracker",
       "getStarted": "Get Started Free",
       "signIn": "Sign In"
     },
