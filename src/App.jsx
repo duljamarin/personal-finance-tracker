@@ -296,7 +296,7 @@ function AppContent() {
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-green-100 dark:border-gray-700">
                       <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-green-700 dark:text-green-400 flex items-center gap-2">
                         <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                        {t('transactions.income')} {t('chart.byCategory')}
+                        {t('transactions.incomes')} {t('chart.byCategory')}
                       </h3>
                       <CategoryPieChart transactions={transactions} type="income" />
                     </div>
@@ -305,7 +305,7 @@ function AppContent() {
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-red-100 dark:border-gray-700">
                       <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-red-700 dark:text-red-400 flex items-center gap-2">
                         <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                        {t('transactions.expense')} {t('chart.byCategory')}
+                        {t('transactions.expenses')} {t('chart.byCategory')}
                       </h3>
                       <CategoryPieChart transactions={transactions} type="expense" />
                     </div>
