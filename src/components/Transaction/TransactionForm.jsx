@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
-import { fetchCategories, addCategory } from '../../utils/api'
+import { fetchCategories, addCategory, isFirstOccurrence } from '../../utils/api'
 import { translateCategoryName } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 
@@ -28,6 +28,11 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || 'EUR')
 	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || 1.0)
 	
+	// If editing a transaction from a recurring rule, check if it's the first instance
+	const [updateRecurringTemplate, setUpdateRecurringTemplate] = useState(false)
+	const [isFirstRecurringInstance, setIsFirstRecurringInstance] = useState(false)
+	const isFromRecurring = initial?.source_recurring_id
+	
 	// Recurring transaction state
 	const [isRecurring, setIsRecurring] = useState(initial?.isRecurring || false)
 	const [frequency, setFrequency] = useState(initial?.frequency || 'monthly')
@@ -43,6 +48,17 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				setCategoryId(initial.category.id)
 			}
 		}).catch(() => setCategories([]))
+		
+		// Check if this is the first occurrence of a recurring transaction
+		if (initial?.id && initial?.source_recurring_id) {
+			isFirstOccurrence(initial.id, initial.source_recurring_id).then(result => {
+				setIsFirstRecurringInstance(result)
+				// If first instance, auto-enable template update
+				if (result) {
+					setUpdateRecurringTemplate(true)
+				}
+			}).catch(() => setIsFirstRecurringInstance(false))
+		}
 	}, [])
 
 	useEffect(() => {
@@ -163,7 +179,9 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			type,
 			tags: tagsList,
 			currencyCode,
-			exchangeRate: Number(exchangeRate)
+			exchangeRate: Number(exchangeRate),
+			updateRecurringTemplate: isFromRecurring && (isFirstRecurringInstance || updateRecurringTemplate),
+			sourceRecurringId: initial?.source_recurring_id
 		}
 		
 		// Add recurring data if enabled
@@ -193,6 +211,40 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			</h2>
 
 			<div className="flex flex-col gap-4 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
+				{/* Show recurring badge if editing a transaction from recurring rule */}
+				{isFromRecurring && (
+					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
+						<div className="flex items-center gap-2 mb-2">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+							</svg>
+							<span className="text-sm font-semibold text-purple-700 dark:text-purple-300">
+								{t('recurring.generatedFromRule')}
+							</span>
+						</div>
+						{isFirstRecurringInstance ? (
+							<p className="text-xs text-purple-600 dark:text-purple-400 flex items-start gap-2">
+								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+								</svg>
+								<span>{t('recurring.firstInstanceNote')}</span>
+							</p>
+						) : (
+							<label className="flex items-center gap-2 cursor-pointer">
+								<input
+									type="checkbox"
+									checked={updateRecurringTemplate}
+									onChange={e => setUpdateRecurringTemplate(e.target.checked)}
+									className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+								/>
+								<span className="text-xs text-gray-600 dark:text-gray-400">
+									{t('recurring.alsoUpdateTemplate')}
+								</span>
+							</label>
+						)}
+					</div>
+				)}
+				
 				{/* Title */}
 				<div className="flex flex-col gap-2">
 					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">

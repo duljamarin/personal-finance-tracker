@@ -311,7 +311,12 @@
     "updated": "Transaksioni i përsëritur u përditësua",
     "updateError": "Dështoi përditësimi i transaksionit të përsëritur",
     "readOnlyNote": "Shuma dhe kategoria nuk mund të ndryshohen",
-    "saveChanges": "Ruaj Ndryshimet"
+    "saveChanges": "Ruaj Ndryshimet",
+    "generatedFromRule": "Ky transaksion u krijua nga një rregull i përsëritjes",
+    "firstInstanceNote": "Ky është transaksioni i parë i rregullit të përsëritjes. Ndryshimet do të përditësojnë automatikisht përsëritjet e ardhshme.",
+    "alsoUpdateTemplate": "Përditëso edhe shabllonin e përsëritjes për transaksionet e ardhshme",
+    "templateUpdated": "Shablloni i përsëritjes u përditësua me sukses",
+    "templateUpdateError": "Dështoi përditësimi i shabllonit të përsëritjes"
   },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara."

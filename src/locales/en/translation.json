@@ -311,7 +311,12 @@
     "updated": "Recurring transaction updated",
     "updateError": "Failed to update recurring transaction",
     "readOnlyNote": "Amount and category cannot be changed",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "generatedFromRule": "This transaction was generated from a recurring rule",
+    "firstInstanceNote": "This is the first transaction of the recurring rule. Changes will automatically update future occurrences.",
+    "alsoUpdateTemplate": "Also update the recurring template for future transactions",
+    "templateUpdated": "Recurring template updated successfully",
+    "templateUpdateError": "Failed to update recurring template"
   },
   "footer": {
     "rights": "All rights reserved."

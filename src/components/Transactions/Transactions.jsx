@@ -5,7 +5,7 @@ import { toCSV, downloadCSV } from '../../utils/csv';
 import Modal from '../UI/Modal';
 import TransactionForm from '../Transaction/TransactionForm';
 import { translateCategoryName } from '../../utils/categoryTranslation';
-import { processRecurringTransactions, addRecurringTransaction } from '../../utils/api';
+import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 
 // Accept onAdd for new transactions
@@ -274,6 +274,65 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
             initial={editTx}
             onSubmit={async data => {
               if (editTx) {
+                // Check if we need to update the recurring template too
+                if (data.updateRecurringTemplate && editTx.source_recurring_id) {
+                  try {
+                    // Get the recurring transaction details to calculate next_run_at
+                    const recurrings = await fetchRecurringTransactions();
+                    const recurring = recurrings.find(r => r.id === editTx.source_recurring_id);
+                    
+                    // Prepare template update data
+                    const templateUpdate = {
+                      title: data.title,
+                      amount: data.amount,
+                      category_id: data.categoryId,
+                      type: data.type
+                    };
+                    
+                    // If date changed, update start_date and recalculate next_run_at
+                    if (data.date && recurring) {
+                      templateUpdate.start_date = data.date;
+                      
+                      // Check if new start_date is after end_date - if so, clear end_date
+                      if (recurring.end_date && new Date(data.date) >= new Date(recurring.end_date)) {
+                        templateUpdate.end_date = null;
+                      }
+                      
+                      // Calculate next run date based on new start date
+                      const startDate = new Date(data.date);
+                      const frequency = recurring.frequency;
+                      const intervalCount = recurring.interval_count || 1;
+                      
+                      // Calculate next date based on frequency
+                      const nextDate = new Date(startDate);
+                      switch (frequency) {
+                        case 'daily':
+                          nextDate.setDate(nextDate.getDate() + intervalCount);
+                          break;
+                        case 'weekly':
+                          nextDate.setDate(nextDate.getDate() + (intervalCount * 7));
+                          break;
+                        case 'monthly':
+                          nextDate.setMonth(nextDate.getMonth() + intervalCount);
+                          break;
+                        case 'yearly':
+                          nextDate.setFullYear(nextDate.getFullYear() + intervalCount);
+                          break;
+                      }
+                      
+                      templateUpdate.next_run_at = nextDate.toISOString();
+                    }
+                    
+                    // Update the recurring template
+                    await updateRecurringTransaction(editTx.source_recurring_id, templateUpdate);
+                    addToast(t('recurring.templateUpdated'), 'success');
+                  } catch (error) {
+                    console.error('Error updating recurring template:', error);
+                    addToast(t('recurring.templateUpdateError'), 'error');
+                  }
+                }
+                
+                // Always update the transaction itself
                 onUpdate(editTx.id, data);
                 setShowModal(false);
                 setEditTx(null);
