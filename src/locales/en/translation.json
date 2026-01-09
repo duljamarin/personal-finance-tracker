@@ -19,6 +19,7 @@
     "dashboard": "Dashboard",
     "transactions": "Transactions",
     "categories": "Categories",
+    "recurring": "Recurring",
     "logout": "Logout"
   },
   "dashboard": {
@@ -288,7 +289,29 @@
     "generatedToast": "{{count}} scheduled transaction(s) created from recurring rules",
     "intervalError": "Interval must be at least 1",
     "endDateError": "End date is required",
-    "occurrencesError": "Number of occurrences must be at least 1"
+    "occurrencesError": "Number of occurrences must be at least 1",
+    "manageTitle": "Recurring Transactions",
+    "manageDescription": "Manage your automatic recurring transactions",
+    "noRecurring": "No Recurring Transactions",
+    "noRecurringDesc": "Create recurring transactions from the Transactions page",
+    "loadError": "Failed to load recurring transactions",
+    "deleted": "Recurring transaction deleted",
+    "deleteError": "Failed to delete recurring transaction",
+    "deleteConfirm": "Delete this recurring transaction? All future instances will stop being generated.",
+    "paused": "Paused",
+    "resumed": "Resumed",
+    "pause": "Pause",
+    "resume": "Resume",
+    "toggleError": "Failed to update status",
+    "startDate": "Start Date",
+    "nextRun": "Next Run",
+    "endsLabel": "Ends",
+    "afterCount": "After count",
+    "editTitle": "Edit Recurring Transaction",
+    "updated": "Recurring transaction updated",
+    "updateError": "Failed to update recurring transaction",
+    "readOnlyNote": "Amount and category cannot be changed",
+    "saveChanges": "Save Changes"
   },
   "footer": {
     "rights": "All rights reserved."

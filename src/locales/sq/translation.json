@@ -19,6 +19,7 @@
     "dashboard": "Paneli",
     "transactions": "Transaksionet",
     "categories": "Kategoritë",
+    "recurring": "Përsëritëse",
     "logout": "Dilni"
   },
   "dashboard": {
@@ -288,7 +289,29 @@
     "generatedToast": "{{count}} transaksion(e) të planifikuar u krijuan nga rregullat e përsëritjes",
     "intervalError": "Intervali duhet të jetë të paktën 1",
     "endDateError": "Data e përfundimit është e detyrueshme",
-    "occurrencesError": "Numri i përsëritjeve duhet të jetë të paktën 1"
+    "occurrencesError": "Numri i përsëritjeve duhet të jetë të paktën 1",
+    "manageTitle": "Transaksionet e Përsëritura",
+    "manageDescription": "Menaxhoni transaksionet tuaja automatike të përsëritura",
+    "noRecurring": "Nuk ka Transaksione të Përsëritura",
+    "noRecurringDesc": "Krijoni transaksione të përsëritura nga faqja e Transaksioneve",
+    "loadError": "Dështoi ngarkimi i transaksioneve të përsëritura",
+    "deleted": "Transaksioni i përsëritur u fshi",
+    "deleteError": "Dështoi fshirja e transaksionit të përsëritur",
+    "deleteConfirm": "Fshi këtë transaksion të përsëritur? Të gjitha instancat e ardhshme do të ndalen nga krijimi.",
+    "paused": "Në Pauzë",
+    "resumed": "Rifilluar",
+    "pause": "Pauzë",
+    "resume": "Rifillo",
+    "toggleError": "Dështoi përditësimi i statusit",
+    "startDate": "Data e Fillimit",
+    "nextRun": "Ekzekutimi i Ardhshëm",
+    "endsLabel": "Përfundon",
+    "afterCount": "Pas numërimit",
+    "editTitle": "Ndrysho Transaksionin e Përsëritur",
+    "updated": "Transaksioni i përsëritur u përditësua",
+    "updateError": "Dështoi përditësimi i transaksionit të përsëritur",
+    "readOnlyNote": "Shuma dhe kategoria nuk mund të ndryshohen",
+    "saveChanges": "Ruaj Ndryshimet"
   },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara."

@@ -55,8 +55,6 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
     // Recurring filter
     if (recurringFilter === 'recurring') {
       result = result.filter(i => i.source_recurring_id);
-    } else if (recurringFilter === 'scheduled') {
-      result = result.filter(i => i.is_scheduled);
     } else if (recurringFilter === 'regular') {
       result = result.filter(i => !i.source_recurring_id);
     }
@@ -168,7 +166,6 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
             <option value="all">{t('recurring.filterAll')}</option>
             <option value="regular">{t('recurring.filterRegular')}</option>
             <option value="recurring">{t('recurring.filterRecurring')}</option>
-            <option value="scheduled">{t('recurring.filterScheduled')}</option>
           </select>
         </div>
       </div>
@@ -284,14 +281,8 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
                 // Create recurring transaction
                 try {
                   await addRecurringTransaction(data);
-                  // Process to create the first instance (including upcoming)
-                  const result = await processRecurringTransactions({ includeUpcoming: true });
-                  if (result.generated > 0) {
-                    addToast(t('recurring.created') + ` (${result.generated} ${t('recurring.generatedToast', { count: result.generated })})`, 'success');
-                  } else {
-                    addToast(t('recurring.created'), 'success');
-                  }
-                  // Always reload to show generated transactions
+                  addToast(t('recurring.created'), 'success');
+                  // Reload to refresh the list
                   if (onReload) {
                     await onReload();
                   }

@@ -9,6 +9,7 @@ import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import useDarkMode from './hooks/useDarkMode.js';
 import CategoriesPage from './components/Categories/CategoriesPage.jsx';
+import RecurringPage from './components/Recurring/RecurringPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
 import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
@@ -225,6 +226,11 @@ function AppContent() {
             <Route path="/categories" element={
               <PrivateRoute>
                 <CategoriesPage reloadExpenses={reloadTransactions} reloadCategories={reloadCategories} categories={categories} catError={catError} />
+              </PrivateRoute>
+            } />
+            <Route path="/recurring" element={
+              <PrivateRoute>
+                <RecurringPage />
               </PrivateRoute>
             } />
             <Route path="/dashboard" element={

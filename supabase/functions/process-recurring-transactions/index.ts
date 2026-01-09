@@ -74,7 +74,7 @@ serve(async (req: Request) => {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Cron-Secret',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-cron-secret',
       },
     });
   }
@@ -138,105 +138,100 @@ serve(async (req: Request) => {
     for (const recurring of dueRecurrings as RecurringTransaction[]) {
       results.processed++;
 
-      // Check if we've reached the occurrences limit
-      if (recurring.occurrences_limit && recurring.occurrences_created >= recurring.occurrences_limit) {
-        console.log(`Deactivating ${recurring.id}: occurrences limit reached`);
-        await supabase
-          .from('recurring_transactions')
-          .update({ is_active: false })
-          .eq('id', recurring.id);
-        results.deactivated++;
-        continue;
+      let currentNextRun = recurring.next_run_at;
+      let instancesCreated = 0;
+
+      // Generate all due instances (catch-up logic for missed days)
+      while (new Date(currentNextRun) <= now) {
+        // Check if we've reached the occurrences limit
+        const totalCreated = (recurring.occurrences_created || 0) + instancesCreated;
+        if (recurring.occurrences_limit && totalCreated >= recurring.occurrences_limit) {
+          console.log(`Deactivating ${recurring.id}: occurrences limit reached`);
+          await supabase
+            .from('recurring_transactions')
+            .update({ is_active: false })
+            .eq('id', recurring.id);
+          results.deactivated++;
+          break;
+        }
+
+        // Check if end_date has passed
+        const transactionDate = new Date(currentNextRun).toISOString().split('T')[0];
+        if (recurring.end_date && new Date(transactionDate) > new Date(recurring.end_date)) {
+          console.log(`Deactivating ${recurring.id}: end date passed`);
+          await supabase
+            .from('recurring_transactions')
+            .update({ is_active: false })
+            .eq('id', recurring.id);
+          results.deactivated++;
+          break;
+        }
+
+        // Check for idempotency - don't create if already exists for this period
+        const { data: existing, error: existingError } = await supabase
+          .from('transactions')
+          .select('id')
+          .eq('source_recurring_id', recurring.id)
+          .eq('date', transactionDate)
+          .maybeSingle();
+
+        if (existingError) {
+          console.error(`Error checking existing transaction for ${recurring.id}:`, existingError);
+          results.errors.push(`${recurring.id}: ${existingError.message}`);
+          break;
+        }
+
+        if (!existing) {
+          // Calculate base_amount
+          const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
+
+          // Create the transaction instance (never scheduled since we only generate due instances)
+          const { error: insertError } = await supabase
+            .from('transactions')
+            .insert([{
+              title: recurring.title,
+              amount: recurring.amount,
+              date: transactionDate,
+              type: recurring.type,
+              category_id: recurring.category_id,
+              tags: recurring.tags || [],
+              currency_code: recurring.currency_code,
+              exchange_rate: recurring.exchange_rate,
+              base_amount: baseAmount,
+              user_id: recurring.user_id,
+              source_recurring_id: recurring.id,
+              is_scheduled: false,
+            }]);
+
+          if (insertError) {
+            console.error(`Error creating transaction for ${recurring.id}:`, insertError);
+            results.errors.push(`${recurring.id}: ${insertError.message}`);
+            break;
+          }
+
+          results.generated++;
+          instancesCreated++;
+          console.log(`Created transaction for recurring ${recurring.id} on ${transactionDate}`);
+        } else {
+          console.log(`Skipping ${recurring.id}: transaction already exists for ${transactionDate}`);
+          results.skipped++;
+        }
+
+        // Calculate next date for next iteration
+        currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
       }
 
-      // Check if end_date has passed
-      if (recurring.end_date && new Date(recurring.end_date) < now) {
-        console.log(`Deactivating ${recurring.id}: end date passed`);
-        await supabase
-          .from('recurring_transactions')
-          .update({ is_active: false })
-          .eq('id', recurring.id);
-        results.deactivated++;
-        continue;
-      }
-
-      // Extract the transaction date from next_run_at
-      const transactionDate = new Date(recurring.next_run_at).toISOString().split('T')[0];
-
-      // Check for idempotency - don't create if already exists for this period
-      const { data: existing, error: existingError } = await supabase
-        .from('transactions')
-        .select('id')
-        .eq('source_recurring_id', recurring.id)
-        .eq('date', transactionDate)
-        .maybeSingle();
-
-      if (existingError) {
-        console.error(`Error checking existing transaction for ${recurring.id}:`, existingError);
-        results.errors.push(`${recurring.id}: ${existingError.message}`);
-        continue;
-      }
-
-      if (existing) {
-        console.log(`Skipping ${recurring.id}: transaction already exists for ${transactionDate}`);
-        // Just update next_run_at
-        const nextDate = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+      // Update the recurring transaction with the new next_run_at and count
+      if (instancesCreated > 0) {
         await supabase
           .from('recurring_transactions')
           .update({
-            next_run_at: nextDate,
+            next_run_at: currentNextRun,
             last_run_at: nowISO,
+            occurrences_created: (recurring.occurrences_created || 0) + instancesCreated,
           })
           .eq('id', recurring.id);
-        results.skipped++;
-        continue;
       }
-
-      // Calculate base_amount
-      const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
-
-      // Determine if this is a scheduled (future) transaction
-      const isScheduled = new Date(transactionDate) > now;
-      // Note: User existence is guaranteed by the foreign key constraint on recurring_transactions.user_id
-      // If the user was deleted, the CASCADE delete would have removed the recurring transaction too
-
-      // Create the transaction instance
-      const { error: insertError } = await supabase
-        .from('transactions')
-        .insert([{
-          title: recurring.title,
-          amount: recurring.amount,
-          date: transactionDate,
-          type: recurring.type,
-          category_id: recurring.category_id,
-          tags: recurring.tags || [],
-          currency_code: recurring.currency_code,
-          exchange_rate: recurring.exchange_rate,
-          base_amount: baseAmount,
-          user_id: recurring.user_id,
-          source_recurring_id: recurring.id,
-          is_scheduled: isScheduled,
-        }]);
-
-      if (insertError) {
-        console.error(`Error creating transaction for ${recurring.id}:`, insertError);
-        results.errors.push(`${recurring.id}: ${insertError.message}`);
-        continue;
-      }
-
-      results.generated++;
-      console.log(`Created transaction for recurring ${recurring.id} on ${transactionDate}`);
-
-      // Update the recurring transaction with next run date
-      const nextDate = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
-      await supabase
-        .from('recurring_transactions')
-        .update({
-          next_run_at: nextDate,
-          last_run_at: nowISO,
-          occurrences_created: (recurring.occurrences_created || 0) + 1,
-        })
-        .eq('id', recurring.id);
     }
 
     console.log('Processing complete:', results);

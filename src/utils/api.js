@@ -380,26 +380,22 @@ export async function resumeRecurringTransaction(id) {
 }
 
 // Generate recurring transaction instances (call this on app load or periodically)
-export async function processRecurringTransactions({ includeUpcoming = false } = {}) {
+// Only generates instances that are due (on or before today), never future instances
+export async function processRecurringTransactions() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { generated: 0, transactions: [] };
   
-  // Fetch active recurring transactions that are due (or all if includeUpcoming)
+  // Fetch active recurring transactions that are due (next_run_at <= now)
   const now = new Date().toISOString();
-  let query = supabase
+  const { data: dueRecurrings, error: fetchError } = await supabase
     .from('recurring_transactions')
     .select(`
       *,
       category:categories(id, name)
     `)
     .eq('user_id', user.id)
-    .eq('is_active', true);
-  
-  if (!includeUpcoming) {
-    query = query.lte('next_run_at', now);
-  }
-  
-  const { data: dueRecurrings, error: fetchError } = await query;
+    .eq('is_active', true)
+    .lte('next_run_at', now);
   
   if (fetchError) {
     console.error('Error fetching due recurring transactions:', fetchError);
@@ -413,90 +409,91 @@ export async function processRecurringTransactions({ includeUpcoming = false } =
   const generatedTransactions = [];
   
   for (const recurring of dueRecurrings) {
-    // Check if we've reached the occurrences limit
-    if (recurring.occurrences_limit && recurring.occurrences_created >= recurring.occurrences_limit) {
-      // Deactivate the recurring transaction
-      await supabase
-        .from('recurring_transactions')
-        .update({ is_active: false })
-        .eq('id', recurring.id);
-      continue;
+    let currentNextRun = recurring.next_run_at;
+    let instancesCreated = 0;
+    
+    // Generate all due instances (could be multiple if app wasn't opened for days)
+    while (new Date(currentNextRun) <= new Date()) {
+      // Check if we've reached the occurrences limit
+      const totalCreated = (recurring.occurrences_created || 0) + instancesCreated;
+      if (recurring.occurrences_limit && totalCreated >= recurring.occurrences_limit) {
+        // Deactivate the recurring transaction
+        await supabase
+          .from('recurring_transactions')
+          .update({ is_active: false })
+          .eq('id', recurring.id);
+        break;
+      }
+      
+      // Check if end_date has passed
+      const transactionDate = new Date(currentNextRun).toISOString().split('T')[0];
+      if (recurring.end_date && new Date(transactionDate) > new Date(recurring.end_date)) {
+        await supabase
+          .from('recurring_transactions')
+          .update({ is_active: false })
+          .eq('id', recurring.id);
+        break;
+      }
+      
+      // Check for idempotency - don't create if already exists for this period
+      const { data: existing } = await supabase
+        .from('transactions')
+        .select('id')
+        .eq('source_recurring_id', recurring.id)
+        .eq('date', transactionDate)
+        .single();
+      
+      if (!existing) {
+        // Calculate base_amount
+        const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
+        
+        // Create the transaction instance
+        const { data: newTx, error: insertError } = await supabase
+          .from('transactions')
+          .insert([{
+            title: recurring.title,
+            amount: recurring.amount,
+            date: transactionDate,
+            type: recurring.type,
+            category_id: recurring.category_id,
+            tags: recurring.tags || [],
+            currency_code: recurring.currency_code,
+            exchange_rate: recurring.exchange_rate,
+            base_amount: baseAmount,
+            user_id: user.id,
+            source_recurring_id: recurring.id,
+            is_scheduled: false // Never scheduled since we only generate due instances
+          }])
+          .select(`
+            *,
+            category:categories(id, name)
+          `)
+          .single();
+        
+        if (insertError) {
+          console.error('Error creating recurring transaction instance:', insertError);
+          break; // Stop trying for this recurring rule
+        }
+        
+        generatedTransactions.push(newTx);
+        instancesCreated++;
+      }
+      
+      // Calculate next date for next iteration
+      currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
     }
     
-    // Check if end_date has passed
-    if (recurring.end_date && new Date(recurring.end_date) < new Date()) {
-      await supabase
-        .from('recurring_transactions')
-        .update({ is_active: false })
-        .eq('id', recurring.id);
-      continue;
-    }
-    
-    // Check for idempotency - don't create if already exists for this period
-    const transactionDate = new Date(recurring.next_run_at).toISOString().split('T')[0];
-    const { data: existing } = await supabase
-      .from('transactions')
-      .select('id')
-      .eq('source_recurring_id', recurring.id)
-      .eq('date', transactionDate)
-      .single();
-    
-    if (existing) {
-      // Already created, just update next_run_at
-      const nextDate = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+    // Update the recurring transaction with the new next_run_at and count
+    if (instancesCreated > 0) {
       await supabase
         .from('recurring_transactions')
         .update({ 
-          next_run_at: nextDate,
-          last_run_at: now
+          next_run_at: currentNextRun,
+          last_run_at: now,
+          occurrences_created: (recurring.occurrences_created || 0) + instancesCreated
         })
         .eq('id', recurring.id);
-      continue;
     }
-    
-    // Calculate base_amount
-    const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
-    
-    // Create the transaction instance
-    const { data: newTx, error: insertError } = await supabase
-      .from('transactions')
-      .insert([{
-        title: recurring.title,
-        amount: recurring.amount,
-        date: transactionDate,
-        type: recurring.type,
-        category_id: recurring.category_id,
-        tags: recurring.tags || [],
-        currency_code: recurring.currency_code,
-        exchange_rate: recurring.exchange_rate,
-        base_amount: baseAmount,
-        user_id: user.id,
-        source_recurring_id: recurring.id,
-        is_scheduled: new Date(transactionDate) > new Date()
-      }])
-      .select(`
-        *,
-        category:categories(id, name)
-      `)
-      .single();
-    
-    if (insertError) {
-      console.error('Error creating recurring transaction instance:', insertError);
-      continue;
-    }
-    
-    generatedTransactions.push(newTx);
-    
-    // Update the recurring transaction
-    const nextDate = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
-    await supabase
-      .from('recurring_transactions')
-      .update({ 
-        next_run_at: nextDate,
-        last_run_at: now,
-        occurrences_created: (recurring.occurrences_created || 0) + 1
-      })
-      .eq('id', recurring.id);
   }
   
   return { generated: generatedTransactions.length, transactions: generatedTransactions };
