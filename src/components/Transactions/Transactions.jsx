@@ -1,14 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import { toCSV, downloadCSV } from '../../utils/csv';
 import Modal from '../UI/Modal';
 import TransactionForm from '../Transaction/TransactionForm';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { processRecurringTransactions, addRecurringTransaction } from '../../utils/api';
+import { useToast } from '../../context/ToastContext';
 
 // Accept onAdd for new transactions
-export default function Transactions({ items, onDelete, onUpdate, onAdd, categories, typeFilter, setTypeFilter, reloadCategories }) {
+export default function Transactions({ items, onDelete, onUpdate, onAdd, categories, typeFilter, setTypeFilter, reloadCategories, onReload }) {
   const { t } = useTranslation();
+  const { addToast } = useToast();
   const years = useMemo(() => {
     const set = new Set(items.map(i => i.date?.slice(0, 4) || 'Unknown'));
     return ['All', ...Array.from(set).sort((a, b) => b.localeCompare(a))];
@@ -19,6 +22,24 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [recurringFilter, setRecurringFilter] = useState('all'); // 'all', 'recurring', 'scheduled', 'regular'
+
+  // Process recurring transactions on component mount
+  useEffect(() => {
+    async function checkRecurring() {
+      try {
+        const result = await processRecurringTransactions();
+        if (result.generated > 0) {
+          addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
+          if (onReload) onReload();
+        }
+      } catch (error) {
+        console.error('Error processing recurring transactions:', error);
+      }
+    }
+    checkRecurring();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filtered = useMemo(() => {
     let result = items;
@@ -26,13 +47,21 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
       result = result.filter(i => i.date?.startsWith(yearFilter));
     }
     if (categoryFilter !== 'All') {
-      result = result.filter(i => i.category.id === categoryFilter);
+      result = result.filter(i => i.category?.id === categoryFilter);
     }
     if (typeFilter && typeFilter !== 'all') {
       result = result.filter(i => i.type === typeFilter);
     }
+    // Recurring filter
+    if (recurringFilter === 'recurring') {
+      result = result.filter(i => i.source_recurring_id);
+    } else if (recurringFilter === 'scheduled') {
+      result = result.filter(i => i.is_scheduled);
+    } else if (recurringFilter === 'regular') {
+      result = result.filter(i => !i.source_recurring_id);
+    }
     return result;
-  }, [items, yearFilter, categoryFilter, typeFilter]);
+  }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter]);
 
   function exportCSV() {
     const csv = toCSV(filtered, t);
@@ -130,6 +159,17 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
               </button>
             ))}
           </div>
+          {/* Recurring filter */}
+          <select
+            value={recurringFilter}
+            onChange={e => setRecurringFilter(e.target.value)}
+            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
+          >
+            <option value="all">{t('recurring.filterAll')}</option>
+            <option value="regular">{t('recurring.filterRegular')}</option>
+            <option value="recurring">{t('recurring.filterRecurring')}</option>
+            <option value="scheduled">{t('recurring.filterScheduled')}</option>
+          </select>
         </div>
       </div>
 
@@ -159,15 +199,41 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
           {filtered.map(item => (
             <div
               key={item.id}
-              className="bg-white dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-850 rounded-xl shadow-lg hover:shadow-2xl p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 group backdrop-blur-sm"
+              className={`bg-white dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-850 rounded-xl shadow-lg hover:shadow-2xl p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
             >
               <div className="flex justify-between items-start mb-3">
-                <span className="font-bold text-lg sm:text-xl text-gray-800 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">{item.title}</span>
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-lg sm:text-xl text-gray-800 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">{item.title}</span>
+                  {/* Recurring/Scheduled Badges */}
+                  <div className="flex gap-1.5 flex-wrap">
+                    {item.source_recurring_id && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 dark:border dark:border-purple-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        {t('recurring.badge')}
+                      </span>
+                    )}
+                    {item.is_scheduled && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 dark:border dark:border-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {t('recurring.scheduledBadge')}
+                      </span>
+                    )}
+                  </div>
+                </div>
                 <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm ${item.type === 'income' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 dark:border dark:border-green-600' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 dark:border dark:border-red-600'}`}>{item.type === 'income' ? t('transactions.income') : t('transactions.expense')}</span>
               </div>
               <div className="text-gray-500 dark:text-gray-400 text-sm mb-3 flex items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 {item.date}
+                {item.is_scheduled && (
+                  <span className="ml-2 text-xs text-blue-600 dark:text-blue-400">
+                    ({t('recurring.upcoming')})
+                  </span>
+                )}
               </div>
               {Array.isArray(item.tags) && item.tags.length > 0 && (
                 <div className="flex gap-2 flex-wrap mb-3">
@@ -209,14 +275,41 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
         <Modal drawer onClose={() => { setShowModal(false); setEditTx(null); }}>
           <TransactionForm
             initial={editTx}
-            onSubmit={data => {
-              if (editTx) onUpdate(editTx.id, data);
-              else if (onAdd) onAdd(data);
-              setShowModal(false);
-              setEditTx(null);
+            onSubmit={async data => {
+              if (editTx) {
+                onUpdate(editTx.id, data);
+                setShowModal(false);
+                setEditTx(null);
+              } else if (data.isRecurring) {
+                // Create recurring transaction
+                try {
+                  await addRecurringTransaction(data);
+                  // Process to create the first instance (including upcoming)
+                  const result = await processRecurringTransactions({ includeUpcoming: true });
+                  if (result.generated > 0) {
+                    addToast(t('recurring.created') + ` (${result.generated} ${t('recurring.generatedToast', { count: result.generated })})`, 'success');
+                  } else {
+                    addToast(t('recurring.created'), 'success');
+                  }
+                  // Always reload to show generated transactions
+                  if (onReload) {
+                    await onReload();
+                  }
+                  setShowModal(false);
+                  setEditTx(null);
+                } catch (error) {
+                  console.error('Error creating recurring transaction:', error);
+                  addToast(t('recurring.createError'), 'error');
+                }
+              } else if (onAdd) {
+                onAdd(data);
+                setShowModal(false);
+                setEditTx(null);
+              }
             }}
             onCancel={() => { setShowModal(false); setEditTx(null); }}
             onCategoryAdded={reloadCategories}
+            allowRecurring={!editTx}
           />
         </Modal>
       )}

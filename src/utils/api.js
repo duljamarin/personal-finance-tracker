@@ -101,7 +101,7 @@ export async function getCategory(id) {
 }
 
 // Transaction API with Supabase
-export async function fetchTransactions({ type } = {}) {
+export async function fetchTransactions({ type, includeScheduled = true } = {}) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return []; // Return empty array if not authenticated
   
@@ -117,6 +117,11 @@ export async function fetchTransactions({ type } = {}) {
   // Filter by type if specified
   if (type && type !== 'all') {
     query = query.eq('type', type);
+  }
+  
+  // Optionally exclude scheduled (future) transactions
+  if (!includeScheduled) {
+    query = query.or('is_scheduled.is.null,is_scheduled.eq.false');
   }
   
   const { data, error } = await query;
@@ -194,17 +199,30 @@ export async function updateTransaction(id, transaction) {
   return data;
 }
 
-export async function deleteTransaction(id) {
+export async function deleteTransaction(id, options = {}) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Please log in to delete transactions');
   
-  const { error } = await supabase
+  // First try to delete from transactions table
+  const { error: txError } = await supabase
     .from('transactions')
     .delete()
     .eq('id', id)
     .eq('user_id', user.id);
   
-  if (error) throw error;
+  // If not found in transactions, try recurring_transactions
+  if (txError && txError.code === 'PGRST116') {
+    const { error: recurringError } = await supabase
+      .from('recurring_transactions')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+    
+    if (recurringError) throw recurringError;
+  } else if (txError) {
+    throw txError;
+  }
+  
   return 'OK';
 }
 
@@ -224,4 +242,301 @@ export async function getTransaction(id) {
   
   if (error) throw error;
   return data;
+}
+
+// Recurring Transaction API with Supabase
+
+export async function fetchRecurringTransactions() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+  
+  const { data, error } = await supabase
+    .from('recurring_transactions')
+    .select(`
+      *,
+      category:categories(id, name)
+    `)
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addRecurringTransaction(recurring) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Please log in to add recurring transactions');
+  
+  const { 
+    category, 
+    categoryId, 
+    currencyCode, 
+    exchangeRate,
+    frequency,
+    intervalCount,
+    startDate,
+    endDate,
+    occurrencesLimit,
+    date, // Exclude date field - recurring_transactions uses start_date instead
+    isRecurring, // Exclude frontend-only flag
+    endType, // Exclude frontend-only field
+    ...rest 
+  } = recurring;
+  
+  // Calculate next_run_at based on start_date
+  const nextRunAt = new Date(startDate);
+  nextRunAt.setUTCHours(0, 0, 0, 0);
+  
+  const insertData = {
+    ...rest,
+    category_id: categoryId,
+    user_id: user.id,
+    currency_code: currencyCode || 'EUR',
+    exchange_rate: exchangeRate || 1.0,
+    frequency: frequency,
+    interval_count: intervalCount || 1,
+    start_date: startDate,
+    end_date: endDate || null,
+    occurrences_limit: occurrencesLimit || null,
+    next_run_at: nextRunAt.toISOString(),
+    is_active: true
+  };
+  
+  const { data, error } = await supabase
+    .from('recurring_transactions')
+    .insert([insertData])
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+}
+
+export async function updateRecurringTransaction(id, recurring) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Please log in to update recurring transactions');
+  
+  const { 
+    category, 
+    categoryId, 
+    currencyCode, 
+    exchangeRate,
+    frequency,
+    intervalCount,
+    startDate,
+    endDate,
+    occurrencesLimit,
+    isActive,
+    ...rest 
+  } = recurring;
+  
+  const updateData = { ...rest };
+  
+  if (categoryId !== undefined) updateData.category_id = categoryId;
+  if (currencyCode !== undefined) updateData.currency_code = currencyCode;
+  if (exchangeRate !== undefined) updateData.exchange_rate = exchangeRate;
+  if (frequency !== undefined) updateData.frequency = frequency;
+  if (intervalCount !== undefined) updateData.interval_count = intervalCount;
+  if (startDate !== undefined) updateData.start_date = startDate;
+  if (endDate !== undefined) updateData.end_date = endDate;
+  if (occurrencesLimit !== undefined) updateData.occurrences_limit = occurrencesLimit;
+  if (isActive !== undefined) updateData.is_active = isActive;
+  
+  const { data, error } = await supabase
+    .from('recurring_transactions')
+    .update(updateData)
+    .eq('id', id)
+    .eq('user_id', user.id)
+    .select(`
+      *,
+      category:categories(id, name)
+    `)
+    .single();
+  
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteRecurringTransaction(id) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Please log in to delete recurring transactions');
+  
+  const { error } = await supabase
+    .from('recurring_transactions')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id);
+  
+  if (error) throw error;
+  return 'OK';
+}
+
+export async function pauseRecurringTransaction(id) {
+  return updateRecurringTransaction(id, { isActive: false });
+}
+
+export async function resumeRecurringTransaction(id) {
+  return updateRecurringTransaction(id, { isActive: true });
+}
+
+// Generate recurring transaction instances (call this on app load or periodically)
+export async function processRecurringTransactions({ includeUpcoming = false } = {}) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { generated: 0, transactions: [] };
+  
+  // Fetch active recurring transactions that are due (or all if includeUpcoming)
+  const now = new Date().toISOString();
+  let query = supabase
+    .from('recurring_transactions')
+    .select(`
+      *,
+      category:categories(id, name)
+    `)
+    .eq('user_id', user.id)
+    .eq('is_active', true);
+  
+  if (!includeUpcoming) {
+    query = query.lte('next_run_at', now);
+  }
+  
+  const { data: dueRecurrings, error: fetchError } = await query;
+  
+  if (fetchError) {
+    console.error('Error fetching due recurring transactions:', fetchError);
+    return { generated: 0, transactions: [] };
+  }
+  
+  if (!dueRecurrings || dueRecurrings.length === 0) {
+    return { generated: 0, transactions: [] };
+  }
+  
+  const generatedTransactions = [];
+  
+  for (const recurring of dueRecurrings) {
+    // Check if we've reached the occurrences limit
+    if (recurring.occurrences_limit && recurring.occurrences_created >= recurring.occurrences_limit) {
+      // Deactivate the recurring transaction
+      await supabase
+        .from('recurring_transactions')
+        .update({ is_active: false })
+        .eq('id', recurring.id);
+      continue;
+    }
+    
+    // Check if end_date has passed
+    if (recurring.end_date && new Date(recurring.end_date) < new Date()) {
+      await supabase
+        .from('recurring_transactions')
+        .update({ is_active: false })
+        .eq('id', recurring.id);
+      continue;
+    }
+    
+    // Check for idempotency - don't create if already exists for this period
+    const transactionDate = new Date(recurring.next_run_at).toISOString().split('T')[0];
+    const { data: existing } = await supabase
+      .from('transactions')
+      .select('id')
+      .eq('source_recurring_id', recurring.id)
+      .eq('date', transactionDate)
+      .single();
+    
+    if (existing) {
+      // Already created, just update next_run_at
+      const nextDate = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+      await supabase
+        .from('recurring_transactions')
+        .update({ 
+          next_run_at: nextDate,
+          last_run_at: now
+        })
+        .eq('id', recurring.id);
+      continue;
+    }
+    
+    // Calculate base_amount
+    const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
+    
+    // Create the transaction instance
+    const { data: newTx, error: insertError } = await supabase
+      .from('transactions')
+      .insert([{
+        title: recurring.title,
+        amount: recurring.amount,
+        date: transactionDate,
+        type: recurring.type,
+        category_id: recurring.category_id,
+        tags: recurring.tags || [],
+        currency_code: recurring.currency_code,
+        exchange_rate: recurring.exchange_rate,
+        base_amount: baseAmount,
+        user_id: user.id,
+        source_recurring_id: recurring.id,
+        is_scheduled: new Date(transactionDate) > new Date()
+      }])
+      .select(`
+        *,
+        category:categories(id, name)
+      `)
+      .single();
+    
+    if (insertError) {
+      console.error('Error creating recurring transaction instance:', insertError);
+      continue;
+    }
+    
+    generatedTransactions.push(newTx);
+    
+    // Update the recurring transaction
+    const nextDate = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+    await supabase
+      .from('recurring_transactions')
+      .update({ 
+        next_run_at: nextDate,
+        last_run_at: now,
+        occurrences_created: (recurring.occurrences_created || 0) + 1
+      })
+      .eq('id', recurring.id);
+  }
+  
+  return { generated: generatedTransactions.length, transactions: generatedTransactions };
+}
+
+// Helper function to calculate next date (handles month-end dates properly)
+function calculateNextDate(currentDate, frequency, intervalCount) {
+  const date = new Date(currentDate);
+  const interval = intervalCount || 1;
+  const originalDay = date.getDate();
+  
+  switch (frequency) {
+    case 'daily':
+      date.setDate(date.getDate() + interval);
+      break;
+    case 'weekly':
+      date.setDate(date.getDate() + (interval * 7));
+      break;
+    case 'monthly': {
+      // Store original month and add interval
+      const targetMonth = date.getMonth() + interval;
+      date.setMonth(targetMonth);
+      // If the day changed (overflow), set to last day of target month
+      if (date.getDate() !== originalDay) {
+        date.setDate(0); // Go to last day of previous month (which is target month)
+      }
+      break;
+    }
+    case 'yearly': {
+      const targetYear = date.getFullYear() + interval;
+      date.setFullYear(targetYear);
+      // Handle Feb 29 on non-leap years
+      if (date.getDate() !== originalDay) {
+        date.setDate(0);
+      }
+      break;
+    }
+    default:
+      date.setDate(date.getDate() + interval);
+  }
+  
+  return date.toISOString();
 }

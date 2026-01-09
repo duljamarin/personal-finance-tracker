@@ -328,6 +328,7 @@ function AppContent() {
                       typeFilter={typeFilter}
                       setTypeFilter={setTypeFilter}
                       reloadCategories={reloadCategories}
+                      onReload={reloadTransactions}
                     />
                   )}
                 </>
