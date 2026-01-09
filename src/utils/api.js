@@ -419,6 +419,7 @@ export async function processRecurringTransactions() {
   for (const recurring of dueRecurrings) {
     let currentNextRun = recurring.next_run_at;
     let instancesCreated = 0;
+    let loopAdvanced = false; // Track if we advanced past the original next_run_at
     
     // Generate all due instances (could be multiple if app wasn't opened for days)
     while (new Date(currentNextRun) <= new Date()) {
@@ -487,19 +488,27 @@ export async function processRecurringTransactions() {
         instancesCreated++;
       }
       
-      // Calculate next date for next iteration
+      // Calculate next date for next iteration (always advance, even if instance existed)
       currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+      loopAdvanced = true;
     }
     
     // Update the recurring transaction with the new next_run_at and count
-    if (instancesCreated > 0) {
+    // Update even if instancesCreated === 0 as long as we advanced the schedule
+    if (loopAdvanced) {
+      const updateData = { 
+        next_run_at: currentNextRun,
+        last_run_at: now
+      };
+      
+      // Only update occurrences_created if we actually created new instances
+      if (instancesCreated > 0) {
+        updateData.occurrences_created = (recurring.occurrences_created || 0) + instancesCreated;
+      }
+      
       await supabase
         .from('recurring_transactions')
-        .update({ 
-          next_run_at: currentNextRun,
-          last_run_at: now,
-          occurrences_created: (recurring.occurrences_created || 0) + instancesCreated
-        })
+        .update(updateData)
         .eq('id', recurring.id);
     }
   }
