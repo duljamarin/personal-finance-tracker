@@ -135,7 +135,16 @@ export async function addTransaction(transaction) {
   if (!user) throw new Error('Please log in to add transactions');
   
   // Remove category object if present, keep only categoryId
-  const { category, categoryId, currencyCode, exchangeRate, ...rest } = transaction;
+  // Also remove frontend-only fields
+  const { 
+    category, 
+    categoryId, 
+    currencyCode, 
+    exchangeRate, 
+    updateRecurringTemplate, 
+    sourceRecurringId,
+    ...rest 
+  } = transaction;
   
   // Calculate base_amount: amount * exchange_rate (or just amount if no exchange rate)
   const rate = exchangeRate || 1.0;
