@@ -102,22 +102,32 @@ serve(async (req: Request) => {
   // Determine the email action type (signup, recovery, etc.)
   const emailActionType = emailData.email_action_type || "signup";
   
-  // Build the appropriate URL based on the action type
+  // Prefer the full action link Supabase provides in the hook payload when available.
+  // This link includes tokens/params that create a valid session on redirect.
+  // See payload.properties.action_link or legacy properties.token/action_link.
+  // Fallback to building a URL from token_hash only if the full action link is not present.
   let actionUrl: string | undefined;
 
-  if (emailData.token_hash && emailData.email_action_type) {
+  // payload.properties.action_link is provided by Supabase in many hook payloads
+  // and contains the full confirmation/recovery URL (including tokens).
+  if ((payload as any).properties?.action_link) {
+    actionUrl = (payload as any).properties.action_link as string;
+  }
+
+  // Some payload shapes include action_link directly on email_data as well
+  if (!actionUrl && (emailData as any).action_link) {
+    actionUrl = (emailData as any).action_link as string;
+  }
+
+  // If no full action link was supplied, fall back to building a URL from token_hash
+  if (!actionUrl && emailData.token_hash && emailData.email_action_type) {
     try {
       const url = new URL(APP_BASE_URL);
-      
-      // Route to different pages based on action type
       if (emailActionType === "recovery") {
-        // Password reset - go to reset-password page
         url.pathname = "/reset-password";
       } else {
-        // Signup confirmation - go to auth/confirmed page
         url.pathname = "/auth/confirmed";
       }
-      
       url.searchParams.set("token_hash", emailData.token_hash);
       url.searchParams.set("type", emailData.email_action_type);
       actionUrl = url.toString();

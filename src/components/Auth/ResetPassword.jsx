@@ -19,18 +19,55 @@ export default function ResetPassword() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
-    // Check if user has a valid recovery session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      // Check for PASSWORD_RECOVERY event or valid session
-      if (session) {
-        setIsValidSession(true);
-      } else {
-        // No valid session, redirect to login
+    async function verifyRecoveryToken() {
+      try {
+        // Extract token_hash and type from URL params
+        const params = new URLSearchParams(window.location.search);
+        const tokenHash = params.get('token_hash');
+        const type = params.get('type');
+
+        // If we have token_hash and type=recovery in URL, verify it first
+        if (tokenHash && type === 'recovery') {
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: 'recovery',
+          });
+
+          if (error) {
+            console.error('Error verifying recovery token:', error);
+            addToast(t('auth.invalidResetLink'), 'error');
+            navigate('/login');
+            return;
+          }
+
+          if (data.session) {
+            setIsValidSession(true);
+            setCheckingSession(false);
+            // Clean up URL params after successful verification
+            window.history.replaceState({}, '', '/reset-password');
+            return;
+          }
+        }
+
+        // If no token_hash in URL, check if user already has a valid recovery session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setIsValidSession(true);
+        } else {
+          // No valid session and no token to verify
+          addToast(t('auth.invalidResetLink'), 'error');
+          navigate('/login');
+        }
+        setCheckingSession(false);
+      } catch (err) {
+        console.error('Error in recovery flow:', err);
         addToast(t('auth.invalidResetLink'), 'error');
         navigate('/login');
+        setCheckingSession(false);
       }
-      setCheckingSession(false);
-    });
+    }
+
+    verifyRecoveryToken();
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -45,7 +82,7 @@ export default function ResetPassword() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, addToast, t, checkingSession]);
+  }, [navigate, addToast, t]);
 
   function validate() {
     let valid = true;
