@@ -240,7 +240,7 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
                 </div>
               )}
               <div className="font-bold text-2xl sm:text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
-                {currencySymbols[item.currency_code || item.currencyCode || 'EUR'] || ''}
+                {currencySymbols[item.currency_code || item.currencyCode || 'EUR'] || ''}{' '}
                 {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </div>
               <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-1.5">
