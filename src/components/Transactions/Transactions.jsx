@@ -80,7 +80,7 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
     EUR: '€',
     USD: '$',
     GBP: '£',
-    ALL: 'L',
+    ALL: 'ALL',
     CHF: 'CHF',
     JPY: '¥',
     CAD: 'C$',
