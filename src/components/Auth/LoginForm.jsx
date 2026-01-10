@@ -31,7 +31,12 @@ export default function LoginForm() {
     let valid = true;
     setEmailError('');
     setPasswordError('');
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    
+    // Trim email and validate with stricter regex matching Supabase requirements
+    const trimmedEmail = email.trim();
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setEmailError('auth.emailError');
       valid = false;
     }
@@ -47,7 +52,8 @@ export default function LoginForm() {
     setFormError('');
     if (!validate()) return;
     try {
-      await login(email, password);
+      // Trim email before sending to Supabase
+      await login(email.trim(), password);
       navigate('/');
     } catch (err) {
       // Map common Supabase errors to translation keys 

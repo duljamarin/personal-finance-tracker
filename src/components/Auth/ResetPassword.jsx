@@ -127,9 +127,13 @@ export default function ResetPassword() {
       const errorMsg = err?.message || '';
       let errorKey = 'auth.resetPasswordError';
 
-      if (errorMsg.toLowerCase().includes('same')) {
+      // Check for "same password" or "different password" error messages
+      if (errorMsg.toLowerCase().includes('same') || 
+          errorMsg.toLowerCase().includes('different') ||
+          errorMsg.toLowerCase().includes('old password')) {
         errorKey = 'auth.passwordSameAsOld';
-      } else if (errorMsg.toLowerCase().includes('weak')) {
+      } else if (errorMsg.toLowerCase().includes('weak') || 
+                 errorMsg.toLowerCase().includes('password is too weak')) {
         errorKey = 'auth.weakPassword';
       }
 

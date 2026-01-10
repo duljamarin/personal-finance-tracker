@@ -45,7 +45,12 @@ export default function RegisterForm() {
     setEmailError('');
     setUsernameError('');
     setPasswordError('');
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    
+    // Trim email and validate with stricter regex matching Supabase requirements
+    const trimmedEmail = email.trim();
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setEmailError('auth.emailError');
       valid = false;
     }
@@ -66,7 +71,8 @@ export default function RegisterForm() {
     setSuccessMessage('');
     if (!validate()) return;
     try {
-      const result = await register(email, username, password, language);
+      // Trim email before sending to Supabase
+      const result = await register(email.trim(), username, password, language);
       
       // Check if email confirmation is required
       if (result.session) {

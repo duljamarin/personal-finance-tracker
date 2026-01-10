@@ -120,7 +120,15 @@ export function AuthProvider({ children }) {
         },
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase signUp error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+          details: error
+        });
+        throw error;
+      }
       
       // Check if email confirmation is required
       if (data.session) {

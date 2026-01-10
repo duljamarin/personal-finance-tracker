@@ -12,7 +12,12 @@ export default function ForgotPassword() {
 
   function validate() {
     setEmailError('');
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    
+    // Trim email and validate with stricter regex matching Supabase requirements
+    const trimmedEmail = email.trim();
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setEmailError('auth.emailError');
       return false;
     }
@@ -26,7 +31,8 @@ export default function ForgotPassword() {
     setLoading(true);
     try {
       const redirectUrl = `${window.location.origin}/reset-password`;
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      // Trim email before sending to Supabase
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: redirectUrl
       });
 
