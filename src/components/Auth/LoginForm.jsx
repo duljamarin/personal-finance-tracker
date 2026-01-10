@@ -125,6 +125,11 @@ export default function LoginForm() {
               </button>
             </div>
             {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
+            <div className="text-right mt-1">
+              <Link to="/forgot-password" className="text-xs text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-semibold transition-colors">
+                {t('auth.forgotPassword')}
+              </Link>
+            </div>
           </div>
 
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-center text-sm p-3 rounded-xl font-medium">{t(formError)}</div>}

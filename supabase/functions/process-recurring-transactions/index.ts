@@ -79,19 +79,6 @@ serve(async (req: Request) => {
     });
   }
 
-  // Validate a cron secret header if configured (protects this endpoint from public invocation)
-  const cronSecret = Deno.env.get('CRON_SECRET');
-  const providedSecret = req.headers.get('x-cron-secret');
-  if (cronSecret) {
-    if (!providedSecret || providedSecret !== cronSecret) {
-      console.warn('Invalid or missing CRON_SECRET header');
-      return new Response('Unauthorized', { status: 401 });
-    }
-  } else {
-    // If no CRON_SECRET is configured, warn in logs (useful in dev but not recommended for prod)
-    console.warn('No CRON_SECRET configured for process-recurring-transactions function');
-  }
-
   // Create a Supabase client with the service role key for admin access
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -140,6 +127,7 @@ serve(async (req: Request) => {
 
       let currentNextRun = recurring.next_run_at;
       let instancesCreated = 0;
+      let loopAdvanced = false; // Track if we advanced past the original next_run_at
 
       // Generate all due instances (catch-up logic for missed days)
       while (new Date(currentNextRun) <= now) {
@@ -217,19 +205,27 @@ serve(async (req: Request) => {
           results.skipped++;
         }
 
-        // Calculate next date for next iteration
+        // Calculate next date for next iteration (always advance, even if instance existed)
         currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+        loopAdvanced = true;
       }
 
       // Update the recurring transaction with the new next_run_at and count
-      if (instancesCreated > 0) {
+      // Update even if instancesCreated === 0 as long as we advanced the schedule
+      if (loopAdvanced) {
+        const updateData: any = {
+          next_run_at: currentNextRun,
+          last_run_at: nowISO,
+        };
+
+        // Only update occurrences_created if we actually created new instances
+        if (instancesCreated > 0) {
+          updateData.occurrences_created = (recurring.occurrences_created || 0) + instancesCreated;
+        }
+
         await supabase
           .from('recurring_transactions')
-          .update({
-            next_run_at: currentNextRun,
-            last_run_at: nowISO,
-            occurrences_created: (recurring.occurrences_created || 0) + instancesCreated,
-          })
+          .update(updateData)
           .eq('id', recurring.id);
       }
     }

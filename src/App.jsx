@@ -13,6 +13,8 @@ import RecurringPage from './components/Recurring/RecurringPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
 import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
+import ForgotPassword from './components/Auth/ForgotPassword.jsx';
+import ResetPassword from './components/Auth/ResetPassword.jsx';
 import LandingPage from './components/LandingPage.jsx';
 import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from './utils/api';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -222,6 +224,8 @@ function AppContent() {
           <Routes>
             <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
             <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
+            <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/confirmed" element={<EmailConfirmed />} />
             <Route path="/categories" element={
               <PrivateRoute>

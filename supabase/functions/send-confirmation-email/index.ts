@@ -99,41 +99,50 @@ serve(async (req: Request) => {
     return jsonError(400, "Missing email_data in hook payload");
   }
 
-  // Build a confirmation URL that points to the frontend, which will
-  // complete verification using supabase.auth.verifyOtp with the
-  // token_hash and type from the query string.
-  let confirmationUrl: string | undefined;
+  // Determine the email action type (signup, recovery, etc.)
+  const emailActionType = emailData.email_action_type || "signup";
+  
+  // Build the appropriate URL based on the action type
+  let actionUrl: string | undefined;
 
   if (emailData.token_hash && emailData.email_action_type) {
     try {
       const url = new URL(APP_BASE_URL);
-      // This route is handled by the SPA and will call verifyOtp.
-      url.pathname = "/auth/confirmed";
+      
+      // Route to different pages based on action type
+      if (emailActionType === "recovery") {
+        // Password reset - go to reset-password page
+        url.pathname = "/reset-password";
+      } else {
+        // Signup confirmation - go to auth/confirmed page
+        url.pathname = "/auth/confirmed";
+      }
+      
       url.searchParams.set("token_hash", emailData.token_hash);
       url.searchParams.set("type", emailData.email_action_type);
-      confirmationUrl = url.toString();
+      actionUrl = url.toString();
     } catch (e) {
-      console.error("Error building confirmation URL", e);
-      return jsonError(500, "Failed to build confirmation URL");
+      console.error("Error building action URL", e);
+      return jsonError(500, "Failed to build action URL");
     }
   }
 
   // As a last resort, fall back to redirect_to if present so the
   // email at least contains a clickable link.
-  if (!confirmationUrl && emailData.redirect_to) {
-    confirmationUrl = emailData.redirect_to;
+  if (!actionUrl && emailData.redirect_to) {
+    actionUrl = emailData.redirect_to;
   }
 
-  if (!confirmationUrl) {
-    console.error("No confirmation URL could be built from hook payload", payload);
-    return jsonError(500, "Failed to generate confirmation link");
+  if (!actionUrl) {
+    console.error("No action URL could be built from hook payload", payload);
+    return jsonError(500, "Failed to generate action link");
   }
 
-  console.log(`Processing signup for ${email} with language: ${language}`);
+  console.log(`Processing ${emailActionType} for ${email} with language: ${language}`);
 
   try {
-    // Build localized email using the confirmation URL from the hook payload
-    const { subject, html } = buildEmail(language, confirmationUrl, email);
+    // Build localized email based on action type
+    const { subject, html } = buildEmail(language, actionUrl, email, emailActionType);
 
     // 4) Send email via Resend HTTP API
     const resendResponse = await fetch("https://api.resend.com/emails", {
@@ -170,11 +179,68 @@ serve(async (req: Request) => {
 
 function buildEmail(
   language: Language,
-  confirmationUrl: string,
-  email: string
+  actionUrl: string,
+  email: string,
+  actionType: string = "signup"
 ): { subject: string; html: string } {
+  // Determine if this is a password recovery email
+  const isRecovery = actionType === "recovery";
+  
   if (language === "sq") {
-    // Albanian template
+    // Albanian templates
+    if (isRecovery) {
+      const subject = "Rivendosni fjalëkalimin tuaj";
+      const html = `
+<!doctype html>
+<html lang="sq">
+  <head>
+    <meta charset="utf-8" />
+    <title>Rivendosni fjalëkalimin</title>
+  </head>
+  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color:#0f172a; color:#e5e7eb; padding:24px;">
+    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background-color:#020617;border-radius:12px;border:1px solid #1f2937;">
+      <tr>
+        <td style="padding:24px 24px 8px 24px;">
+          <h1 style="font-size:24px;margin:0 0 12px 0;color:#e5e7eb;">Rivendosni Fjalëkalimin Tuaj 🔑</h1>
+          <p style="margin:0 0 12px 0;color:#9ca3af;">
+            Kemi marrë një kërkesë për të rivendosur fjalëkalimin për llogarinë <strong>${email}</strong>.
+          </p>
+          <p style="margin:0 0 12px 0;color:#9ca3af;">
+            Klikoni butonin më poshtë për të krijuar një fjalëkalim të ri:
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 24px 16px 24px; text-align:center;">
+          <a href="${actionUrl}"
+             style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
+            Rivendos Fjalëkalimin
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 24px 24px 24px;color:#6b7280;font-size:14px;">
+          <p style="margin:16px 0 8px 0;">
+            Nëse butoni nuk funksionon, kopjoni dhe ngjisni këtë link në shfletuesin tuaj:
+          </p>
+          <p style="word-break:break-all;margin:0 0 16px 0;">
+            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
+          </p>
+          <p style="margin:0;color:#ef4444;font-weight:600;">
+            Ky link skadon pas 60 minutave dhe mund të përdoret vetëm një herë.
+          </p>
+          <p style="margin:12px 0 0 0;">
+            Nëse nuk e keni kërkuar këtë rivendosje, mund ta injoroni këtë email me siguri. Fjalëkalimi juaj nuk do të ndryshohet derisa të klikoni linkun më sipër.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+      return { subject, html };
+    }
+    
+    // Albanian signup confirmation template
     const subject = "Konfirmoni adresën tuaj të emailit";
     const html = `
 <!doctype html>
@@ -195,7 +261,7 @@ function buildEmail(
       </tr>
       <tr>
         <td style="padding:0 24px 16px 24px; text-align:center;">
-          <a href="${confirmationUrl}"
+          <a href="${actionUrl}"
              style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
             Konfirmo emailin
           </a>
@@ -207,7 +273,7 @@ function buildEmail(
             Nëse butoni nuk funksionon, kopjoni dhe ngjisni këtë link në shfletuesin tuaj:
           </p>
           <p style="word-break:break-all;margin:0 0 16px 0;">
-            <a href="${confirmationUrl}" style="color:#60a5fa;">${confirmationUrl}</a>
+            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
           </p>
           <p style="margin:0;">
             Nëse nuk e keni kërkuar ju këtë email, mund ta injoroni.
@@ -220,7 +286,60 @@ function buildEmail(
     return { subject, html };
   }
 
-  // English template (default)
+  // English templates
+  if (isRecovery) {
+    const subject = "Reset your password";
+    const html = `
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reset your password</title>
+  </head>
+  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color:#0f172a; color:#e5e7eb; padding:24px;">
+    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background-color:#020617;border-radius:12px;border:1px solid #1f2937;">
+      <tr>
+        <td style="padding:24px 24px 8px 24px;">
+          <h1 style="font-size:24px;margin:0 0 12px 0;color:#e5e7eb;">Reset Your Password 🔑</h1>
+          <p style="margin:0 0 12px 0;color:#9ca3af;">
+            We received a request to reset the password for your account <strong>${email}</strong>.
+          </p>
+          <p style="margin:0 0 12px 0;color:#9ca3af;">
+            Click the button below to create a new password:
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 24px 16px 24px; text-align:center;">
+          <a href="${actionUrl}"
+             style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
+            Reset Password
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 24px 24px 24px;color:#6b7280;font-size:14px;">
+          <p style="margin:16px 0 8px 0;">
+            If the button doesn't work, copy and paste this link into your browser:
+          </p>
+          <p style="word-break:break-all;margin:0 0 16px 0;">
+            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
+          </p>
+          <p style="margin:0;color:#ef4444;font-weight:600;">
+            This link expires in 60 minutes and can only be used once.
+          </p>
+          <p style="margin:12px 0 0 0;">
+            If you didn't request this password reset, you can safely ignore this email. Your password will not be changed until you click the link above.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+    return { subject, html };
+  }
+  
+  // English signup confirmation template (default)
   const subject = "Confirm your email address";
   const html = `
 <!doctype html>
@@ -241,7 +360,7 @@ function buildEmail(
       </tr>
       <tr>
         <td style="padding:0 24px 16px 24px; text-align:center;">
-          <a href="${confirmationUrl}"
+          <a href="${actionUrl}"
              style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
             Confirm email
           </a>
@@ -253,7 +372,7 @@ function buildEmail(
             If the button doesn't work, copy and paste this link into your browser:
           </p>
           <p style="word-break:break-all;margin:0 0 16px 0;">
-            <a href="${confirmationUrl}" style="color:#60a5fa;">${confirmationUrl}</a>
+            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
           </p>
           <p style="margin:0;">
             If you didn't request this email, you can safely ignore it.
