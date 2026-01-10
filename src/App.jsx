@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Transactions from './components/Transactions/Transactions.jsx';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
@@ -216,12 +216,69 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 transition-colors duration-300">
-        <AuthGlobalUI />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-3rem)]">
-          <Header isDark={isDark} toggleDark={() => setIsDark(d => !d)} />
-          <main className="flex-1 mt-4">
-          <Routes>
+      <InnerAppContent 
+        isDark={isDark} 
+        setIsDark={setIsDark}
+        transactions={transactions}
+        loading={loading}
+        error={error}
+        categories={categories}
+        catError={catError}
+        typeFilter={typeFilter}
+        setTypeFilter={setTypeFilter}
+        totalIncome={totalIncome}
+        totalExpense={totalExpense}
+        net={net}
+        hasMixedCurrencies={hasMixedCurrencies}
+        showGreeting={showGreeting}
+        username={username}
+        addTransaction={addTransaction}
+        updateTransaction={updateTransaction}
+        deleteTransaction={deleteTransaction}
+        reloadTransactions={reloadTransactions}
+        reloadCategories={reloadCategories}
+      />
+    </Router>
+  );
+}
+
+function InnerAppContent({ 
+  isDark, 
+  setIsDark, 
+  transactions, 
+  loading, 
+  error, 
+  categories, 
+  catError, 
+  typeFilter, 
+  setTypeFilter,
+  totalIncome,
+  totalExpense,
+  net,
+  hasMixedCurrencies,
+  showGreeting,
+  username,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+  reloadTransactions,
+  reloadCategories
+}) {
+  const location = useLocation();
+  const { accessToken } = useAuth();
+  const { t } = useTranslation();
+  
+  // Routes where Header should not be shown (auth flows)
+  const hideHeaderRoutes = ['/reset-password'];
+  const shouldShowHeader = !hideHeaderRoutes.includes(location.pathname);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 transition-colors duration-300">
+      <AuthGlobalUI />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-3rem)]">
+        {shouldShowHeader && <Header isDark={isDark} toggleDark={() => setIsDark(d => !d)} />}
+        <main className="flex-1 mt-4">
+        <Routes>
             <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
             <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
             <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
@@ -352,8 +409,7 @@ function AppContent() {
           <Footer />
         </div>
       </div>
-    </Router>
-  );
+    );
 }
 
 export default function App() {
