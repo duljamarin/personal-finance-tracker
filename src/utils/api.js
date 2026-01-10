@@ -297,6 +297,8 @@ export async function addRecurringTransaction(recurring) {
     date, // Exclude date field - recurring_transactions uses start_date instead
     isRecurring, // Exclude frontend-only flag
     endType, // Exclude frontend-only field
+    updateRecurringTemplate, // Exclude frontend-only field
+    sourceRecurringId, // Exclude frontend-only field
     ...rest 
   } = recurring;
   
@@ -344,6 +346,8 @@ export async function updateRecurringTransaction(id, recurring) {
     endDate,
     occurrencesLimit,
     isActive,
+    updateRecurringTemplate, // Exclude frontend-only field
+    sourceRecurringId, // Exclude frontend-only field
     ...rest 
   } = recurring;
   
