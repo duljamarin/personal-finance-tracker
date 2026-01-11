@@ -6,7 +6,7 @@ import { fetchCategories, addCategory, isFirstOccurrence } from '../../utils/api
 import { translateCategoryName } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 
-const inputBaseClass = 'border p-2 sm:p-3 text-sm sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
+const inputBaseClass = 'border p-1.5 sm:p-3 text-xs sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
 const inputErrorClass = 'border-red-500 focus:ring-red-500'
 const inputNormalClass = 'border-gray-300 dark:border-gray-600'
 
@@ -205,20 +205,20 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		`${inputBaseClass} ${fieldError ? inputErrorClass : inputNormalClass}`
 
 	return (
-		<form onSubmit={submit} className="flex flex-col gap-4 sm:gap-6 max-w-2xl mx-auto h-full">
-			<h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-2 flex-shrink-0">
+		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 max-w-2xl mx-auto h-full">
+			<h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
-			<div className="flex flex-col gap-4 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
+			<div className="flex flex-col gap-3 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
-					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
-						<div className="flex items-center gap-2 mb-2">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-2 sm:p-4">
+						<div className="flex items-center gap-2 mb-1 sm:mb-2">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 							</svg>
-							<span className="text-sm font-semibold text-purple-700 dark:text-purple-300">
+							<span className="text-xs sm:text-sm font-semibold text-purple-700 dark:text-purple-300">
 								{t('recurring.generatedFromRule')}
 							</span>
 						</div>
@@ -246,7 +246,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				)}
 				
 				{/* Title */}
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-1 sm:gap-2">
 					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 						{t('transactions.titleLabel')}
 					</label>
@@ -262,8 +262,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Type & Amount */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-					<div className="flex flex-col gap-2">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
+					<div className="flex flex-col gap-1 sm:gap-2">
 						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 							{t('transactions.type')}
 						</label>
@@ -279,7 +279,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
 						)}
 					</div>
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-1 sm:gap-2">
 						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 							{t('transactions.amountLabel')}
 						</label>
@@ -297,8 +297,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Currency Fields */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					<div className="flex flex-col gap-2">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+					<div className="flex flex-col gap-1 sm:gap-2">
 						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 							{t('currency.code')}
 						</label>
@@ -317,7 +317,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							<option value="AUD">🇦🇺 {t('currency.AUD')}</option>
 						</select>
 					</div>
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-1 sm:gap-2">
 						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 							{t('currency.exchangeRate')}
 							<span className="text-xs text-gray-500 dark:text-gray-400 font-normal ml-1">
@@ -339,7 +339,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Category */}
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-1 sm:gap-2">
 					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 						{t('transactions.categoryLabel')}
 					</label>
@@ -359,8 +359,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					)}
 
 					{showProposalInput && (
-						<div className="mt-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-							<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">
+						<div className="mt-2 sm:mt-3 p-2 sm:p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+							<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2 block">
 								{t('categoryProposal.proposedName')}
 							</label>
 							<div className="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -368,12 +368,12 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 									placeholder={t('categoryProposal.proposedNamePlaceholder')}
 									value={proposedCategoryName}
 									onChange={e => setProposedCategoryName(e.target.value)}
-									className="flex-1 border p-2 text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-gray-600 min-w-0"
+									className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-gray-600 min-w-0"
 								/>
 								<Button
 									type="button"
 									onClick={handleSubmitProposal}
-									className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm whitespace-nowrap w-full sm:w-auto"
+									className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs sm:text-sm whitespace-nowrap w-full sm:w-auto"
 								>
 									{t('categoryProposal.submit')}
 								</Button>
@@ -388,7 +388,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Tags */}
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-1 sm:gap-2">
 					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 						{t('transactions.tagsLabel')}
 						<span className="text-xs text-gray-500 dark:text-gray-400 font-normal ml-1">
@@ -405,13 +405,13 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Recurring Transaction Toggle - only show for new transactions */}
 				{allowRecurring && !initial?.id && !initial?.source_recurring_id && (
-					<div className="flex flex-col gap-4 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+					<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 								</svg>
-								<label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+								<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 									{t('recurring.makeRecurring')}
 								</label>
 							</div>
@@ -431,10 +431,10 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						</div>
 						
 						{isRecurring && (
-							<div className="flex flex-col gap-4 pt-2 border-t border-purple-200 dark:border-purple-700">
+							<div className="flex flex-col gap-3 sm:gap-4 pt-2 border-t border-purple-200 dark:border-purple-700">
 								{/* Frequency & Interval */}
-								<div className="grid grid-cols-2 gap-3">
-									<div className="flex flex-col gap-2">
+								<div className="grid grid-cols-2 gap-2 sm:gap-3">
+									<div className="flex flex-col gap-1 sm:gap-2">
 										<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
 											{t('recurring.frequency')}
 										</label>
@@ -449,19 +449,19 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 											<option value="yearly">{t('recurring.yearly')}</option>
 										</select>
 									</div>
-									<div className="flex flex-col gap-2">
+									<div className="flex flex-col gap-1 sm:gap-2">
 										<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
 											{t('recurring.every')}
 										</label>
-										<div className="flex items-center gap-2">
+										<div className="flex items-center gap-1 sm:gap-2">
 											<Input
 												type="number"
 												min="1"
 												value={intervalCount}
 												onChange={e => setIntervalCount(e.target.value)}
-												className={`${getInputClassName(errors.intervalCount)} w-20`}
+												className={`${getInputClassName(errors.intervalCount)} w-16 sm:w-20`}
 											/>
-											<span className="text-sm text-gray-600 dark:text-gray-400">
+											<span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
 												{t(`recurring.${frequency}Unit`, { count: Number(intervalCount) || 1 })}
 											</span>
 										</div>
@@ -472,17 +472,17 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								</div>
 								
 								{/* End Condition */}
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-1 sm:gap-2">
 									<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
 										{t('recurring.ends')}
 									</label>
-									<div className="flex flex-wrap gap-2">
+									<div className="flex flex-wrap gap-1.5 sm:gap-2">
 										{['never', 'date', 'count'].map(option => (
 											<button
 												key={option}
 												type="button"
 												onClick={() => setEndType(option)}
-												className={`px-3 py-2 text-xs rounded-lg font-medium border transition-all ${
+												className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs rounded-lg font-medium border transition-all ${
 													endType === option
 														? 'bg-purple-600 text-white border-purple-700'
 														: 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-purple-400'
@@ -496,7 +496,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								
 								{/* End Date Input */}
 								{endType === 'date' && (
-									<div className="flex flex-col gap-2">
+									<div className="flex flex-col gap-1 sm:gap-2">
 										<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
 											{t('recurring.endDate')}
 										</label>
@@ -515,7 +515,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								
 								{/* Occurrences Count Input */}
 								{endType === 'count' && (
-									<div className="flex flex-col gap-2">
+									<div className="flex flex-col gap-1 sm:gap-2">
 										<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
 											{t('recurring.occurrences')}
 										</label>
@@ -534,7 +534,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								)}
 								
 								{/* Recurring Summary */}
-								<div className="text-xs text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
+								<div className="text-xs text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-lg">
 									<span className="font-medium">📅 {t('recurring.summary')}: </span>
 									{t('recurring.summaryText', {
 									frequency: t(`recurring.${frequency}Summary`),
@@ -550,7 +550,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				)}
 
 				{/* Date */}
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-1 sm:gap-2">
 					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 						{t('transactions.dateLabel')}
 					</label>
