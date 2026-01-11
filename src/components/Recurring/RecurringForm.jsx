@@ -64,7 +64,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
     `${inputBaseClass} ${fieldError ? inputErrorClass : inputNormalClass}`
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 max-w-2xl mx-auto h-full px-3 sm:px-0">
+    <form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 max-w-md sm:max-w-2xl mx-auto h-full px-3 sm:px-0">
       <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
         {t('recurring.editTitle')}
       </h2>
