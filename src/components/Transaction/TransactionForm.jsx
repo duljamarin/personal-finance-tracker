@@ -6,7 +6,7 @@ import { fetchCategories, addCategory, isFirstOccurrence } from '../../utils/api
 import { translateCategoryName } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 
-const inputBaseClass = 'border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-xl w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
+const inputBaseClass = 'border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-xl sm:w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
 const inputErrorClass = 'border-red-500 focus:ring-red-500'
 const inputNormalClass = 'border-gray-300 dark:border-gray-600'
 
