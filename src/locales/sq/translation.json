@@ -295,7 +295,7 @@
     "endDateLabel": "Data e Përfundimit",
     "occurrences": "Numri i përsëritjeve",
     "summary": "Përmbledhje",
-    "summaryText": "Përsëritet çdo {{frequency}} {{interval}} duke filluar nga {{startDate}}",
+    "summaryText": "Përsëritet çdo {{interval}} {{frequency}} duke filluar nga {{startDate}}",
     "until": "deri më",
     "for": "për",
     "times": "herë",

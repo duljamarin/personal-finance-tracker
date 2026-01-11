@@ -4,6 +4,7 @@ import Input from '../UI/Input';
 import Button from '../UI/Button';
 import { updateRecurringTransaction } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
+import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation';
 
 const inputBaseClass = 'border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-xl sm:w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
 const inputErrorClass = 'border-red-500 focus:ring-red-500'
@@ -26,20 +27,67 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
     if (!intervalCount || isNaN(intervalCount) || Number(intervalCount) < 1) {
       newErrors.intervalCount = 'recurring.intervalError'
     }
+    
     if (endType === 'date' && !endDate) {
       newErrors.endDate = 'recurring.endDateError'
     }
+    
     if (endType === 'date' && endDate) {
-      const today = new Date().toISOString().split('T')[0]
-      if (endDate < today) {
-        newErrors.endDate = 'recurring.endDatePastError'
+      const startDate = initial?.start_date || new Date().toISOString().split('T')[0]
+      const endDateError = validateRecurringEndDate(endDate, startDate, frequency, Number(intervalCount))
+      if (endDateError) {
+        newErrors.endDate = endDateError
       }
     }
-    if (endType === 'count' && (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 1)) {
-      newErrors.occurrencesLimit = 'recurring.occurrencesError'
+    
+    if (endType === 'count' && (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 2)) {
+      newErrors.occurrencesLimit = 'recurring.occurrencesMinError'
     }
     
     return newErrors
+  }
+
+  function handleEndDateChange(e) {
+    const value = e.target.value
+    setEndDate(value)
+    validateEndDate(value, frequency, intervalCount)
+  }
+
+  function handleIntervalCountChange(e) {
+    const value = e.target.value
+    setIntervalCount(value)
+    
+    // Re-validate end date if it exists
+    if (endType === 'date' && endDate) {
+      validateEndDate(endDate, frequency, value)
+    }
+    
+    setErrors(prev => ({
+      ...prev,
+      intervalCount: value && !isNaN(value) && Number(value) >= 1 ? undefined : 'recurring.intervalError'
+    }))
+  }
+
+  function handleFrequencyChange(e) {
+    const value = e.target.value
+    setFrequency(value)
+    
+    // Re-validate end date if it exists
+    if (endType === 'date' && endDate) {
+      validateEndDate(endDate, value, intervalCount)
+    }
+  }
+
+  function validateEndDate(selectedEndDate, freq, interval) {
+    if (!selectedEndDate) return
+    
+    const startDate = initial?.start_date || new Date().toISOString().split('T')[0]
+    const endDateError = validateRecurringEndDate(selectedEndDate, startDate, freq, Number(interval))
+    
+    setErrors(prev => ({
+      ...prev,
+      endDate: endDateError || undefined
+    }))
   }
 
   async function submit(e) {
@@ -69,6 +117,12 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
   const getInputClassName = (fieldError) =>
     `${inputBaseClass} ${fieldError ? inputErrorClass : inputNormalClass}`
 
+  // Calculate minimum end date based on frequency and interval
+  function getMinEndDate() {
+    const startDate = initial?.start_date || new Date().toISOString().split('T')[0]
+    return getMinEndDateString(startDate, frequency, Number(intervalCount))
+  }
+
   return (
     <form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full px-4 sm:px-0">
       <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
@@ -97,7 +151,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
             </label>
             <select
               value={frequency}
-              onChange={e => setFrequency(e.target.value)}
+              onChange={handleFrequencyChange}
               className={inputBaseClass + ' ' + inputNormalClass}
             >
               <option value="daily">{t('recurring.daily')}</option>
@@ -115,7 +169,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 type="number"
                 min="1"
                 value={intervalCount}
-                onChange={e => setIntervalCount(e.target.value)}
+                onChange={handleIntervalCountChange}
                 className={`${getInputClassName(errors.intervalCount)} w-16 sm:w-20`}
               />
               <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
@@ -160,8 +214,8 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
             <Input
               type="date"
               value={endDate}
-              onChange={e => setEndDate(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
+              onChange={handleEndDateChange}
+              min={getMinEndDate()}
               className={`${getInputClassName(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
             />
             {errors.endDate && (

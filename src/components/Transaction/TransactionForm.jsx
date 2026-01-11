@@ -5,6 +5,7 @@ import Button from '../UI/Button'
 import { fetchCategories, addCategory } from '../../utils/api'
 import { translateCategoryName } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
+import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation'
 
 const inputBaseClass = 'border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-xl sm:w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
 const inputErrorClass = 'border-red-500 focus:ring-red-500'
@@ -66,40 +67,19 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				newErrors.intervalCount = 'recurring.intervalError'
 			}
 			
-			const interval = Number(intervalCount) || 1
-			const startDate = new Date(date)
-			
-			// Calculate minimum end date based on frequency and interval
-			let minEndDate = new Date(startDate)
-			switch (frequency) {
-				case 'daily':
-					minEndDate.setDate(minEndDate.getDate() + interval)
-					break
-				case 'weekly':
-					minEndDate.setDate(minEndDate.getDate() + (interval * 7))
-					break
-				case 'monthly':
-					minEndDate.setMonth(minEndDate.getMonth() + interval)
-					break
-				case 'yearly':
-					minEndDate.setFullYear(minEndDate.getFullYear() + interval)
-					break
-			}
-			
 			if (endType === 'date') {
 				if (!endDate) {
 					newErrors.endDate = 'recurring.endDateError'
 				} else {
-					const selectedEndDate = new Date(endDate)
-					// End date must be at least one interval period after start date
-					if (selectedEndDate <= minEndDate) {
-						newErrors.endDate = 'recurring.endDateTooSoonError'
+					const endDateError = validateRecurringEndDate(endDate, date, frequency, Number(intervalCount))
+					if (endDateError) {
+						newErrors.endDate = endDateError
 					}
 				}
 			}
 			
 			if (endType === 'count') {
-				if (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 1) {
+				if (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 2) {
 					newErrors.occurrencesLimit = 'recurring.occurrencesMinError'
 				}
 			}
@@ -174,31 +154,11 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	function validateEndDate(selectedEndDate, startDate, freq, interval) {
 		if (!selectedEndDate || !startDate) return
 
-		const intervalNum = Number(interval) || 1
-		const start = new Date(startDate)
-
-		// Calculate minimum end date
-		let minEndDate = new Date(start)
-		switch (freq) {
-			case 'daily':
-				minEndDate.setDate(minEndDate.getDate() + intervalNum)
-				break
-			case 'weekly':
-				minEndDate.setDate(minEndDate.getDate() + (intervalNum * 7))
-				break
-			case 'monthly':
-				minEndDate.setMonth(minEndDate.getMonth() + intervalNum)
-				break
-			case 'yearly':
-				minEndDate.setFullYear(minEndDate.getFullYear() + intervalNum)
-				break
-		}
-
-		const selectedDate = new Date(selectedEndDate)
-
+		const endDateError = validateRecurringEndDate(selectedEndDate, startDate, freq, Number(interval))
+		
 		setErrors(prev => ({
 			...prev,
-			endDate: selectedDate <= minEndDate ? 'recurring.endDateTooSoonError' : undefined
+			endDate: endDateError || undefined
 		}))
 	}
 
@@ -292,29 +252,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	// Calculate minimum end date based on frequency and interval
 	function getMinEndDate() {
 		if (!date) return date
-		
-		const interval = Number(intervalCount) || 1
-		const startDate = new Date(date)
-		let minDate = new Date(startDate)
-		
-		switch (frequency) {
-			case 'daily':
-				minDate.setDate(minDate.getDate() + interval)
-				break
-			case 'weekly':
-				minDate.setDate(minDate.getDate() + (interval * 7))
-				break
-			case 'monthly':
-				minDate.setMonth(minDate.getMonth() + interval)
-				break
-			case 'yearly':
-				minDate.setFullYear(minDate.getFullYear() + interval)
-				break
-		}
-		
-		// Add one more day to ensure it's after the minimum
-		minDate.setDate(minDate.getDate() + 1)
-		return minDate.toISOString().split('T')[0]
+		return getMinEndDateString(date, frequency, Number(intervalCount))
 	}
 
 	return (
@@ -620,7 +558,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										</label>
 										<Input
 											type="number"
-											min="2"
+											min="1"
 											placeholder="10"
 											value={occurrencesLimit}
 											onChange={e => setOccurrencesLimit(e.target.value)}
