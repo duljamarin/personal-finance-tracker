@@ -65,8 +65,6 @@ export default function CategoryPieChart({ transactions, type }) {
   const renderCustomizedLabel = ({
     cx, cy, midAngle, innerRadius, outerRadius, percent
   }) => {
-    if (percent < 0.05) return null; // Don't show label for slices < 5%
-    
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
