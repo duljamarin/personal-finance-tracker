@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
-import { fetchCategories, addCategory, isFirstOccurrence } from '../../utils/api'
+import { fetchCategories, addCategory } from '../../utils/api'
 import { translateCategoryName } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 
@@ -28,9 +28,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || 'EUR')
 	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || 1.0)
 	
-	// If editing a transaction from a recurring rule, check if it's the first instance
-	const [updateRecurringTemplate, setUpdateRecurringTemplate] = useState(false)
-	const [isFirstRecurringInstance, setIsFirstRecurringInstance] = useState(false)
+	// If editing a transaction from a recurring rule
 	const isFromRecurring = initial?.source_recurring_id
 	
 	// Recurring transaction state
@@ -48,17 +46,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				setCategoryId(initial.category.id)
 			}
 		}).catch(() => setCategories([]))
-		
-		// Check if this is the first occurrence of a recurring transaction
-		if (initial?.id && initial?.source_recurring_id) {
-			isFirstOccurrence(initial.id, initial.source_recurring_id).then(result => {
-				setIsFirstRecurringInstance(result)
-				// If first instance, auto-enable template update
-				if (result) {
-					setUpdateRecurringTemplate(true)
-				}
-			}).catch(() => setIsFirstRecurringInstance(false))
-		}
 	}, [])
 
 	useEffect(() => {
@@ -78,11 +65,43 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			if (!intervalCount || isNaN(intervalCount) || Number(intervalCount) < 1) {
 				newErrors.intervalCount = 'recurring.intervalError'
 			}
-			if (endType === 'date' && !endDate) {
-				newErrors.endDate = 'recurring.endDateError'
+			
+			const interval = Number(intervalCount) || 1
+			const startDate = new Date(date)
+			
+			// Calculate minimum end date based on frequency and interval
+			let minEndDate = new Date(startDate)
+			switch (frequency) {
+				case 'daily':
+					minEndDate.setDate(minEndDate.getDate() + interval)
+					break
+				case 'weekly':
+					minEndDate.setDate(minEndDate.getDate() + (interval * 7))
+					break
+				case 'monthly':
+					minEndDate.setMonth(minEndDate.getMonth() + interval)
+					break
+				case 'yearly':
+					minEndDate.setFullYear(minEndDate.getFullYear() + interval)
+					break
 			}
-			if (endType === 'count' && (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 1)) {
-				newErrors.occurrencesLimit = 'recurring.occurrencesError'
+			
+			if (endType === 'date') {
+				if (!endDate) {
+					newErrors.endDate = 'recurring.endDateError'
+				} else {
+					const selectedEndDate = new Date(endDate)
+					// End date must be at least one interval period after start date
+					if (selectedEndDate <= minEndDate) {
+						newErrors.endDate = 'recurring.endDateTooSoonError'
+					}
+				}
+			}
+			
+			if (endType === 'count') {
+				if (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 1) {
+					newErrors.occurrencesLimit = 'recurring.occurrencesMinError'
+				}
 			}
 		}
 		
@@ -113,6 +132,73 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		setErrors(prev => ({
 			...prev,
 			date: value ? undefined : 'transactions.dateError'
+		}))
+		
+		// Re-validate end date if it exists and recurring is enabled
+		if (isRecurring && endType === 'date' && endDate) {
+			validateEndDate(endDate, value, frequency, intervalCount)
+		}
+	}
+
+	function handleEndDateChange(e) {
+		const value = e.target.value
+		setEndDate(value)
+		validateEndDate(value, date, frequency, intervalCount)
+	}
+
+	function handleIntervalCountChange(e) {
+		const value = e.target.value
+		setIntervalCount(value)
+
+		// Re-validate end date if it exists
+		if (endType === 'date' && endDate) {
+			validateEndDate(endDate, date, frequency, value)
+		}
+
+		setErrors(prev => ({
+			...prev,
+			intervalCount: value && !isNaN(value) && Number(value) >= 1 ? undefined : 'recurring.intervalError'
+		}))
+	}
+
+	function handleFrequencyChange(e) {
+		const value = e.target.value
+		setFrequency(value)
+
+		// Re-validate end date if it exists
+		if (endType === 'date' && endDate) {
+			validateEndDate(endDate, date, value, intervalCount)
+		}
+	}
+
+	function validateEndDate(selectedEndDate, startDate, freq, interval) {
+		if (!selectedEndDate || !startDate) return
+
+		const intervalNum = Number(interval) || 1
+		const start = new Date(startDate)
+
+		// Calculate minimum end date
+		let minEndDate = new Date(start)
+		switch (freq) {
+			case 'daily':
+				minEndDate.setDate(minEndDate.getDate() + intervalNum)
+				break
+			case 'weekly':
+				minEndDate.setDate(minEndDate.getDate() + (intervalNum * 7))
+				break
+			case 'monthly':
+				minEndDate.setMonth(minEndDate.getMonth() + intervalNum)
+				break
+			case 'yearly':
+				minEndDate.setFullYear(minEndDate.getFullYear() + intervalNum)
+				break
+		}
+
+		const selectedDate = new Date(selectedEndDate)
+
+		setErrors(prev => ({
+			...prev,
+			endDate: selectedDate <= minEndDate ? 'recurring.endDateTooSoonError' : undefined
 		}))
 	}
 
@@ -180,7 +266,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			tags: tagsList,
 			currencyCode,
 			exchangeRate: Number(exchangeRate),
-			updateRecurringTemplate: isFromRecurring && (isFirstRecurringInstance || updateRecurringTemplate),
 			sourceRecurringId: initial?.source_recurring_id
 		}
 		
@@ -204,6 +289,34 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const getInputClassName = (fieldError) =>
 		`${inputBaseClass} ${fieldError ? inputErrorClass : inputNormalClass}`
 
+	// Calculate minimum end date based on frequency and interval
+	function getMinEndDate() {
+		if (!date) return date
+		
+		const interval = Number(intervalCount) || 1
+		const startDate = new Date(date)
+		let minDate = new Date(startDate)
+		
+		switch (frequency) {
+			case 'daily':
+				minDate.setDate(minDate.getDate() + interval)
+				break
+			case 'weekly':
+				minDate.setDate(minDate.getDate() + (interval * 7))
+				break
+			case 'monthly':
+				minDate.setMonth(minDate.getMonth() + interval)
+				break
+			case 'yearly':
+				minDate.setFullYear(minDate.getFullYear() + interval)
+				break
+		}
+		
+		// Add one more day to ensure it's after the minimum
+		minDate.setDate(minDate.getDate() + 1)
+		return minDate.toISOString().split('T')[0]
+	}
+
 	return (
 		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full">
 			<h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
@@ -214,7 +327,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
 					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-2 sm:p-4">
-						<div className="flex items-center gap-2 mb-1 sm:mb-2">
+						<div className="flex items-center gap-2 mb-2">
 							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 							</svg>
@@ -222,26 +335,12 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								{t('recurring.generatedFromRule')}
 							</span>
 						</div>
-						{isFirstRecurringInstance ? (
-							<p className="text-xs text-purple-600 dark:text-purple-400 flex items-start gap-2">
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-								</svg>
-								<span>{t('recurring.firstInstanceNote')}</span>
-							</p>
-						) : (
-							<label className="flex items-center gap-2 cursor-pointer">
-								<input
-									type="checkbox"
-									checked={updateRecurringTemplate}
-									onChange={e => setUpdateRecurringTemplate(e.target.checked)}
-									className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-								/>
-								<span className="text-xs text-gray-600 dark:text-gray-400">
-									{t('recurring.alsoUpdateTemplate')}
-								</span>
-							</label>
-						)}
+						<p className="text-xs text-purple-600 dark:text-purple-400 flex items-start gap-2">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							<span>{t('recurring.editInstanceNote')}</span>
+						</p>
 					</div>
 				)}
 				
@@ -440,7 +539,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										</label>
 										<select
 											value={frequency}
-											onChange={e => setFrequency(e.target.value)}
+											onChange={handleFrequencyChange}
 											className={inputBaseClass + ' ' + inputNormalClass}
 										>
 											<option value="daily">{t('recurring.daily')}</option>
@@ -458,7 +557,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 												type="number"
 												min="1"
 												value={intervalCount}
-												onChange={e => setIntervalCount(e.target.value)}
+												onChange={handleIntervalCountChange}
 												className={`${getInputClassName(errors.intervalCount)} w-16 sm:w-20`}
 											/>
 											<span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
@@ -503,8 +602,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										<Input
 											type="date"
 											value={endDate}
-											onChange={e => setEndDate(e.target.value)}
-											min={date}
+											onChange={handleEndDateChange}
+											min={getMinEndDate()}
 											className={`${getInputClassName(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
 										/>
 										{errors.endDate && (
@@ -521,7 +620,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										</label>
 										<Input
 											type="number"
-											min="1"
+											min="2"
 											placeholder="10"
 											value={occurrencesLimit}
 											onChange={e => setOccurrencesLimit(e.target.value)}
@@ -534,16 +633,18 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								)}
 								
 								{/* Recurring Summary */}
-								<div className="text-xs text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-lg">
-									<span className="font-medium">📅 {t('recurring.summary')}: </span>
-									{t('recurring.summaryText', {
-									frequency: t(`recurring.${frequency}Summary`),
-										interval: intervalCount,
-										startDate: date
-									})}
-									{endType === 'date' && endDate && ` ${t('recurring.until')} ${endDate}`}
-									{endType === 'count' && occurrencesLimit && ` ${t('recurring.for')} ${occurrencesLimit} ${t('recurring.times')}`}
-								</div>
+								{!errors.intervalCount && !errors.endDate && !errors.occurrencesLimit && (
+									<div className="text-xs text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-lg">
+										<span className="font-medium">📅 {t('recurring.summary')}: </span>
+										{t('recurring.summaryText', {
+											frequency: t(`recurring.${frequency}Summary`),
+											interval: intervalCount,
+											startDate: date
+										})}
+										{endType === 'date' && endDate && ` ${t('recurring.until')} ${endDate}`}
+										{endType === 'count' && occurrencesLimit && ` ${t('recurring.for')} ${occurrencesLimit} ${t('recurring.times')}`}
+									</div>
+								)}
 							</div>
 						)}
 					</div>

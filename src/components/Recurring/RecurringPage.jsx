@@ -180,6 +180,12 @@ export default function RecurringPage() {
                   <div className="font-semibold text-gray-800 dark:text-white">{recurring.start_date}</div>
                 </div>
                 <div className="bg-white dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('recurring.lastRun')}</div>
+                  <div className="font-semibold text-gray-800 dark:text-white">
+                    {recurring.last_run_at ? new Date(recurring.last_run_at).toISOString().split('T')[0] : '-'}
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('recurring.nextRun')}</div>
                   <div className="font-semibold text-gray-800 dark:text-white">
                     {new Date(recurring.next_run_at).toISOString().split('T')[0]}
@@ -192,11 +198,12 @@ export default function RecurringPage() {
                     {recurring.occurrences_limit && ` / ${recurring.occurrences_limit}`}
                   </div>
                 </div>
-                <div className="bg-white dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('recurring.endsLabel')}</div>
-                  <div className="font-semibold text-gray-800 dark:text-white">
-                    {recurring.end_date || (recurring.occurrences_limit ? t('recurring.afterCount') : t('recurring.endNever'))}
-                  </div>
+              </div>
+
+              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 mb-4 border border-purple-200 dark:border-purple-800">
+                <div className="text-xs text-purple-600 dark:text-purple-400 mb-1">{t('recurring.endsLabel')}</div>
+                <div className="font-semibold text-purple-700 dark:text-purple-300">
+                  {recurring.end_date || (recurring.occurrences_limit ? t('recurring.afterCount') : t('recurring.endNever'))}
                 </div>
               </div>
 

@@ -109,7 +109,8 @@ export async function fetchTransactions({ type, includeScheduled = true } = {}) 
     .from('transactions')
     .select(`
       *,
-      category:categories(id, name)
+      category:categories(id, name),
+      recurring:source_recurring_id(start_date, last_run_at)
     `)
     .eq('user_id', user.id)
     .order('date', { ascending: false });
@@ -362,6 +363,49 @@ export async function updateRecurringTransaction(id, recurring) {
   if (endDate !== undefined) updateData.end_date = endDate;
   if (occurrencesLimit !== undefined) updateData.occurrences_limit = occurrencesLimit;
   if (isActive !== undefined) updateData.is_active = isActive;
+  
+  // Recalculate next_run_at if frequency or intervalCount changed
+  if (frequency !== undefined || intervalCount !== undefined) {
+    // Fetch current recurring transaction data
+    const { data: current, error: fetchError } = await supabase
+      .from('recurring_transactions')
+      .select('frequency, interval_count, last_run_at, start_date, next_run_at')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
+    
+    if (fetchError) throw fetchError;
+    
+    // Determine the new frequency and interval
+    const newFrequency = frequency !== undefined ? frequency : current.frequency;
+    const newIntervalCount = intervalCount !== undefined ? intervalCount : current.interval_count;
+    
+    // Base date: last_run_at if it exists (meaning at least one instance was created),
+    // otherwise use start_date or next_run_at
+    let baseDate;
+    if (current.last_run_at) {
+      baseDate = new Date(current.last_run_at).toISOString().split('T')[0];
+    } else if (current.start_date) {
+      baseDate = current.start_date;
+    } else {
+      baseDate = new Date(current.next_run_at).toISOString().split('T')[0];
+    }
+    
+    // Calculate next_run_at from the base date + new interval
+    const nextRunAt = calculateNextDate(baseDate, newFrequency, newIntervalCount);
+    updateData.next_run_at = nextRunAt;
+    
+    // Recalculate occurrences_created based on actual instances in the database
+    const { count, error: countError } = await supabase
+      .from('transactions')
+      .select('*', { count: 'exact', head: true })
+      .eq('source_recurring_id', id)
+      .eq('user_id', user.id);
+    
+    if (!countError && count !== null) {
+      updateData.occurrences_created = count;
+    }
+  }
   
   const { data, error } = await supabase
     .from('recurring_transactions')

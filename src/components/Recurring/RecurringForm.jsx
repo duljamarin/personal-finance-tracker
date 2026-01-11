@@ -29,6 +29,12 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
     if (endType === 'date' && !endDate) {
       newErrors.endDate = 'recurring.endDateError'
     }
+    if (endType === 'date' && endDate) {
+      const today = new Date().toISOString().split('T')[0]
+      if (endDate < today) {
+        newErrors.endDate = 'recurring.endDatePastError'
+      }
+    }
     if (endType === 'count' && (!occurrencesLimit || isNaN(occurrencesLimit) || Number(occurrencesLimit) < 1)) {
       newErrors.occurrencesLimit = 'recurring.occurrencesError'
     }
@@ -64,7 +70,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
     `${inputBaseClass} ${fieldError ? inputErrorClass : inputNormalClass}`
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full">
+    <form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full px-4 sm:px-0">
       <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
         {t('recurring.editTitle')}
       </h2>
@@ -155,6 +161,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
               type="date"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
               className={`${getInputClassName(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
             />
             {errors.endDate && (
