@@ -4,7 +4,7 @@ export default function Modal({ children, onClose, className = '', drawer = fals
   
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center md:justify-center bg-black bg-opacity-40 transition-all duration-200"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 sm:px-0 bg-black bg-opacity-40 transition-all duration-200"
       onClick={(e) => {
         // Close when clicking backdrop
         if (e.target === e.currentTarget) onClose();
@@ -13,7 +13,7 @@ export default function Modal({ children, onClose, className = '', drawer = fals
       <div className={`
         bg-white dark:bg-gray-800 shadow-2xl relative w-full
         ${isMobileDrawer 
-          ? 'md:rounded-3xl md:max-w-lg md:animate-fade-in rounded-t-3xl fixed bottom-0 left-0 right-0 md:relative max-h-[90vh] md:max-h-none overflow-y-auto animate-slide-up' 
+          ? 'md:rounded-3xl md:max-w-lg md:animate-fade-in rounded-3xl mb-4 sm:mb-0 md:relative max-h-[85vh] md:max-h-none overflow-y-auto animate-slide-up' 
           : 'rounded-3xl max-w-lg animate-fade-in'
         }
         ${className}
