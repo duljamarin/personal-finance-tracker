@@ -611,35 +611,3 @@ function calculateNextDate(currentDate, frequency, intervalCount) {
   
   return date.toISOString();
 }
-
-// Check if a transaction is the first occurrence of its recurring rule
-export async function isFirstOccurrence(transactionId, sourceRecurringId) {
-  if (!sourceRecurringId) return false;
-  
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return false;
-  
-  // Get the current transaction's date
-  const { data: currentTx, error: currentError } = await supabase
-    .from('transactions')
-    .select('date')
-    .eq('id', transactionId)
-    .single();
-  
-  if (currentError || !currentTx) return false;
-  
-  // Find the earliest transaction for this recurring rule
-  const { data: firstTx, error: firstError } = await supabase
-    .from('transactions')
-    .select('id, date')
-    .eq('source_recurring_id', sourceRecurringId)
-    .eq('user_id', user.id)
-    .order('date', { ascending: true })
-    .limit(1)
-    .single();
-  
-  if (firstError || !firstTx) return false;
-  
-  // Check if this is the first transaction
-  return firstTx.id === transactionId;
-}
