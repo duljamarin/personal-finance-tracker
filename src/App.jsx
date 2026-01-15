@@ -5,6 +5,7 @@ import Transactions from './components/Transactions/Transactions.jsx';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
 import CombinedMonthChart from './components/Transactions/CombinedMonthChart.jsx';
 import CategoryPieChart from './components/Transactions/CategoryPieChart.jsx';
+import CategoryBenchmark from './components/Benchmark/CategoryBenchmark.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import useDarkMode from './hooks/useDarkMode.js';
@@ -377,6 +378,9 @@ function InnerAppContent({
                       <CategoryPieChart transactions={transactions} type="expense" />
                     </div>
                   </div>
+
+                  {/* Smart Category Benchmark */}
+                  <CategoryBenchmark onReloadTrigger={transactions.length} />
 
                   {/* Page-level error (non-auth) */}
                   {error && <div className="mb-4 sm:mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 font-medium">{error}</div>}

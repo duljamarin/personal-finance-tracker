@@ -611,3 +611,18 @@ function calculateNextDate(currentDate, frequency, intervalCount) {
   
   return date.toISOString();
 }
+
+// Category Benchmarks API
+export async function fetchCategoryBenchmarks(months = 1) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Please log in to view benchmarks');
+  
+  const { data, error } = await supabase
+    .rpc('get_category_benchmarks', {
+      p_user_id: user.id,
+      p_months: months
+    });
+  
+  if (error) throw error;
+  return data || [];
+}

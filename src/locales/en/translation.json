@@ -348,6 +348,25 @@
     "templateUpdated": "Recurring template updated successfully",
     "templateUpdateError": "Failed to update recurring template"
   },
+  "benchmark": {
+    "title": "Spending Insights",
+    "description": "See how your current spending compares to your usual patterns",
+    "period1Month": "Last 1 month",
+    "period6Months": "Last 6 months",
+    "statusBelow": "Spending Less",
+    "statusWithin": "On Track",
+    "statusAbove": "Spending More",
+    "statusNew": "New Category",
+    "thisMonth": "this month",
+    "typical": "Typical range",
+    "average": "Average",
+    "month": "mo",
+    "basedOn": "vs. {{months}} past month(s)",
+    "noData": "Not Enough Data Yet",
+    "noDataDesc": "Keep tracking your expenses for at least 1 month to see personalized spending insights for each category.",
+    "loadError": "Unable to load spending insights. Please try again later.",
+    "legendInfo": "Typical range is calculated based on your personal spending history (average ± variation)"
+  },
   "footer": {
     "rights": "All rights reserved."
   }

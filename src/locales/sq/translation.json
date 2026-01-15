@@ -348,6 +348,25 @@
     "templateUpdated": "Shablloni i përsëritjes u përditësua me sukses",
     "templateUpdateError": "Dështoi përditësimi i shabllonit të përsëritjes"
   },
+  "benchmark": {
+    "title": "Njohuri për Shpenzimet",
+    "description": "Shikoni se si shpenzimet tuaja aktuale krahasohen me modelet tuaja të zakonshme",
+    "period1Month": "Muaji i fundit",
+    "period6Months": "6 muajt e fundit",
+    "statusBelow": "Shpenzime të Ulëta",
+    "statusWithin": "Në Rrugë të Drejtë",
+    "statusAbove": "Shpenzime të Larta",
+    "statusNew": "Kategori e Re",
+    "thisMonth": "këtë muaj",
+    "typical": "Diapazoni tipik",
+    "average": "Mesatarja",
+    "month": "muaj",
+    "basedOn": "vs. {{months}} muaj të kaluara",
+    "noData": "Ende Pa të Dhëna të Mjaftueshme",
+    "noDataDesc": "Vazhdoni të gjurmoni shpenzimet tuaja për të paktën 1 muaj për të parë njohuri të personalizuara për çdo kategori.",
+    "loadError": "Nuk mund të ngarkohen njohuritë e shpenzimeve. Ju lutem provoni përsëri më vonë.",
+    "legendInfo": "Diapazoni tipik llogaritet bazuar në historinë tuaj personale të shpenzimeve (mesatarja ± variancioni)"
+  },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara."
   }
