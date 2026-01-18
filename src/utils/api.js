@@ -626,3 +626,89 @@ export async function fetchCategoryBenchmarks(months = 1) {
   if (error) throw error;
   return data || [];
 }
+
+// Financial Health Score API
+
+/**
+ * Fetch the financial health score for a given month
+ * @param {Object} options - Options for fetching
+ * @param {Date|string} options.month - The month to get score for (defaults to current month)
+ * @param {boolean} options.forceRecalculate - Force recalculation even if cached
+ * @returns {Promise<Object>} The health score data
+ */
+export async function fetchHealthScore({ month, forceRecalculate = false } = {}) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Please log in to view your health score');
+  
+  // Build RPC params - let SQL handle current month if not specified
+  const params = {
+    p_user_id: user.id,
+    p_force_recalculate: forceRecalculate
+  };
+  
+  // Only pass month if explicitly specified
+  if (month) {
+    params.p_month = new Date(month).toISOString().split('T')[0];
+  }
+  
+  const { data, error } = await supabase
+    .rpc('get_financial_health_score', params);
+  
+  if (error) throw error;
+  
+  // RPC returns an array, get first item
+  const score = data?.[0];
+  if (!score) return null;
+  
+  // Transform snake_case to camelCase for frontend
+  return {
+    id: score.id,
+    userId: score.user_id,
+    monthDate: score.month_date,
+    budgetAdherenceScore: parseFloat(score.budget_adherence_score),
+    incomeExpenseRatioScore: parseFloat(score.income_expense_ratio_score),
+    spendingVolatilityScore: parseFloat(score.spending_volatility_score),
+    savingsConsistencyScore: parseFloat(score.savings_consistency_score),
+    totalScore: parseFloat(score.total_score),
+    totalIncome: parseFloat(score.total_income),
+    totalExpenses: parseFloat(score.total_expenses),
+    savingsAmount: parseFloat(score.savings_amount),
+    categoriesOverBudget: score.categories_over_budget,
+    categoriesWithinBudget: score.categories_within_budget,
+    insights: score.insights || [],
+    calculatedAt: score.calculated_at
+  };
+}
+
+/**
+ * Fetch health score history for the past N months
+ * @param {number} months - Number of months to fetch (default 12)
+ * @returns {Promise<Array>} Array of health score records
+ */
+export async function fetchHealthScoreHistory(months = 12) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Please log in to view your health score history');
+  
+  const { data, error } = await supabase
+    .rpc('get_health_score_history', {
+      p_user_id: user.id,
+      p_months: months
+    });
+  
+  if (error) throw error;
+  
+  // Transform snake_case to camelCase
+  return (data || []).map(score => ({
+    id: score.id,
+    monthDate: score.month_date,
+    totalScore: parseFloat(score.total_score),
+    budgetAdherenceScore: parseFloat(score.budget_adherence_score),
+    incomeExpenseRatioScore: parseFloat(score.income_expense_ratio_score),
+    spendingVolatilityScore: parseFloat(score.spending_volatility_score),
+    savingsConsistencyScore: parseFloat(score.savings_consistency_score),
+    totalIncome: parseFloat(score.total_income),
+    totalExpenses: parseFloat(score.total_expenses),
+    savingsAmount: parseFloat(score.savings_amount),
+    calculatedAt: score.calculated_at
+  }));
+}

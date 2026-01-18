@@ -367,6 +367,37 @@
     "loadError": "Nuk mund të ngarkohen njohuritë e shpenzimeve. Ju lutem provoni përsëri më vonë.",
     "legendInfo": "Diapazoni tipik llogaritet bazuar në historinë tuaj personale të shpenzimeve (mesatarja ± variancioni)"
   },
+  "healthScore": {
+    "title": "Rezultati i Shëndetit Financiar",
+    "description": "Kontrolli juaj mujor i mirëqenies financiare",
+    "excellent": "Shkëlqyeshëm",
+    "good": "Mirë",
+    "needsWork": "Duhet Punë",
+    "poor": "Kërkon Vëmendje",
+    "budgetAdherence": "Qëndrimi në buxhet",
+    "incomeRatio": "Të ardhura vs shpenzime",
+    "consistency": "Stabiliteti i shpenzimeve",
+    "savings": "Zakonet e kursimit",
+    "insights": "Çfarë do të thotë kjo për ju",
+    "income": "Të Ardhura",
+    "expenses": "Shpenzime",
+    "saved": "Kursyer",
+    "history": "Progresi Juaj",
+    "noData": "Ende Pa të Dhëna të Mjaftueshme",
+    "noDataDesc": "Shtoni disa transaksione për të parë rezultatin tuaj të shëndetit financiar. Na duhet të paktën një muaj të dhëna.",
+    "loadError": "Nuk mund të ngarkohet rezultati juaj i shëndetit. Ju lutem provoni përsëri më vonë.",
+    "insightSavingsPositive": "Kursyet €{{amount}} këtë muaj, që është {{percent}}% e të ardhurave tuaja. Punë e shkëlqyer!",
+    "insightOverspent": "Shpenzuat €{{amount}} më shumë se sa fituat këtë muaj. Përpiquni të ulni shpenzimet.",
+    "insightNoIncome": "Nuk ka të ardhura të regjistruara këtë muaj. Sigurohuni që të regjistroni të gjitha të ardhurat.",
+    "insightNoData": "Nuk ka transaksione të regjistruara këtë muaj. Filloni të gjurmoni financat tuaja!",
+    "insightBudgetGood": "Të gjitha {{count}} kategoritë e shpenzimeve janë brenda diapazonit tuaj të zakonshëm. Vazhdoni kështu!",
+    "insightBudgetOneOver": "1 kategori shpenzimesh është më e lartë se zakonisht. Kontrolloni detajet.",
+    "insightBudgetMultipleOver": "{{count}} kategori janë mbi shpenzimet tuaja tipike. Rishikoni shpenzimet.",
+    "insightBudgetNoData": "Shtoni më shumë transaksione për të parë modelet e shpenzimeve.",
+    "insightSaving": "Jeni në rrugë të mbarë - duke kursyer €{{amount}} këtë muaj.",
+    "insightLosing": "Duke shpenzuar €{{amount}} më shumë se sa fitoni. Koha për të rregulluar.",
+    "insightBreakEven": "Jeni në balancë këtë muaj - të ardhurat përputhen me shpenzimet."
+  },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara."
   }

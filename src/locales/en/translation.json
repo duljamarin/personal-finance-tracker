@@ -367,6 +367,37 @@
     "loadError": "Unable to load spending insights. Please try again later.",
     "legendInfo": "Typical range is calculated based on your personal spending history (average ± variation)"
   },
+  "healthScore": {
+    "title": "Financial Health Score",
+    "description": "Your monthly money wellness check",
+    "excellent": "Excellent",
+    "good": "Good",
+    "needsWork": "Needs Work",
+    "poor": "Needs Attention",
+    "budgetAdherence": "Staying on budget",
+    "incomeRatio": "Income vs spending",
+    "consistency": "Spending stability",
+    "savings": "Saving habits",
+    "insights": "What this means for you",
+    "income": "Income",
+    "expenses": "Expenses",
+    "saved": "Saved",
+    "history": "Your Progress",
+    "noData": "Not Enough Data Yet",
+    "noDataDesc": "Add some transactions to see your financial health score. We need at least one month of data.",
+    "loadError": "Unable to load your health score. Please try again later.",
+    "insightSavingsPositive": "You saved €{{amount}} this month, which is {{percent}}% of your income. Great job!",
+    "insightOverspent": "You spent €{{amount}} more than you earned this month. Try to reduce expenses.",
+    "insightNoIncome": "No income recorded this month. Make sure to log all your earnings.",
+    "insightNoData": "No transactions recorded this month. Start tracking your finances!",
+    "insightBudgetGood": "All {{count}} spending categories are within your usual ranges. Keep it up!",
+    "insightBudgetOneOver": "1 spending category is higher than usual. Check your breakdown.",
+    "insightBudgetMultipleOver": "{{count}} categories are above your typical spending. Review your expenses.",
+    "insightBudgetNoData": "Add more transactions to see spending patterns.",
+    "insightSaving": "You're on track - saving €{{amount}} this month.",
+    "insightLosing": "Spending €{{amount}} more than earning. Time to adjust.",
+    "insightBreakEven": "You're breaking even this month - income matches expenses."
+  },
   "footer": {
     "rights": "All rights reserved."
   }

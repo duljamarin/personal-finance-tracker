@@ -20,6 +20,7 @@ import LandingPage from './components/LandingPage.jsx';
 import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from './utils/api';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './context/ToastContext';
+import HealthScore from './components/HealthScore/HealthScore.jsx';
 
 
 function PrivateRoute({ children }) {
@@ -381,6 +382,9 @@ function InnerAppContent({
 
                   {/* Smart Category Benchmark */}
                   <CategoryBenchmark onReloadTrigger={transactions.length} />
+
+                   {/* Health Score */}
+                  <HealthScore onReloadTrigger={transactions.length} />
 
                   {/* Page-level error (non-auth) */}
                   {error && <div className="mb-4 sm:mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 font-medium">{error}</div>}
