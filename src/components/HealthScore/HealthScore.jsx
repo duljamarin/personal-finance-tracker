@@ -22,8 +22,11 @@ export default function HealthScore({ onReloadTrigger }) {
           fetchHealthScoreHistory(6)
         ]);
         
+        console.log('Health score loaded:', scoreData);
+        console.log('Health score history loaded:', historyData, 'Length:', historyData?.length);
+        
         setScore(scoreData);
-        setHistory(historyData);
+        setHistory(historyData || []);
       } catch (err) {
         console.error('Error loading health score:', err);
         setError(err.message);
@@ -119,7 +122,9 @@ export default function HealthScore({ onReloadTrigger }) {
   };
 
   const formatMonth = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
   };
 
@@ -152,7 +157,6 @@ export default function HealthScore({ onReloadTrigger }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">{t('healthScore.loadError')}</p>
         </div>
       </Card>
     );
@@ -352,33 +356,6 @@ export default function HealthScore({ onReloadTrigger }) {
             </div>
           </div>
         </div>
-
-        {/* History Mini Chart */}
-        {history.length > 1 && (
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-              {t('healthScore.history')}
-            </h3>
-            <div className="flex items-end justify-between gap-1 h-16">
-              {history.slice().reverse().map((item, index) => {
-                const colors = getScoreColor(item.totalScore);
-                const height = Math.max(10, (item.totalScore / 100) * 100);
-                return (
-                  <div key={item.id || index} className="flex-1 flex flex-col items-center gap-1">
-                    <div
-                      className={`w-full max-w-[30px] ${colors.bg} rounded-t transition-all duration-300 hover:opacity-80`}
-                      style={{ height: `${height}%` }}
-                      title={`${formatMonth(item.monthDate)}: ${Math.round(item.totalScore)}`}
-                    />
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 truncate w-full text-center">
-                      {formatMonth(item.monthDate).split(' ')[0]}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
     </Card>
   );
