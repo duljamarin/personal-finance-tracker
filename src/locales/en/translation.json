@@ -398,6 +398,96 @@
     "insightLosing": "Spending €{{amount}} more than earning. Time to adjust.",
     "insightBreakEven": "You're breaking even this month - income matches expenses."
   },
+  "goals": {
+    "title": "Financial Goals",
+    "subtitle": "Track your savings and reach your targets",
+    "addGoal": "Add Goal",
+    "editGoal": "Edit Goal",
+    "deleteGoal": "Delete Goal",
+    "noGoals": "No goals yet",
+    "noGoalsDesc": "Create your first financial goal to start tracking your progress",
+    "createFirst": "Create Your First Goal",
+    "form": {
+      "name": "Goal Name",
+      "namePlaceholder": "e.g., Emergency Fund",
+      "description": "Description",
+      "descriptionPlaceholder": "What are you saving for?",
+      "targetAmount": "Target Amount",
+      "targetDate": "Target Date",
+      "targetDateOptional": "Optional - leave empty for open-ended goals",
+      "category": "Link to Category",
+      "categoryOptional": "Optional - track spending in this category",
+      "goalType": "Goal Type",
+      "priority": "Priority",
+      "color": "Color",
+      "save": "Save Goal",
+      "cancel": "Cancel"
+    },
+    "types": {
+      "savings": "Savings",
+      "debt_payoff": "Debt Payoff",
+      "investment": "Investment",
+      "purchase": "Purchase"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "status": {
+      "onTrack": "On Track",
+      "behind": "Behind",
+      "ahead": "Ahead",
+      "completed": "Completed",
+      "noTarget": "No Target Date"
+    },
+    "card": {
+      "saved": "saved",
+      "of": "of",
+      "remaining": "remaining",
+      "daysLeft": "days left",
+      "overdue": "Overdue",
+      "noDeadline": "No deadline",
+      "addContribution": "Add Contribution",
+      "viewDetails": "View Details"
+    },
+    "contributions": {
+      "title": "Contributions",
+      "add": "Add Contribution",
+      "amount": "Amount",
+      "date": "Date",
+      "note": "Note",
+      "notePlaceholder": "Optional note",
+      "history": "Contribution History",
+      "noContributions": "No contributions yet",
+      "withdraw": "Withdraw"
+    },
+    "stats": {
+      "totalSaved": "Total Saved",
+      "totalTarget": "Total Target",
+      "activeGoals": "Active Goals",
+      "completedGoals": "Completed"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "delete": {
+      "title": "Delete Goal",
+      "message": "Are you sure you want to delete this goal? All contributions will be permanently removed.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "created": "Goal created successfully",
+      "updated": "Goal updated successfully",
+      "deleted": "Goal deleted successfully",
+      "contributionAdded": "Contribution added successfully",
+      "contributionDeleted": "Contribution removed",
+      "error": "An error occurred"
+    }
+  },
   "footer": {
     "rights": "All rights reserved."
   }

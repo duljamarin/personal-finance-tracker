@@ -183,8 +183,12 @@ export default function HealthScore({ onReloadTrigger }) {
   }
 
   const scoreColors = getScoreColor(score.totalScore);
-  const circumference = 2 * Math.PI * 45;
-  const strokeDashoffset = circumference - (score.totalScore / 100) * circumference;
+  // Use fixed radius for accurate calculation
+  const radius = 54; // For 128px (w-32) or 160px (w-40) SVG
+  const circumference = 2 * Math.PI * radius;
+  // Cap at 100% to prevent overflow
+  const displayScore = Math.min(score.totalScore, 100);
+  const strokeDashoffset = circumference - (displayScore / 100) * circumference;
 
   return (
     <Card className="mt-4 sm:mt-6">
@@ -205,12 +209,12 @@ export default function HealthScore({ onReloadTrigger }) {
         <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
           {/* Circular Score */}
           <div className="relative flex-shrink-0">
-            <svg className="w-32 h-32 sm:w-40 sm:h-40 transform -rotate-90">
+            <svg className="w-32 h-32 sm:w-40 sm:h-40 transform -rotate-90" viewBox="0 0 120 120">
               {/* Background circle */}
               <circle
-                cx="50%"
-                cy="50%"
-                r="45%"
+                cx="60"
+                cy="60"
+                r="54"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="8"
@@ -218,9 +222,9 @@ export default function HealthScore({ onReloadTrigger }) {
               />
               {/* Progress circle */}
               <circle
-                cx="50%"
-                cy="50%"
-                r="45%"
+                cx="60"
+                cy="60"
+                r="54"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="8"
@@ -254,7 +258,7 @@ export default function HealthScore({ onReloadTrigger }) {
               <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-purple-500 rounded-full transition-all duration-500"
-                  style={{ width: `${score.budgetAdherenceScore}%` }}
+                  style={{ width: `${Math.min(score.budgetAdherenceScore, 100)}%` }}
                 />
               </div>
               <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
@@ -270,7 +274,7 @@ export default function HealthScore({ onReloadTrigger }) {
               <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                  style={{ width: `${score.incomeExpenseRatioScore}%` }}
+                  style={{ width: `${Math.min(score.incomeExpenseRatioScore, 100)}%` }}
                 />
               </div>
               <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
@@ -286,7 +290,7 @@ export default function HealthScore({ onReloadTrigger }) {
               <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-yellow-500 rounded-full transition-all duration-500"
-                  style={{ width: `${score.spendingVolatilityScore}%` }}
+                  style={{ width: `${Math.min(score.spendingVolatilityScore, 100)}%` }}
                 />
               </div>
               <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
@@ -302,7 +306,7 @@ export default function HealthScore({ onReloadTrigger }) {
               <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-green-500 rounded-full transition-all duration-500"
-                  style={{ width: `${score.savingsConsistencyScore}%` }}
+                  style={{ width: `${Math.min(score.savingsConsistencyScore, 100)}%` }}
                 />
               </div>
               <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">

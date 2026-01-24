@@ -398,6 +398,96 @@
     "insightLosing": "Duke shpenzuar €{{amount}} më shumë se sa fitoni. Koha për të rregulluar.",
     "insightBreakEven": "Jeni në balancë këtë muaj - të ardhurat përputhen me shpenzimet."
   },
+  "goals": {
+    "title": "Objektivat Financiare",
+    "subtitle": "Ndiq kursimet dhe arrij objektivat e tua",
+    "addGoal": "Shto Objektiv",
+    "editGoal": "Ndrysho Objektiv",
+    "deleteGoal": "Fshi Objektiv",
+    "noGoals": "Asnjë objektiv ende",
+    "noGoalsDesc": "Krijo objektivin e parë financiar për të filluar ndjekjen e progresit",
+    "createFirst": "Krijo Objektivin e Parë",
+    "form": {
+      "name": "Emri i Objektivit",
+      "namePlaceholder": "p.sh., Fondi i Emergjencës",
+      "description": "Përshkrimi",
+      "descriptionPlaceholder": "Për çfarë po kurseni?",
+      "targetAmount": "Shuma e Synuar",
+      "targetDate": "Data e Synuar",
+      "targetDateOptional": "Opsionale - lëreni bosh për objektiva pa afat",
+      "category": "Lidh me Kategorinë",
+      "categoryOptional": "Opsionale - ndiq shpenzimet në këtë kategori",
+      "goalType": "Lloji i Objektivit",
+      "priority": "Prioriteti",
+      "color": "Ngjyra",
+      "save": "Ruaj Objektivin",
+      "cancel": "Anulo"
+    },
+    "types": {
+      "savings": "Kursime",
+      "debt_payoff": "Shlyerje Borxhi",
+      "investment": "Investim",
+      "purchase": "Blerje"
+    },
+    "priority": {
+      "high": "I Lartë",
+      "medium": "Mesatar",
+      "low": "I Ulët"
+    },
+    "status": {
+      "onTrack": "Në Rrugë",
+      "behind": "Mbrapa",
+      "ahead": "Përpara",
+      "completed": "Përfunduar",
+      "noTarget": "Pa Afat"
+    },
+    "card": {
+      "saved": "kursyer",
+      "of": "nga",
+      "remaining": "mbetur",
+      "daysLeft": "ditë të mbetura",
+      "overdue": "Vonuar",
+      "noDeadline": "Pa afat",
+      "addContribution": "Shto Kontribut",
+      "viewDetails": "Shiko Detajet"
+    },
+    "contributions": {
+      "title": "Kontributet",
+      "add": "Shto Kontribut",
+      "amount": "Shuma",
+      "date": "Data",
+      "note": "Shënim",
+      "notePlaceholder": "Shënim opsional",
+      "history": "Historia e Kontributeve",
+      "noContributions": "Asnjë kontribut ende",
+      "withdraw": "Tërhiq"
+    },
+    "stats": {
+      "totalSaved": "Totali i Kursyer",
+      "totalTarget": "Objektivi Total",
+      "activeGoals": "Objektiva Aktive",
+      "completedGoals": "Të Përfunduara"
+    },
+    "filters": {
+      "all": "Të Gjitha",
+      "active": "Aktive",
+      "completed": "Përfunduara"
+    },
+    "delete": {
+      "title": "Fshi Objektivin",
+      "message": "Je i sigurt që dëshiron të fshish këtë objektiv? Të gjitha kontributet do të fshihen përgjithmonë.",
+      "confirm": "Fshi",
+      "cancel": "Anulo"
+    },
+    "toast": {
+      "created": "Objektivi u krijua me sukses",
+      "updated": "Objektivi u përditësua me sukses",
+      "deleted": "Objektivi u fshi me sukses",
+      "contributionAdded": "Kontributi u shtua me sukses",
+      "contributionDeleted": "Kontributi u hoq",
+      "error": "Ndodhi një gabim"
+    }
+  },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara."
   }

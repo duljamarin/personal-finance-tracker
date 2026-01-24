@@ -38,6 +38,16 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
       }
     }
     checkRecurring();
+    
+    // Check if there are pending updates from goals
+    const needsRefresh = localStorage.getItem('transactions_needs_refresh');
+    if (needsRefresh === 'true') {
+      localStorage.removeItem('transactions_needs_refresh');
+      if (onReload) {
+        // Small delay to ensure data is persisted
+        setTimeout(() => onReload(), 100);
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -241,10 +251,12 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
                 {currencySymbols[item.currency_code || item.currencyCode || 'EUR'] || ''}
                 {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </div>
-              <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
-                {translateCategoryName(item.category?.name)}
-              </div>
+              {item.category?.name && (
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                  {translateCategoryName(item.category.name)}
+                </div>
+              )}
               <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
                 <button
                   className="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 dark:text-gray-900 px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
@@ -272,65 +284,8 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
             initial={editTx}
             onSubmit={async data => {
               if (editTx) {
-                // Check if we need to update the recurring template too
-                if (data.updateRecurringTemplate && editTx.source_recurring_id) {
-                  try {
-                    // Get the recurring transaction details to calculate next_run_at
-                    const recurrings = await fetchRecurringTransactions();
-                    const recurring = recurrings.find(r => r.id === editTx.source_recurring_id);
-                    
-                    // Prepare template update data
-                    const templateUpdate = {
-                      title: data.title,
-                      amount: data.amount,
-                      category_id: data.categoryId,
-                      type: data.type
-                    };
-                    
-                    // If date changed, update start_date and recalculate next_run_at
-                    if (data.date && recurring) {
-                      templateUpdate.start_date = data.date;
-                      
-                      // Check if new start_date is after end_date - if so, clear end_date
-                      if (recurring.end_date && new Date(data.date) >= new Date(recurring.end_date)) {
-                        templateUpdate.end_date = null;
-                      }
-                      
-                      // Calculate next run date based on new start date
-                      const startDate = new Date(data.date);
-                      const frequency = recurring.frequency;
-                      const intervalCount = recurring.interval_count || 1;
-                      
-                      // Calculate next date based on frequency
-                      const nextDate = new Date(startDate);
-                      switch (frequency) {
-                        case 'daily':
-                          nextDate.setDate(nextDate.getDate() + intervalCount);
-                          break;
-                        case 'weekly':
-                          nextDate.setDate(nextDate.getDate() + (intervalCount * 7));
-                          break;
-                        case 'monthly':
-                          nextDate.setMonth(nextDate.getMonth() + intervalCount);
-                          break;
-                        case 'yearly':
-                          nextDate.setFullYear(nextDate.getFullYear() + intervalCount);
-                          break;
-                      }
-                      
-                      templateUpdate.next_run_at = nextDate.toISOString();
-                    }
-                    
-                    // Update the recurring template
-                    await updateRecurringTransaction(editTx.source_recurring_id, templateUpdate);
-                    addToast(t('recurring.templateUpdated'), 'success');
-                  } catch (error) {
-                    console.error('Error updating recurring template:', error);
-                    addToast(t('recurring.templateUpdateError'), 'error');
-                  }
-                }
-                
-                // Always update the transaction itself
+                // Update only the transaction instance, not the recurring template
+                // Template should be modified from Recurring Transactions page
                 onUpdate(editTx.id, data);
                 setShowModal(false);
                 setEditTx(null);

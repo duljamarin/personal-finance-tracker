@@ -11,6 +11,7 @@ import Footer from './components/Footer.jsx';
 import useDarkMode from './hooks/useDarkMode.js';
 import CategoriesPage from './components/Categories/CategoriesPage.jsx';
 import RecurringPage from './components/Recurring/RecurringPage.jsx';
+import GoalsPage from './components/Goals/GoalsPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
 import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
@@ -294,6 +295,11 @@ function InnerAppContent({
             <Route path="/recurring" element={
               <PrivateRoute>
                 <RecurringPage />
+              </PrivateRoute>
+            } />
+            <Route path="/goals" element={
+              <PrivateRoute>
+                <GoalsPage />
               </PrivateRoute>
             } />
             <Route path="/dashboard" element={
