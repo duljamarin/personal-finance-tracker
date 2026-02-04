@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback } from 'react';
+import { APP_CONFIG } from '../config/app';
 
 const ToastContext = createContext(null);
 
@@ -9,10 +10,10 @@ export function ToastProvider({ children }) {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
     
-    // Auto-remove after 3 seconds
+    // Auto-remove after configured duration
     setTimeout(() => {
       setToasts(prev => prev.filter(toast => toast.id !== id));
-    }, 3000);
+    }, APP_CONFIG.TOAST_DURATION);
   }, []);
 
   const removeToast = useCallback((id) => {

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import { toCSV, downloadCSV } from '../../utils/csv';
@@ -7,6 +7,7 @@ import TransactionForm from '../Transaction/TransactionForm';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
+import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
 
 // Accept onAdd for new transactions
 export default function Transactions({ items, onDelete, onUpdate, onAdd, categories, typeFilter, setTypeFilter, reloadCategories, onReload }) {
@@ -22,22 +23,23 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [recurringFilter, setRecurringFilter] = useState('all'); // 'all', 'recurring', 'scheduled', 'regular'
+  const [recurringFilter, setRecurringFilter] = useState(RECURRING_FILTERS.ALL);
 
   // Process recurring transactions on component mount
-  useEffect(() => {
-    async function checkRecurring() {
-      try {
-        const result = await processRecurringTransactions();
-        if (result.generated > 0) {
-          addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
-          if (onReload) onReload();
-        }
-      } catch (error) {
-        console.error('Error processing recurring transactions:', error);
+  const processRecurring = useCallback(async () => {
+    try {
+      const result = await processRecurringTransactions();
+      if (result.generated > 0) {
+        addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
+        if (onReload) onReload();
       }
+    } catch (error) {
+      console.error('Error processing recurring transactions:', error);
     }
-    checkRecurring();
+  }, [addToast, t, onReload]);
+
+  useEffect(() => {
+    processRecurring();
     
     // Check if there are pending updates from goals
     const needsRefresh = localStorage.getItem('transactions_needs_refresh');
@@ -48,8 +50,7 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
         setTimeout(() => onReload(), 100);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [processRecurring, onReload]);
 
   const filtered = useMemo(() => {
     let result = items;
@@ -63,9 +64,9 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
       result = result.filter(i => i.type === typeFilter);
     }
     // Recurring filter
-    if (recurringFilter === 'recurring') {
+    if (recurringFilter === RECURRING_FILTERS.RECURRING) {
       result = result.filter(i => i.source_recurring_id);
-    } else if (recurringFilter === 'regular') {
+    } else if (recurringFilter === RECURRING_FILTERS.REGULAR) {
       result = result.filter(i => !i.source_recurring_id);
     }
     return result;
@@ -85,17 +86,6 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
     setEditTx(tx);
     setShowModal(true);
   }
-
-  const currencySymbols = {
-    EUR: '€',
-    USD: '$',
-    GBP: '£',
-    ALL: 'ALL',
-    CHF: 'CHF',
-    JPY: '¥',
-    CAD: 'C$',
-    AUD: 'A$'
-  };
 
   return (
     <Card className="mt-4 sm:mt-6">
@@ -248,7 +238,7 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
                 </div>
               )}
               <div className="font-bold text-2xl sm:text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
-                {currencySymbols[item.currency_code || item.currencyCode || 'EUR'] || ''}
+                {CURRENCY_SYMBOLS[item.currency_code || item.currencyCode || 'EUR'] || ''}
                 {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </div>
               {item.category?.name && (

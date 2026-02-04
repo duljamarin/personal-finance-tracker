@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { APP_CONFIG } from './config/app';
 import Transactions from './components/Transactions/Transactions.jsx';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
 import CombinedMonthChart from './components/Transactions/CombinedMonthChart.jsx';
@@ -12,6 +13,7 @@ import useDarkMode from './hooks/useDarkMode.js';
 import CategoriesPage from './components/Categories/CategoriesPage.jsx';
 import RecurringPage from './components/Recurring/RecurringPage.jsx';
 import GoalsPage from './components/Goals/GoalsPage.jsx';
+import BudgetsPage from './components/Budgets/BudgetsPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
 import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
@@ -22,16 +24,15 @@ import { fetchTransactions, addTransaction as apiAddTransaction, updateTransacti
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './context/ToastContext';
 import HealthScore from './components/HealthScore/HealthScore.jsx';
+import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
+import { getValueColorClass } from './utils/classNames';
 
 
 function PrivateRoute({ children }) {
   const { t } = useTranslation();
   const { accessToken, loading } = useAuth();
   if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-      <p className="text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.loadingDashboard')}</p>
-    </div>
+    <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
   );
   return accessToken ? children : <Navigate to="/login" replace />;
 }
@@ -215,7 +216,7 @@ function AppContent() {
       const timer = setTimeout(() => setShowGreeting(false), 3500);
       return () => clearTimeout(timer);
     }
-  }, [username]);
+  }, [username]);APP_CONFIG.GREETING_DURATION
 
   return (
     <Router>
@@ -302,6 +303,11 @@ function InnerAppContent({
                 <GoalsPage />
               </PrivateRoute>
             } />
+            <Route path="/budgets" element={
+              <PrivateRoute>
+                <BudgetsPage />
+              </PrivateRoute>
+            } />
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <>
@@ -339,7 +345,7 @@ function InnerAppContent({
                         </div>
                         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.balance')}</p>
                       </div>
-                      <p className={`text-2xl sm:text-3xl font-bold ${net >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>€{net.toFixed(2)}</p>
+                      <p className={`text-2xl sm:text-3xl font-bold ${getValueColorClass(net)}`}>€{net.toFixed(2)}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{t('currency.baseCurrency')}</p>
                     </div>
                   </div>

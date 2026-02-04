@@ -6,10 +6,9 @@ import { fetchCategories, addCategory } from '../../utils/api'
 import { translateCategoryName } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation'
-
-const inputBaseClass = 'border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-xl sm:w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
-const inputErrorClass = 'border-red-500 focus:ring-red-500'
-const inputNormalClass = 'border-gray-300 dark:border-gray-600'
+import { getInputClassName } from '../../utils/classNames'
+import { RECURRING_FREQUENCIES } from '../../utils/constants'
+import { APP_CONFIG } from '../../config/app'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = true }) {
 	const { t, i18n } = useTranslation()
@@ -26,15 +25,15 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [showProposalInput, setShowProposalInput] = useState(false)
 	const [proposedCategoryName, setProposedCategoryName] = useState('')
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
-	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || 'EUR')
-	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || 1.0)
+	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || APP_CONFIG.BASE_CURRENCY)
+	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE)
 	
 	// If editing a transaction from a recurring rule
 	const isFromRecurring = initial?.source_recurring_id
 	
 	// Recurring transaction state
 	const [isRecurring, setIsRecurring] = useState(initial?.isRecurring || false)
-	const [frequency, setFrequency] = useState(initial?.frequency || 'monthly')
+	const [frequency, setFrequency] = useState(initial?.frequency || RECURRING_FREQUENCIES.MONTHLY)
 	const [intervalCount, setIntervalCount] = useState(initial?.intervalCount || initial?.interval_count || 1)
 	const [endType, setEndType] = useState(initial?.endDate || initial?.end_date ? 'date' : initial?.occurrencesLimit || initial?.occurrences_limit ? 'count' : 'never')
 	const [endDate, setEndDate] = useState(initial?.endDate || initial?.end_date || '')
@@ -246,15 +245,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		onSubmit(formData)
 	}
 
-	const getInputClassName = (fieldError) =>
-		`${inputBaseClass} ${fieldError ? inputErrorClass : inputNormalClass}`
-
-	// Calculate minimum end date based on frequency and interval
-	function getMinEndDate() {
-		if (!date) return date
-		return getMinEndDateString(date, frequency, Number(intervalCount))
-	}
-
 	return (
 		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full">
 			<h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
@@ -342,7 +332,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						<select
 							value={currencyCode}
 							onChange={e => setCurrencyCode(e.target.value)}
-							className={inputBaseClass + ' ' + inputNormalClass}
+							className={getInputClassName(false)}
 						>
 							<option value="USD">🇺🇸 {t('currency.USD')}</option>
 							<option value="EUR">🇪🇺 {t('currency.EUR')}</option>
@@ -367,7 +357,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							placeholder="1.0"
 							value={exchangeRate}
 							onChange={e => setExchangeRate(e.target.value)}
-							className={inputBaseClass + ' ' + inputNormalClass}
+							className={getInputClassName(false)}
 						/>
 						<p className="text-xs text-gray-500 dark:text-gray-400">
 							{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
@@ -436,7 +426,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						placeholder={t('transactions.tagsPlaceholder')}
 						value={tags}
 						onChange={e => setTags(e.target.value)}
-						className={inputBaseClass + ' ' + inputNormalClass}
+						className={getInputClassName(false)}
 					/>
 				</div>
 

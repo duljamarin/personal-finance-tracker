@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabaseClient';
+import { storeUsername } from '../utils/authHelpers';
 
 const AuthContext = createContext();
 
@@ -17,14 +18,7 @@ export function AuthProvider({ children }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-      // Store username in localStorage for display (from user metadata)
-      if (session?.user?.user_metadata?.username) {
-        localStorage.setItem('username', session.user.user_metadata.username);
-      } else if (session?.user?.email) {
-        localStorage.setItem('username', session.user.email.split('@')[0]);
-      } else {
-        localStorage.removeItem('username');
-      }
+      storeUsername(session?.user);
     });
 
     // Listen for auth state changes within this tab
@@ -32,14 +26,7 @@ export function AuthProvider({ children }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-      // Store username in localStorage for display (from user metadata)
-      if (session?.user?.user_metadata?.username) {
-        localStorage.setItem('username', session.user.user_metadata.username);
-      } else if (session?.user?.email) {
-        localStorage.setItem('username', session.user.email.split('@')[0]);
-      } else {
-        localStorage.removeItem('username');
-      }
+      storeUsername(session?.user);
     });
 
     // Cross-tab auth sync: listen for storage events from other tabs

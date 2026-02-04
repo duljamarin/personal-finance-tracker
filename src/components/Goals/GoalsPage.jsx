@@ -7,6 +7,7 @@ import GoalForm from './GoalForm';
 import ContributionForm from './ContributionForm';
 import { fetchGoals, fetchGoalsStats, createGoal, updateGoal, deleteGoal, addContribution, addTransaction } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
+import LoadingSpinner from '../UI/LoadingSpinner';
 
 export default function GoalsPage() {
   const { t } = useTranslation();
@@ -118,11 +119,7 @@ export default function GoalsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-indigo-600 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner size="md" className="min-h-[60vh]" />;
   }
 
   return (

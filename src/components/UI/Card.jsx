@@ -1,8 +1,21 @@
 
-export default function Card({ children, className='' }){
+export default function Card({ children, className = '', variant = 'default', padding = 'md' }) {
+  const variants = {
+    default: 'bg-white dark:bg-gray-700',
+    gradient: 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900',
+    outlined: 'bg-transparent border-2 border-gray-200 dark:border-gray-700'
+  };
+  
+  const paddings = {
+    none: '',
+    sm: 'p-2',
+    md: 'p-4',
+    lg: 'p-6'
+  };
+  
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl shadow p-4">
+    <div className={`${variants[variant]} ${paddings[padding]} rounded-2xl shadow ${className}`}>
       {children}
     </div>
-  )
+  );
 }

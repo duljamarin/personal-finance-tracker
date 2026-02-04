@@ -488,6 +488,52 @@
       "error": "Ndodhi një gabim"
     }
   },
+  "budgets": {
+    "title": "Buxhete Mujore",
+    "subtitle": "Vendosni dhe ndiqni limitet e shpenzimeve sipas kategorisë",
+    "addBudget": "Shto Buxhet",
+    "editBudget": "Ndrysho Buxhet",
+    "currentMonth": "Aktuali",
+    "stats": {
+      "totalBudgeted": "Totali i Buxhetuar",
+      "totalSpent": "Totali i Shpenzuar",
+      "totalRemaining": "Mbetet",
+      "percentUsed": "% Shfrytëzuar"
+    },
+    "card": {
+      "spent": "shpenzuar",
+      "of": "nga",
+      "remaining": "mbetet",
+      "overflow": "mbi buxhet"
+    },
+    "forecast": {
+      "onTrack": "Në rrugë — parashikuar €{{amount}} deri fundit i muajit",
+      "willExceed": "Do te tejkalohet me €{{amount}}",
+      "notStarted": "Ende nuk ka filluar"
+    },
+    "noData": "Asnjë buxhet i vendosur",
+    "noDataDesc": "Krijoni buxhetin e parë tuaj për të filluar ndjekjen e limiteve të shpenzimeve për çdo kategori",
+    "createFirst": "Krijo Buxhetin e Parë",
+    "copyFromPrevious": "Kopjo nga Muaji i kaluar",
+    "loadError": "Nuk mund te ngarkohen buxhetet. Ju lutem provoni perseri ma vonë.",
+    "deleteConfirm": "Je i sigurt që dëshironi të fshini këtë buxhet?",
+    "form": {
+      "category": "Kategoria",
+      "categoryPlaceholder": "Zgjidhni kategorinë",
+      "amount": "Shuma e Buxhetit Mujor",
+      "amountError": "Shuma duhet të jetë numri pozitiv.",
+      "categoryError": "Ju lutem zgjidhni kategorinë.",
+      "noCategoriesAvailable": "Të gjitha kategoritë tashmë kanë buxhete këtë muaj"
+    },
+    "toast": {
+      "created": "Buxheti u krijua me sukses",
+      "updated": "Buxheti u përditësua me sukses",
+      "deleted": "Buxheti u fshi me sukses",
+      "copied": "Buxhetet u kopjuan nga muaji i kaluar",
+      "copyEmpty": "Asnjë buxhet u gjet nga muaji i kaluar për te kopjuar",
+      "error": "Ndodhi një gabim"
+    }
+  },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara."
   }
