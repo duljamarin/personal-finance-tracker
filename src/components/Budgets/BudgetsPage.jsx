@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
+import Modal from '../UI/Modal';
 import BudgetCard from './BudgetCard';
 import BudgetForm from './BudgetForm';
 import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExpensesByCategory, fetchCategories } from '../../utils/api';
@@ -25,6 +26,7 @@ export default function BudgetsPage() {
 
   const [showBudgetForm, setShowBudgetForm] = useState(false);
   const [editingBudget, setEditingBudget] = useState(null);
+  const [budgetToDelete, setBudgetToDelete] = useState(null);
 
   // Derived values
   const isCurrentMonth = selectedYear === today.getFullYear() && selectedMonth === today.getMonth() + 1;
@@ -108,12 +110,15 @@ export default function BudgetsPage() {
     }
   };
 
-  const handleDeleteBudget = async (budget) => {
-    if (!window.confirm(t('budgets.deleteConfirm'))) return;
+  const handleDeleteBudget = (budget) => {
+    setBudgetToDelete(budget);
+  };
 
+  const confirmDelete = async () => {
     try {
-      await deleteBudget(budget.id);
+      await deleteBudget(budgetToDelete.id);
       addToast(t('budgets.toast.deleted'), 'success');
+      setBudgetToDelete(null);
       loadData();
     } catch (error) {
       console.error('Error deleting budget:', error);
@@ -302,7 +307,7 @@ export default function BudgetsPage() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Add / Edit Modal */}
       {showBudgetForm && (
         <BudgetForm
           budget={editingBudget}
@@ -313,6 +318,26 @@ export default function BudgetsPage() {
             setEditingBudget(null);
           }}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {budgetToDelete && (
+        <Modal onClose={() => setBudgetToDelete(null)}>
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+            {t('budgets.delete.title')}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            {t('budgets.deleteConfirm')}
+          </p>
+          <div className="flex justify-end gap-3">
+            <Button variant="secondary" onClick={() => setBudgetToDelete(null)}>
+              {t('budgets.delete.cancel')}
+            </Button>
+            <Button variant="danger" onClick={confirmDelete}>
+              {t('budgets.delete.confirm')}
+            </Button>
+          </div>
+        </Modal>
       )}
     </div>
   );

@@ -517,6 +517,11 @@
     "copyFromPrevious": "Copy from Previous Month",
     "loadError": "Unable to load budgets. Please try again later.",
     "deleteConfirm": "Are you sure you want to delete this budget?",
+    "delete": {
+      "title": "Delete Budget",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
     "form": {
       "category": "Category",
       "categoryPlaceholder": "Select a category",

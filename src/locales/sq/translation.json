@@ -517,6 +517,11 @@
     "copyFromPrevious": "Kopjo nga Muaji i kaluar",
     "loadError": "Nuk mund te ngarkohen buxhetet. Ju lutem provoni perseri ma vonë.",
     "deleteConfirm": "Je i sigurt që dëshironi të fshini këtë buxhet?",
+    "delete": {
+      "title": "Fshi Buxhetin",
+      "confirm": "Fshi",
+      "cancel": "Anulo"
+    },
     "form": {
       "category": "Kategoria",
       "categoryPlaceholder": "Zgjidhni kategorinë",
