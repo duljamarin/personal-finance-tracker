@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { APP_CONFIG } from './config/app';
@@ -9,7 +9,6 @@ import CategoryPieChart from './components/Transactions/CategoryPieChart.jsx';
 import CategoryBenchmark from './components/Benchmark/CategoryBenchmark.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-import useDarkMode from './hooks/useDarkMode.js';
 import CategoriesPage from './components/Categories/CategoriesPage.jsx';
 import RecurringPage from './components/Recurring/RecurringPage.jsx';
 import GoalsPage from './components/Goals/GoalsPage.jsx';
@@ -20,9 +19,10 @@ import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
 import ForgotPassword from './components/Auth/ForgotPassword.jsx';
 import ResetPassword from './components/Auth/ResetPassword.jsx';
 import LandingPage from './components/LandingPage.jsx';
-import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from './utils/api';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { ToastProvider, useToast } from './context/ToastContext';
+import { ToastProvider } from './context/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { TransactionProvider, useTransactions } from './context/TransactionContext';
 import HealthScore from './components/HealthScore/HealthScore.jsx';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 import { getValueColorClass } from './utils/classNames';
@@ -111,104 +111,22 @@ function AuthGlobalUI() {
   );
 }
 
-function AppContent() {
-  const { accessToken, loading: authLoading } = useAuth();
-  const { addToast } = useToast();
+function InnerAppContent() {
+  const location = useLocation();
+  const { accessToken } = useAuth();
   const { t } = useTranslation();
-  const [transactions, setTransactions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [categories, setCategories] = useState([])
-  const [catError, setCatError] = useState(null)
-  const [typeFilter, setTypeFilter] = useState('all') // 'all', 'income', 'expense'
-
-  const [isDark, setIsDark] = useDarkMode('expense_dark_mode')
-
-  // Use base_amount for calculations (supports multi-currency)
-  const totalIncome = useMemo(() => transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + (t.base_amount || t.amount || 0), 0), [transactions])
-  const totalExpense = useMemo(() => transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + (t.base_amount || t.amount || 0), 0), [transactions])
-  const net = totalIncome - totalExpense
-
-  // Check if there are mixed currencies
-  const currencies = new Set(transactions.map(t => t.currency_code || t.currencyCode || 'EUR'));
-  const hasMixedCurrencies = currencies.size > 1;
+  const {
+    transactions,
+    loading,
+    error,
+    totalIncome,
+    totalExpense,
+    net,
+    hasMixedCurrencies,
+  } = useTransactions();
 
   const [showGreeting, setShowGreeting] = useState(false);
   const username = localStorage.getItem('username');
-  // Load transactions from backend or localStorage
-  async function reloadTransactions() {
-    setLoading(true)
-    setError(null)
-    setTransactions([]) // Clear old data immediately
-    try {
-      // fetch all, filter in FE for charts
-      const transactionsData = await fetchTransactions()
-      setTransactions(Array.isArray(transactionsData) ? transactionsData : [])
-    } catch (e) {
-      console.error('❌ Error loading transactions:', e);
-      setTransactions([])
-    }
-    setLoading(false)
-  }
-
-  async function reloadCategories() {
-    setCategories([]) // Clear old data immediately
-    setCatError(null)
-    try {
-      const cats = await fetchCategories()
-      setCategories(Array.isArray(cats) ? cats : [])
-    } catch (e) {
-      console.error('❌ Error loading categories:', e);
-      setCategories([])
-      setCatError('Failed to load categories')
-    }
-  }
-
-  useEffect(() => {
-    // Wait for auth to initialize before fetching data
-    if (authLoading) return;
-
-    if (accessToken) {
-      reloadTransactions()
-      reloadCategories()
-    } else {
-      // Clear data when logged out
-      setTransactions([])
-      setCategories([])
-      setLoading(false)
-    }
-  }, [accessToken, authLoading])
-
-  async function addTransaction(item) {
-    try {
-      const newItem = await apiAddTransaction(item)
-      setTransactions(prev => [newItem, ...prev])
-      addToast(t('messages.transactionAdded'), 'success')
-    } catch (e) {
-      addToast(t('messages.error'), 'error')
-    }
-  }
-
-  async function updateTransaction(id, updated) {
-    try {
-      const newItem = await apiUpdateTransaction(id, updated)
-      setTransactions(prev => prev.map(e => e.id === id ? newItem : e))
-      addToast(t('messages.transactionUpdated'), 'success')
-    } catch (e) {
-      addToast(t('messages.error'), 'error')
-    }
-  }
-
-  async function deleteTransaction(id) {
-    try {
-      await apiDeleteTransaction(id)
-      setTransactions(prev => prev.filter(e => e.id !== id))
-      addToast(t('messages.transactionDeleted'), 'info')
-    } catch (e) {
-      addToast(t('messages.error'), 'error')
-    }
-  }
-
 
   useEffect(() => {
     if (username) {
@@ -218,60 +136,6 @@ function AppContent() {
     }
   }, [username]);APP_CONFIG.GREETING_DURATION
 
-  return (
-    <Router>
-      <InnerAppContent 
-        isDark={isDark} 
-        setIsDark={setIsDark}
-        transactions={transactions}
-        loading={loading}
-        error={error}
-        categories={categories}
-        catError={catError}
-        typeFilter={typeFilter}
-        setTypeFilter={setTypeFilter}
-        totalIncome={totalIncome}
-        totalExpense={totalExpense}
-        net={net}
-        hasMixedCurrencies={hasMixedCurrencies}
-        showGreeting={showGreeting}
-        username={username}
-        addTransaction={addTransaction}
-        updateTransaction={updateTransaction}
-        deleteTransaction={deleteTransaction}
-        reloadTransactions={reloadTransactions}
-        reloadCategories={reloadCategories}
-      />
-    </Router>
-  );
-}
-
-function InnerAppContent({ 
-  isDark, 
-  setIsDark, 
-  transactions, 
-  loading, 
-  error, 
-  categories, 
-  catError, 
-  typeFilter, 
-  setTypeFilter,
-  totalIncome,
-  totalExpense,
-  net,
-  hasMixedCurrencies,
-  showGreeting,
-  username,
-  addTransaction,
-  updateTransaction,
-  deleteTransaction,
-  reloadTransactions,
-  reloadCategories
-}) {
-  const location = useLocation();
-  const { accessToken } = useAuth();
-  const { t } = useTranslation();
-  
   // Routes where Header should not be shown (auth flows)
   const hideHeaderRoutes = ['/reset-password'];
   const shouldShowHeader = !hideHeaderRoutes.includes(location.pathname);
@@ -280,7 +144,7 @@ function InnerAppContent({
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 transition-colors duration-300">
       <AuthGlobalUI />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-3rem)]">
-        {shouldShowHeader && <Header isDark={isDark} toggleDark={() => setIsDark(d => !d)} />}
+        {shouldShowHeader && <Header />}
         <main className="flex-1 mt-4">
         <Routes>
             <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
@@ -290,7 +154,7 @@ function InnerAppContent({
             <Route path="/auth/confirmed" element={<EmailConfirmed />} />
             <Route path="/categories" element={
               <PrivateRoute>
-                <CategoriesPage reloadExpenses={reloadTransactions} reloadCategories={reloadCategories} categories={categories} catError={catError} />
+                <CategoriesPage />
               </PrivateRoute>
             } />
             <Route path="/recurring" element={
@@ -406,17 +270,7 @@ function InnerAppContent({
                       {t('dashboard.loadingData')}
                     </div>
                   ) : (
-                    <Transactions
-                      items={transactions}
-                      onDelete={deleteTransaction}
-                      onUpdate={updateTransaction}
-                      onAdd={addTransaction}
-                      categories={categories}
-                      typeFilter={typeFilter}
-                      setTypeFilter={setTypeFilter}
-                      reloadCategories={reloadCategories}
-                      onReload={reloadTransactions}
-                    />
+                    <Transactions />
                   )}
                 </>
               </PrivateRoute>
@@ -436,7 +290,13 @@ export default function App() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <AppContent />
+        <ThemeProvider>
+          <TransactionProvider>
+            <Router>
+              <InnerAppContent />
+            </Router>
+          </TransactionProvider>
+        </ThemeProvider>
       </ToastProvider>
     </AuthProvider>
   );

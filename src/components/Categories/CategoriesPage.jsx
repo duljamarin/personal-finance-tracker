@@ -4,9 +4,11 @@ import { addCategory, updateCategory, deleteCategory, fetchTransactions } from '
 import Button from '../UI/Button.jsx';
 import Modal from '../UI/Modal.jsx';
 import { useToast } from '../../context/ToastContext';
+import { useTransactions } from '../../context/TransactionContext';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
-export default function CategoriesPage({ reloadExpenses, reloadCategories, categories, catError }) {
+export default function CategoriesPage() {
+  const { categories, catError, reloadCategories, reloadTransactions: reloadExpenses } = useTransactions();
   const { addToast } = useToast();
   const { t } = useTranslation();
   // categories is now a prop

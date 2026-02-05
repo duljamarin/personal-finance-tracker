@@ -468,7 +468,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										<select
 											value={frequency}
 											onChange={handleFrequencyChange}
-											className={inputBaseClass + ' ' + inputNormalClass}
+											className={getInputClassName(false)}
 										>
 											<option value="daily">{t('recurring.daily')}</option>
 											<option value="weekly">{t('recurring.weekly')}</option>
@@ -531,7 +531,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 											type="date"
 											value={endDate}
 											onChange={handleEndDateChange}
-											min={getMinEndDate()}
+											min={getMinEndDateString(date, frequency, intervalCount)}
 											className={`${getInputClassName(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
 										/>
 										{errors.endDate && (

@@ -7,10 +7,21 @@ import TransactionForm from '../Transaction/TransactionForm';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
+import { useTransactions } from '../../context/TransactionContext';
 import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
 
-// Accept onAdd for new transactions
-export default function Transactions({ items, onDelete, onUpdate, onAdd, categories, typeFilter, setTypeFilter, reloadCategories, onReload }) {
+export default function Transactions() {
+  const {
+    transactions: items,
+    categories,
+    typeFilter,
+    setTypeFilter,
+    reloadCategories,
+    reloadTransactions: onReload,
+    addTransaction: onAdd,
+    updateTransaction: onUpdate,
+    deleteTransaction: onDelete,
+  } = useTransactions();
   const { t } = useTranslation();
   const { addToast } = useToast();
   const years = useMemo(() => {
@@ -284,7 +295,8 @@ export default function Transactions({ items, onDelete, onUpdate, onAdd, categor
                 try {
                   await addRecurringTransaction(data);
                   addToast(t('recurring.created'), 'success');
-                  // Reload to refresh the list
+                  // Generate the first instance, then reload
+                  await processRecurringTransactions();
                   if (onReload) {
                     await onReload();
                   }
