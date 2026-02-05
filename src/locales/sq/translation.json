@@ -216,6 +216,22 @@
       "multicurrency": {
         "title": "Mbështetje për disa valuta",
         "desc": "Mbështetje për disa valuta me gjurmim automatik të konvertimit"
+      },
+      "recurring": {
+        "title": "Transaksione Të Përsëritura",
+        "desc": "Automatizoni lehtësisht transaksionet ditore, javore, mujore ose vjetore"
+      },
+      "goals": {
+        "title": "Objektiva Financiare",
+        "desc": "Vendosni qëllime financiare dhe ndiqni progresin nëpërmjet kontributeve dhe etapave"
+      },
+      "budgets": {
+        "title": "Buxhete Mujore",
+        "desc": "Vendosni limitet e shpenzimeve sipas kategorisë dhe merrni parashikime për çdo muaj"
+      },
+      "healthscore": {
+        "title": "Rezultat i Shëndetit Financiar",
+        "desc": "Marrni njohuri për mirëqenien tuaj financiare mujore"
       }
     },
     "cta": {

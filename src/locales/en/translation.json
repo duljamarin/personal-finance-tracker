@@ -216,6 +216,22 @@
       "multicurrency": {
         "title": "Multi-Currency",
         "desc": "Support for multiple currencies with automatic conversion tracking"
+      },
+      "recurring": {
+        "title": "Recurring Transactions",
+        "desc": "Automate routine income and expenses on daily, weekly, monthly, or yearly schedules"
+      },
+      "goals": {
+        "title": "Financial Goals",
+        "desc": "Set savings, debt payoff, investment, and purchase goals — track progress with contributions"
+      },
+      "budgets": {
+        "title": "Monthly Budgets",
+        "desc": "Set spending limits per category and get end-of-month forecasts to stay on track"
+      },
+      "healthscore": {
+        "title": "Health Score",
+        "desc": "Get an overall financial wellness score with actionable insights based on your spending"
       }
     },
     "cta": {
