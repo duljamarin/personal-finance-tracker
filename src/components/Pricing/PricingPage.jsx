@@ -280,7 +280,7 @@ export default function PricingPage() {
                   {t('pricing.managePlan')}
                 </Button>
               </>
-            ) : isPremium ? (
+            ) : isPremium && !isCurrentPlan('monthly') ? (
               <Button
                 variant="secondary"
                 className="w-full"
@@ -347,7 +347,7 @@ export default function PricingPage() {
                   {t('pricing.managePlan')}
                 </Button>
               </>
-            ) : isPremium ? (
+            ) : isPremium && !isCurrentPlan('yearly') ? (
               <Button
                 variant="secondary"
                 className="w-full"
