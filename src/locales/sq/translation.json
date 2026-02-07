@@ -637,7 +637,7 @@
       },
       "section3": {
         "title": "3. Kushtet e Llogarisë",
-        "p1": "Ju duhet të jeni 18 vjeç ose më të moshuar për të përdorur këtë Shërbim. Duhet të jepni emrin tuaj të plotë ligjor, një adresë emaili të vlefshme dhe çdo informacion tjetër të kërkuar për të përfunduar procesin e regjistrimit.",
+        "p1": "Ju duhet të jeni 18 vjeç ose më të moshuar për të përdorur këtë Shërbim. Duke pranuar këto kushte, ju deklaroni dhe garantoni se jeni të paktën 18 vjeç dhe keni aftësinë ligjore për të lidhur këtë marrëveshje. Ky Shërbim operohet nga Marin Dulja.",
         "p2": "Ju jeni përgjegjës për ruajtjen e sigurisë së llogarisë dhe fjalëkalimit tuaj. Ne nuk mund dhe nuk do të jemi përgjegjës për ndonjë humbje ose dëm nga dështimi juaj për të përmbushur këtë detyrim sigurie.",
         "p3": "Ju jeni përgjegjës për të gjithë përmbajtjen e postuar dhe aktivitetin që ndodh nën llogarinë tuaj."
       },
@@ -716,11 +716,7 @@
         "item4": "Me pëlqimin tuaj ose sipas udhëzimeve tuaja"
       },
       "section7": {
-        "title": "7. Cookies dhe Gjurmimi",
-        "content": "Ne përdorim cookies dhe teknologji të ngjashme gjurmimi për të gjurmuar aktivitetin në Shërbimin tonë dhe për të mbajtur informacione të caktuara. Ju mund t'i udhëzoni shfletuesin tuaj të refuzojë të gjitha cookies ose të tregojë kur një cookie po dërgohet."
-      },
-      "section8": {
-        "title": "8. Të Drejtat Tuaja mbi të Dhënat",
+        "title": "7. Të Drejtat Tuaja mbi të Dhënat",
         "intro": "Ju keni të drejtën për të:",
         "item1": "Aksesuar, përditësuar ose fshirë informacionin tuaj personal",
         "item2": "Kundërshtuar përpunimin e informacionit tuaj",
@@ -729,15 +725,15 @@
         "item5": "Tërhequr pëlqimin në çdo kohë"
       },
       "section9": {
-        "title": "9. Privatësia e Fëmijëve",
+        "title": "8. Privatësia e Fëmijëve",
         "content": "Shërbimi ynë nuk është i destinuar për fëmijë nën 18 vjeç. Ne nuk mbledhim me dijeni informacion personal nga fëmijët nën 18 vjeç. Nëse vini në dijeni se një fëmijë na ka dhënë informacion personal, ju lutemi na kontaktoni."
       },
       "section10": {
-        "title": "10. Ndryshimet në këtë Politikë Privatësie",
+        "title": "9. Ndryshimet në këtë Politikë Privatësie",
         "content": "Ne mund të përditësojmë Politikën tonë të Privatësisë herë pas here. Do t'ju njoftojmë për çdo ndryshim duke postuar Politikën e re të Privatësisë në këtë faqe dhe duke përditësuar datën \"Përditësuar më\"."
       },
       "section11": {
-        "title": "11. Na Kontaktoni",
+        "title": "10. Na Kontaktoni",
         "content": "Nëse keni ndonjë pyetje rreth kësaj Politike Privatësie, ju lutemi na kontaktoni përmes kanaleve tona të mbështetjes."
       }
     }

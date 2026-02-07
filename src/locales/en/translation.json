@@ -637,7 +637,7 @@
       },
       "section3": {
         "title": "3. Account Terms",
-        "p1": "You must be 18 years or older to use this Service. You must provide your legal full name, a valid email address, and any other information requested in order to complete the signup process. This Service is operated by Marin Dulja.",
+        "p1": "You must be 18 years or older to use this Service. By accepting these terms, you confirm that you meet this age requirement. This Service is operated by Marin Dulja.",
         "p2": "You are responsible for maintaining the security of your account and password. We cannot and will not be liable for any loss or damage from your failure to comply with this security obligation.",
         "p3": "You are responsible for all content posted and activity that occurs under your account."
       },
@@ -716,11 +716,7 @@
         "item4": "With your consent or at your direction"
       },
       "section7": {
-        "title": "7. Cookies and Tracking",
-        "content": "We use cookies and similar tracking technologies to track activity on our Service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent."
-      },
-      "section8": {
-        "title": "8. Your Data Rights",
+        "title": "7. Your Data Rights",
         "intro": "You have the right to:",
         "item1": "Access, update, or delete your personal information",
         "item2": "Object to processing of your information",
@@ -728,16 +724,16 @@
         "item4": "Request transfer of your information",
         "item5": "Withdraw consent at any time"
       },
-      "section9": {
-        "title": "9. Children's Privacy",
+      "section8": {
+        "title": "8. Children's Privacy",
         "content": "Our Service is not intended for children under 18 years of age. We do not knowingly collect personal information from children under 18. If you become aware that a child has provided us with personal information, please contact us."
       },
-      "section10": {
-        "title": "10. Changes to This Privacy Policy",
+      "section9": {
+        "title": "9. Changes to This Privacy Policy",
         "content": "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last updated\" date."
       },
-      "section11": {
-        "title": "11. Contact Us",
+      "section10": {
+        "title": "10. Contact Us",
         "content": "If you have any questions about this Privacy Policy, please contact us through our support channels."
       }
     }
