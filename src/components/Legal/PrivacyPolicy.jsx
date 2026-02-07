@@ -90,23 +90,23 @@ export default function PrivacyPolicy() {
             {t('legal.privacy.section7.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            {t('legal.privacy.section7.content')}
+            {t('legal.privacy.section7.intro')}
           </p>
+          <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
+            <li>{t('legal.privacy.section7.item1')}</li>
+            <li>{t('legal.privacy.section7.item2')}</li>
+            <li>{t('legal.privacy.section7.item3')}</li>
+            <li>{t('legal.privacy.section7.item4')}</li>
+            <li>{t('legal.privacy.section7.item5')}</li>
+          </ul>
 
           {/* Section 8 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
             {t('legal.privacy.section8.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            {t('legal.privacy.section8.intro')}
+            {t('legal.privacy.section8.content')}
           </p>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
-            <li>{t('legal.privacy.section8.item1')}</li>
-            <li>{t('legal.privacy.section8.item2')}</li>
-            <li>{t('legal.privacy.section8.item3')}</li>
-            <li>{t('legal.privacy.section8.item4')}</li>
-            <li>{t('legal.privacy.section8.item5')}</li>
-          </ul>
 
           {/* Section 9 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
@@ -122,14 +122,6 @@ export default function PrivacyPolicy() {
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
             {t('legal.privacy.section10.content')}
-          </p>
-
-          {/* Section 11 */}
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            {t('legal.privacy.section11.title')}
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
-            {t('legal.privacy.section11.content')}
           </p>
         </div>
 
