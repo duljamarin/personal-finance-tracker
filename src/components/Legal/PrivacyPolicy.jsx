@@ -1,121 +1,135 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 border border-gray-200 dark:border-gray-700">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Privacy Policy
+          {t('legal.privacy.title')}
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-          Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          {t('legal.lastUpdated')}: {new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
 
         <div className="prose prose-gray dark:prose-invert max-w-none">
+          {/* Section 1 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            1. Information We Collect
+            {t('legal.privacy.section1.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We collect information you provide directly to us when you create an account, use our Service, or communicate with us. This includes:
+            {t('legal.privacy.section1.intro')}
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
-            <li>Email address and password</li>
-            <li>Financial transaction data (amounts, categories, dates, descriptions)</li>
-            <li>Budget and goal information</li>
-            <li>Payment information (processed securely by our payment processor, Paddle)</li>
+            <li>{t('legal.privacy.section1.item1')}</li>
+            <li>{t('legal.privacy.section1.item2')}</li>
+            <li>{t('legal.privacy.section1.item3')}</li>
+            <li>{t('legal.privacy.section1.item4')}</li>
           </ul>
 
+          {/* Section 2 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            2. How We Use Your Information
+            {t('legal.privacy.section2.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We use the information we collect to:
+            {t('legal.privacy.section2.intro')}
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
-            <li>Provide, maintain, and improve our Service</li>
-            <li>Process transactions and send related information</li>
-            <li>Send technical notices, updates, and support messages</li>
-            <li>Respond to your comments and questions</li>
-            <li>Analyze usage patterns to improve user experience</li>
+            <li>{t('legal.privacy.section2.item1')}</li>
+            <li>{t('legal.privacy.section2.item2')}</li>
+            <li>{t('legal.privacy.section2.item3')}</li>
+            <li>{t('legal.privacy.section2.item4')}</li>
+            <li>{t('legal.privacy.section2.item5')}</li>
           </ul>
 
+          {/* Section 3 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            3. Data Storage and Security
+            {t('legal.privacy.section3.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Your data is stored securely using Supabase, a PostgreSQL database with enterprise-grade security. We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
+            {t('legal.privacy.section3.p1')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            However, no method of transmission over the internet or electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
-          </p>
-
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            4. Payment Processing
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Payment information is processed by Paddle, our third-party payment processor. We do not store your full credit card information on our servers. Paddle's privacy policy governs the collection and processing of your payment information.
+            {t('legal.privacy.section3.p2')}
           </p>
 
+          {/* Section 4 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            5. Data Retention
+            {t('legal.privacy.section4.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We retain your information for as long as your account is active or as needed to provide you services. If you wish to delete your account, please contact us. After account deletion, we may retain certain information as required by law or for legitimate business purposes.
+            {t('legal.privacy.section4.content')}
           </p>
 
+          {/* Section 5 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            6. Data Sharing
+            {t('legal.privacy.section5.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:
+            {t('legal.privacy.section5.content')}
+          </p>
+
+          {/* Section 6 */}
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
+            {t('legal.privacy.section6.title')}
+          </h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
+            {t('legal.privacy.section6.intro')}
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
-            <li>With service providers who assist in our operations (e.g., Paddle for payment processing)</li>
-            <li>To comply with legal obligations or respond to lawful requests</li>
-            <li>To protect our rights, privacy, safety, or property</li>
-            <li>With your consent or at your direction</li>
+            <li>{t('legal.privacy.section6.item1')}</li>
+            <li>{t('legal.privacy.section6.item2')}</li>
+            <li>{t('legal.privacy.section6.item3')}</li>
+            <li>{t('legal.privacy.section6.item4')}</li>
           </ul>
 
+          {/* Section 7 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            7. Cookies and Tracking
+            {t('legal.privacy.section7.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We use cookies and similar tracking technologies to track activity on our Service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+            {t('legal.privacy.section7.content')}
           </p>
 
+          {/* Section 8 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            8. Your Data Rights
+            {t('legal.privacy.section8.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            You have the right to:
+            {t('legal.privacy.section8.intro')}
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
-            <li>Access, update, or delete your personal information</li>
-            <li>Object to processing of your information</li>
-            <li>Request restriction of processing your information</li>
-            <li>Request transfer of your information</li>
-            <li>Withdraw consent at any time</li>
+            <li>{t('legal.privacy.section8.item1')}</li>
+            <li>{t('legal.privacy.section8.item2')}</li>
+            <li>{t('legal.privacy.section8.item3')}</li>
+            <li>{t('legal.privacy.section8.item4')}</li>
+            <li>{t('legal.privacy.section8.item5')}</li>
           </ul>
 
+          {/* Section 9 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            9. Children's Privacy
+            {t('legal.privacy.section9.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Our Service is not intended for children under 18 years of age. We do not knowingly collect personal information from children under 18. If you become aware that a child has provided us with personal information, please contact us.
+            {t('legal.privacy.section9.content')}
           </p>
 
+          {/* Section 10 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            10. Changes to This Privacy Policy
+            {t('legal.privacy.section10.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
+            {t('legal.privacy.section10.content')}
           </p>
 
+          {/* Section 11 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            11. Contact Us
+            {t('legal.privacy.section11.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            If you have any questions about this Privacy Policy, please contact us through our support channels.
+            {t('legal.privacy.section11.content')}
           </p>
         </div>
 
@@ -124,7 +138,7 @@ export default function PrivacyPolicy() {
             to="/"
             className="text-blue-600 dark:text-blue-400 hover:underline"
           >
-            ← Back to Home
+            ← {t('legal.backToHome')}
           </Link>
         </div>
       </div>

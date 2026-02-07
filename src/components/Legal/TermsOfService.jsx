@@ -1,113 +1,126 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 export default function TermsOfService() {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 border border-gray-200 dark:border-gray-700">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Terms of Service
+          {t('legal.terms.title')}
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-          Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          {t('legal.lastUpdated')}: {new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
 
         <div className="prose prose-gray dark:prose-invert max-w-none">
+          {/* Section 1 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            1. Acceptance of Terms
+            {t('legal.terms.section1.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            By accessing and using this personal finance tracking application ("Service"), you accept and agree to be bound by the terms and provision of this agreement.
+            {t('legal.terms.section1.content')}
           </p>
 
+          {/* Section 2 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            2. Use License
+            {t('legal.terms.section2.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Permission is granted to temporarily use the Service for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+            {t('legal.terms.section2.intro')}
           </p>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 ml-4">
-            <li>Modify or copy the materials</li>
-            <li>Use the materials for any commercial purpose</li>
-            <li>Attempt to decompile or reverse engineer any software contained in the Service</li>
-            <li>Remove any copyright or other proprietary notations from the materials</li>
-            <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
+            <li>{t('legal.terms.section2.item1')}</li>
+            <li>{t('legal.terms.section2.item2')}</li>
+            <li>{t('legal.terms.section2.item3')}</li>
+            <li>{t('legal.terms.section2.item4')}</li>
+            <li>{t('legal.terms.section2.item5')}</li>
           </ul>
 
+          {/* Section 3 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            3. Account Terms
+            {t('legal.terms.section3.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            You must be 18 years or older to use this Service. You must provide your legal full name, a valid email address, and any other information requested in order to complete the signup process.
+            {t('legal.terms.section3.p1')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            You are responsible for maintaining the security of your account and password. We cannot and will not be liable for any loss or damage from your failure to comply with this security obligation.
+            {t('legal.terms.section3.p2')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            You are responsible for all content posted and activity that occurs under your account.
+            {t('legal.terms.section3.p3')}
           </p>
 
+          {/* Section 4 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            4. Payment and Subscription Terms
+            {t('legal.terms.section4.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            The Service offers both free and paid subscription plans. Paid plans require valid payment information and will be charged automatically on a recurring basis.
+            {t('legal.terms.section4.p1')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            A valid payment method is required to process payments for paid subscriptions. You will provide us or our third-party payment processor (Paddle) with accurate and complete billing information including legal name, address, and valid payment method information.
+            {t('legal.terms.section4.p2')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Subscriptions automatically renew unless cancelled before the renewal date. You can cancel your subscription at any time through your account settings or subscription management portal.
+            {t('legal.terms.section4.p3')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Free trials may be offered for certain subscription plans. If you do not cancel before the trial period ends, you will be automatically charged for the subscription.
+            {t('legal.terms.section4.p4')}
           </p>
 
+          {/* Section 5 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            5. Cancellation and Refunds
+            {t('legal.terms.section5.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            You may cancel your subscription at any time, and you will continue to have access until the end of your billing period. No refunds will be provided for partial subscription periods.
+            {t('legal.terms.section5.p1')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We reserve the right to refuse service to anyone for any reason at any time.
+            {t('legal.terms.section5.p2')}
           </p>
 
+          {/* Section 6 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            6. Data and Privacy
+            {t('legal.terms.section6.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            Your use of the Service is also governed by our Privacy Policy. Please review our Privacy Policy, which also governs the Service and informs users of our data collection practices.
+            {t('legal.terms.section6.content')}
           </p>
 
+          {/* Section 7 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            7. Disclaimer
+            {t('legal.terms.section7.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            The materials on the Service are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+            {t('legal.terms.section7.p1')}
           </p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            This Service is not intended to provide financial, legal, or tax advice. You should consult with appropriate professionals before making any financial decisions.
-          </p>
-
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            8. Limitations
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
-            In no event shall we or our suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the Service.
+            {t('legal.terms.section7.p2')}
           </p>
 
+          {/* Section 8 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            9. Changes to Terms
+            {t('legal.terms.section8.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            We reserve the right to modify these terms at any time. We will notify users of any material changes by posting the new Terms of Service on this page. Your continued use of the Service after any changes constitutes acceptance of the new Terms of Service.
+            {t('legal.terms.section8.content')}
           </p>
 
+          {/* Section 9 */}
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-            10. Contact Information
+            {t('legal.terms.section9.title')}
           </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
-            If you have any questions about these Terms, please contact us through our support channels.
+            {t('legal.terms.section9.content')}
+          </p>
+
+          {/* Section 10 */}
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
+            {t('legal.terms.section10.title')}
+          </h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
+            {t('legal.terms.section10.content')}
           </p>
         </div>
 
@@ -116,7 +129,7 @@ export default function TermsOfService() {
             to="/"
             className="text-blue-600 dark:text-blue-400 hover:underline"
           >
-            ← Back to Home
+            ← {t('legal.backToHome')}
           </Link>
         </div>
       </div>
