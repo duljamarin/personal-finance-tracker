@@ -555,7 +555,66 @@
       "error": "An error occurred"
     }
   },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "subtitle": "Start with a 5-day free trial on any plan",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "monthlyPrice": "€5",
+    "yearlyPrice": "€50",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "saveYearly": "Save €10/year",
+    "freeTrial": "5-day free trial",
+    "subscribe": "Start Free Trial",
+    "currentPlan": "Current Plan",
+    "managePlan": "Manage Subscription",
+    "features": "What's included",
+    "free": "Free",
+    "premium": "Premium",
+    "freeFeatures": {
+      "transactions": "10 transactions/month",
+      "categories": "Custom categories",
+      "dashboard": "Basic dashboard"
+    },
+    "premiumFeatures": {
+      "transactions": "Unlimited transactions",
+      "categories": "Custom categories",
+      "recurring": "Recurring transactions",
+      "goals": "Financial goals",
+      "budgets": "Monthly budgets",
+      "healthScore": "Health score",
+      "benchmarks": "Spending benchmarks"
+    },
+    "popular": "Most Popular",
+    "bestValue": "Best Value"
+  },
+  "subscription": {
+    "active": "Active",
+    "trialing": "Trial",
+    "cancelled": "Cancelled",
+    "past_due": "Past Due",
+    "paused": "Paused",
+    "none": "Free Plan",
+    "proBadge": "PRO",
+    "onTrial": "On Trial",
+    "subscribe": "Subscribe",
+    "trialEndsIn": "Trial ends in {{days}} days",
+    "renewsOn": "Renews on {{date}}"
+  },
+  "upgrade": {
+    "bannerGracePeriod": "Your free access to premium features expires in {{days}} days",
+    "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",
+    "upgradeCta": "Upgrade to Premium",
+    "viewPlans": "View Plans",
+    "premiumFeature": "{{feature}} is a premium feature",
+    "transactionLimitReached": "You've reached your free transaction limit for this month. Upgrade for unlimited transactions.",
+    "premiumRequired": "This feature requires a Premium subscription",
+    "dismiss": "Dismiss"
+  },
   "footer": {
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
   }
 }

@@ -1,0 +1,3 @@
+# Allow webhook to be called without authentication
+# Required for Paddle to send webhook events
+verify_jwt = false

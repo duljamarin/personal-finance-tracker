@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import Card from '../UI/Card';
 import { toCSV, downloadCSV } from '../../utils/csv';
 import Modal from '../UI/Modal';
@@ -8,6 +9,7 @@ import { translateCategoryName } from '../../utils/categoryTranslation';
 import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
+import { useSubscription } from '../../context/SubscriptionContext';
 import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
 
 export default function Transactions() {
@@ -24,6 +26,8 @@ export default function Transactions() {
   } = useTransactions();
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const navigate = useNavigate();
+  const { canAddTransaction, refreshSubscription } = useSubscription();
   const years = useMemo(() => {
     const set = new Set(items.map(i => i.date?.slice(0, 4) || 'Unknown'));
     return ['All', ...Array.from(set).sort((a, b) => b.localeCompare(a))];
@@ -89,6 +93,11 @@ export default function Transactions() {
   }
 
   function handleAdd() {
+    if (!canAddTransaction) {
+      addToast(t('upgrade.transactionLimitReached'), 'warning');
+      navigate('/pricing');
+      return;
+    }
     setEditTx(null);
     setShowModal(true);
   }
@@ -307,7 +316,8 @@ export default function Transactions() {
                   addToast(t('recurring.createError'), 'error');
                 }
               } else if (onAdd) {
-                onAdd(data);
+                await onAdd(data);
+                await refreshSubscription();
                 setShowModal(false);
                 setEditTx(null);
               }

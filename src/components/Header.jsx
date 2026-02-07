@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../context/SubscriptionContext';
 import { useTranslation } from 'react-i18next';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
@@ -8,8 +9,14 @@ import LanguageSwitcher from './LanguageSwitcher.jsx';
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { accessToken, user, logout } = useAuth();
+  const { isPremium, subscription } = useSubscription();
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Show PRO badge for premium users (active or trialing)
+  // Only show upgrade button for non-premium users who are logged in
+  const showProBadge = isPremium && subscription?.subscription_status !== 'none';
+  const showUpgrade = accessToken && !showProBadge;
 
   const handleLogout = async () => {
     await logout();
@@ -50,6 +57,16 @@ export default function Header() {
                 {t('nav.categories')}
               </Link>
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+              {showUpgrade && (
+                <Link to="/pricing" className="px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-lg transition-all shadow-md">
+                  {t('upgrade.upgradeCta')}
+                </Link>
+              )}
+              {showProBadge && (
+                <Link to="/pricing" className="px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow-sm hover:from-indigo-600 hover:to-purple-700 transition-all hover:shadow-md">
+                  {t('subscription.proBadge')}
+                </Link>
+              )}
             </>
           )}
           <LanguageSwitcher />
@@ -108,6 +125,20 @@ export default function Header() {
                       {t('nav.categories')}
                     </Link>
                     <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+                    {showUpgrade && (
+                      <Link to="/pricing" className="px-4 py-2 text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 transition flex items-center gap-3 font-bold rounded-lg mx-2" onClick={() => setMenuOpen(false)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                        {t('upgrade.upgradeCta')}
+                      </Link>
+                    )}
+                    {showProBadge && (
+                      <Link to="/pricing" className="px-4 py-2 flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+                        <span className="px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all">
+                          {t('subscription.proBadge')}
+                        </span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{t('pricing.managePlan')}</span>
+                      </Link>
+                    )}
                   </>
                 )}
                 {accessToken ? (

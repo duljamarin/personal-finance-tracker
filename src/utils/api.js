@@ -1037,3 +1037,39 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
     return totals;
   }).then(result => result || {});
 }
+
+// ============================================
+// SUBSCRIPTION API
+// ============================================
+
+export async function fetchSubscription() {
+  return withAuth(async (user) => {
+    const { data, error } = await supabase
+      .rpc('get_subscription_status', { p_user_id: user.id });
+
+    if (error) {
+      // If function doesn't exist yet, return null gracefully
+      if (error.code === '42883' || error.message?.includes('does not exist')) {
+        console.warn('Subscription functions not yet deployed.');
+        return null;
+      }
+      throw error;
+    }
+    return data?.[0] || null;
+  });
+}
+
+export async function getMonthlyTransactionCount() {
+  return withAuth(async (user) => {
+    const { data, error } = await supabase
+      .rpc('get_monthly_transaction_count', { p_user_id: user.id });
+
+    if (error) {
+      if (error.code === '42883' || error.message?.includes('does not exist')) {
+        return 0;
+      }
+      throw error;
+    }
+    return data ?? 0;
+  });
+}

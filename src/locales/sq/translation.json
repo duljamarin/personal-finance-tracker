@@ -555,7 +555,66 @@
       "error": "Ndodhi një gabim"
     }
   },
+  "pricing": {
+    "title": "Zgjidhni Planin Tuaj",
+    "subtitle": "Filloni me një provë falas 5-ditore në çdo plan",
+    "monthly": "Mujore",
+    "yearly": "Vjetore",
+    "monthlyPrice": "€5",
+    "yearlyPrice": "€50",
+    "perMonth": "/muaj",
+    "perYear": "/vit",
+    "saveYearly": "Kurseni €10/vit",
+    "freeTrial": "Provë falas 5-ditore",
+    "subscribe": "Fillo Provën Falas",
+    "currentPlan": "Plani Aktual",
+    "managePlan": "Menaxho Abonimin",
+    "features": "Cfare perfshihet",
+    "free": "Falas",
+    "premium": "Premium",
+    "freeFeatures": {
+      "transactions": "10 transaksione/muaj",
+      "categories": "Kategori te personalizuara",
+      "dashboard": "Paneli bazik"
+    },
+    "premiumFeatures": {
+      "transactions": "Transaksione te pakufizuara",
+      "categories": "Kategori te personalizuara",
+      "recurring": "Transaksione perseritese",
+      "goals": "Objektivat financiare",
+      "budgets": "Buxhetet mujore",
+      "healthScore": "Rezultati i shendetit",
+      "benchmarks": "Krahasimet e shpenzimeve"
+    },
+    "popular": "Me i Popullarizuari",
+    "bestValue": "Vlera Me e Mire"
+  },
+  "subscription": {
+    "active": "Aktiv",
+    "trialing": "Prove",
+    "cancelled": "Anuluar",
+    "past_due": "Vonese",
+    "paused": "Nderprerje",
+    "none": "Plani Falas",
+    "proBadge": "PRO",
+    "onTrial": "Ne Prove",
+    "subscribe": "Abonohu",
+    "trialEndsIn": "Prova mbaron ne {{days}} dite",
+    "renewsOn": "Rinovohet me {{date}}"
+  },
+  "upgrade": {
+    "bannerGracePeriod": "Aksesi juaj falas ne funksionet premium skadon ne {{days}} dite",
+    "bannerFreeLimit": "Keni perdorur {{used}} nga {{limit}} transaksionet falas kete muaj",
+    "upgradeCta": "Kaloni ne Premium",
+    "viewPlans": "Shiko Planet",
+    "premiumFeature": "{{feature}} eshte funksion premium",
+    "transactionLimitReached": "Keni arritur kufirin e transaksioneve falas per kete muaj. Kaloni ne premium per transaksione te pakufizuara.",
+    "premiumRequired": "Ky funksion kerkon nje abonim Premium",
+    "dismiss": "Mbyll"
+  },
   "footer": {
-    "rights": "Të gjitha të drejtat e rezervuara."
+    "rights": "Të gjitha të drejtat e rezervuara.",
+    "terms": "Kushtet e Shërbimit",
+    "privacy": "Politika e Privatësisë"
   }
 }

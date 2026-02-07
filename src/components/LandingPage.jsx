@@ -107,8 +107,11 @@ export default function LandingPage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6">
               {t('landing.hero.title')}
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-2 max-w-3xl mx-auto">
               {t('landing.hero.subtitle')}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
+              Start with 10 free transactions/month • Upgrade anytime for unlimited
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link

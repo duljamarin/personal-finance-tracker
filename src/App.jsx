@@ -19,13 +19,19 @@ import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
 import ForgotPassword from './components/Auth/ForgotPassword.jsx';
 import ResetPassword from './components/Auth/ResetPassword.jsx';
 import LandingPage from './components/LandingPage.jsx';
+import TermsOfService from './components/Legal/TermsOfService.jsx';
+import PrivacyPolicy from './components/Legal/PrivacyPolicy.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { TransactionProvider, useTransactions } from './context/TransactionContext';
+import { SubscriptionProvider, useSubscription } from './context/SubscriptionContext';
 import HealthScore from './components/HealthScore/HealthScore.jsx';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 import { getValueColorClass } from './utils/classNames';
+import PricingPage from './components/Pricing/PricingPage.jsx';
+import UpgradeBanner from './components/Subscription/UpgradeBanner.jsx';
+import PremiumFeatureLock from './components/Subscription/PremiumFeatureLock.jsx';
 
 
 function PrivateRoute({ children }) {
@@ -35,6 +41,19 @@ function PrivateRoute({ children }) {
     <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
   );
   return accessToken ? children : <Navigate to="/login" replace />;
+}
+
+function PremiumRoute({ children }) {
+  const { t } = useTranslation();
+  const { accessToken, loading: authLoading } = useAuth();
+  const { isPremium, loading: subLoading } = useSubscription();
+
+  if (authLoading || subLoading) return (
+    <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
+  );
+  if (!accessToken) return <Navigate to="/login" replace />;
+  if (!isPremium) return <Navigate to="/pricing" replace />;
+  return children;
 }
 
 function AuthGlobalUI() {
@@ -152,25 +171,28 @@ function InnerAppContent() {
             <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/confirmed" element={<EmailConfirmed />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/categories" element={
               <PrivateRoute>
                 <CategoriesPage />
               </PrivateRoute>
             } />
             <Route path="/recurring" element={
-              <PrivateRoute>
+              <PremiumRoute>
                 <RecurringPage />
-              </PrivateRoute>
+              </PremiumRoute>
             } />
             <Route path="/goals" element={
-              <PrivateRoute>
+              <PremiumRoute>
                 <GoalsPage />
-              </PrivateRoute>
+              </PremiumRoute>
             } />
             <Route path="/budgets" element={
-              <PrivateRoute>
+              <PremiumRoute>
                 <BudgetsPage />
-              </PrivateRoute>
+              </PremiumRoute>
             } />
             <Route path="/dashboard" element={
               <PrivateRoute>
@@ -181,6 +203,7 @@ function InnerAppContent() {
                       {t('dashboard.welcomeBack')}, {username}!
                     </div>
                   )}
+                  <UpgradeBanner />
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-green-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                       <div className="flex items-center gap-3 mb-2">
@@ -257,10 +280,14 @@ function InnerAppContent() {
                   </div>
 
                   {/* Smart Category Benchmark */}
-                  <CategoryBenchmark onReloadTrigger={transactions.length} />
+                  <PremiumFeatureLock featureName={t('landing.features.benchmarks.title')}>
+                    <CategoryBenchmark onReloadTrigger={transactions.length} />
+                  </PremiumFeatureLock>
 
                    {/* Health Score */}
-                  <HealthScore onReloadTrigger={transactions.length} />
+                  <PremiumFeatureLock featureName={t('landing.features.healthscore.title')}>
+                    <HealthScore onReloadTrigger={transactions.length} />
+                  </PremiumFeatureLock>
 
                   {/* Page-level error (non-auth) */}
                   {error && <div className="mb-4 sm:mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 font-medium">{error}</div>}
@@ -292,9 +319,11 @@ export default function App() {
       <ToastProvider>
         <ThemeProvider>
           <TransactionProvider>
-            <Router>
-              <InnerAppContent />
-            </Router>
+            <SubscriptionProvider>
+              <Router>
+                <InnerAppContent />
+              </Router>
+            </SubscriptionProvider>
           </TransactionProvider>
         </ThemeProvider>
       </ToastProvider>
