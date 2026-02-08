@@ -91,10 +91,12 @@ export function TransactionProvider({ children }) {
       const newItem = await apiUpdateTransaction(id, updated);
       setTransactions(prev => prev.map(e => e.id === id ? newItem : e));
       addToast(t('messages.transactionUpdated'), 'success');
+      // Refresh subscription to update transaction count (date changes can affect monthly count)
+      refreshSubscription();
     } catch (e) {
       addToast(t('messages.error'), 'error');
     }
-  }, [addToast, t]);
+  }, [addToast, t, refreshSubscription]);
 
   const deleteTransaction = useCallback(async (id) => {
     try {

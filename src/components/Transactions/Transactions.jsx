@@ -321,7 +321,7 @@ export default function Transactions() {
                 }
               } else if (onAdd) {
                 await onAdd(data);
-                await refreshSubscription();
+                // refreshSubscription is called inside onAdd (TransactionContext)
                 setShowModal(false);
                 setEditTx(null);
               }

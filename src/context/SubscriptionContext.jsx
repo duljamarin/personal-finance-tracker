@@ -1,10 +1,12 @@
-import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { fetchSubscription, getMonthlyTransactionCount } from '../utils/api';
 
 const SubscriptionContext = createContext();
 
 const FREE_TRANSACTION_LIMIT = 10;
+const POLL_INTERVAL = 3000; // 3 seconds between retries
+const MAX_POLL_ATTEMPTS = 8; // up to ~24 seconds total
 
 export function SubscriptionProvider({ children }) {
   const { accessToken, loading: authLoading } = useAuth();
@@ -13,6 +15,10 @@ export function SubscriptionProvider({ children }) {
   const [monthlyTransactionCount, setMonthlyTransactionCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // Track in-flight refresh to prevent duplicate concurrent requests
+  const refreshInFlightRef = useRef(null);
+  const pollTimerRef = useRef(null);
+
   const loadSubscription = useCallback(async () => {
     setLoading(true);
     try {
@@ -20,16 +26,6 @@ export function SubscriptionProvider({ children }) {
         fetchSubscription(),
         getMonthlyTransactionCount(),
       ]);
-
-      // Debug logging
-      console.log('📊 Subscription loaded:', {
-        status: sub?.subscription_status,
-        plan: sub?.subscription_plan,
-        isPremium: sub?.is_premium,
-        isTrialing: sub?.is_trialing,
-        trialDaysLeft: sub?.trial_days_left,
-        paddleSubId: sub?.paddle_subscription_id,
-      });
 
       setSubscription(sub);
       setMonthlyTransactionCount(count ?? 0);
@@ -41,17 +37,30 @@ export function SubscriptionProvider({ children }) {
     setLoading(false);
   }, []);
 
+  /** Deduplicated refresh — concurrent calls share the same promise */
   const refreshSubscription = useCallback(async () => {
-    try {
-      const [sub, count] = await Promise.all([
-        fetchSubscription(),
-        getMonthlyTransactionCount(),
-      ]);
-      setSubscription(sub);
-      setMonthlyTransactionCount(count ?? 0);
-    } catch (e) {
-      console.error('Error refreshing subscription:', e);
+    // If a refresh is already in-flight, return the same promise
+    if (refreshInFlightRef.current) {
+      return refreshInFlightRef.current;
     }
+
+    const promise = (async () => {
+      try {
+        const [sub, count] = await Promise.all([
+          fetchSubscription(),
+          getMonthlyTransactionCount(),
+        ]);
+        setSubscription(sub);
+        setMonthlyTransactionCount(count ?? 0);
+      } catch (e) {
+        console.error('Error refreshing subscription:', e);
+      } finally {
+        refreshInFlightRef.current = null;
+      }
+    })();
+
+    refreshInFlightRef.current = promise;
+    return promise;
   }, []);
 
   useEffect(() => {
@@ -66,22 +75,57 @@ export function SubscriptionProvider({ children }) {
   }, [accessToken, authLoading, loadSubscription]);
 
   // Listen for Paddle checkout completion events
+  // Use polling with retries instead of a fixed 2-second delay
   useEffect(() => {
     const handlePaddleEvent = (e) => {
       const event = e.detail;
-      console.log('🎯 Paddle event received:', event?.name, event);
 
       if (event?.name === 'checkout.completed') {
-        console.log('✅ Checkout completed! Refreshing subscription in 2 seconds...');
-        // Refresh subscription after checkout (small delay for webhook to process)
-        setTimeout(() => {
-          console.log('🔄 Refreshing subscription now...');
-          refreshSubscription();
-        }, 2000);
+        let attempts = 0;
+
+        // Clear any existing poll timer
+        if (pollTimerRef.current) {
+          clearTimeout(pollTimerRef.current);
+          pollTimerRef.current = null;
+        }
+
+        const pollForUpdate = async () => {
+          attempts++;
+          try {
+            const sub = await fetchSubscription();
+            const isPremiumNow = sub?.is_premium === true;
+
+            if (isPremiumNow) {
+              // Webhook has been processed — do a full refresh
+              await refreshSubscription();
+              return;
+            }
+          } catch {
+            // Ignore errors during polling
+          }
+
+          if (attempts < MAX_POLL_ATTEMPTS) {
+            pollTimerRef.current = setTimeout(pollForUpdate, POLL_INTERVAL);
+          } else {
+            // Final attempt: do a full refresh regardless
+            await refreshSubscription();
+          }
+        };
+
+        // Start polling after a short initial delay
+        pollTimerRef.current = setTimeout(pollForUpdate, POLL_INTERVAL);
       }
     };
+
     window.addEventListener('paddle-event', handlePaddleEvent);
-    return () => window.removeEventListener('paddle-event', handlePaddleEvent);
+    return () => {
+      window.removeEventListener('paddle-event', handlePaddleEvent);
+      // Clean up any pending poll timer on unmount
+      if (pollTimerRef.current) {
+        clearTimeout(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
   }, [refreshSubscription]);
 
   const isPremium = useMemo(() => {

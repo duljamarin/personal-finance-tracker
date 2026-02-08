@@ -4,11 +4,14 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const PADDLE_WEBHOOK_SECRET = Deno.env.get("PADDLE_WEBHOOK_SECRET")!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const PADDLE_WEBHOOK_SECRET = Deno.env.get("PADDLE_WEBHOOK_SECRET");
 const PADDLE_MONTHLY_PRICE_ID = Deno.env.get("PADDLE_MONTHLY_PRICE_ID") || "";
 const PADDLE_YEARLY_PRICE_ID = Deno.env.get("PADDLE_YEARLY_PRICE_ID") || "";
+
+// UUID v4 format validation
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function derivePlan(priceId: string): "monthly" | "yearly" | null {
   if (priceId === PADDLE_MONTHLY_PRICE_ID) return "monthly";
@@ -18,10 +21,23 @@ function derivePlan(priceId: string): "monthly" | "yearly" | null {
 
 function derivePlanFromAmount(amount: number): "monthly" | "yearly" | null {
   // Fallback: detect plan based on transaction amount
-  // Adjust these thresholds based on your actual pricing
-  if (amount >= 40 && amount <= 60) return "yearly";  // ~50 EUR yearly
-  if (amount >= 4 && amount <= 10) return "monthly";   // ~5-8 EUR monthly
+  // Only used when priceId-based detection fails
+  if (amount >= 40 && amount <= 60) return "yearly";
+  if (amount >= 4 && amount <= 10) return "monthly";
   return null;
+}
+
+/** Constant-time string comparison to prevent timing attacks */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  const encoder = new TextEncoder();
+  const bufA = encoder.encode(a);
+  const bufB = encoder.encode(b);
+  let result = 0;
+  for (let i = 0; i < bufA.length; i++) {
+    result |= bufA[i] ^ bufB[i];
+  }
+  return result === 0;
 }
 
 async function verifyWebhookSignature(
@@ -39,6 +55,10 @@ async function verifyWebhookSignature(
   const ts = parts["ts"];
   const h1 = parts["h1"];
   if (!ts || !h1) return false;
+
+  // Reject timestamps older than 5 minutes to prevent replay attacks
+  const timestampAge = Math.abs(Date.now() / 1000 - parseInt(ts, 10));
+  if (isNaN(timestampAge) || timestampAge > 300) return false;
 
   // Reconstruct signed payload: ts:rawBody
   const signedPayload = `${ts}:${rawBody}`;
@@ -62,7 +82,7 @@ async function verifyWebhookSignature(
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 
-  return computedHash === h1;
+  return timingSafeEqual(computedHash, h1);
 }
 
 serve(async (req: Request) => {
@@ -84,23 +104,38 @@ serve(async (req: Request) => {
     });
   }
 
+  // Validate required environment variables
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    console.error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    return new Response(JSON.stringify({ error: "Server configuration error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const rawBody = await req.text();
   const signatureHeader = req.headers.get("Paddle-Signature") || "";
 
-  // Verify webhook signature
-  if (PADDLE_WEBHOOK_SECRET) {
-    const isValid = await verifyWebhookSignature(
-      rawBody,
-      signatureHeader,
-      PADDLE_WEBHOOK_SECRET
-    );
-    if (!isValid) {
-      console.error("Invalid webhook signature");
-      return new Response(JSON.stringify({ error: "Invalid signature" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+  // Always verify webhook signature — fail if secret is missing
+  if (!PADDLE_WEBHOOK_SECRET) {
+    console.error("PADDLE_WEBHOOK_SECRET is not configured — rejecting webhook");
+    return new Response(JSON.stringify({ error: "Server configuration error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const isValid = await verifyWebhookSignature(
+    rawBody,
+    signatureHeader,
+    PADDLE_WEBHOOK_SECRET
+  );
+  if (!isValid) {
+    console.error("Invalid webhook signature");
+    return new Response(JSON.stringify({ error: "Invalid signature" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   let event: any;
@@ -114,21 +149,50 @@ serve(async (req: Request) => {
   }
 
   const eventType: string = event.event_type;
+  const eventId: string = event.event_id || "";
   const data = event.data;
 
-  console.log(`Received Paddle event: ${eventType}`);
+  console.log(`Received Paddle event: ${eventType} (${eventId})`);
 
-  // Extract user_id from custom_data (passed during checkout)
+  // Extract and validate user_id from custom_data
   const userId = data?.custom_data?.user_id;
   if (!userId) {
-    console.error("No user_id in custom_data:", JSON.stringify(data?.custom_data));
+    console.error("No user_id in custom_data");
     return new Response(
       JSON.stringify({ error: "Missing user_id in custom_data" }),
       { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
+  if (typeof userId !== "string" || !UUID_REGEX.test(userId)) {
+    console.error("Invalid user_id format:", userId);
+    return new Response(
+      JSON.stringify({ error: "Invalid user_id format" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+  // Idempotency check: skip if this event was already processed
+  if (eventId) {
+    const { data: existing } = await supabase
+      .from("subscriptions")
+      .select("last_event_id")
+      .eq("user_id", userId)
+      .single();
+
+    if (existing?.last_event_id === eventId) {
+      console.log(`Event ${eventId} already processed, skipping`);
+      return new Response(
+        JSON.stringify({ success: true, event_type: eventType, skipped: true }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  }
 
   try {
     switch (eventType) {
@@ -148,9 +212,7 @@ serve(async (req: Request) => {
           current_period_end: data.current_billing_period?.ends_at || null,
         };
 
-        // Log plan detection for debugging
-        console.log(`Plan detection: priceId=${priceId}, derivedPlan=${plan}`);
-        console.log(`ENV: PADDLE_MONTHLY_PRICE_ID=${PADDLE_MONTHLY_PRICE_ID}, PADDLE_YEARLY_PRICE_ID=${PADDLE_YEARLY_PRICE_ID}`);
+        if (eventId) upsertData.last_event_id = eventId;
 
         // Capture initial pricing info if available
         if (data.items?.[0]?.price) {
@@ -159,26 +221,17 @@ serve(async (req: Request) => {
             const amount = parseFloat(priceAmount) / 100;
             upsertData.last_transaction_amount = amount;
             upsertData.last_transaction_currency = data.items[0].price.unit_price?.currency_code || 'EUR';
-            console.log(`Initial price captured: ${amount} ${upsertData.last_transaction_currency}`);
-            
-            // Fallback: If plan couldn't be derived from priceId, use amount
+
+            // Fallback: only use amount-based detection if priceId detection failed
             if (!plan) {
               const planFromAmount = derivePlanFromAmount(amount);
               if (planFromAmount) {
                 plan = planFromAmount;
                 upsertData.plan = plan;
-                console.warn(`⚠️ Plan derived from amount fallback: ${amount} → ${plan}`);
-              }
-            } else {
-              // Verify plan matches amount
-              const expectedPlan = derivePlanFromAmount(amount);
-              if (expectedPlan && expectedPlan !== plan) {
-                console.error(`❌ PLAN MISMATCH: priceId suggests ${plan} but amount ${amount} suggests ${expectedPlan}`);
-                // Trust the amount over priceId
-                plan = expectedPlan;
-                upsertData.plan = plan;
+                console.warn(`Plan derived from amount fallback: ${amount} -> ${plan}`);
               }
             }
+            // Do NOT override priceId-based plan with amount — priceId is authoritative
           }
         }
 
@@ -193,7 +246,7 @@ serve(async (req: Request) => {
           .upsert(upsertData, { onConflict: "user_id" });
 
         if (error) throw error;
-        console.log(`Subscription created for user ${userId}: status=${status}, plan=${plan}, priceId=${priceId}`);
+        console.log(`Subscription created for user ${userId}: status=${status}, plan=${plan}`);
         break;
       }
 
@@ -209,14 +262,13 @@ serve(async (req: Request) => {
           current_period_end: data.current_billing_period?.ends_at || null,
         };
 
-        // Check if we can derive plan from pricing info
-        if (data.items?.[0]?.price?.unit_price?.amount) {
+        if (eventId) updateData.last_event_id = eventId;
+
+        // Fallback plan detection from amount only if priceId didn't match
+        if (!plan && data.items?.[0]?.price?.unit_price?.amount) {
           const amount = parseFloat(data.items[0].price.unit_price.amount) / 100;
-          if (!plan) {
-            plan = derivePlanFromAmount(amount);
-            updateData.plan = plan || undefined;
-            console.log(`Plan derived from amount on update: ${amount} → ${plan}`);
-          }
+          plan = derivePlanFromAmount(amount);
+          updateData.plan = plan || undefined;
         }
 
         if (data.scheduled_change?.action === "cancel") {
@@ -234,13 +286,28 @@ serve(async (req: Request) => {
       }
 
       case "subscription.activated": {
+        // Validate state transition: only trialing -> active is expected
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("status")
+          .eq("user_id", userId)
+          .single();
+
+        const currentStatus = currentSub?.status || "";
+        if (currentStatus === "cancelled") {
+          console.warn(`Ignoring activation for cancelled subscription (user ${userId})`);
+          break;
+        }
+
+        const updateData: Record<string, any> = {
+          status: "active",
+          // Preserve trial dates for analytics instead of clearing them
+        };
+        if (eventId) updateData.last_event_id = eventId;
+
         const { error } = await supabase
           .from("subscriptions")
-          .update({
-            status: "active",
-            trial_start: null,
-            trial_end: null,
-          })
+          .update(updateData)
           .eq("user_id", userId);
 
         if (error) throw error;
@@ -249,13 +316,16 @@ serve(async (req: Request) => {
       }
 
       case "subscription.canceled": {
+        const updateData: Record<string, any> = {
+          status: "cancelled",
+          cancelled_at: data.canceled_at || new Date().toISOString(),
+          cancel_at: data.scheduled_change?.effective_at || null,
+        };
+        if (eventId) updateData.last_event_id = eventId;
+
         const { error } = await supabase
           .from("subscriptions")
-          .update({
-            status: "cancelled",
-            cancelled_at: data.canceled_at || new Date().toISOString(),
-            cancel_at: data.scheduled_change?.effective_at || null,
-          })
+          .update(updateData)
           .eq("user_id", userId);
 
         if (error) throw error;
@@ -264,9 +334,12 @@ serve(async (req: Request) => {
       }
 
       case "subscription.paused": {
+        const updateData: Record<string, any> = { status: "paused" };
+        if (eventId) updateData.last_event_id = eventId;
+
         const { error } = await supabase
           .from("subscriptions")
-          .update({ status: "paused" })
+          .update(updateData)
           .eq("user_id", userId);
 
         if (error) throw error;
@@ -275,9 +348,12 @@ serve(async (req: Request) => {
       }
 
       case "subscription.resumed": {
+        const updateData: Record<string, any> = { status: "active" };
+        if (eventId) updateData.last_event_id = eventId;
+
         const { error } = await supabase
           .from("subscriptions")
-          .update({ status: "active" })
+          .update(updateData)
           .eq("user_id", userId);
 
         if (error) throw error;
@@ -286,9 +362,12 @@ serve(async (req: Request) => {
       }
 
       case "subscription.past_due": {
+        const updateData: Record<string, any> = { status: "past_due" };
+        if (eventId) updateData.last_event_id = eventId;
+
         const { error } = await supabase
           .from("subscriptions")
-          .update({ status: "past_due" })
+          .update(updateData)
           .eq("user_id", userId);
 
         if (error) throw error;
@@ -299,34 +378,43 @@ serve(async (req: Request) => {
       case "transaction.completed": {
         const subscriptionId = data.subscription_id;
         if (subscriptionId) {
-          // Extract transaction amount and currency from Paddle webhook data
-          const amount = data.details?.totals?.total 
-            ? parseFloat(data.details.totals.total) / 100  // Paddle sends in cents
+          const amount = data.details?.totals?.total
+            ? parseFloat(data.details.totals.total) / 100
             : null;
           const currency = data.currency_code || 'EUR';
-          
+
           const updateData: Record<string, any> = {
             paddle_transaction_id: data.id,
             last_transaction_date: data.billed_at || new Date().toISOString(),
           };
-          
+
+          if (eventId) updateData.last_event_id = eventId;
+
           if (amount !== null) {
             updateData.last_transaction_amount = amount;
             updateData.last_transaction_currency = currency;
-            
-            // Check if plan needs correction based on actual transaction amount
-            const planFromAmount = derivePlanFromAmount(amount);
-            if (planFromAmount) {
-              // Get current subscription to check for mismatch
+
+            // Only use amount-based plan correction if priceId detection is not available
+            const priceId = data.items?.[0]?.price?.id || "";
+            const planFromPriceId = derivePlan(priceId);
+
+            if (planFromPriceId) {
+              // We have a reliable priceId — use it to correct plan if needed
               const { data: currentSub } = await supabase
                 .from("subscriptions")
                 .select("plan")
                 .eq("paddle_subscription_id", subscriptionId)
                 .single();
-              
-              if (currentSub && currentSub.plan !== planFromAmount) {
-                console.warn(`⚠️ Correcting plan mismatch: DB has ${currentSub.plan} but transaction amount ${amount} indicates ${planFromAmount}`);
-                updateData.plan = planFromAmount;
+
+              if (currentSub && currentSub.plan !== planFromPriceId) {
+                console.warn(`Correcting plan from ${currentSub.plan} to ${planFromPriceId} based on priceId`);
+                updateData.plan = planFromPriceId;
+              }
+            } else {
+              // No priceId match — log amount for debugging but don't override plan
+              const planFromAmount = derivePlanFromAmount(amount);
+              if (planFromAmount) {
+                console.log(`Amount ${amount} suggests plan ${planFromAmount} (no priceId match — not overriding)`);
               }
             }
           }
@@ -352,15 +440,13 @@ serve(async (req: Request) => {
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
       }
     );
   } catch (error: unknown) {
     console.error("Error processing webhook:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    // Don't expose internal error details
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

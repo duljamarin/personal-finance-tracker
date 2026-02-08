@@ -13,8 +13,9 @@ export default function UpgradeBanner() {
     transactionLimit,
   } = useSubscription();
 
-  // Check if user has ever had a trial (to show correct button text)
-  const hasHadTrial = subscription?.subscription_status !== 'none';
+  // Check if user has ever had a trial (trial_end being set means they had one)
+  const hasHadTrial = subscription?.subscription_status !== 'none'
+    || subscription?.period_end != null;
 
   const [dismissed, setDismissed] = useState(false);
 
@@ -78,7 +79,7 @@ export default function UpgradeBanner() {
             <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-yellow-300 to-orange-300 h-full rounded-full transition-all duration-300"
-                style={{ width: `${Math.max(5, (trialDaysLeft / 5) * 100)}%` }}
+                style={{ width: `${Math.max(5, Math.min(100, (trialDaysLeft / Math.max(trialDaysLeft, 1)) * 100))}%` }}
               />
             </div>
             <p className="text-xs text-blue-100 mt-1">
