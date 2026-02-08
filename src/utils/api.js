@@ -167,7 +167,7 @@ export async function addTransaction(transaction) {
       ...rest,
       category_id: categoryId,
       user_id: user.id,
-      currency_code: currencyCode || 'USD',
+      currency_code: currencyCode || 'EUR',
       exchange_rate: rate,
       base_amount: baseAmount
     };
@@ -200,18 +200,26 @@ export async function updateTransaction(id, transaction) {
     } = transaction;
     
     // Calculate base_amount: amount * exchange_rate (or just amount if no exchange rate)
-    const rate = exchangeRate !== undefined ? exchangeRate : 1.0;
-    const baseAmount = transaction.amount !== undefined ? transaction.amount * rate : undefined;
-    
+    const rate = exchangeRate !== undefined ? exchangeRate : undefined;
+    const amount = transaction.amount;
+
     const updateData = {
       ...rest,
       category_id: categoryId
     };
-    
+
     // Only include currency fields if provided
     if (currencyCode !== undefined) updateData.currency_code = currencyCode;
-    if (exchangeRate !== undefined) updateData.exchange_rate = rate;
-    if (baseAmount !== undefined) updateData.base_amount = baseAmount;
+    if (rate !== undefined) updateData.exchange_rate = rate;
+    // Recalculate base_amount if either amount or rate changed
+    if (amount !== undefined && rate !== undefined) {
+      updateData.base_amount = amount * rate;
+    } else if (amount !== undefined) {
+      // Amount changed but no new rate — use rate of 1.0 as fallback
+      updateData.base_amount = amount * 1.0;
+    }
+    // If only rate changed without amount, skip base_amount update
+    // (the existing DB amount is unknown here, so we can't recalculate safely)
     
     const { data, error } = await supabase
       .from('transactions')

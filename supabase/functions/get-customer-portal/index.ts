@@ -105,10 +105,9 @@ serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           error: "Failed to fetch subscription details",
-          details: errorText,
         }),
         {
-          status: response.status,
+          status: 502,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
@@ -143,10 +142,8 @@ serve(async (req: Request) => {
     );
   } catch (error: unknown) {
     console.error("Error fetching subscription management:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
     return new Response(
-      JSON.stringify({ error: "Internal server error", details: errorMessage }),
+      JSON.stringify({ error: "Internal server error" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
