@@ -16,6 +16,14 @@ function derivePlan(priceId: string): "monthly" | "yearly" | null {
   return null;
 }
 
+function derivePlanFromAmount(amount: number): "monthly" | "yearly" | null {
+  // Fallback: detect plan based on transaction amount
+  // Adjust these thresholds based on your actual pricing
+  if (amount >= 40 && amount <= 60) return "yearly";  // ~50 EUR yearly
+  if (amount >= 4 && amount <= 10) return "monthly";   // ~5-8 EUR monthly
+  return null;
+}
+
 async function verifyWebhookSignature(
   rawBody: string,
   signatureHeader: string,
@@ -126,7 +134,7 @@ serve(async (req: Request) => {
     switch (eventType) {
       case "subscription.created": {
         const priceId = data.items?.[0]?.price?.id || "";
-        const plan = derivePlan(priceId);
+        let plan = derivePlan(priceId);
         const status = data.status || "active";
 
         const upsertData: Record<string, any> = {
@@ -140,6 +148,40 @@ serve(async (req: Request) => {
           current_period_end: data.current_billing_period?.ends_at || null,
         };
 
+        // Log plan detection for debugging
+        console.log(`Plan detection: priceId=${priceId}, derivedPlan=${plan}`);
+        console.log(`ENV: PADDLE_MONTHLY_PRICE_ID=${PADDLE_MONTHLY_PRICE_ID}, PADDLE_YEARLY_PRICE_ID=${PADDLE_YEARLY_PRICE_ID}`);
+
+        // Capture initial pricing info if available
+        if (data.items?.[0]?.price) {
+          const priceAmount = data.items[0].price.unit_price?.amount;
+          if (priceAmount) {
+            const amount = parseFloat(priceAmount) / 100;
+            upsertData.last_transaction_amount = amount;
+            upsertData.last_transaction_currency = data.items[0].price.unit_price?.currency_code || 'EUR';
+            console.log(`Initial price captured: ${amount} ${upsertData.last_transaction_currency}`);
+            
+            // Fallback: If plan couldn't be derived from priceId, use amount
+            if (!plan) {
+              const planFromAmount = derivePlanFromAmount(amount);
+              if (planFromAmount) {
+                plan = planFromAmount;
+                upsertData.plan = plan;
+                console.warn(`⚠️ Plan derived from amount fallback: ${amount} → ${plan}`);
+              }
+            } else {
+              // Verify plan matches amount
+              const expectedPlan = derivePlanFromAmount(amount);
+              if (expectedPlan && expectedPlan !== plan) {
+                console.error(`❌ PLAN MISMATCH: priceId suggests ${plan} but amount ${amount} suggests ${expectedPlan}`);
+                // Trust the amount over priceId
+                plan = expectedPlan;
+                upsertData.plan = plan;
+              }
+            }
+          }
+        }
+
         // Handle trial
         if (status === "trialing" && data.current_billing_period) {
           upsertData.trial_start = data.current_billing_period.starts_at;
@@ -151,13 +193,13 @@ serve(async (req: Request) => {
           .upsert(upsertData, { onConflict: "user_id" });
 
         if (error) throw error;
-        console.log(`Subscription created for user ${userId}: ${status}`);
+        console.log(`Subscription created for user ${userId}: status=${status}, plan=${plan}, priceId=${priceId}`);
         break;
       }
 
       case "subscription.updated": {
         const priceId = data.items?.[0]?.price?.id || "";
-        const plan = derivePlan(priceId);
+        let plan = derivePlan(priceId);
 
         const updateData: Record<string, any> = {
           status: data.status,
@@ -166,6 +208,16 @@ serve(async (req: Request) => {
           current_period_start: data.current_billing_period?.starts_at || null,
           current_period_end: data.current_billing_period?.ends_at || null,
         };
+
+        // Check if we can derive plan from pricing info
+        if (data.items?.[0]?.price?.unit_price?.amount) {
+          const amount = parseFloat(data.items[0].price.unit_price.amount) / 100;
+          if (!plan) {
+            plan = derivePlanFromAmount(amount);
+            updateData.plan = plan || undefined;
+            console.log(`Plan derived from amount on update: ${amount} → ${plan}`);
+          }
+        }
 
         if (data.scheduled_change?.action === "cancel") {
           updateData.cancel_at = data.scheduled_change.effective_at;
@@ -177,7 +229,7 @@ serve(async (req: Request) => {
           .eq("user_id", userId);
 
         if (error) throw error;
-        console.log(`Subscription updated for user ${userId}: ${data.status}`);
+        console.log(`Subscription updated for user ${userId}: ${data.status}, plan: ${plan}`);
         break;
       }
 
@@ -247,13 +299,45 @@ serve(async (req: Request) => {
       case "transaction.completed": {
         const subscriptionId = data.subscription_id;
         if (subscriptionId) {
+          // Extract transaction amount and currency from Paddle webhook data
+          const amount = data.details?.totals?.total 
+            ? parseFloat(data.details.totals.total) / 100  // Paddle sends in cents
+            : null;
+          const currency = data.currency_code || 'EUR';
+          
+          const updateData: Record<string, any> = {
+            paddle_transaction_id: data.id,
+            last_transaction_date: data.billed_at || new Date().toISOString(),
+          };
+          
+          if (amount !== null) {
+            updateData.last_transaction_amount = amount;
+            updateData.last_transaction_currency = currency;
+            
+            // Check if plan needs correction based on actual transaction amount
+            const planFromAmount = derivePlanFromAmount(amount);
+            if (planFromAmount) {
+              // Get current subscription to check for mismatch
+              const { data: currentSub } = await supabase
+                .from("subscriptions")
+                .select("plan")
+                .eq("paddle_subscription_id", subscriptionId)
+                .single();
+              
+              if (currentSub && currentSub.plan !== planFromAmount) {
+                console.warn(`⚠️ Correcting plan mismatch: DB has ${currentSub.plan} but transaction amount ${amount} indicates ${planFromAmount}`);
+                updateData.plan = planFromAmount;
+              }
+            }
+          }
+
           const { error } = await supabase
             .from("subscriptions")
-            .update({ paddle_transaction_id: data.id })
+            .update(updateData)
             .eq("paddle_subscription_id", subscriptionId);
 
           if (error) throw error;
-          console.log(`Transaction completed for subscription ${subscriptionId}`);
+          console.log(`Transaction completed for subscription ${subscriptionId}: ${amount} ${currency}`);
         }
         break;
       }
