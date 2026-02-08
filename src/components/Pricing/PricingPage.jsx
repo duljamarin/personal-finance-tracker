@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { usePaddle } from '../../hooks/usePaddle';
@@ -14,25 +14,10 @@ const YEARLY_PRICE_ID = import.meta.env.VITE_PADDLE_YEARLY_PRICE_ID;
 export default function PricingPage() {
   const { t } = useTranslation();
   const { accessToken, user } = useAuth();
-  const { subscription, isPremium, isTrialing, trialDaysLeft, refreshSubscription } = useSubscription();
+  const { subscription, isPremium, isTrialing, trialDaysLeft } = useSubscription();
   const paddle = usePaddle();
   const navigate = useNavigate();
   const { addToast } = useToast();
-
-  // Debug logging - logs subscription state changes
-  useEffect(() => {
-    console.log('🔍 Subscription Debug Info:', {
-      subscription: subscription,
-      status: subscription?.subscription_status,
-      plan: subscription?.subscription_plan,
-      isPremium,
-      isTrialing,
-      trialDaysLeft,
-      paddleSubId: subscription?.paddle_subscription_id,
-      periodEnd: subscription?.period_end,
-      cancelAt: subscription?.subscription_cancel_at,
-    });
-  }, [subscription, isPremium, isTrialing, trialDaysLeft]);
 
   const handleSubscribe = (priceId) => {
     if (!accessToken) {
@@ -55,20 +40,7 @@ export default function PricingPage() {
         successUrl: window.location.origin + '/dashboard',
       },
     });
-
-    // Listen for checkout completion to refresh subscription
-    const handleCheckoutComplete = () => {
-      console.log('✅ Checkout completed, refreshing subscription...');
-      setTimeout(() => {
-        refreshSubscription();
-      }, 2000);
-    };
-
-    window.addEventListener('paddle-event', (e) => {
-      if (e.detail?.name === 'checkout.completed') {
-        handleCheckoutComplete();
-      }
-    }, { once: true });
+    // Checkout completion is handled by SubscriptionContext's paddle-event listener
   };
 
   const handleManageSubscription = async () => {
@@ -120,27 +92,12 @@ export default function PricingPage() {
     return subPlan === plan && (status === 'active' || status === 'trialing');
   };
 
-  // Check if user has ever had a trial (to prevent showing "Start Trial" again)
+  // Check if user has ever had a trial or subscription
   const hasHadTrial = useMemo(() => {
-    if (!subscription) {
-      console.log('🔍 hasHadTrial check: subscription is null/undefined');
-      return false;
-    }
+    if (!subscription) return false;
     const status = subscription.subscription_status;
-    const result = status !== 'none';
-    console.log('🔍 hasHadTrial check:', {
-      status,
-      result,
-      willShowTrialText: !result,
-      subscriptionObject: subscription
-    });
-    return result;
+    return status !== 'none' || subscription.period_end != null;
   }, [subscription]);
-
-  // Debug: Track hasHadTrial changes
-  useEffect(() => {
-    console.log('🎨 Rendering with hasHadTrial:', hasHadTrial);
-  }, [hasHadTrial]);
 
   // Determine button state for premium plans
   const getButtonState = (plan) => {

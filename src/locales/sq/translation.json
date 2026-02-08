@@ -618,7 +618,9 @@
     "premiumFeature": "{{feature}} eshte funksion premium",
     "transactionLimitReached": "Keni arritur kufirin e transaksioneve falas per kete muaj. Kaloni ne premium per transaksione te pakufizuara.",
     "premiumRequired": "Ky funksion kerkon nje abonim Premium",
-    "dismiss": "Mbyll"
+    "dismiss": "Mbyll",
+    "bannerSubtitle": "Kaloni ne premium per transaksione te pakufizuara dhe funksione premium",
+    "usageCount": "{{used}} / {{limit}} transaksione te perdorura kete muaj"
   },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara.",

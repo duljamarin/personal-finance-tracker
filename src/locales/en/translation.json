@@ -618,7 +618,9 @@
     "premiumFeature": "{{feature}} is a premium feature",
     "transactionLimitReached": "You've reached your free transaction limit for this month. Upgrade for unlimited transactions.",
     "premiumRequired": "This feature requires a Premium subscription",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "bannerSubtitle": "Upgrade for unlimited transactions and premium features",
+    "usageCount": "{{used}} / {{limit}} transactions used this month"
   },
   "footer": {
     "rights": "All rights reserved.",

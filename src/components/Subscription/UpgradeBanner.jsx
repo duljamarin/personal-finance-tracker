@@ -79,7 +79,7 @@ export default function UpgradeBanner() {
             <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-yellow-300 to-orange-300 h-full rounded-full transition-all duration-300"
-                style={{ width: `${Math.max(5, Math.min(100, (trialDaysLeft / Math.max(trialDaysLeft, 1)) * 100))}%` }}
+                style={{ width: `${Math.max(5, (trialDaysLeft / 5) * 100)}%` }}
               />
             </div>
             <p className="text-xs text-blue-100 mt-1">
@@ -101,7 +101,7 @@ export default function UpgradeBanner() {
                 {t('upgrade.bannerFreeLimit', { used: monthlyTransactionCount, limit: transactionLimit })}
               </h3>
               <p className="text-sm text-blue-100">
-                Upgrade for unlimited transactions and premium features
+                {t('upgrade.bannerSubtitle')}
               </p>
             </div>
           </div>
@@ -120,7 +120,7 @@ export default function UpgradeBanner() {
               />
             </div>
             <p className="text-xs text-blue-100 mt-1">
-              {monthlyTransactionCount} / {transactionLimit} transactions used this month
+              {t('upgrade.usageCount', { used: monthlyTransactionCount, limit: transactionLimit })}
             </p>
           </div>
           <Link to="/pricing">
