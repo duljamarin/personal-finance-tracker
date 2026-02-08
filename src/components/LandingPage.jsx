@@ -121,6 +121,12 @@ export default function LandingPage() {
                 {t('landing.hero.getStarted')}
               </Link>
               <Link
+                to="/pricing"
+                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all text-lg"
+              >
+                {t('nav.pricing')}
+              </Link>
+              <Link
                 to="/login"
                 className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 dark:hover:border-green-500 text-gray-700 dark:text-gray-200 font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-lg"
               >
