@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useMemo, useCallback } 
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
+import { useSubscription } from './SubscriptionContext';
 import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from '../utils/api';
 
 const TransactionContext = createContext();
@@ -10,6 +11,7 @@ export function TransactionProvider({ children }) {
   const { accessToken, loading: authLoading } = useAuth();
   const { addToast } = useToast();
   const { t } = useTranslation();
+  const { refreshSubscription } = useSubscription();
 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,10 +79,12 @@ export function TransactionProvider({ children }) {
       const newItem = await apiAddTransaction(item);
       setTransactions(prev => [newItem, ...prev]);
       addToast(t('messages.transactionAdded'), 'success');
+      // Refresh subscription to update transaction count
+      refreshSubscription();
     } catch (e) {
       addToast(t('messages.error'), 'error');
     }
-  }, [addToast, t]);
+  }, [addToast, t, refreshSubscription]);
 
   const updateTransaction = useCallback(async (id, updated) => {
     try {
@@ -97,10 +101,12 @@ export function TransactionProvider({ children }) {
       await apiDeleteTransaction(id);
       setTransactions(prev => prev.filter(e => e.id !== id));
       addToast(t('messages.transactionDeleted'), 'info');
+      // Refresh subscription to update transaction count
+      refreshSubscription();
     } catch (e) {
       addToast(t('messages.error'), 'error');
     }
-  }, [addToast, t]);
+  }, [addToast, t, refreshSubscription]);
 
   return (
     <TransactionContext.Provider value={{

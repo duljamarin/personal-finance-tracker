@@ -47,11 +47,13 @@ export default function Transactions() {
       if (result.generated > 0) {
         addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
         if (onReload) onReload();
+        // Refresh subscription to update transaction count
+        refreshSubscription();
       }
     } catch (error) {
       console.error('Error processing recurring transactions:', error);
     }
-  }, [addToast, t, onReload]);
+  }, [addToast, t, onReload, refreshSubscription]);
 
   useEffect(() => {
     processRecurring();
@@ -309,6 +311,8 @@ export default function Transactions() {
                   if (onReload) {
                     await onReload();
                   }
+                  // Refresh subscription to update transaction count
+                  await refreshSubscription();
                   setShowModal(false);
                   setEditTx(null);
                 } catch (error) {

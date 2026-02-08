@@ -318,13 +318,13 @@ export default function App() {
     <AuthProvider>
       <ToastProvider>
         <ThemeProvider>
-          <TransactionProvider>
-            <SubscriptionProvider>
+          <SubscriptionProvider>
+            <TransactionProvider>
               <Router>
                 <InnerAppContent />
               </Router>
-            </SubscriptionProvider>
-          </TransactionProvider>
+            </TransactionProvider>
+          </SubscriptionProvider>
         </ThemeProvider>
       </ToastProvider>
     </AuthProvider>

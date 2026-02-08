@@ -7,11 +7,13 @@ import GoalForm from './GoalForm';
 import ContributionForm from './ContributionForm';
 import { fetchGoals, fetchGoalsStats, createGoal, updateGoal, deleteGoal, addContribution, addTransaction } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
+import { useSubscription } from '../../context/SubscriptionContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
 
 export default function GoalsPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const { refreshSubscription } = useSubscription();
   
   const [goals, setGoals] = useState([]);
   const [stats, setStats] = useState(null);
@@ -112,6 +114,9 @@ export default function GoalsPage() {
       
       // Signal that transactions need refresh
       localStorage.setItem('transactions_needs_refresh', 'true');
+      
+      // Refresh subscription to update transaction count
+      refreshSubscription();
     } catch (error) {
       console.error('Error adding contribution:', error);
       addToast(error.message || t('goals.toast.error'), 'error');
