@@ -233,6 +233,10 @@
       "healthscore": {
         "title": "Health Score",
         "desc": "Get an overall financial wellness score with actionable insights based on your spending"
+      },
+      "benchmarks": {
+        "title": "Spending Benchmarks",
+        "desc": "See how your current spending compares to your usual patterns for each category"
       }
     },
     "cta": {
@@ -601,7 +605,10 @@
     "onTrial": "On Trial",
     "subscribe": "Subscribe",
     "trialEndsIn": "Trial ends in {{days}} days",
-    "renewsOn": "Renews on {{date}}"
+    "renewsOn": "Renews on {{date}}",
+    "enjoyingPremium": "Enjoying all premium features during your trial",
+    "trialDaysRemaining": "{{count}} day of free trial remaining",
+    "trialDaysRemaining_other": "{{count}} days of free trial remaining"
   },
   "upgrade": {
     "bannerGracePeriod": "Your free access to premium features expires in {{days}} days",

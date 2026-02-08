@@ -69,7 +69,7 @@ export default function UpgradeBanner() {
                 {t('subscription.trialEndsIn', { days: trialDaysLeft })}
               </h3>
               <p className="text-sm text-blue-100">
-                Enjoying all premium features during your trial
+                {t('subscription.enjoyingPremium')}
               </p>
             </div>
           </div>
@@ -78,11 +78,11 @@ export default function UpgradeBanner() {
             <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-yellow-300 to-orange-300 h-full rounded-full transition-all duration-300"
-                style={{ width: `${Math.max(5, 100 - (trialDaysLeft / 5) * 100)}%` }}
+                style={{ width: `${Math.max(5, (trialDaysLeft / 5) * 100)}%` }}
               />
             </div>
             <p className="text-xs text-blue-100 mt-1">
-              {trialDaysLeft} {trialDaysLeft === 1 ? 'day' : 'days'} of free trial remaining
+              {t('subscription.trialDaysRemaining', { count: trialDaysLeft })}
             </p>
           </div>
         </>

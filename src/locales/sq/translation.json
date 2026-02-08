@@ -233,6 +233,10 @@
       "healthscore": {
         "title": "Rezultat i Shëndetit Financiar",
         "desc": "Marrni njohuri për mirëqenien tuaj financiare mujore"
+      },
+      "benchmarks": {
+        "title": "Njohuri për Shpenzimet",
+        "desc": "Shikoni se si shpenzimet tuaja aktuale krahasohen me modelet tuaja të zakonshme për çdo kategori"
       }
     },
     "cta": {
@@ -601,7 +605,10 @@
     "onTrial": "Ne Prove",
     "subscribe": "Abonohu",
     "trialEndsIn": "Prova mbaron ne {{days}} dite",
-    "renewsOn": "Rinovohet me {{date}}"
+    "renewsOn": "Rinovohet me {{date}}",
+    "enjoyingPremium": "Shijoni te gjitha funksionet premium gjate proves suaj",
+    "trialDaysRemaining": "{{count}} dite prove falas e mbetur",
+    "trialDaysRemaining_other": "{{count}} dite prove falas te mbetura"
   },
   "upgrade": {
     "bannerGracePeriod": "Aksesi juaj falas ne funksionet premium skadon ne {{days}} dite",
