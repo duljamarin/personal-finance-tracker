@@ -608,7 +608,8 @@
     "renewsOn": "Renews on {{date}}",
     "enjoyingPremium": "Enjoying all premium features during your trial",
     "trialDaysRemaining": "{{count}} day of free trial remaining",
-    "trialDaysRemaining_other": "{{count}} days of free trial remaining"
+    "trialDaysRemaining_other": "{{count}} days of free trial remaining",
+    "freeTransactionsInfo": "Start with 10 free transactions/month • Upgrade anytime for unlimited transactions and premium features"
   },
   "upgrade": {
     "bannerGracePeriod": "Your free access to premium features expires in {{days}} days",

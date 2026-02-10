@@ -608,7 +608,8 @@
     "renewsOn": "Rinovohet me {{date}}",
     "enjoyingPremium": "Shijoni te gjitha funksionet premium gjate proves suaj",
     "trialDaysRemaining": "{{count}} dite prove falas e mbetur",
-    "trialDaysRemaining_other": "{{count}} dite prove falas te mbetura"
+    "trialDaysRemaining_other": "{{count}} dite prove falas te mbetura",
+    "freeTransactionsInfo": "Filloni me 10 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numer te pakufizuar transaksionesh dhe funksione premium"
   },
   "upgrade": {
     "bannerGracePeriod": "Aksesi juaj falas ne funksionet premium skadon ne {{days}} dite",

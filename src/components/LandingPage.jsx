@@ -111,7 +111,7 @@ export default function LandingPage() {
               {t('landing.hero.subtitle')}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-              Start with 10 free transactions/month • Upgrade anytime for unlimited
+              {t('subscription.freeTransactionsInfo')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
