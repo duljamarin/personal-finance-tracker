@@ -22,9 +22,6 @@ export default function HealthScore({ onReloadTrigger }) {
           fetchHealthScoreHistory(6)
         ]);
         
-        console.log('Health score loaded:', scoreData);
-        console.log('Health score history loaded:', historyData, 'Length:', historyData?.length);
-        
         setScore(scoreData);
         setHistory(historyData || []);
       } catch (err) {

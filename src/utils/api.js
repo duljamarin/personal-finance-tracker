@@ -722,7 +722,6 @@ export async function fetchHealthScoreHistory(months = 12) {
       throw error;
     }
     
-    console.log('Health score history raw data:', data);
     
     // Transform snake_case to camelCase and normalize monthDate
     return (data || []).map(score => {

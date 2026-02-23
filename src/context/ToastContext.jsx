@@ -1,22 +1,36 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { APP_CONFIG } from '../config/app';
 
 const ToastContext = createContext(null);
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+  const timerRefs = useRef({});
+
+  // Clear all pending timers on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      Object.values(timerRefs.current).forEach(clearTimeout);
+    };
+  }, []);
 
   const addToast = useCallback((message, type = 'success') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
     
     // Auto-remove after configured duration
-    setTimeout(() => {
+    timerRefs.current[id] = setTimeout(() => {
       setToasts(prev => prev.filter(toast => toast.id !== id));
+      delete timerRefs.current[id];
     }, APP_CONFIG.TOAST_DURATION);
   }, []);
 
   const removeToast = useCallback((id) => {
+    // Cancel the auto-remove timer if the user dismisses manually
+    if (timerRefs.current[id]) {
+      clearTimeout(timerRefs.current[id]);
+      delete timerRefs.current[id];
+    }
     setToasts(prev => prev.filter(toast => toast.id !== id));
   }, []);
 

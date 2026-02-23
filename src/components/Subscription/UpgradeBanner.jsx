@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { APP_CONFIG } from '../../config/app';
 
 export default function UpgradeBanner() {
   const { t } = useTranslation();
@@ -80,7 +81,7 @@ export default function UpgradeBanner() {
             <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-yellow-300 to-orange-300 h-full rounded-full transition-all duration-300"
-                style={{ width: `${Math.max(5, (trialDaysLeft / 5) * 100)}%` }}
+                style={{ width: `${Math.max(5, (trialDaysLeft / APP_CONFIG.TRIAL_DAYS) * 100)}%` }}
               />
             </div>
             <p className="text-xs text-blue-100 mt-1">

@@ -135,9 +135,6 @@ export function AuthProvider({ children }) {
         setUser(null);
         setSession(null);
         
-        // For email confirmation flow, categories will be initialized on first login
-        console.log('Email confirmation required - categories will be initialized upon first login');
-        
         // Throw a specific error to let the UI know
         throw new Error('Please check your email to confirm your account before logging in.');
       }
