@@ -10,7 +10,7 @@ import { getInputClassName } from '../../utils/classNames'
 import { RECURRING_FREQUENCIES } from '../../utils/constants'
 import { APP_CONFIG } from '../../config/app'
 
-export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = true }) {
+export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t, i18n } = useTranslation()
 	const { addToast } = useToast()
 

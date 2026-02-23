@@ -27,7 +27,7 @@ export default function Transactions() {
   const { t } = useTranslation();
   const { addToast } = useToast();
   const navigate = useNavigate();
-  const { canAddTransaction, refreshSubscription } = useSubscription();
+  const { canAddTransaction, isPremium, refreshSubscription } = useSubscription();
   const years = useMemo(() => {
     const set = new Set(items.map(i => i.date?.slice(0, 4) || 'Unknown'));
     return ['All', ...Array.from(set).sort((a, b) => b.localeCompare(a))];
@@ -328,7 +328,7 @@ export default function Transactions() {
             }}
             onCancel={() => { setShowModal(false); setEditTx(null); }}
             onCategoryAdded={reloadCategories}
-            allowRecurring={!editTx}
+            allowRecurring={!editTx && isPremium}
           />
         </Modal>
       )}
