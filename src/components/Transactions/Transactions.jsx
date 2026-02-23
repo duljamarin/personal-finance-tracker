@@ -179,16 +179,18 @@ export default function Transactions() {
               </button>
             ))}
           </div>
-          {/* Recurring filter */}
-          <select
-            value={recurringFilter}
-            onChange={e => setRecurringFilter(e.target.value)}
-            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
-          >
-            <option value="all">{t('recurring.filterAll')}</option>
-            <option value="regular">{t('recurring.filterRegular')}</option>
-            <option value="recurring">{t('recurring.filterRecurring')}</option>
-          </select>
+          {/* Recurring filter — only show for premium users who can have recurring transactions */}
+          {isPremium && (
+            <select
+              value={recurringFilter}
+              onChange={e => setRecurringFilter(e.target.value)}
+              className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
+            >
+              <option value="all">{t('recurring.filterAll')}</option>
+              <option value="regular">{t('recurring.filterRegular')}</option>
+              <option value="recurring">{t('recurring.filterRecurring')}</option>
+            </select>
+          )}
         </div>
       </div>
 
