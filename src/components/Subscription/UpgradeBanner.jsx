@@ -34,8 +34,9 @@ export default function UpgradeBanner() {
     setDismissed(true);
   };
 
-  // Only hide for fully paid active subscribers
-  const hasActivePaidSubscription = subscription?.subscription_status === 'active';
+  // Only hide for active subscribers who are NOT pending cancellation
+  const hasActivePaidSubscription = subscription?.subscription_status === 'active'
+    && !subscription?.subscription_cancel_at;
   if (hasActivePaidSubscription || dismissed) return null;
 
   // Don't show if no usage yet (except during trial)

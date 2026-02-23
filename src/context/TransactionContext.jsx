@@ -82,7 +82,12 @@ export function TransactionProvider({ children }) {
       // Refresh subscription to update transaction count
       refreshSubscription();
     } catch (e) {
-      addToast(t('messages.error'), 'error');
+      // Detect server-side transaction limit error (ERRCODE P0001)
+      if (e?.code === 'P0001' || e?.message?.includes('transaction limit')) {
+        addToast(t('upgrade.transactionLimitReached'), 'warning');
+      } else {
+        addToast(t('messages.error'), 'error');
+      }
     }
   }, [addToast, t, refreshSubscription]);
 

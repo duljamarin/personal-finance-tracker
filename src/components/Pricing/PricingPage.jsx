@@ -243,7 +243,7 @@ export default function PricingPage() {
                 className="w-full"
                 onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}
               >
-                Switch to Monthly
+                {t('pricing.switchToMonthly')}
               </Button>
             ) : (
               <Button
@@ -310,7 +310,7 @@ export default function PricingPage() {
                 className="w-full"
                 onClick={() => handleSubscribe(YEARLY_PRICE_ID)}
               >
-                Switch to Yearly
+                {t('pricing.switchToYearly')}
               </Button>
             ) : (
               <Button

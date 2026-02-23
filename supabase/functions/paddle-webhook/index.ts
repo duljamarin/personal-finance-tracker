@@ -29,13 +29,14 @@ function derivePlanFromAmount(amount: number): "monthly" | "yearly" | null {
 
 /** Constant-time string comparison to prevent timing attacks */
 function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
   const encoder = new TextEncoder();
   const bufA = encoder.encode(a);
   const bufB = encoder.encode(b);
-  let result = 0;
-  for (let i = 0; i < bufA.length; i++) {
-    result |= bufA[i] ^ bufB[i];
+  // Use the longer length to avoid leaking length info via early return
+  const maxLen = Math.max(bufA.length, bufB.length);
+  let result = bufA.length ^ bufB.length; // non-zero if lengths differ
+  for (let i = 0; i < maxLen; i++) {
+    result |= (bufA[i] ?? 0) ^ (bufB[i] ?? 0);
   }
   return result === 0;
 }
@@ -86,15 +87,9 @@ async function verifyWebhookSignature(
 }
 
 serve(async (req: Request) => {
-  // CORS preflight
+  // Webhooks are server-to-server — no CORS needed
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Paddle-Signature",
-      },
-    });
+    return new Response(null, { status: 405 });
   }
 
   if (req.method !== "POST") {
@@ -256,19 +251,20 @@ serve(async (req: Request) => {
 
         const updateData: Record<string, any> = {
           status: data.status,
-          plan: plan || undefined,
-          price_id: priceId || undefined,
           current_period_start: data.current_billing_period?.starts_at || null,
           current_period_end: data.current_billing_period?.ends_at || null,
         };
 
+        // Only include plan and price_id if we have real values (avoid writing null/undefined)
+        if (plan) updateData.plan = plan;
+        if (priceId) updateData.price_id = priceId;
         if (eventId) updateData.last_event_id = eventId;
 
         // Fallback plan detection from amount only if priceId didn't match
         if (!plan && data.items?.[0]?.price?.unit_price?.amount) {
           const amount = parseFloat(data.items[0].price.unit_price.amount) / 100;
           plan = derivePlanFromAmount(amount);
-          updateData.plan = plan || undefined;
+          if (plan) updateData.plan = plan;
         }
 
         if (data.scheduled_change?.action === "cancel") {

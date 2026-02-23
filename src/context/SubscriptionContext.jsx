@@ -77,6 +77,8 @@ export function SubscriptionProvider({ children }) {
   // Listen for Paddle checkout completion events
   // Use polling with retries instead of a fixed 2-second delay
   useEffect(() => {
+    let cancelled = false;
+
     const handlePaddleEvent = (e) => {
       const event = e.detail;
 
@@ -90,9 +92,11 @@ export function SubscriptionProvider({ children }) {
         }
 
         const pollForUpdate = async () => {
+          if (cancelled) return;
           attempts++;
           try {
             const sub = await fetchSubscription();
+            if (cancelled) return;
             const isPremiumNow = sub?.is_premium === true;
 
             if (isPremiumNow) {
@@ -104,9 +108,9 @@ export function SubscriptionProvider({ children }) {
             // Ignore errors during polling
           }
 
-          if (attempts < MAX_POLL_ATTEMPTS) {
+          if (!cancelled && attempts < MAX_POLL_ATTEMPTS) {
             pollTimerRef.current = setTimeout(pollForUpdate, POLL_INTERVAL);
-          } else {
+          } else if (!cancelled) {
             // Final attempt: do a full refresh regardless
             await refreshSubscription();
           }
@@ -119,6 +123,7 @@ export function SubscriptionProvider({ children }) {
 
     window.addEventListener('paddle-event', handlePaddleEvent);
     return () => {
+      cancelled = true;
       window.removeEventListener('paddle-event', handlePaddleEvent);
       // Clean up any pending poll timer on unmount
       if (pollTimerRef.current) {

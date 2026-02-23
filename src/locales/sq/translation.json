@@ -12,7 +12,7 @@
     "description": "Merrni Kontrollin e Financave Tuaja Personale - Ndiqni të ardhurat dhe shpenzimet, vizualizoni modelet dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv"
   },
   "theme": {
-    "light": "Modalidet i çelet",
+    "light": "Modalitet i çelët",
     "dark": "Modalitet i errët"
   },
   "nav": {
@@ -529,14 +529,14 @@
     },
     "forecast": {
       "onTrack": "Në rrugë — parashikuar €{{amount}} deri fundit i muajit",
-      "willExceed": "Do te tejkalohet me €{{amount}}",
+      "willExceed": "Do të tejkalohet me €{{amount}}",
       "notStarted": "Ende nuk ka filluar"
     },
     "noData": "Asnjë buxhet i vendosur",
     "noDataDesc": "Krijoni buxhetin e parë tuaj për të filluar ndjekjen e limiteve të shpenzimeve për çdo kategori",
     "createFirst": "Krijo Buxhetin e Parë",
     "copyFromPrevious": "Kopjo nga Muaji i kaluar",
-    "loadError": "Nuk mund te ngarkohen buxhetet. Ju lutem provoni perseri ma vonë.",
+    "loadError": "Nuk mund të ngarkohen buxhetet. Ju lutem provoni përsëri më vonë.",
     "deleteConfirm": "Je i sigurt që dëshironi të fshini këtë buxhet?",
     "delete": {
       "title": "Fshi Buxhetin",
@@ -547,7 +547,7 @@
       "category": "Kategoria",
       "categoryPlaceholder": "Zgjidhni kategorinë",
       "amount": "Shuma e Buxhetit Mujor",
-      "amountError": "Shuma duhet të jetë numri pozitiv.",
+      "amountError": "Shuma duhet të jetë numër pozitiv.",
       "categoryError": "Ju lutem zgjidhni kategorinë.",
       "noCategoriesAvailable": "Të gjitha kategoritë tashmë kanë buxhete këtë muaj"
     },
@@ -556,7 +556,7 @@
       "updated": "Buxheti u përditësua me sukses",
       "deleted": "Buxheti u fshi me sukses",
       "copied": "Buxhetet u kopjuan nga muaji i kaluar",
-      "copyEmpty": "Asnjë buxhet u gjet nga muaji i kaluar për te kopjuar",
+      "copyEmpty": "Asnjë buxhet u gjet nga muaji i kaluar për të kopjuar",
       "error": "Ndodhi një gabim"
     }
   },
@@ -574,54 +574,56 @@
     "subscribe": "Fillo Provën Falas",
     "currentPlan": "Plani Aktual",
     "managePlan": "Menaxho Abonimin",
-    "features": "Cfare perfshihet",
+    "features": "Çfarë përfshihet",
     "free": "Falas",
     "premium": "Premium",
     "freeFeatures": {
       "transactions": "10 transaksione/muaj",
-      "categories": "Kategori te personalizuara",
+      "categories": "Kategori të personalizuara",
       "dashboard": "Paneli bazik"
     },
     "premiumFeatures": {
-      "transactions": "Transaksione te pakufizuara",
-      "categories": "Kategori te personalizuara",
-      "recurring": "Transaksione perseritese",
+      "transactions": "Transaksione të pakufizuara",
+      "categories": "Kategori të personalizuara",
+      "recurring": "Transaksione përsëritëse",
       "goals": "Objektivat financiare",
       "budgets": "Buxhetet mujore",
-      "healthScore": "Rezultati i shendetit",
+      "healthScore": "Rezultati i shëndetit",
       "benchmarks": "Krahasimet e shpenzimeve"
     },
-    "popular": "Me i Popullarizuari",
-    "bestValue": "Vlera Me e Mire"
+    "popular": "Më i Popullarizuari",
+    "bestValue": "Vlera Më e Mirë",
+    "switchToMonthly": "Kalo në Mujore",
+    "switchToYearly": "Kalo në Vjetore"
   },
   "subscription": {
     "active": "Aktiv",
-    "trialing": "Prove",
+    "trialing": "Provë",
     "cancelled": "Anuluar",
-    "past_due": "Vonese",
-    "paused": "Nderprerje",
+    "past_due": "Vonesë",
+    "paused": "Ndërprerje",
     "none": "Plani Falas",
     "proBadge": "PRO",
-    "onTrial": "Ne Prove",
+    "onTrial": "Në Provë",
     "subscribe": "Abonohu",
-    "trialEndsIn": "Prova mbaron ne {{days}} dite",
-    "renewsOn": "Rinovohet me {{date}}",
-    "enjoyingPremium": "Shijoni te gjitha funksionet premium gjate proves suaj",
-    "trialDaysRemaining": "{{count}} dite prove falas e mbetur",
-    "trialDaysRemaining_other": "{{count}} dite prove falas te mbetura",
-    "freeTransactionsInfo": "Filloni me 10 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numer te pakufizuar transaksionesh dhe funksione premium"
+    "trialEndsIn": "Prova mbaron në {{days}} ditë",
+    "renewsOn": "Rinovohet më {{date}}",
+    "enjoyingPremium": "Shijoni të gjitha funksionet premium gjatë provës suaj",
+    "trialDaysRemaining": "{{count}} ditë provë falas e mbetur",
+    "trialDaysRemaining_other": "{{count}} ditë provë falas të mbetura",
+    "freeTransactionsInfo": "Filloni me 10 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numër të pakufizuar transaksionesh dhe funksione premium"
   },
   "upgrade": {
-    "bannerGracePeriod": "Aksesi juaj falas ne funksionet premium skadon ne {{days}} dite",
-    "bannerFreeLimit": "Keni perdorur {{used}} nga {{limit}} transaksionet falas kete muaj",
-    "upgradeCta": "Kaloni ne Premium",
+    "bannerGracePeriod": "Aksesi juaj falas në funksionet premium skadon në {{days}} ditë",
+    "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",
+    "upgradeCta": "Kaloni në Premium",
     "viewPlans": "Shiko Planet",
-    "premiumFeature": "{{feature}} eshte funksion premium",
-    "transactionLimitReached": "Keni arritur kufirin e transaksioneve falas per kete muaj. Kaloni ne premium per transaksione te pakufizuara.",
-    "premiumRequired": "Ky funksion kerkon nje abonim Premium",
+    "premiumFeature": "{{feature}} është funksion premium",
+    "transactionLimitReached": "Keni arritur kufirin e transaksioneve falas për këtë muaj. Kaloni në premium për transaksione të pakufizuara.",
+    "premiumRequired": "Ky funksion kërkon një abonim Premium",
     "dismiss": "Mbyll",
-    "bannerSubtitle": "Kaloni ne premium per transaksione te pakufizuara dhe funksione premium",
-    "usageCount": "{{used}} / {{limit}} transaksione te perdorura kete muaj"
+    "bannerSubtitle": "Kaloni në premium për transaksione të pakufizuara dhe funksione premium",
+    "usageCount": "{{used}} / {{limit}} transaksione të përdorura këtë muaj"
   },
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara.",

@@ -592,7 +592,9 @@
       "benchmarks": "Spending benchmarks"
     },
     "popular": "Most Popular",
-    "bestValue": "Best Value"
+    "bestValue": "Best Value",
+    "switchToMonthly": "Switch to Monthly",
+    "switchToYearly": "Switch to Yearly"
   },
   "subscription": {
     "active": "Active",
