@@ -21,7 +21,8 @@
     "categories": "Kategoritë",
     "recurring": "Përsëritëse",
     "pricing": "Çmimet",
-    "logout": "Dilni"
+    "logout": "Dilni",
+    "account": "Llogaria"
   },
   "dashboard": {
     "title": "Përmbledhje Financiare",
@@ -153,7 +154,27 @@
     "resetPasswordError": "Dështoi rivendosja e fjalëkalimit. Ju lutem provoni përsëri.",
     "passwordSameAsOld": "Fjalëkalimi i ri nuk mund të jetë i njëjtë me të vjetrin",
     "invalidResetLink": "Lidhja e rivendosjes është e pavlefshme ose ka skaduar. Ju lutem kërkoni një lidhje të re.",
-    "verifying": "Duke verifikuar..."
+    "verifying": "Duke verifikuar...",
+    "continueWithGoogle": "Vazhdo me Google"
+  },
+  "account": {
+    "title": "Cilësimet e Llogarisë",
+    "displayName": "Emri i Shfaqur",
+    "displayNamePlaceholder": "Emri juaj i shfaqur",
+    "saveDisplayName": "Ruaj Emrin",
+    "displayNameUpdated": "Emri i shfaqur u përditësua me sukses.",
+    "displayNameError": "Dështoi përditësimi i emrit.",
+    "changePassword": "Ndrysho Fjalëkalimin",
+    "newPassword": "Fjalëkalimi i Ri",
+    "newPasswordPlaceholder": "Të paktën 6 karaktere",
+    "confirmPassword": "Konfirmo Fjalëkalimin",
+    "confirmPasswordPlaceholder": "Përsëritni fjalëkalimin e ri",
+    "savePassword": "Ruaj Fjalëkalimin",
+    "passwordUpdated": "Fjalëkalimi u përditësua me sukses.",
+    "passwordError": "Dështoi përditësimi i fjalëkalimit.",
+    "passwordMismatch": "Fjalëkalimet nuk përputhen.",
+    "passwordTooShort": "Fjalëkalimi duhet të jetë të paktën 6 karaktere.",
+    "saving": "Duke ruajtur..."
   },
   "messages": {
     "loginRequired": "Ju lutem identifikohuni për të vazhduar",

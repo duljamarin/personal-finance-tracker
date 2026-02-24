@@ -15,6 +15,7 @@ import GoalsPage from './components/Goals/GoalsPage.jsx';
 import BudgetsPage from './components/Budgets/BudgetsPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
+import AccountPage from './components/Auth/AccountPage.jsx';
 import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
 import ForgotPassword from './components/Auth/ForgotPassword.jsx';
 import ResetPassword from './components/Auth/ResetPassword.jsx';
@@ -174,6 +175,11 @@ function InnerAppContent() {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/account" element={
+              <PrivateRoute>
+                <AccountPage />
+              </PrivateRoute>
+            } />
             <Route path="/categories" element={
               <PrivateRoute>
                 <CategoriesPage />

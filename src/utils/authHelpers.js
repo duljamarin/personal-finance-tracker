@@ -8,7 +8,12 @@
  * @returns {string} Username or empty string
  */
 export function extractUsername(user) {
-  return user?.user_metadata?.username || user?.email?.split('@')[0] || '';
+  return (
+    user?.user_metadata?.username ||
+    user?.user_metadata?.full_name ||
+    user?.email?.split('@')[0] ||
+    ''
+  );
 }
 
 /**

@@ -21,7 +21,8 @@
     "categories": "Categories",
     "recurring": "Recurring",
     "pricing": "Pricing",
-    "logout": "Logout"
+    "logout": "Logout",
+    "account": "Account"
   },
   "dashboard": {
     "title": "Financial Overview",
@@ -153,7 +154,27 @@
     "resetPasswordError": "Failed to reset password. Please try again.",
     "passwordSameAsOld": "New password must be different from the old one",
     "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
-    "verifying": "Verifying..."
+    "verifying": "Verifying...",
+    "continueWithGoogle": "Continue with Google"
+  },
+  "account": {
+    "title": "Account Settings",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Your display name",
+    "saveDisplayName": "Save Name",
+    "displayNameUpdated": "Display name updated successfully.",
+    "displayNameError": "Failed to update display name.",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "At least 6 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Repeat new password",
+    "savePassword": "Save Password",
+    "passwordUpdated": "Password updated successfully.",
+    "passwordError": "Failed to update password.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 6 characters.",
+    "saving": "Saving..."
   },
   "messages": {
     "loginRequired": "Please log in to continue",
