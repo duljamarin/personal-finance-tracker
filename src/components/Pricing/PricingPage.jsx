@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { usePaddle } from '../../hooks/usePaddle';
@@ -18,6 +18,15 @@ export default function PricingPage() {
   const paddle = usePaddle();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const checkoutInitiatedRef = useRef(false);
+
+  // Navigate to dashboard once subscription becomes premium after a checkout
+  useEffect(() => {
+    if (checkoutInitiatedRef.current && isPremium) {
+      checkoutInitiatedRef.current = false;
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isPremium, navigate]);
 
   const handleSubscribe = (priceId) => {
     if (!accessToken) {
@@ -30,6 +39,8 @@ export default function PricingPage() {
       return;
     }
 
+    checkoutInitiatedRef.current = true;
+
     paddle.Checkout.open({
       items: [{ priceId, quantity: 1 }],
       customData: { user_id: user.id },
@@ -37,7 +48,6 @@ export default function PricingPage() {
       settings: {
         displayMode: 'overlay',
         theme: 'light',
-        successUrl: window.location.origin + '/dashboard',
       },
     });
     // Checkout completion is handled by SubscriptionContext's paddle-event listener
