@@ -269,6 +269,10 @@ serve(async (req: Request) => {
 
         if (data.scheduled_change?.action === "cancel") {
           updateData.cancel_at = data.scheduled_change.effective_at;
+        } else {
+          // Clear cancellation fields if no scheduled cancel (e.g. reactivated)
+          updateData.cancel_at = null;
+          updateData.cancelled_at = null;
         }
 
         const { error } = await supabase
@@ -297,6 +301,8 @@ serve(async (req: Request) => {
 
         const updateData: Record<string, any> = {
           status: "active",
+          cancel_at: null,
+          cancelled_at: null,
           // Preserve trial dates for analytics instead of clearing them
         };
         if (eventId) updateData.last_event_id = eventId;
@@ -344,7 +350,7 @@ serve(async (req: Request) => {
       }
 
       case "subscription.resumed": {
-        const updateData: Record<string, any> = { status: "active" };
+        const updateData: Record<string, any> = { status: "active", cancel_at: null, cancelled_at: null };
         if (eventId) updateData.last_event_id = eventId;
 
         const { error } = await supabase
