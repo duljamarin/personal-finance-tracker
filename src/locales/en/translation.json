@@ -22,7 +22,11 @@
     "recurring": "Recurring",
     "pricing": "Pricing",
     "logout": "Logout",
-    "account": "Account"
+    "account": "Account",
+    "myProfile": "My Profile"
+  },
+  "common": {
+    "cancel": "Cancel"
   },
   "dashboard": {
     "title": "Financial Overview",
@@ -174,7 +178,20 @@
     "passwordError": "Failed to update password.",
     "passwordMismatch": "Passwords do not match.",
     "passwordTooShort": "Password must be at least 6 characters.",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "dangerZone": "Danger Zone",
+    "deleteAccountTitle": "Delete Account",
+    "deleteAccountDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "deleteAccountBtn": "Delete Account",
+    "deleteSuccess": "Your account has been permanently deleted.",
+    "deleteError": "Failed to delete account. Please try again.",
+    "deleteModalTitle": "Delete your account?",
+    "deleteModalDesc": "This is permanent and irreversible. All your data will be erased immediately.",
+    "deleteWarn1": "All transactions and categories will be deleted",
+    "deleteWarn2": "All goals, budgets and recurring transactions will be deleted",
+    "deleteWarn3": "Your subscription history will be removed",
+    "deleteConfirmLabel": "Type DELETE to confirm",
+    "deleting": "Deleting..."
   },
   "messages": {
     "loginRequired": "Please log in to continue",

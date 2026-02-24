@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,8 @@ import LanguageSwitcher from './LanguageSwitcher.jsx';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
   const { accessToken, user, logout } = useAuth();
   const { isPremium, subscription } = useSubscription();
   const { t } = useTranslation();
@@ -22,6 +24,17 @@ export default function Header() {
     await logout();
     navigate('/login');
   };
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileOpen(false);
+      }
+    }
+    if (profileOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileOpen]);
 
   return (
     <header className="mb-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
@@ -56,9 +69,6 @@ export default function Header() {
               <Link to="/categories" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                 {t('nav.categories')}
               </Link>
-              <Link to="/account" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                {t('nav.account')}
-              </Link>
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
               {showUpgrade && (
                 <Link to="/pricing" className="px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-lg transition-all shadow-md">
@@ -75,12 +85,54 @@ export default function Header() {
           <LanguageSwitcher />
           <ThemeToggle />
           {accessToken ? (
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm"
-            >
-              {t('nav.logout')}
-            </button>
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen(p => !p)}
+                className="flex items-center gap-2 rounded-full p-0.5 hover:ring-2 hover:ring-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all"
+                aria-label={t('nav.myProfile')}
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path fillRule="evenodd" d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              {profileOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 py-2 overflow-hidden">
+                  {/* User info header */}
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">
+                      {user?.user_metadata?.username || user?.email}
+                    </p>
+                    {user?.user_metadata?.username && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{user.email}</p>
+                    )}
+                  </div>
+                  {/* My Profile */}
+                  <Link
+                    to="/account"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {t('nav.myProfile')}
+                  </Link>
+                  <div className="border-t border-gray-100 dark:border-gray-700 my-1"></div>
+                  {/* Logout */}
+                  <button
+                    onClick={() => { setProfileOpen(false); handleLogout(); }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    {t('nav.logout')}
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               {window.location.pathname !== '/pricing' && (
@@ -131,8 +183,8 @@ export default function Header() {
                       {t('nav.categories')}
                     </Link>
                     <Link to="/account" className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition flex items-center gap-3" onClick={() => setMenuOpen(false)}>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zM19 21a7 7 0 10-14 0" /></svg>
-                      {t('nav.account')}
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                      {t('nav.myProfile')}
                     </Link>
                     <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
                     {showUpgrade && (

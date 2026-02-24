@@ -1080,3 +1080,32 @@ export async function getMonthlyTransactionCount() {
     return data ?? 0;
   });
 }
+/**
+ * Deletes the currently authenticated user's account and all associated data.
+ * Deletes all application data for the current user via the
+ * `delete_user_account` RPC, then signs the session out.
+ * Removing the auth.users record requires service-role; we instead
+ * sign out so the session is immediately invalidated.
+ */
+export async function deleteUserAccount() {
+  return withAuth(async () => {
+    // Step 1: Delete all application data via RPC
+    const { error: rpcError } = await supabase.rpc('delete_user_account');
+    if (rpcError) throw rpcError;
+
+    // Step 2: Get the current session token to authenticate the Edge Function call
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error('No active session');
+
+    // Step 3: Call Edge Function to delete the auth.users record (requires service-role)
+    const response = await supabase.functions.invoke('delete-user', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+
+    if (response.error) throw response.error;
+
+    // Step 4: Sign out locally to clear the session
+    await supabase.auth.signOut();
+  });
+}

@@ -22,7 +22,11 @@
     "recurring": "Përsëritëse",
     "pricing": "Çmimet",
     "logout": "Dilni",
-    "account": "Llogaria"
+    "account": "Llogaria",
+    "myProfile": "Profili Im"
+  },
+  "common": {
+    "cancel": "Anulo"
   },
   "dashboard": {
     "title": "Përmbledhje Financiare",
@@ -174,7 +178,20 @@
     "passwordError": "Dështoi përditësimi i fjalëkalimit.",
     "passwordMismatch": "Fjalëkalimet nuk përputhen.",
     "passwordTooShort": "Fjalëkalimi duhet të jetë të paktën 6 karaktere.",
-    "saving": "Duke ruajtur..."
+    "saving": "Duke ruajtur...",
+    "dangerZone": "Zona e Rrezikshme",
+    "deleteAccountTitle": "Fshij Llogarinë",
+    "deleteAccountDesc": "Fshij përgjithmonë llogarinë tuaj dhe të gjitha të dhënat. Ky veprim nuk mund të zhbëhet.",
+    "deleteAccountBtn": "Fshij Llogarinë",
+    "deleteSuccess": "Llogaria juaj u fshi përgjithmonë.",
+    "deleteError": "Dështoi fshirja e llogarisë. Ju lutem provoni përsëri.",
+    "deleteModalTitle": "Fshij llogarinë tuaj?",
+    "deleteModalDesc": "Ky veprim është i përhershëm dhe i pakthyeshëm. Të gjitha të dhënat tuaja do të fshihen menjëherë.",
+    "deleteWarn1": "Të gjitha transaksionet dhe kategoritë do të fshihen",
+    "deleteWarn2": "Të gjitha objektivat, buxhetet dhe transaksionet e përsëritura do të fshihen",
+    "deleteWarn3": "Historia e abonimit tuaj do të hiqet",
+    "deleteConfirmLabel": "Shkruani DELETE për të konfirmuar",
+    "deleting": "Duke fshirë..."
   },
   "messages": {
     "loginRequired": "Ju lutem identifikohuni për të vazhduar",
