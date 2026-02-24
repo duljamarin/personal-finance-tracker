@@ -1,7 +1,17 @@
+import { useEffect } from 'react';
+
 export default function Modal({ children, onClose, className = '', drawer = false }) {
-  // On mobile, use slide-up drawer; on desktop, use centered modal
   const isMobileDrawer = drawer;
-  
+
+  // Close on Escape key
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 sm:px-0 bg-black bg-opacity-40 transition-all duration-200"

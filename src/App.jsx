@@ -13,6 +13,8 @@ import CategoriesPage from './components/Categories/CategoriesPage.jsx';
 import RecurringPage from './components/Recurring/RecurringPage.jsx';
 import GoalsPage from './components/Goals/GoalsPage.jsx';
 import BudgetsPage from './components/Budgets/BudgetsPage.jsx';
+import NetWorthPage from './components/NetWorth/NetWorthPage.jsx';
+import NotificationsPage from './components/Notifications/NotificationsPage.jsx';
 import LoginForm from './components/Auth/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm.jsx';
 import AccountPage from './components/Auth/AccountPage.jsx';
@@ -33,6 +35,7 @@ import { getValueColorClass } from './utils/classNames';
 import PricingPage from './components/Pricing/PricingPage.jsx';
 import UpgradeBanner from './components/Subscription/UpgradeBanner.jsx';
 import PremiumFeatureLock from './components/Subscription/PremiumFeatureLock.jsx';
+import OnboardingChecklist from './components/Onboarding/OnboardingChecklist.jsx';
 
 
 function PrivateRoute({ children }) {
@@ -200,6 +203,16 @@ function InnerAppContent() {
                 <BudgetsPage />
               </PremiumRoute>
             } />
+            <Route path="/networth" element={
+              <PremiumRoute>
+                <NetWorthPage />
+              </PremiumRoute>
+            } />
+            <Route path="/notifications" element={
+              <PrivateRoute>
+                <NotificationsPage />
+              </PrivateRoute>
+            } />
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <>
@@ -210,6 +223,11 @@ function InnerAppContent() {
                     </div>
                   )}
                   <UpgradeBanner />
+                  <OnboardingChecklist
+                    transactionCount={transactions.length}
+                    hasSplitTransactions={transactions.some(tx => tx.has_splits === true)}
+                    onAddTransaction={() => window.dispatchEvent(new CustomEvent('openAddTransaction'))}
+                  />
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-green-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                       <div className="flex items-center gap-3 mb-2">

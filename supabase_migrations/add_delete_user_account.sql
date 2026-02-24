@@ -25,6 +25,9 @@ BEGIN
   -- Delete goals
   DELETE FROM public.goals WHERE user_id = _user_id;
 
+  -- Delete transaction splits before transactions
+  DELETE FROM public.transaction_splits WHERE user_id = _user_id;
+
   -- Delete recurring transactions and transactions
   DELETE FROM public.recurring_transactions WHERE user_id = _user_id;
   DELETE FROM public.transactions WHERE user_id = _user_id;
@@ -37,6 +40,14 @@ BEGIN
 
   -- Delete health scores
   DELETE FROM public.financial_health_scores WHERE user_id = _user_id;
+
+  -- Delete net worth data
+  DELETE FROM public.net_worth_snapshots WHERE user_id = _user_id;
+  DELETE FROM public.assets WHERE user_id = _user_id;
+
+  -- Delete notifications and settings
+  DELETE FROM public.notifications WHERE user_id = _user_id;
+  DELETE FROM public.notification_settings WHERE user_id = _user_id;
 
   -- Delete subscription record (table is "subscriptions", not "user_subscriptions")
   DELETE FROM public.subscriptions WHERE user_id = _user_id;

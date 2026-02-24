@@ -1,16 +1,18 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Card from '../UI/Card';
 import { toCSV, downloadCSV } from '../../utils/csv';
 import Modal from '../UI/Modal';
 import TransactionForm from '../Transaction/TransactionForm';
+import CSVImport from './CSVImport';
 import { translateCategoryName } from '../../utils/categoryTranslation';
-import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions } from '../../utils/api';
+import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions, addTransactionWithSplits, updateTransactionWithSplits, fetchTransactionSplits } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
+import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
 export default function Transactions() {
   const {
@@ -39,6 +41,8 @@ export default function Transactions() {
   const [editTx, setEditTx] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [recurringFilter, setRecurringFilter] = useState(RECURRING_FILTERS.ALL);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef(null);
 
   // Process recurring transactions on component mount
   const processRecurring = useCallback(async () => {
@@ -80,21 +84,28 @@ export default function Transactions() {
     if (typeFilter && typeFilter !== 'all') {
       result = result.filter(i => i.type === typeFilter);
     }
-    // Recurring filter
     if (recurringFilter === RECURRING_FILTERS.RECURRING) {
       result = result.filter(i => i.source_recurring_id);
     } else if (recurringFilter === RECURRING_FILTERS.REGULAR) {
       result = result.filter(i => !i.source_recurring_id);
     }
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(i =>
+        i.title?.toLowerCase().includes(q) ||
+        translateCategoryName(i.category?.name || '').toLowerCase().includes(q) ||
+        (Array.isArray(i.tags) && i.tags.some(tag => tag.toLowerCase().includes(q)))
+      );
+    }
     return result;
-  }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter]);
+  }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
 
   function exportCSV() {
     const csv = toCSV(filtered, t);
     downloadCSV(csv, 'transactions.csv');
   }
 
-  function handleAdd() {
+  const handleAdd = useCallback(() => {
     if (!canAddTransaction) {
       addToast(t('upgrade.transactionLimitReached'), 'warning');
       navigate('/pricing');
@@ -102,19 +113,42 @@ export default function Transactions() {
     }
     setEditTx(null);
     setShowModal(true);
-  }
+  }, [canAddTransaction, addToast, t, navigate]);
 
-  function handleEdit(tx) {
-    setEditTx(tx);
+  async function handleEdit(tx) {
+    if (tx.has_splits) {
+      try {
+        const splits = await fetchTransactionSplits(tx.id);
+        setEditTx({ ...tx, splits });
+      } catch (e) {
+        console.error('Failed to load split data:', e);
+        setEditTx(tx);
+      }
+    } else {
+      setEditTx(tx);
+    }
     setShowModal(true);
   }
+
+  // Keyboard shortcuts: Alt+N → add transaction, Ctrl+K → focus search
+  useKeyboardShortcuts([
+    { key: 'n', alt: true, action: handleAdd },
+    { key: 'k', ctrl: true, action: () => searchInputRef.current?.focus() },
+  ]);
+
+  // Listen for openAddTransaction event (fired by OnboardingChecklist)
+  useEffect(() => {
+    function handleOpenAdd() { handleAdd(); }
+    window.addEventListener('openAddTransaction', handleOpenAdd);
+    return () => window.removeEventListener('openAddTransaction', handleOpenAdd);
+  }, [handleAdd]);
 
   return (
     <Card className="mt-4 sm:mt-6">
       <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 shadow-md border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">{t('transactions.title')}</h2>
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-          <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="flex gap-2 sm:gap-3 w-full sm:w-auto flex-wrap">
             <button
               onClick={handleAdd}
               className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-md hover:from-green-600 hover:to-emerald-700 hover:shadow-lg transition-all font-semibold text-sm sm:text-base min-h-[48px]"
@@ -123,6 +157,7 @@ export default function Transactions() {
               <span className="hidden sm:inline">{t('transactions.addNew')}</span>
               <span className="sm:hidden">{t('forms.add')}</span>
             </button>
+            <CSVImport categories={categories} onImportComplete={onReload} />
             <button onClick={exportCSV} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-md hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg transition-all font-semibold text-sm sm:text-base min-h-[48px]">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span className="hidden sm:inline">{t('transactions.export')}</span>
@@ -139,6 +174,33 @@ export default function Transactions() {
             </button>
           </div>
         </div>
+        {/* Search bar */}
+        <div className="mb-3 relative">
+          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder={t('transactions.searchPlaceholder')}
+            className="w-full pl-9 pr-9 py-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700/60 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900 transition"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
         <div className={`flex flex-wrap items-center gap-2 ${showFilters ? 'block' : 'hidden sm:flex'}`}>
           {/* Year filter */}
           <select
@@ -199,13 +261,13 @@ export default function Transactions() {
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mb-6 shadow-inner">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
           </div>
-          <h3 className="text-gray-700 dark:text-gray-300 text-lg sm:text-xl font-bold mb-2">{t('transactions.noTransactions')}</h3>
+          <h3 className="text-gray-700 dark:text-gray-300 text-lg sm:text-xl font-bold mb-2">
+            {searchQuery.trim() ? t('transactions.noSearchResults') : t('transactions.noTransactions')}
+          </h3>
           <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-6 max-w-sm">
-            {items.length === 0 
-              ? t('transactions.noTransactions')
-              : t('transactions.noTransactions')}
+            {searchQuery.trim() ? `"${searchQuery}"` : ''}
           </p>
-          {items.length === 0 && (
+          {items.length === 0 && !searchQuery && (
             <button
               onClick={handleAdd}
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:from-green-600 hover:to-emerald-700 hover:shadow-xl hover:scale-105 transition-all font-semibold text-base sm:text-lg"
@@ -300,7 +362,19 @@ export default function Transactions() {
               if (editTx) {
                 // Update only the transaction instance, not the recurring template
                 // Template should be modified from Recurring Transactions page
-                onUpdate(editTx.id, data);
+                if (data.has_splits && data.splits?.length > 0) {
+                  try {
+                    await updateTransactionWithSplits(editTx.id, data, data.splits);
+                    addToast(t('messages.transactionUpdated'), 'success');
+                    localStorage.setItem('onboarding_split_used', '1');
+                    await onReload();
+                  } catch (e) {
+                    console.error('Error updating split transaction:', e);
+                    addToast(t('messages.error'), 'error');
+                  }
+                } else {
+                  onUpdate(editTx.id, data);
+                }
                 setShowModal(false);
                 setEditTx(null);
               } else if (data.isRecurring) {
@@ -321,6 +395,19 @@ export default function Transactions() {
                   console.error('Error creating recurring transaction:', error);
                   addToast(t('recurring.createError'), 'error');
                 }
+              } else if (data.has_splits && data.splits?.length > 0) {
+                try {
+                  await addTransactionWithSplits(data, data.splits);
+                  addToast(t('messages.transactionAdded'), 'success');
+                  localStorage.setItem('onboarding_split_used', '1');
+                  await onReload();
+                  await refreshSubscription();
+                } catch (e) {
+                  console.error('Error adding split transaction:', e);
+                  addToast(t('messages.error'), 'error');
+                }
+                setShowModal(false);
+                setEditTx(null);
               } else if (onAdd) {
                 await onAdd(data);
                 // refreshSubscription is called inside onAdd (TransactionContext)

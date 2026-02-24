@@ -9,6 +9,7 @@ import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recur
 import { getInputClassName } from '../../utils/classNames'
 import { RECURRING_FREQUENCIES } from '../../utils/constants'
 import { APP_CONFIG } from '../../config/app'
+import TransactionSplitForm from './TransactionSplitForm'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t, i18n } = useTranslation()
@@ -30,7 +31,11 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	
 	// If editing a transaction from a recurring rule
 	const isFromRecurring = initial?.source_recurring_id
-	
+
+	// Split transaction state
+	const [isSplit, setIsSplit] = useState(initial?.has_splits || false)
+	const [splits, setSplits] = useState(initial?.splits || [])
+
 	// Recurring transaction state
 	const [isRecurring, setIsRecurring] = useState(initial?.isRecurring || false)
 	const [frequency, setFrequency] = useState(initial?.frequency || RECURRING_FREQUENCIES.MONTHLY)
@@ -57,8 +62,25 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		if (!title.trim()) newErrors.title = 'transactions.titleError'
 		if (!amount || isNaN(amount) || Number(amount) <= 0) newErrors.amount = 'transactions.amountError'
 		if (!date) newErrors.date = 'transactions.dateError'
-		if (!categoryId || categoryId === '' || categoryId === 'other') newErrors.categoryId = 'transactions.categoryError'
 		if (!type) newErrors.type = 'transactions.typeError'
+
+		if (isSplit) {
+			// Validate splits
+			if (splits.length < 2) {
+				newErrors.splits = 'split.needAtLeastTwo'
+			} else {
+				const total = splits.reduce((s, sp) => s + (parseFloat(sp.amount) || 0), 0)
+				if (Math.abs(total - Number(amount)) > 0.01) {
+					newErrors.splits = 'split.mustEqualTotal'
+				}
+				splits.forEach((sp, idx) => {
+					if (!sp.category_id) newErrors[`split_${idx}_category`] = 'transactions.categoryError'
+					if (!sp.amount || isNaN(sp.amount) || Number(sp.amount) <= 0) newErrors[`split_${idx}_amount`] = 'transactions.amountError'
+				})
+			}
+		} else if (!categoryId || categoryId === '' || categoryId === 'other') {
+			newErrors.categoryId = 'transactions.categoryError'
+		}
 		
 		// Recurring validation
 		if (isRecurring) {
@@ -220,12 +242,15 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			title: title.trim(),
 			amount: Number(amount),
 			date,
-			categoryId,
+			categoryId: isSplit ? null : categoryId,
 			type,
 			tags: tagsList,
 			currencyCode,
 			exchangeRate: Number(exchangeRate),
-			sourceRecurringId: initial?.source_recurring_id
+			sourceRecurringId: initial?.source_recurring_id,
+			// Split data
+			has_splits: isSplit,
+			splits: isSplit ? splits : null,
 		}
 		
 		// Add recurring data if enabled
@@ -365,11 +390,35 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					</div>
 				</div>
 
-				{/* Category */}
+				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
 				<div className="flex flex-col gap-1 sm:gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-						{t('transactions.categoryLabel')}
-					</label>
+					<div className="flex items-center justify-between">
+						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+							{isSplit ? t('split.title') : t('transactions.categoryLabel')}
+						</label>
+						{!isRecurring && !initial?.source_recurring_id && (
+							<button
+								type="button"
+								onClick={() => { setIsSplit(v => !v); setSplits([]); }}
+								className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+							>
+								<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+								</svg>
+								{isSplit ? t('split.singleCategory') : t('split.enableSplit')}
+							</button>
+						)}
+					</div>
+					{isSplit ? (
+						<TransactionSplitForm
+							totalAmount={Number(amount) || 0}
+							categories={categories}
+							initialSplits={splits}
+							onSplitsChange={setSplits}
+							errors={errors}
+						/>
+					) : (
+					<>
 					<select
 						value={categoryId}
 						onChange={handleCategoryChange}
@@ -412,6 +461,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							)}
 						</div>
 					)}
+				</>
+				)}
 				</div>
 
 				{/* Tags */}
@@ -430,8 +481,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					/>
 				</div>
 
-				{/* Recurring Transaction Toggle - only show for new transactions */}
-				{allowRecurring && !initial?.id && !initial?.source_recurring_id && (
+				{/* Recurring Transaction Toggle - only show for new transactions, hide when split is enabled or editing split transaction */}
+				{allowRecurring && !initial?.id && !initial?.source_recurring_id && !isSplit && !initial?.has_splits && (
 					<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">

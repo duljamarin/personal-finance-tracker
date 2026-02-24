@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
@@ -7,13 +7,16 @@ import BudgetCard from './BudgetCard';
 import BudgetForm from './BudgetForm';
 import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExpensesByCategory, fetchCategories } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
+import { supabase } from '../../utils/supabaseClient';
 
 export default function BudgetsPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const { user } = useAuth();
 
   const today = new Date();
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
@@ -68,9 +71,36 @@ export default function BudgetsPage() {
     }
   };
 
+  // Re-fetch only expenses (cheap) — called by realtime subscription
+  const refreshExpenses = useCallback(async () => {
+    try {
+      const fresh = await fetchMonthlyExpensesByCategory(selectedYear, selectedMonth);
+      setExpensesByCategory(fresh);
+    } catch (e) {
+      console.error('Error refreshing expenses:', e);
+    }
+  }, [selectedYear, selectedMonth]);
+
   useEffect(() => {
     loadData();
   }, [selectedYear, selectedMonth]);
+
+  // Realtime: refresh spent amounts instantly when transactions change
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`budgets-live-${user.id}-${selectedYear}-${selectedMonth}`)
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'transactions',
+        filter: `user_id=eq.${user.id}`
+      }, refreshExpenses)
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'transaction_splits',
+        filter: `user_id=eq.${user.id}`
+      }, refreshExpenses)
+      .subscribe();
+    return () => supabase.removeChannel(channel);
+  }, [user, selectedYear, selectedMonth, refreshExpenses]);
 
   // Month navigator
   const goToPrevMonth = () => {

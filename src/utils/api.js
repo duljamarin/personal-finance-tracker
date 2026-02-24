@@ -156,6 +156,16 @@ export async function addTransaction(transaction) {
       exchangeRate, 
       updateRecurringTemplate, 
       sourceRecurringId,
+      has_splits,
+      splits,
+      isRecurring,
+      frequency,
+      intervalCount,
+      startDate,
+      endDate,
+      occurrencesLimit,
+      endType,
+      date: _date,
       ...rest 
     } = transaction;
     
@@ -165,6 +175,7 @@ export async function addTransaction(transaction) {
     
     const insertData = {
       ...rest,
+      date: _date,
       category_id: categoryId,
       user_id: user.id,
       currency_code: currencyCode || 'EUR',
@@ -182,6 +193,8 @@ export async function addTransaction(transaction) {
       .single();
     
     if (error) throw error;
+    // Fire budget notification check asynchronously (non-blocking)
+    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
     return data;
   });
 }
@@ -196,6 +209,15 @@ export async function updateTransaction(id, transaction) {
       exchangeRate, 
       updateRecurringTemplate, 
       sourceRecurringId,
+      has_splits,
+      splits,
+      isRecurring,
+      frequency,
+      intervalCount,
+      startDate,
+      endDate,
+      occurrencesLimit,
+      endType,
       ...rest 
     } = transaction;
     
@@ -233,6 +255,8 @@ export async function updateTransaction(id, transaction) {
       .single();
     
     if (error) throw error;
+    // Fire budget notification check asynchronously (non-blocking)
+    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
     return data;
   });
 }
@@ -315,6 +339,8 @@ export async function addRecurringTransaction(recurring) {
       endType, // Exclude frontend-only field
       updateRecurringTemplate, // Exclude frontend-only field
       sourceRecurringId, // Exclude frontend-only field
+      has_splits, // Exclude - not a column on recurring_transactions
+      splits, // Exclude - not a column on recurring_transactions
       ...rest 
     } = recurring;
     
@@ -363,6 +389,11 @@ export async function updateRecurringTransaction(id, recurring) {
       isActive,
       updateRecurringTemplate, // Exclude frontend-only field
       sourceRecurringId, // Exclude frontend-only field
+      has_splits, // Exclude - not a column on recurring_transactions
+      splits, // Exclude - not a column on recurring_transactions
+      isRecurring, // Exclude frontend-only flag
+      endType, // Exclude frontend-only field
+      date, // Exclude - recurring uses start_date
       ...rest 
     } = recurring;
     
@@ -584,7 +615,17 @@ export async function processRecurringTransactions() {
     }
     
     return { generated: generatedTransactions.length, transactions: generatedTransactions };
-  }).then(result => result || { generated: 0, transactions: [] });
+  }).then(result => {
+    if (!result) return { generated: 0, transactions: [] };
+    // Fire recurring due notification check after processing (non-blocking)
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        supabase.rpc('check_recurring_notifications', { p_user_id: data.user.id })
+          .then(() => {}).catch(() => {});
+      }
+    });
+    return result;
+  });
 }
 
 // Helper function to calculate next date (handles month-end dates properly)
@@ -898,6 +939,12 @@ export async function addContribution(goalId, contributionData) {
       .single();
 
     if (error) throw error;
+    // Fire goal milestone notification check asynchronously (non-blocking)
+    // DB trigger has already updated current_amount by the time this runs
+    supabase.rpc('check_goal_milestone_notifications', {
+      p_user_id: user.id,
+      p_goal_id: goalId
+    }).then(() => {}).catch(() => {});
     return data;
   });
 }
@@ -1025,21 +1072,43 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
     const nextYear = month === 12 ? year + 1 : year;
     const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
 
-    const { data, error } = await supabase
+    // Direct (non-split) transactions — category_id is set
+    const { data: txData, error: txError } = await supabase
       .from('transactions')
       .select('category_id, base_amount')
       .eq('user_id', user.id)
       .eq('type', 'expense')
       .gte('date', startDate)
       .lt('date', endDate)
-      .eq('is_scheduled', false);
+      .eq('is_scheduled', false)
+      .not('category_id', 'is', null);
 
-    if (error) throw error;
+    if (txError) throw txError;
+
+    // Split transaction amounts — join through transactions for date/type filter
+    const { data: splitData, error: splitError } = await supabase
+      .from('transaction_splits')
+      .select(`
+        category_id,
+        amount,
+        transaction:transactions!inner(type, date, exchange_rate, is_scheduled)
+      `)
+      .eq('user_id', user.id)
+      .eq('transaction.type', 'expense')
+      .gte('transaction.date', startDate)
+      .lt('transaction.date', endDate)
+      .eq('transaction.is_scheduled', false);
+
+    if (splitError) throw splitError;
 
     const totals = {};
-    for (const tx of (data || [])) {
-      if (!tx.category_id) continue;
+    for (const tx of (txData || [])) {
       totals[tx.category_id] = (totals[tx.category_id] || 0) + Number(tx.base_amount || 0);
+    }
+    for (const split of (splitData || [])) {
+      if (!split.category_id) continue;
+      const rate = split.transaction?.exchange_rate || 1.0;
+      totals[split.category_id] = (totals[split.category_id] || 0) + Number(split.amount) * rate;
     }
     return totals;
   }).then(result => result || {});
@@ -1098,5 +1167,363 @@ export async function deleteUserAccount() {
     if (response.error) throw response.error;
 
     await supabase.auth.signOut();
+  });
+}
+
+// ============================================
+// CSV IMPORT
+// ============================================
+
+export async function bulkImportTransactions(transactions) {
+  return withAuth(async (user) => {
+    const rows = transactions.map(tx => ({
+      title: tx.title,
+      amount: tx.amount,
+      type: tx.type,
+      date: tx.date,
+      category_id: tx.category_id,
+      tags: tx.tags || [],
+      currency_code: tx.currency_code || 'EUR',
+      exchange_rate: tx.exchange_rate || 1.0,
+      base_amount: tx.amount * (tx.exchange_rate || 1.0),
+      user_id: user.id,
+    }));
+
+    const { data, error } = await supabase
+      .from('transactions')
+      .insert(rows)
+      .select('id');
+
+    if (error) throw error;
+    return { count: data?.length || 0 };
+  });
+}
+
+// ============================================
+// NET WORTH - ASSETS
+// ============================================
+
+export async function fetchAssets() {
+  return withAuthOrEmpty(async (user) => {
+    const { data, error } = await supabase
+      .from('assets')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('type', { ascending: true })
+      .order('name', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  });
+}
+
+export async function addAsset(asset) {
+  return withAuth(async (user) => {
+    const { data, error } = await supabase
+      .from('assets')
+      .insert([{ ...asset, user_id: user.id }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Update today's snapshot
+    await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
+
+    return data;
+  });
+}
+
+export async function updateAsset(id, asset) {
+  return withAuth(async (user) => {
+    const { data, error } = await supabase
+      .from('assets')
+      .update(asset)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Update today's snapshot
+    await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
+
+    return data;
+  });
+}
+
+export async function deleteAsset(id) {
+  return withAuth(async (user) => {
+    const { error } = await supabase
+      .from('assets')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) throw error;
+
+    // Update today's snapshot
+    await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
+
+    return 'OK';
+  });
+}
+
+export async function fetchNetWorthHistory() {
+  return withAuthOrEmpty(async (user) => {
+    const { data, error } = await supabase
+      .from('net_worth_snapshots')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('snapshot_date', { ascending: true })
+      .limit(24); // 2 years of monthly snapshots
+
+    if (error) throw error;
+    return data || [];
+  });
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+export async function fetchNotifications() {
+  return withAuthOrEmpty(async (user) => {
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    return data || [];
+  });
+}
+
+export async function markNotificationAsRead(id) {
+  return withAuth(async (user) => {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ is_read: true })
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) throw error;
+    return 'OK';
+  });
+}
+
+export async function markAllNotificationsAsRead() {
+  return withAuth(async (user) => {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ is_read: true })
+      .eq('user_id', user.id)
+      .eq('is_read', false);
+
+    if (error) throw error;
+    return 'OK';
+  });
+}
+
+export async function deleteNotification(id) {
+  return withAuth(async (user) => {
+    const { error } = await supabase
+      .from('notifications')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) throw error;
+    return 'OK';
+  });
+}
+
+export async function getUnreadNotificationCount() {
+  return withAuth(async (user) => {
+    const { count, error } = await supabase
+      .from('notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('is_read', false);
+
+    if (error) throw error;
+    return count || 0;
+  });
+}
+
+// ============================================
+// NOTIFICATION SETTINGS
+// ============================================
+
+export async function fetchNotificationSettings() {
+  return withAuth(async (user) => {
+    const { data, error } = await supabase
+      .from('notification_settings')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (error) {
+      // No settings row yet — return defaults
+      if (error.code === 'PGRST116') return null;
+      throw error;
+    }
+    return data;
+  });
+}
+
+export async function updateNotificationSettings(settings) {
+  return withAuth(async (user) => {
+    const { email_enabled, budget_overrun_enabled, recurring_due_enabled,
+            goal_milestone_enabled, trial_expiring_enabled, budget_threshold,
+            recurring_advance_days, goal_milestone_percentage } = settings;
+
+    const payload = {
+      user_id: user.id,
+      email_enabled,
+      budget_overrun_enabled,
+      recurring_due_enabled,
+      goal_milestone_enabled,
+      trial_expiring_enabled,
+      budget_threshold,
+      recurring_advance_days,
+      goal_milestone_percentage,
+    };
+
+    const { data, error } = await supabase
+      .from('notification_settings')
+      .upsert(payload, { onConflict: 'user_id' })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  });
+}
+
+// ============================================
+// TRANSACTION SPLITS
+// ============================================
+
+export async function fetchTransactionSplits(transactionId) {
+  return withAuthOrEmpty(async (user) => {
+    const { data, error } = await supabase
+      .from('transaction_splits')
+      .select(`
+        *,
+        category:categories(id, name)
+      `)
+      .eq('transaction_id', transactionId)
+      .eq('user_id', user.id)
+      .order('amount', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  });
+}
+
+export async function addTransactionWithSplits(transaction, splits) {
+  return withAuth(async (user) => {
+    const { category, categoryId, currencyCode, exchangeRate, sourceRecurringId, splits: _splitsField, isRecurring, frequency, intervalCount, startDate, endDate, occurrencesLimit, ...rest } = transaction;
+    const rate = exchangeRate || 1.0;
+
+    // Insert the parent transaction (category_id is null for split transactions)
+    const { data: tx, error: txError } = await supabase
+      .from('transactions')
+      .insert([{
+        ...rest,
+        category_id: splits?.length > 0 ? null : categoryId,
+        user_id: user.id,
+        currency_code: currencyCode || 'EUR',
+        exchange_rate: rate,
+        base_amount: transaction.amount * rate,
+        has_splits: splits?.length > 0,
+        source_recurring_id: sourceRecurringId || null,
+      }])
+      .select('*, category:categories(id, name)')
+      .single();
+
+    if (txError) throw txError;
+
+    // Insert splits if provided
+    if (splits?.length > 0) {
+      const splitRows = splits.map(s => ({
+        transaction_id: tx.id,
+        user_id: user.id,
+        category_id: s.category_id,
+        amount: Number(s.amount),
+        percentage: s.percentage ? Number(s.percentage) : null,
+        notes: s.notes || null,
+      }));
+
+      const { error: splitError } = await supabase
+        .from('transaction_splits')
+        .insert(splitRows);
+
+      if (splitError) throw splitError;
+    }
+
+    // Fire budget notification check asynchronously (non-blocking)
+    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
+    return tx;
+  });
+}
+
+export async function updateTransactionWithSplits(id, transaction, splits) {
+  return withAuth(async (user) => {
+    const { category, categoryId, currencyCode, exchangeRate, sourceRecurringId, splits: _splitsField, isRecurring, frequency, intervalCount, startDate, endDate, occurrencesLimit, ...rest } = transaction;
+    const rate = exchangeRate || 1.0;
+    const hasSplits = splits?.length > 0;
+
+    const { data: tx, error: txError } = await supabase
+      .from('transactions')
+      .update({
+        ...rest,
+        category_id: hasSplits ? null : categoryId,
+        currency_code: currencyCode || 'EUR',
+        exchange_rate: rate,
+        base_amount: transaction.amount * rate,
+        has_splits: hasSplits,
+        source_recurring_id: sourceRecurringId || null,
+      })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select('*, category:categories(id, name)')
+      .single();
+
+    if (txError) throw txError;
+
+    // Replace all splits for this transaction
+    const { error: delError } = await supabase
+      .from('transaction_splits')
+      .delete()
+      .eq('transaction_id', id)
+      .eq('user_id', user.id);
+
+    if (delError) throw delError;
+
+    if (hasSplits) {
+      const splitRows = splits.map(s => ({
+        transaction_id: id,
+        user_id: user.id,
+        category_id: s.category_id,
+        amount: Number(s.amount),
+        percentage: s.percentage ? Number(s.percentage) : null,
+        notes: s.notes || null,
+      }));
+
+      const { error: splitError } = await supabase
+        .from('transaction_splits')
+        .insert(splitRows);
+
+      if (splitError) throw splitError;
+    }
+
+    // Fire budget notification check asynchronously (non-blocking)
+    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
+    return tx;
   });
 }

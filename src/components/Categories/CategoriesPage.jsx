@@ -56,6 +56,7 @@ export default function CategoriesPage() {
         if (reloadExpenses) reloadExpenses();
         setEditName('');
         setShowModal(false);
+        localStorage.setItem('onboarding_category_done', '1');
         addToast(t('messages.categoryAdded'), 'success');
       } catch (err) {
         if (err && err.message && (err.message.includes('409') || err.message.toLowerCase().includes('already'))) {
