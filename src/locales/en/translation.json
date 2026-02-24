@@ -420,6 +420,7 @@
     "insightBreakEven": "You're breaking even this month - income matches expenses."
   },
   "goals": {
+    "tag": "goal",
     "title": "Financial Goals",
     "subtitle": "Track your savings and reach your targets",
     "addGoal": "Add Goal",

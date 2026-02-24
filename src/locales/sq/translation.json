@@ -420,6 +420,7 @@
     "insightBreakEven": "Jeni në balancë këtë muaj - të ardhurat përputhen me shpenzimet."
   },
   "goals": {
+    "tag": "objektiv",
     "title": "Objektivat Financiare",
     "subtitle": "Ndiq kursimet dhe arrij objektivat e tua",
     "addGoal": "Shto Objektiv",

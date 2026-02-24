@@ -96,7 +96,7 @@ export default function GoalsPage() {
         date: contributionData.date,
         type: isWithdrawal ? 'income' : 'expense',
         categoryId: null, // Objektivat nuk kanë kategori - përdor tags
-        tags: ['goal', 'objektiv'],
+        tags: [t('goals.tag', 'goal')],
         currencyCode: 'EUR',
         exchangeRate: 1.0
       });
