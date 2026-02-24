@@ -136,6 +136,8 @@
     "genericError": "An error occurred. Please try again.",
     "emailConfirmedTitle": "Email Confirmed!",
     "emailConfirmedDescription": "Your email address has been successfully verified. You can now log in to your account.",
+    "verifyingEmail": "Verifying your email, please wait...",
+    "redirectingToDashboard": "Redirecting you to your dashboard...",
     "redirectingToLogin": "Redirecting to login page...",
     "forgotPassword": "Forgot password?",
     "forgotPasswordTitle": "Reset Your Password",
