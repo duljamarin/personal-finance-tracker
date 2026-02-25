@@ -179,8 +179,8 @@ export default function PricingPage() {
       {/* Plan Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         {/* Free Plan */}
-        <Card className="relative border-2 border-gray-200 dark:border-gray-600">
-          <div className="p-6">
+        <Card className="relative border-2 border-gray-200 dark:border-gray-600 h-full">
+          <div className="p-6 flex flex-col h-full">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {t('pricing.free')}
             </h3>
@@ -188,7 +188,7 @@ export default function PricingPage() {
               <span className="text-4xl font-extrabold text-gray-900 dark:text-white">€0</span>
               <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perMonth')}</span>
             </div>
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-3 flex-1">
               {freeFeatures.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <svg className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,26 +198,28 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            {!accessToken ? (
-              <Link to="/register">
-                <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
-              </Link>
-            ) : (
-              <Button variant="secondary" className="w-full" disabled>
-                {!isPremium ? t('pricing.currentPlan') : t('pricing.free')}
-              </Button>
-            )}
+            <div className="mt-8">
+              {!accessToken ? (
+                <Link to="/register">
+                  <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
+                </Link>
+              ) : (
+                <Button variant="secondary" className="w-full" disabled>
+                  {!isPremium ? t('pricing.currentPlan') : t('pricing.free')}
+                </Button>
+              )}
+            </div>
           </div>
         </Card>
 
         {/* Monthly Plan */}
-        <Card className="relative border-2 border-indigo-500 dark:border-indigo-400 shadow-lg">
+        <Card className="relative border-2 border-indigo-500 dark:border-indigo-400 shadow-lg h-full">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
               {t('pricing.popular')}
             </span>
           </div>
-          <div className="p-6 pt-8">
+          <div className="p-6 pt-8 flex flex-col h-full">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {t('pricing.monthly')}
             </h3>
@@ -225,13 +227,10 @@ export default function PricingPage() {
               <span className="text-4xl font-extrabold text-gray-900 dark:text-white">{t('pricing.monthlyPrice')}</span>
               <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perMonth')}</span>
             </div>
-            {!hasHadTrial && (
-              <p className="text-sm text-indigo-600 dark:text-indigo-400 font-medium mb-6">
-                {t('pricing.freeTrial')}
-              </p>
-            )}
-            {hasHadTrial && <div className="mb-6" />}
-            <ul className="space-y-3 mb-8">
+            <p className="text-sm font-medium mb-4 min-h-[1.25rem] text-indigo-600 dark:text-indigo-400">
+              {!hasHadTrial ? t('pricing.freeTrial') : ''}
+            </p>
+            <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <svg className="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,47 +240,42 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            {isCurrentPlan('monthly') ? (
-              <>
-                <Button variant="primary" className="w-full mb-2" disabled>
-                  {isTrialing ? t('subscription.onTrial') : t('pricing.currentPlan')}
+            <div className="mt-8">
+              {isCurrentPlan('monthly') ? (
+                <>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                    <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                      {isTrialing
+                        ? t('subscription.trialEndsIn', { days: trialDaysLeft })
+                        : t('pricing.currentPlan')}
+                    </span>
+                  </div>
+                  <Button variant="primary" className="w-full" onClick={handleManageSubscription}>
+                    {t('pricing.managePlan')}
+                  </Button>
+                </>
+              ) : isPremium && !isCurrentPlan('monthly') ? (
+                <Button variant="secondary" className="w-full" onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}>
+                  {t('pricing.switchToMonthly')}
                 </Button>
-                <Button
-                  variant="secondary"
-                  className="w-full"
-                  onClick={handleManageSubscription}
-                >
-                  {t('pricing.managePlan')}
+              ) : (
+                <Button variant="primary" className="w-full" onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}>
+                  {t('pricing.subscribe')}
                 </Button>
-              </>
-            ) : isPremium && !isCurrentPlan('monthly') ? (
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}
-              >
-                {t('pricing.switchToMonthly')}
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                className="w-full"
-                onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}
-              >
-                {t('pricing.subscribe')}
-              </Button>
-            )}
+              )}
+            </div>
           </div>
         </Card>
 
         {/* Yearly Plan */}
-        <Card className="relative border-2 border-emerald-500 dark:border-emerald-400">
+        <Card className="relative border-2 border-emerald-500 dark:border-emerald-400 h-full">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
               {t('pricing.bestValue')}
             </span>
           </div>
-          <div className="p-6 pt-8">
+          <div className="p-6 pt-8 flex flex-col h-full">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {t('pricing.yearly')}
             </h3>
@@ -292,16 +286,12 @@ export default function PricingPage() {
             <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
               {t('pricing.yearlyPerMonth')}
             </p>
-            {!hasHadTrial ? (
-              <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-6">
-                {t('pricing.saveYearly')} &middot; {t('pricing.freeTrial')}
-              </p>
-            ) : (
-              <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-6">
-                {t('pricing.saveYearly')}
-              </p>
-            )}
-            <ul className="space-y-3 mb-8">
+            <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-4 min-h-[1.25rem]">
+              {!hasHadTrial
+                ? `${t('pricing.saveYearly')} · ${t('pricing.freeTrial')}`
+                : t('pricing.saveYearly')}
+            </p>
+            <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <svg className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -311,36 +301,31 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            {isCurrentPlan('yearly') ? (
-              <>
-                <Button variant="success" className="w-full mb-2" disabled>
-                  {isTrialing ? t('subscription.onTrial') : t('pricing.currentPlan')}
+            <div className="mt-8">
+              {isCurrentPlan('yearly') ? (
+                <>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                      {isTrialing
+                        ? t('subscription.trialEndsIn', { days: trialDaysLeft })
+                        : t('pricing.currentPlan')}
+                    </span>
+                  </div>
+                  <Button variant="success" className="w-full" onClick={handleManageSubscription}>
+                    {t('pricing.managePlan')}
+                  </Button>
+                </>
+              ) : isPremium && !isCurrentPlan('yearly') ? (
+                <Button variant="secondary" className="w-full" onClick={() => handleSubscribe(YEARLY_PRICE_ID)}>
+                  {t('pricing.switchToYearly')}
                 </Button>
-                <Button
-                  variant="secondary"
-                  className="w-full"
-                  onClick={handleManageSubscription}
-                >
-                  {t('pricing.managePlan')}
+              ) : (
+                <Button variant="success" className="w-full" onClick={() => handleSubscribe(YEARLY_PRICE_ID)}>
+                  {t('pricing.subscribe')}
                 </Button>
-              </>
-            ) : isPremium && !isCurrentPlan('yearly') ? (
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => handleSubscribe(YEARLY_PRICE_ID)}
-              >
-                {t('pricing.switchToYearly')}
-              </Button>
-            ) : (
-              <Button
-                variant="success"
-                className="w-full"
-                onClick={() => handleSubscribe(YEARLY_PRICE_ID)}
-              >
-                {t('pricing.subscribe')}
-              </Button>
-            )}
+              )}
+            </div>
           </div>
         </Card>
       </div>
