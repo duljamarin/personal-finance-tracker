@@ -290,7 +290,7 @@ export default function Transactions() {
           {filtered.map(item => (
             <div
               key={item.id}
-              className={`bg-white dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-850 rounded-xl shadow-lg hover:shadow-2xl p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
+              className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex flex-col gap-1">
@@ -343,14 +343,14 @@ export default function Transactions() {
               )}
               <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
                 <button
-                  className="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 dark:text-gray-900 px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
+                  className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
                   onClick={() => handleEdit(item)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   {t('transactions.edit')}
                 </button>
                 <button
-                  className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
+                  className="flex-1 bg-red-500/10 dark:bg-red-500/20 hover:bg-red-500/20 dark:hover:bg-red-500/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
                   onClick={() => onDelete(item.id)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>

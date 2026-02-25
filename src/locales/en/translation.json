@@ -23,7 +23,8 @@
     "pricing": "Pricing",
     "logout": "Logout",
     "account": "Account",
-    "myProfile": "My Profile"
+    "myProfile": "My Profile",
+    "more": "More"
   },
   "common": {
     "cancel": "Cancel"
@@ -38,7 +39,19 @@
     "expensesByMonth": "Expenses by Month",
     "loadingData": "Loading your data...",
     "processing": "Processing...",
-    "loadingDashboard": "Loading your dashboard..."
+    "loadingDashboard": "Loading your dashboard...",
+    "addTransaction": "Add Transaction",
+    "addTransactionHint": "Quick add income or expense",
+    "budgetProgress": "Budget Progress",
+    "noBudgets": "No budgets set for this month",
+    "setupBudgets": "Set up budgets",
+    "viewAllBudgets": "View all",
+    "range": {
+      "3m": "3M",
+      "6m": "6M",
+      "12m": "1Y",
+      "all": "All"
+    }
   },
   "transactions": {
     "title": "Transactions",
@@ -618,10 +631,11 @@
     "monthly": "Monthly",
     "yearly": "Yearly",
     "monthlyPrice": "€5",
-    "yearlyPrice": "€50",
+    "yearlyPrice": "€36",
+    "yearlyPerMonth": "€3/mo",
     "perMonth": "/month",
     "perYear": "/year",
-    "saveYearly": "Save €10/year",
+    "saveYearly": "Save 40% vs monthly",
     "freeTrial": "5-day free trial",
     "subscribe": "Start Free Trial",
     "currentPlan": "Current Plan",

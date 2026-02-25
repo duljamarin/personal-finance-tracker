@@ -5,7 +5,7 @@ import { fetchHealthScore, fetchHealthScoreHistory } from '../../utils/api';
 import { useSubscription } from '../../context/SubscriptionContext';
 import Card from '../UI/Card';
 
-export default function HealthScore({ onReloadTrigger }) {
+export default function HealthScore({ onReloadTrigger, compact = false }) {
   const { t } = useTranslation();
   const { isPremium } = useSubscription();
   const [score, setScore] = useState(null);
@@ -22,7 +22,7 @@ export default function HealthScore({ onReloadTrigger }) {
         
         const [scoreData, historyData] = await Promise.all([
           fetchHealthScore({ month: selectedMonth, forceRecalculate: true }),
-          fetchHealthScoreHistory(6)
+          compact ? Promise.resolve([]) : fetchHealthScoreHistory(6)
         ]);
         
         setScore(scoreData);
@@ -184,11 +184,37 @@ export default function HealthScore({ onReloadTrigger }) {
 
   const scoreColors = getScoreColor(score.totalScore);
   // Use fixed radius for accurate calculation
-  const radius = 54; // For 128px (w-32) or 160px (w-40) SVG
+  const radius = 54;
   const circumference = 2 * Math.PI * radius;
   // Cap at 100% to prevent overflow
   const displayScore = Math.min(score.totalScore, 100);
   const strokeDashoffset = circumference - (displayScore / 100) * circumference;
+
+  if (compact) {
+    const compactRadius = 42;
+    const compactCirc = 2 * Math.PI * compactRadius;
+    const compactOffset = compactCirc - (displayScore / 100) * compactCirc;
+
+    return (
+      <Card>
+        <div className="p-4 sm:p-6 flex items-center gap-4">
+          <div className="relative flex-shrink-0">
+            <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r={compactRadius} fill="none" stroke="currentColor" strokeWidth="7" className="text-gray-200 dark:text-gray-600" />
+              <circle cx="50" cy="50" r={compactRadius} fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" className={scoreColors.text} style={{ strokeDasharray: compactCirc, strokeDashoffset: compactOffset, transition: 'stroke-dashoffset 0.5s ease-in-out' }} />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className={`text-lg font-bold ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
+            </div>
+          </div>
+          <div>
+            <p className={`text-xl font-bold ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('healthScore.title')}</p>
+          </div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mt-4 sm:mt-6">

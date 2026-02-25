@@ -19,11 +19,12 @@
     "dashboard": "Paneli",
     "transactions": "Transaksionet",
     "categories": "Kategoritë",
-    "recurring": "Përsëritëse",
+    "recurring": "Transaksionet Përsëritëse",
     "pricing": "Çmimet",
     "logout": "Dilni",
     "account": "Llogaria",
-    "myProfile": "Profili Im"
+    "myProfile": "Profili Im",
+    "more": "Më shumë"
   },
   "common": {
     "cancel": "Anulo"
@@ -38,7 +39,19 @@
     "expensesByMonth": "Shpenzimet sipas Muajit",
     "loadingData": "Duke ngarkuar të dhënat tuaja...",
     "processing": "Duke procesuar...",
-    "loadingDashboard": "Duke ngarkuar tabelën tuaj..."
+    "loadingDashboard": "Duke ngarkuar tabelën tuaj...",
+    "addTransaction": "Shto Transaksion",
+    "addTransactionHint": "Shto shpejt të ardhura ose shpenzime",
+    "budgetProgress": "Progresi i Buxhetit",
+    "noBudgets": "Nuk ka buxhete për këtë muaj",
+    "setupBudgets": "Krijo buxhete",
+    "viewAllBudgets": "Shiko të gjitha",
+    "range": {
+      "3m": "3M",
+      "6m": "6M",
+      "12m": "1V",
+      "all": "Të gjitha"
+    }
   },
   "transactions": {
     "title": "Transaksionet",
@@ -618,10 +631,11 @@
     "monthly": "Mujore",
     "yearly": "Vjetore",
     "monthlyPrice": "€5",
-    "yearlyPrice": "€50",
+    "yearlyPrice": "€36",
+    "yearlyPerMonth": "€3/muaj",
     "perMonth": "/muaj",
     "perYear": "/vit",
-    "saveYearly": "Kurseni €10/vit",
+    "saveYearly": "Kurseni 40% kundrejt planit mujor",
     "freeTrial": "Provë falas 5-ditore",
     "subscribe": "Fillo Provën Falas",
     "currentPlan": "Plani Aktual",

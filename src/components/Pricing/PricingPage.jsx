@@ -285,10 +285,13 @@ export default function PricingPage() {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {t('pricing.yearly')}
             </h3>
-            <div className="mb-2">
+            <div className="mb-1">
               <span className="text-4xl font-extrabold text-gray-900 dark:text-white">{t('pricing.yearlyPrice')}</span>
               <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perYear')}</span>
             </div>
+            <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
+              {t('pricing.yearlyPerMonth')}
+            </p>
             {!hasHadTrial ? (
               <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-6">
                 {t('pricing.saveYearly')} &middot; {t('pricing.freeTrial')}

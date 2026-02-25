@@ -11,8 +11,10 @@ import { supabase } from '../utils/supabaseClient';
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef(null);
+  const moreRef = useRef(null);
   const { accessToken, user, logout } = useAuth();
   const { isPremium, subscription } = useSubscription();
   const { t } = useTranslation();
@@ -85,6 +87,17 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [profileOpen]);
 
+  // Close More dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (moreRef.current && !moreRef.current.contains(e.target)) {
+        setMoreOpen(false);
+      }
+    }
+    if (moreOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [moreOpen]);
+
   return (
     <header className="mb-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -106,21 +119,36 @@ export default function Header() {
               <Link to="/dashboard" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                 {t('nav.dashboard')}
               </Link>
-               <Link to="/goals" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <Link to="/goals" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                 {t('goals.title')}
               </Link>
               <Link to="/budgets" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                 {t('budgets.title')}
               </Link>
-              <Link to="/networth" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                {t('networth.title')}
-              </Link>
-               <Link to="/recurring" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                {t('nav.recurring')}
-              </Link>
-              <Link to="/categories" className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                {t('nav.categories')}
-              </Link>
+              <div className="relative" ref={moreRef}>
+                <button
+                  onClick={() => setMoreOpen(m => !m)}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-1"
+                >
+                  {t('nav.more')}
+                  <svg className={`w-4 h-4 transition-transform ${moreOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {moreOpen && (
+                  <div className="absolute left-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 py-1 overflow-hidden">
+                    <Link to="/networth" onClick={() => setMoreOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      {t('networth.title')}
+                    </Link>
+                    <Link to="/recurring" onClick={() => setMoreOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      {t('nav.recurring')}
+                    </Link>
+                    <Link to="/categories" onClick={() => setMoreOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      {t('nav.categories')}
+                    </Link>
+                  </div>
+                )}
+              </div>
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
               {showUpgrade && (
                 <Link to="/pricing" className="px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-lg transition-all shadow-md">

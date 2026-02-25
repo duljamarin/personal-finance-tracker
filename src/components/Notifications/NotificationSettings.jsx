@@ -73,7 +73,7 @@ export default function NotificationSettings() {
         {/* Individual Notification Types */}
         <div className="space-y-3">
           {/* Budget Overrun */}
-          <div className="border-l-4 border-red-400 pl-4 py-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-red-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -94,7 +94,7 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.budget_threshold}
                       onChange={(e) => handleChange('budget_threshold', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border dark:border-gray-600 dark:bg-gray-800"
+                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       disabled={!settings.email_enabled}
                     />
                     <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">%</span>
@@ -112,7 +112,7 @@ export default function NotificationSettings() {
           </div>
 
           {/* Recurring Due */}
-          <div className="border-l-4 border-blue-400 pl-4 py-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-blue-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -132,7 +132,7 @@ export default function NotificationSettings() {
                       max="7"
                       value={settings.recurring_advance_days}
                       onChange={(e) => handleChange('recurring_advance_days', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border dark:border-gray-600 dark:bg-gray-800"
+                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                     <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">
                       {t('notifications.daysLabel')}
@@ -150,7 +150,7 @@ export default function NotificationSettings() {
           </div>
 
           {/* Goal Milestone */}
-          <div className="border-l-4 border-emerald-400 pl-4 py-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-emerald-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -171,7 +171,7 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.goal_milestone_percentage}
                       onChange={(e) => handleChange('goal_milestone_percentage', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border dark:border-gray-600 dark:bg-gray-800"
+                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                     <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">%</span>
                   </div>
@@ -187,7 +187,7 @@ export default function NotificationSettings() {
           </div>
 
           {/* Trial Expiring */}
-          <div className="border-l-4 border-amber-400 pl-4 py-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-amber-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
