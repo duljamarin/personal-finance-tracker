@@ -5,9 +5,9 @@ import { useAuth } from '../../context/AuthContext';
 
 /**
  * Shown to users on the dashboard until all tracked steps are done or dismissed.
- * Steps 1 (transaction), 4 (csv), 5 (split) are tracked; 2 (dashboard) and 3 (premium) are informational.
+ * Steps 1 (transaction), 3 (categories), 4 (csv), 5 (budget) are tracked; 2 (dashboard) is informational.
  */
-export default function OnboardingChecklist({ transactionCount, hasSplitTransactions, onAddTransaction }) {
+export default function OnboardingChecklist({ transactionCount, categoryCount = 0, budgetCount = 0, onAddTransaction }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -26,8 +26,9 @@ export default function OnboardingChecklist({ transactionCount, hasSplitTransact
   }, [transactionCount]);
 
   const step1Done = transactionCount > 0;
-  const doneSplit = hasSplitTransactions; // Use actual data, not localStorage
-  const allDone = step1Done && doneCsv && doneSplit;
+  const step3Done = categoryCount > 0;
+  const step5Done = budgetCount > 0;
+  const allDone = step1Done && step3Done && doneCsv && step5Done;
 
   if (dismissed || allDone) return null;
 
@@ -64,14 +65,14 @@ export default function OnboardingChecklist({ transactionCount, hasSplitTransact
     {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
         </svg>
       ),
       color: 'purple',
-      done: false,
+      done: step3Done,
       title: t('onboarding.step3'),
       desc: t('onboarding.step3Desc'),
-      action: { label: t('onboarding.action3'), onClick: () => navigate('/pricing') },
+      action: step3Done ? null : { label: t('onboarding.action3'), onClick: () => navigate('/categories') },
     },
     {
       icon: (
@@ -88,14 +89,14 @@ export default function OnboardingChecklist({ transactionCount, hasSplitTransact
     {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       ),
       color: 'indigo',
-      done: doneSplit,
+      done: step5Done,
       title: t('onboarding.step5'),
       desc: t('onboarding.step5Desc'),
-      action: doneSplit ? null : { label: t('onboarding.action5'), onClick: onAddTransaction },
+      action: step5Done ? null : { label: t('onboarding.action5'), onClick: () => navigate('/budgets') },
     },
   ];
 

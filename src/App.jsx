@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { APP_CONFIG } from './config/app';
@@ -34,7 +34,6 @@ import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 import { getValueColorClass } from './utils/classNames';
 import PricingPage from './components/Pricing/PricingPage.jsx';
 import UpgradeBanner from './components/Subscription/UpgradeBanner.jsx';
-import PremiumFeatureLock from './components/Subscription/PremiumFeatureLock.jsx';
 import OnboardingChecklist from './components/Onboarding/OnboardingChecklist.jsx';
 
 
@@ -140,6 +139,7 @@ function InnerAppContent() {
   const { t } = useTranslation();
   const {
     transactions,
+    categories,
     loading,
     error,
     totalIncome,
@@ -149,6 +149,7 @@ function InnerAppContent() {
   } = useTransactions();
 
   const [showGreeting, setShowGreeting] = useState(false);
+  const [budgetCount, setBudgetCount] = useState(0);
   const username = localStorage.getItem('username');
 
   useEffect(() => {
@@ -158,6 +159,20 @@ function InnerAppContent() {
       return () => clearTimeout(timer);
     }
   }, [username]);APP_CONFIG.GREETING_DURATION
+
+  // Fetch budget count for onboarding checklist
+  const refreshBudgetCount = useCallback(async () => {
+    try {
+      const { fetchBudgets } = await import('./utils/api');
+      const now = new Date();
+      const data = await fetchBudgets(now.getFullYear(), now.getMonth() + 1);
+      setBudgetCount(data.length);
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => {
+    if (accessToken) refreshBudgetCount();
+  }, [accessToken, refreshBudgetCount, location.pathname]);
 
   // Routes where Header should not be shown (auth flows)
   const hideHeaderRoutes = ['/reset-password'];
@@ -189,19 +204,19 @@ function InnerAppContent() {
               </PrivateRoute>
             } />
             <Route path="/recurring" element={
-              <PremiumRoute>
+              <PrivateRoute>
                 <RecurringPage />
-              </PremiumRoute>
+              </PrivateRoute>
             } />
             <Route path="/goals" element={
-              <PremiumRoute>
+              <PrivateRoute>
                 <GoalsPage />
-              </PremiumRoute>
+              </PrivateRoute>
             } />
             <Route path="/budgets" element={
-              <PremiumRoute>
+              <PrivateRoute>
                 <BudgetsPage />
-              </PremiumRoute>
+              </PrivateRoute>
             } />
             <Route path="/networth" element={
               <PremiumRoute>
@@ -225,7 +240,8 @@ function InnerAppContent() {
                   <UpgradeBanner />
                   <OnboardingChecklist
                     transactionCount={transactions.length}
-                    hasSplitTransactions={transactions.some(tx => tx.has_splits === true)}
+                    categoryCount={categories.length}
+                    budgetCount={budgetCount}
                     onAddTransaction={() => window.dispatchEvent(new CustomEvent('openAddTransaction'))}
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -304,14 +320,10 @@ function InnerAppContent() {
                   </div>
 
                   {/* Smart Category Benchmark */}
-                  <PremiumFeatureLock featureName={t('landing.features.benchmarks.title')}>
-                    <CategoryBenchmark onReloadTrigger={transactions.length} />
-                  </PremiumFeatureLock>
+                  <CategoryBenchmark onReloadTrigger={transactions.length} />
 
                    {/* Health Score */}
-                  <PremiumFeatureLock featureName={t('landing.features.healthscore.title')}>
-                    <HealthScore onReloadTrigger={transactions.length} />
-                  </PremiumFeatureLock>
+                  <HealthScore onReloadTrigger={transactions.length} />
 
                   {/* Page-level error (non-auth) */}
                   {error && <div className="mb-4 sm:mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 font-medium">{error}</div>}

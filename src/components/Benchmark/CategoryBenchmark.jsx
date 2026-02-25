@@ -2,21 +2,26 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchCategoryBenchmarks } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { useSubscription } from '../../context/SubscriptionContext';
 import Card from '../UI/Card';
 
 export default function CategoryBenchmark({ onReloadTrigger }) {
   const { t } = useTranslation();
+  const { isPremium } = useSubscription();
   const [benchmarks, setBenchmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [months, setMonths] = useState(1);
+
+  // Free users are always locked to 1-month view
+  const effectiveMonths = isPremium ? months : 1;
 
   useEffect(() => {
     async function loadBenchmarks() {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchCategoryBenchmarks(months);
+        const data = await fetchCategoryBenchmarks(effectiveMonths);
         setBenchmarks(data);
       } catch (err) {
         console.error('Error loading benchmarks:', err);
@@ -26,7 +31,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       }
     }
     loadBenchmarks();
-  }, [months, onReloadTrigger]);
+  }, [effectiveMonths, onReloadTrigger]);
 
   const getStatusConfig = (status) => {
     switch (status) {
@@ -140,28 +145,39 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
           </div>
           
           {/* Period selector */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setMonths(1)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                months === 1
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              {t('benchmark.period1Month')}
-            </button>
-            <button
-              onClick={() => setMonths(6)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                months === 6
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              {t('benchmark.period6Months')}
-            </button>
-          </div>
+          {isPremium ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setMonths(1)}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                  months === 1
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                {t('benchmark.period1Month')}
+              </button>
+              <button
+                onClick={() => setMonths(6)}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                  months === 6
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                {t('benchmark.period6Months')}
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2 items-center">
+              <span className="px-4 py-2 rounded-lg font-medium text-sm bg-indigo-600 text-white shadow-md">
+                {t('benchmark.period1Month')}
+              </span>
+              <a href="/pricing" className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
+                {t('benchmark.unlockPeriods')}
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Benchmarks list */}
@@ -219,27 +235,48 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                     </div>
                   </div>
 
-                  {/* Progress bar */}
-                  <div className="mb-3">
-                    <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full ${config.progressColor} transition-all duration-500 rounded-full`}
-                        style={{ width: `${Math.min(progress, 100)}%` }}
-                      />
+                  {/* Progress bar & Thresholds — locked for free users */}
+                  {isPremium ? (
+                    <>
+                      <div className="mb-3">
+                        <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${config.progressColor} transition-all duration-500 rounded-full`}
+                            style={{ width: `${Math.min(progress, 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <div>
+                          <span className="block font-medium">{t('benchmark.typical')}</span>
+                          <span>€{Number(benchmark.lower_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} - €{Number(benchmark.upper_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="block font-medium">{t('benchmark.average')}</span>
+                          <span>€{Number(benchmark.avg_monthly_spending).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}/{t('benchmark.month')}</span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="relative mt-2">
+                      <div className="blur-sm pointer-events-none select-none opacity-50">
+                        <div className="mb-3">
+                          <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                            <div className="h-full bg-gray-400 rounded-full" style={{ width: '50%' }} />
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                          <div><span className="block font-medium">{t('benchmark.typical')}</span><span>€-- - €--</span></div>
+                          <div className="text-right"><span className="block font-medium">{t('benchmark.average')}</span><span>€--/{t('benchmark.month')}</span></div>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <a href="/pricing" className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
+                          {t('upgrade.upgradeCta')}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Thresholds */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                    <div>
-                      <span className="block font-medium">{t('benchmark.typical')}</span>
-                      <span>€{Number(benchmark.lower_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} - €{Number(benchmark.upper_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="block font-medium">{t('benchmark.average')}</span>
-                      <span>€{Number(benchmark.avg_monthly_spending).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}/{t('benchmark.month')}</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               );
             })}

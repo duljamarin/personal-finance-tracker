@@ -5,11 +5,13 @@ import Modal from '../UI/Modal';
 import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useToast } from '../../context/ToastContext';
+import { useSubscription } from '../../context/SubscriptionContext';
 import RecurringForm from './RecurringForm';
 
 export default function RecurringPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const { isPremium, recurringLimit } = useSubscription();
   const [recurrings, setRecurrings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editRecurring, setEditRecurring] = useState(null);
@@ -102,6 +104,18 @@ export default function RecurringPage() {
           {t('recurring.manageDescription')}
         </p>
       </div>
+
+      {/* Free tier limit banner */}
+      {!isPremium && recurrings.filter(r => r.is_active).length >= recurringLimit && (
+        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl flex items-center justify-between gap-3">
+          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+            {t('limits.recurringLimitReached', { limit: recurringLimit })}
+          </p>
+          <a href="/pricing" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">
+            {t('upgrade.upgradeCta')}
+          </a>
+        </div>
+      )}
 
       {recurrings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">

@@ -8,6 +8,7 @@ import BudgetForm from './BudgetForm';
 import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExpensesByCategory, fetchCategories } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
+import { useSubscription } from '../../context/SubscriptionContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
@@ -17,6 +18,7 @@ export default function BudgetsPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
   const { user } = useAuth();
+  const { isPremium, canCreateBudget, budgetLimit } = useSubscription();
 
   const today = new Date();
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
@@ -136,7 +138,11 @@ export default function BudgetsPage() {
       loadData();
     } catch (error) {
       console.error('Error saving budget:', error);
-      addToast(error.message || t('budgets.toast.error'), 'error');
+      if (error.message?.includes('limit reached')) {
+        addToast(t('limits.budgetLimitReached', { limit: budgetLimit }), 'warning');
+      } else {
+        addToast(error.message || t('budgets.toast.error'), 'error');
+      }
     }
   };
 
@@ -171,9 +177,11 @@ export default function BudgetsPage() {
 
       const existingCategoryIds = new Set(budgets.map(b => b.category_id));
       let copied = 0;
+      const maxToCreate = isPremium ? Infinity : budgetLimit - budgets.length;
 
       for (const prev of prevBudgets) {
         if (existingCategoryIds.has(prev.category_id)) continue;
+        if (copied >= maxToCreate) break;
         try {
           await createBudget({
             categoryId: prev.category_id,
@@ -216,11 +224,19 @@ export default function BudgetsPage() {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={handleCopyFromPrevious}
-            className="px-4 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800 rounded-lg transition"
+            disabled={!canCreateBudget(budgets.length)}
+            className={`px-4 py-2 text-sm font-medium border rounded-lg transition ${
+              canCreateBudget(budgets.length)
+                ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border-indigo-200 dark:border-indigo-800'
+                : 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 cursor-not-allowed'
+            }`}
           >
             {t('budgets.copyFromPrevious')}
           </button>
-          <Button onClick={() => setShowBudgetForm(true)}>
+          <Button
+            onClick={() => setShowBudgetForm(true)}
+            disabled={!canCreateBudget(budgets.length)}
+          >
             + {t('budgets.addBudget')}
           </Button>
         </div>
@@ -253,6 +269,18 @@ export default function BudgetsPage() {
           </span>
         )}
       </div>
+
+      {/* Free tier limit banner */}
+      {!isPremium && budgets.length >= budgetLimit && (
+        <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl flex items-center justify-between gap-3">
+          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+            {t('limits.budgetLimitReached', { limit: budgetLimit })}
+          </p>
+          <a href="/pricing" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">
+            {t('upgrade.upgradeCta')}
+          </a>
+        </div>
+      )}
 
       {/* Summary Stats */}
       {budgets.length > 0 && (
@@ -313,6 +341,11 @@ export default function BudgetsPage() {
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
               {t('budgets.noDataDesc')}
             </p>
+            {!isPremium && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                {t('limits.freeLimit', { limit: budgetLimit })}
+              </p>
+            )}
             <Button onClick={() => setShowBudgetForm(true)}>
               {t('budgets.createFirst')}
             </Button>

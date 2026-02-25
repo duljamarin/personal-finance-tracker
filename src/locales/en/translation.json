@@ -430,7 +430,8 @@
     "noData": "Not Enough Data Yet",
     "noDataDesc": "Keep tracking your expenses for at least 1 month to see personalized spending insights for each category.",
     "loadError": "Unable to load spending insights. Please try again later.",
-    "legendInfo": "Typical range is calculated based on your personal spending history (average ± variation)"
+    "legendInfo": "Typical range is calculated based on your personal spending history (average ± variation)",
+    "unlockPeriods": "Unlock multi-period trends"
   },
   "healthScore": {
     "title": "Financial Health Score",
@@ -461,7 +462,13 @@
     "insightBudgetNoData": "Add more transactions to see spending patterns.",
     "insightSaving": "You're on track - saving €{{amount}} this month.",
     "insightLosing": "Spending €{{amount}} more than earning. Time to adjust.",
-    "insightBreakEven": "You're breaking even this month - income matches expenses."
+    "insightBreakEven": "You're breaking even this month - income matches expenses.",
+    "detailedBreakdown": "Detailed Score Breakdown",
+    "detailedInsights": "Insights & Tips",
+    "quickStats": "Quick Stats",
+    "unlockFull": "Unlock detailed breakdown",
+    "unlockFullDesc": "Get score details, insights & tips, and quick stats",
+    "insightsLockedHint": "{{count}} insights available — upgrade to view"
   },
   "goals": {
     "tag": "goal",
@@ -623,18 +630,24 @@
     "free": "Free",
     "premium": "Premium",
     "freeFeatures": {
-      "transactions": "10 transactions/month",
+      "transactions": "30 transactions/month",
       "categories": "Custom categories",
-      "dashboard": "Basic dashboard"
+      "dashboard": "Basic dashboard",
+      "budgets": "Up to 3 budget categories",
+      "recurring": "Up to 3 recurring transactions",
+      "goals": "1 financial goal",
+      "healthScoreBasic": "Basic health score (headline number)",
+      "benchmarksBasic": "Basic spending benchmarks"
     },
     "premiumFeatures": {
       "transactions": "Unlimited transactions",
       "categories": "Custom categories",
-      "recurring": "Recurring transactions",
-      "goals": "Financial goals",
-      "budgets": "Monthly budgets",
-      "healthScore": "Health score",
-      "benchmarks": "Spending benchmarks"
+      "recurring": "Unlimited recurring transactions",
+      "goals": "Unlimited financial goals",
+      "budgets": "Unlimited budgets",
+      "healthScore": "Full health score with insights",
+      "benchmarks": "Full spending benchmarks with trends",
+      "splits": "Transaction splitting"
     },
     "popular": "Most Popular",
     "bestValue": "Best Value",
@@ -656,7 +669,7 @@
     "enjoyingPremium": "Enjoying all premium features during your trial",
     "trialDaysRemaining": "{{count}} day of free trial remaining",
     "trialDaysRemaining_other": "{{count}} days of free trial remaining",
-    "freeTransactionsInfo": "Start with 10 free transactions/month • Upgrade anytime for unlimited transactions and premium features"
+    "freeTransactionsInfo": "Start with 30 free transactions/month • Upgrade anytime for unlimited transactions and premium features"
   },
   "upgrade": {
     "bannerGracePeriod": "Your free access to premium features expires in {{days}} days",
@@ -678,15 +691,15 @@
     "step1Desc": "Start tracking your income and expenses",
     "step2": "Browse your dashboard",
     "step2Desc": "View monthly charts and spending breakdowns",
-    "step3": "Unlock premium features",
-    "step3Desc": "Recurring transactions, goals, budgets, and health score",
+    "step3": "Set up your categories",
+    "step3Desc": "Organize your transactions with custom categories",
     "step4": "Import transactions via CSV",
     "step4Desc": "Bulk-import past transactions from a CSV file using the Import CSV button below",
-    "step5": "Split a transaction",
-    "step5Desc": "Divide a single transaction across multiple categories when adding or editing",
+    "step5": "Create a budget",
+    "step5Desc": "Set monthly spending limits and track your progress",
     "action1": "Add Transaction",
-    "action3": "View Plans",
-    "action5": "Try Split",
+    "action3": "Manage Categories",
+    "action5": "Create Budget",
     "completed": "Done"
   },
   "shortcuts": {
@@ -940,6 +953,14 @@
     "mustEqualTotal": "Split amounts must equal the total transaction amount",
     "enableSplit": "Split across categories",
     "singleCategory": "Use single category",
-    "needAtLeastTwo": "At least 2 splits are required"
+    "needAtLeastTwo": "At least 2 splits are required",
+    "premiumOnly": "Split transactions (Premium)"
+  },
+  "limits": {
+    "budgetLimitReached": "You've reached your limit of {{limit}} budget categories. Upgrade for unlimited budgets.",
+    "recurringLimitReached": "You've reached your limit of {{limit}} recurring transactions. Upgrade for unlimited.",
+    "goalLimitReached": "You've reached your limit of {{limit}} active goal. Upgrade for unlimited goals.",
+    "upgradeForMore": "Upgrade to create more",
+    "freeLimit": "Free plan: up to {{limit}} allowed"
   }
 }

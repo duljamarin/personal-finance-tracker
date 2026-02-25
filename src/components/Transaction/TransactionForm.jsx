@@ -9,10 +9,12 @@ import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recur
 import { getInputClassName } from '../../utils/classNames'
 import { RECURRING_FREQUENCIES } from '../../utils/constants'
 import { APP_CONFIG } from '../../config/app'
+import { useSubscription } from '../../context/SubscriptionContext'
 import TransactionSplitForm from './TransactionSplitForm'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t, i18n } = useTranslation()
+	const { canSplitTransaction } = useSubscription()
 	const { addToast } = useToast()
 
 	const [title, setTitle] = useState(initial?.title || '')
@@ -33,7 +35,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const isFromRecurring = initial?.source_recurring_id
 
 	// Split transaction state
-	const [isSplit, setIsSplit] = useState(initial?.has_splits || false)
+	const [isSplit, setIsSplit] = useState((initial?.has_splits || false) && canSplitTransaction)
 	const [splits, setSplits] = useState(initial?.splits || [])
 
 	// Recurring transaction state
@@ -397,16 +399,25 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							{isSplit ? t('split.title') : t('transactions.categoryLabel')}
 						</label>
 						{!isRecurring && !initial?.source_recurring_id && (
-							<button
-								type="button"
-								onClick={() => { setIsSplit(v => !v); setSplits([]); }}
-								className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
-							>
-								<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-								</svg>
-								{isSplit ? t('split.singleCategory') : t('split.enableSplit')}
-							</button>
+							canSplitTransaction ? (
+								<button
+									type="button"
+									onClick={() => { setIsSplit(v => !v); setSplits([]); }}
+									className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+								>
+									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+									</svg>
+									{isSplit ? t('split.singleCategory') : t('split.enableSplit')}
+								</button>
+							) : (
+								<span className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+									</svg>
+									{t('split.premiumOnly')}
+								</span>
+							)
 						)}
 					</div>
 					{isSplit ? (

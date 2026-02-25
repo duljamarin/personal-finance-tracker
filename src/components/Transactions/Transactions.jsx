@@ -29,7 +29,7 @@ export default function Transactions() {
   const { t } = useTranslation();
   const { addToast } = useToast();
   const navigate = useNavigate();
-  const { canAddTransaction, isPremium, refreshSubscription } = useSubscription();
+  const { canAddTransaction, isPremium, canCreateRecurring, refreshSubscription } = useSubscription();
   const years = useMemo(() => {
     const set = new Set(items.map(i => i.date?.slice(0, 4) || 'Unknown'));
     return ['All', ...Array.from(set).sort((a, b) => b.localeCompare(a))];
@@ -41,6 +41,7 @@ export default function Transactions() {
   const [editTx, setEditTx] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [recurringFilter, setRecurringFilter] = useState(RECURRING_FILTERS.ALL);
+  const [activeRecurringCount, setActiveRecurringCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef(null);
 
@@ -59,9 +60,16 @@ export default function Transactions() {
     }
   }, [addToast, t, onReload, refreshSubscription]);
 
+  // Fetch active recurring count for free-tier gating
+  useEffect(() => {
+    fetchRecurringTransactions().then(data => {
+      setActiveRecurringCount(data.filter(r => r.is_active).length);
+    }).catch(() => {});
+  }, []);
+
   useEffect(() => {
     processRecurring();
-    
+
     // Check if there are pending updates from goals
     const needsRefresh = localStorage.getItem('transactions_needs_refresh');
     if (needsRefresh === 'true') {
@@ -387,8 +395,9 @@ export default function Transactions() {
                   if (onReload) {
                     await onReload();
                   }
-                  // Refresh subscription to update transaction count
+                  // Refresh subscription and recurring count
                   await refreshSubscription();
+                  setActiveRecurringCount(c => c + 1);
                   setShowModal(false);
                   setEditTx(null);
                 } catch (error) {
@@ -417,7 +426,7 @@ export default function Transactions() {
             }}
             onCancel={() => { setShowModal(false); setEditTx(null); }}
             onCategoryAdded={reloadCategories}
-            allowRecurring={!editTx && isPremium}
+            allowRecurring={!editTx && (isPremium || canCreateRecurring(activeRecurringCount))}
           />
         </Modal>
       )}

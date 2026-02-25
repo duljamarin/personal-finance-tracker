@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { fetchSubscription, getMonthlyTransactionCount } from '../utils/api';
+import { APP_CONFIG } from '../config/app';
 
 const SubscriptionContext = createContext();
 
-const FREE_TRANSACTION_LIMIT = 10;
+const FREE_TRANSACTION_LIMIT = APP_CONFIG.FREE_TRANSACTION_LIMIT;
 const POLL_INTERVAL = 3000; // 3 seconds between retries
 const MAX_POLL_ATTEMPTS = 8; // up to ~24 seconds total
 
@@ -153,6 +154,20 @@ export function SubscriptionProvider({ children }) {
     return monthlyTransactionCount < FREE_TRANSACTION_LIMIT;
   }, [isPremium, monthlyTransactionCount]);
 
+  const canCreateBudget = useCallback((currentCount) => {
+    return isPremium || currentCount < APP_CONFIG.FREE_BUDGET_LIMIT;
+  }, [isPremium]);
+
+  const canCreateRecurring = useCallback((currentCount) => {
+    return isPremium || currentCount < APP_CONFIG.FREE_RECURRING_LIMIT;
+  }, [isPremium]);
+
+  const canCreateGoal = useCallback((currentCount) => {
+    return isPremium || currentCount < APP_CONFIG.FREE_GOAL_LIMIT;
+  }, [isPremium]);
+
+  const canSplitTransaction = isPremium;
+
   return (
     <SubscriptionContext.Provider value={{
       subscription,
@@ -162,6 +177,13 @@ export function SubscriptionProvider({ children }) {
       monthlyTransactionCount,
       canAddTransaction,
       transactionLimit: FREE_TRANSACTION_LIMIT,
+      budgetLimit: APP_CONFIG.FREE_BUDGET_LIMIT,
+      recurringLimit: APP_CONFIG.FREE_RECURRING_LIMIT,
+      goalLimit: APP_CONFIG.FREE_GOAL_LIMIT,
+      canCreateBudget,
+      canCreateRecurring,
+      canCreateGoal,
+      canSplitTransaction,
       refreshSubscription,
       loading,
     }}>

@@ -18,7 +18,7 @@ RETURNS TRIGGER AS $$
 DECLARE
     user_is_premium BOOLEAN;
     monthly_count INTEGER;
-    free_limit CONSTANT INTEGER := 10;
+    free_limit CONSTANT INTEGER := 30;
 BEGIN
     -- Check if user has an active/trialing subscription OR is within their paid period
     SELECT EXISTS (

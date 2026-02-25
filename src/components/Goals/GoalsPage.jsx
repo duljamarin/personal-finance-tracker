@@ -13,7 +13,7 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 export default function GoalsPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const { refreshSubscription } = useSubscription();
+  const { isPremium, canCreateGoal, goalLimit, refreshSubscription } = useSubscription();
   
   const [goals, setGoals] = useState([]);
   const [stats, setStats] = useState(null);
@@ -24,6 +24,9 @@ export default function GoalsPage() {
   const [editingGoal, setEditingGoal] = useState(null);
   const [showContributionForm, setShowContributionForm] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(null);
+
+  const activeGoalCount = stats?.activeGoals ?? 0;
+  const canAdd = canCreateGoal(activeGoalCount);
 
   useEffect(() => {
     loadGoalsAndStats();
@@ -68,7 +71,11 @@ export default function GoalsPage() {
       loadData();
     } catch (error) {
       console.error('Error saving goal:', error);
-      addToast(error.message || t('goals.toast.error'), 'error');
+      if (error.message?.includes('limit reached')) {
+        addToast(t('limits.goalLimitReached', { limit: goalLimit }), 'warning');
+      } else {
+        addToast(error.message || t('goals.toast.error'), 'error');
+      }
     }
   };
 
@@ -140,10 +147,22 @@ export default function GoalsPage() {
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">{t('goals.subtitle')}</p>
         </div>
-        <Button onClick={() => setShowGoalForm(true)}>
+        <Button onClick={() => setShowGoalForm(true)} disabled={!canAdd}>
           + {t('goals.addGoal')}
         </Button>
       </div>
+
+      {/* Free tier limit banner */}
+      {!isPremium && !canAdd && (
+        <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl flex items-center justify-between gap-3">
+          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+            {t('limits.goalLimitReached', { limit: goalLimit })}
+          </p>
+          <a href="/pricing" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">
+            {t('upgrade.upgradeCta')}
+          </a>
+        </div>
+      )}
 
       {/* Stats */}
       {stats && stats.totalGoals > 0 && (
@@ -215,6 +234,11 @@ export default function GoalsPage() {
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
               {t('goals.noGoalsDesc')}
             </p>
+            {!isPremium && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                {t('limits.freeLimit', { limit: goalLimit })}
+              </p>
+            )}
             <Button onClick={() => setShowGoalForm(true)}>
               {t('goals.createFirst')}
             </Button>

@@ -119,18 +119,24 @@ export default function PricingPage() {
 
   const freeFeatures = [
     t('pricing.freeFeatures.transactions'),
+    t('pricing.freeFeatures.budgets'),
+    t('pricing.freeFeatures.recurring'),
+    t('pricing.freeFeatures.goals'),
+    t('pricing.freeFeatures.healthScoreBasic'),
+    t('pricing.freeFeatures.benchmarksBasic'),
     t('pricing.freeFeatures.categories'),
     t('pricing.freeFeatures.dashboard'),
   ];
 
   const premiumFeatures = [
     t('pricing.premiumFeatures.transactions'),
-    t('pricing.premiumFeatures.categories'),
+    t('pricing.premiumFeatures.budgets'),
     t('pricing.premiumFeatures.recurring'),
     t('pricing.premiumFeatures.goals'),
-    t('pricing.premiumFeatures.budgets'),
     t('pricing.premiumFeatures.healthScore'),
     t('pricing.premiumFeatures.benchmarks'),
+    t('pricing.premiumFeatures.splits'),
+    t('pricing.premiumFeatures.categories'),
   ];
 
   return (
