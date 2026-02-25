@@ -37,6 +37,14 @@ export default function Header() {
       .then(count => setUnreadCount(count || 0))
       .catch(() => {});
 
+    // Listen for immediate updates from NotificationsPage (mark read / mark all read)
+    const handleNotifChanged = () => {
+      getUnreadNotificationCount()
+        .then(count => setUnreadCount(count || 0))
+        .catch(() => {});
+    };
+    window.addEventListener('notifications:changed', handleNotifChanged);
+
     // Realtime: re-fetch count on any INSERT or UPDATE in notifications table
     const channel = supabase
       .channel('header-notifications-' + user.id)
@@ -60,6 +68,7 @@ export default function Header() {
     }, 30000);
 
     return () => {
+      window.removeEventListener('notifications:changed', handleNotifChanged);
       supabase.removeChannel(channel);
       clearInterval(interval);
     };

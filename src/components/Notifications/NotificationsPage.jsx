@@ -5,7 +5,7 @@ import Button from '../UI/Button';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import NotificationSettings from './NotificationSettings';
 import { useToast } from '../../context/ToastContext';
-import { fetchNotifications, markNotificationAsRead, deleteNotification } from '../../utils/api';
+import { fetchNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
 export default function NotificationsPage() {
@@ -59,8 +59,19 @@ export default function NotificationsPage() {
       setNotifications(prev => 
         prev.map(n => n.id === id ? { ...n, is_read: true } : n)
       );
+      window.dispatchEvent(new Event('notifications:changed'));
     } catch (error) {
       console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllNotificationsAsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      window.dispatchEvent(new Event('notifications:changed'));
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
     }
   };
 
@@ -131,13 +142,23 @@ export default function NotificationsPage() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           {t('notifications.title')}
         </h1>
-        <Button onClick={() => setShowSettings(!showSettings)} variant="secondary">
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          {t('notifications.settings')}
-        </Button>
+        <div className="flex items-center gap-2">
+          {notifications.some(n => !n.is_read) && (
+            <button
+              onClick={handleMarkAllAsRead}
+              className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium px-3 py-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+            >
+              {t('notifications.markAllAsRead')}
+            </button>
+          )}
+          <Button onClick={() => setShowSettings(!showSettings)} variant="secondary">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {t('notifications.settings')}
+          </Button>
+        </div>
       </div>
 
       {/* Settings Panel */}

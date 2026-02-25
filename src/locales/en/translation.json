@@ -913,6 +913,7 @@
     "settings": "Settings",
     "noNotifications": "No notifications yet",
     "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
     "delete": "Delete",
     "deleted": "Notification deleted",
     "deleteError": "Failed to delete notification",
@@ -933,6 +934,8 @@
     "recurringDueMessage": "Your recurring transaction \"{{title}}\" ({{currency}} {{amount}}) is due on {{date}}.",
     "goalMilestoneTitle": "🎯 {{percent}}% reached — {{name}}",
     "goalMilestoneMessage": "You've reached {{percent}}% of your goal \"{{name}}\" ({{current}} / {{target}}).",
+    "trialExpiringTitle": "Trial ends in {{days}} day(s)",
+    "trialExpiringMessage": "Your free trial expires on {{date}}. Upgrade to keep access to all premium features.",
     "types": {
       "budgetOverrun": "Budget Overrun Alerts",
       "budgetOverrunDesc": "Get notified when you're approaching or exceeding your budget limits",

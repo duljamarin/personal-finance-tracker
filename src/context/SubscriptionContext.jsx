@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import { fetchSubscription, getMonthlyTransactionCount } from '../utils/api';
+import { fetchSubscription, getMonthlyTransactionCount, checkTrialExpiringNotifications } from '../utils/api';
 import { APP_CONFIG } from '../config/app';
 
 const SubscriptionContext = createContext();
@@ -30,6 +30,11 @@ export function SubscriptionProvider({ children }) {
 
       setSubscription(sub);
       setMonthlyTransactionCount(count ?? 0);
+
+      // Silently check if we need to fire trial-expiring notifications
+      if (sub?.subscription_status === 'trialing') {
+        checkTrialExpiringNotifications().catch(() => {});
+      }
     } catch (e) {
       console.error('Error loading subscription:', e);
       setSubscription(null);

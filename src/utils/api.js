@@ -1404,6 +1404,15 @@ export async function updateNotificationSettings(settings) {
   });
 }
 
+export async function checkTrialExpiringNotifications() {
+  return withAuth(async (user) => {
+    const { error } = await supabase.rpc('check_trial_expiring_notifications', {
+      p_user_id: user.id,
+    });
+    if (error) throw error;
+  });
+}
+
 // ============================================
 // TRANSACTION SPLITS
 // ============================================
