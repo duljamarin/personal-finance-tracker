@@ -647,7 +647,8 @@
       "budgets": "Buxhete pa limit",
       "healthScore": "Rezultati i shëndetit",
       "benchmarks": "Krahasimet e shpenzimeve",
-      "splits": "Ndarje e transaksioneve"
+      "splits": "Ndarje e transaksioneve",
+      "netWorth": "Gjurmimi i vlerës neto"
     },
     "popular": "Më i Popullarizuari",
     "bestValue": "Vlera Më e Mirë",

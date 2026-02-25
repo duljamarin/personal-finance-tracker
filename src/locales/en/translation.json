@@ -647,7 +647,8 @@
       "budgets": "Unlimited budgets",
       "healthScore": "Full health score with insights",
       "benchmarks": "Full spending benchmarks with trends",
-      "splits": "Transaction splitting"
+      "splits": "Transaction splitting",
+      "netWorth": "Net worth tracking"
     },
     "popular": "Most Popular",
     "bestValue": "Best Value",

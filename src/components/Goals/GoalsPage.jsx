@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
+import Modal from '../UI/Modal';
 import GoalCard from './GoalCard';
 import GoalForm from './GoalForm';
 import ContributionForm from './ContributionForm';
@@ -24,6 +25,8 @@ export default function GoalsPage() {
   const [editingGoal, setEditingGoal] = useState(null);
   const [showContributionForm, setShowContributionForm] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(null);
+  const [goalToDelete, setGoalToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const activeGoalCount = stats?.activeGoals ?? 0;
   const canAdd = canCreateGoal(activeGoalCount);
@@ -79,16 +82,23 @@ export default function GoalsPage() {
     }
   };
 
-  const handleDeleteGoal = async (goal) => {
-    if (!window.confirm(t('goals.delete.message'))) return;
-    
+  const handleDeleteGoal = (goal) => {
+    setGoalToDelete(goal);
+  };
+
+  const confirmDeleteGoal = async () => {
+    if (!goalToDelete) return;
+    setDeleting(true);
     try {
-      await deleteGoal(goal.id);
+      await deleteGoal(goalToDelete.id);
       addToast(t('goals.toast.deleted'), 'success');
+      setGoalToDelete(null);
       loadData();
     } catch (error) {
       console.error('Error deleting goal:', error);
       addToast(t('goals.toast.error'), 'error');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -285,6 +295,43 @@ export default function GoalsPage() {
             setSelectedGoal(null);
           }}
         />
+      )}
+
+      {goalToDelete && (
+        <Modal onClose={() => !deleting && setGoalToDelete(null)}>
+          <div className="text-center">
+            <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              {t('goals.delete.title')}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              <span className="font-medium text-gray-700 dark:text-gray-200">{goalToDelete.name}</span>
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              {t('goals.delete.message')}
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button
+                variant="secondary"
+                onClick={() => setGoalToDelete(null)}
+                disabled={deleting}
+              >
+                {t('goals.delete.cancel')}
+              </Button>
+              <Button
+                variant="danger"
+                onClick={confirmDeleteGoal}
+                disabled={deleting}
+              >
+                {deleting ? '...' : t('goals.delete.confirm')}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   );

@@ -137,6 +137,7 @@ export default function PricingPage() {
     t('pricing.premiumFeatures.benchmarks'),
     t('pricing.premiumFeatures.splits'),
     t('pricing.premiumFeatures.categories'),
+    t('pricing.premiumFeatures.netWorth'),
   ];
 
   return (
