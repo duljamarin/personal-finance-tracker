@@ -501,7 +501,15 @@
     "quickStats": "Quick Stats",
     "unlockFull": "Unlock detailed breakdown",
     "unlockFullDesc": "Get score details, insights & tips, and quick stats",
-    "insightsLockedHint": "{{count}} insights available — upgrade to view"
+    "insightsLockedHint": "{{count}} insights available — upgrade to view",
+    "howItWorks": "How is this calculated?",
+    "howItWorksHide": "Hide explanation",
+    "pillarBudgetDesc": "We compare your spending in each category to your own 6-month average. Sticking to your personal budget keeps this score high.",
+    "pillarRatioDesc": "Measures how much of your income you keep. Spending less than half earns top marks — going over income pulls it down.",
+    "pillarStabilityDesc": "Rewards steady, predictable spending over the last 6 months. Big swings from month to month lower this score.",
+    "pillarSavingsDesc": "Tracks how many of the past 7 months you saved money. Consistency matters more than the amount.",
+    "pillarWeight": "{{weight}}% of your score",
+    "howItWorksSummary": "Your total score blends these four pillars together, weighted by importance. It refreshes automatically so you always see the latest picture."
   },
   "goals": {
     "tag": "goal",

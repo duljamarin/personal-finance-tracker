@@ -13,6 +13,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [showExplainer, setShowExplainer] = useState(false);
 
   useEffect(() => {
     async function loadScore() {
@@ -382,6 +383,101 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
             </Link>
           </div>
         )}
+
+        {/* How It Works Explainer */}
+        <div className="mt-6">
+          <button
+            onClick={() => setShowExplainer(prev => !prev)}
+            className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors group"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {showExplainer ? t('healthScore.howItWorksHide') : t('healthScore.howItWorks')}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-4 w-4 transition-transform duration-200 ${showExplainer ? 'rotate-180' : ''}`}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {showExplainer && (
+            <div className="mt-4 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Budget Adherence */}
+                <div className="p-3 sm:p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-purple-800 dark:text-purple-300">{t('healthScore.budgetAdherence')}</h4>
+                      <span className="text-xs font-medium text-purple-600 dark:text-purple-400">{t('healthScore.pillarWeight', { weight: 40 })}</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarBudgetDesc')}</p>
+                </div>
+
+                {/* Income vs Spending */}
+                <div className="p-3 sm:p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-300">{t('healthScore.incomeRatio')}</h4>
+                      <span className="text-xs font-medium text-blue-600 dark:text-blue-400">{t('healthScore.pillarWeight', { weight: 30 })}</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarRatioDesc')}</p>
+                </div>
+
+                {/* Spending Stability */}
+                <div className="p-3 sm:p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/40 flex items-center justify-center flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-300">{t('healthScore.consistency')}</h4>
+                      <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400">{t('healthScore.pillarWeight', { weight: 20 })}</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarStabilityDesc')}</p>
+                </div>
+
+                {/* Saving Habits */}
+                <div className="p-3 sm:p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/40 flex items-center justify-center flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-green-800 dark:text-green-300">{t('healthScore.savings')}</h4>
+                      <span className="text-xs font-medium text-green-600 dark:text-green-400">{t('healthScore.pillarWeight', { weight: 10 })}</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarSavingsDesc')}</p>
+                </div>
+              </div>
+
+              {/* Summary line */}
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center italic">
+                {t('healthScore.howItWorksSummary')}
+              </p>
+            </div>
+          )}
+        </div>
 
         {/* Insights */}
         {score.insights && score.insights.length > 0 && isPremium && (
