@@ -162,8 +162,8 @@ export default function LoginForm() {
               </button>
             </div>
             {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
-            <div className="flex items-center justify-between mt-2">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
+            <div className="flex items-center justify-between mt-4">
+              <label className="flex items-center gap-2 cursor-pointer select-none ml-1">
                 <input
                   type="checkbox"
                   checked={rememberMe}
