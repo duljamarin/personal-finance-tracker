@@ -43,6 +43,7 @@ export default function Transactions() {
   const [recurringFilter, setRecurringFilter] = useState(RECURRING_FILTERS.ALL);
   const [activeRecurringCount, setActiveRecurringCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAll, setShowAll] = useState(false);
   const searchInputRef = useRef(null);
 
   // Process recurring transactions on component mount
@@ -107,6 +108,18 @@ export default function Transactions() {
     }
     return result;
   }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
+
+  const INITIAL_DISPLAY_COUNT = 6;
+  const visibleItems = useMemo(() => {
+    if (showAll) return filtered;
+    return filtered.slice(0, INITIAL_DISPLAY_COUNT);
+  }, [filtered, showAll]);
+  const hasMore = filtered.length > INITIAL_DISPLAY_COUNT;
+
+  // Reset showAll when filters change
+  useEffect(() => {
+    setShowAll(false);
+  }, [yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
 
   function exportCSV() {
     const csv = toCSV(filtered, t);
@@ -286,8 +299,9 @@ export default function Transactions() {
           )}
         </div>
       ) : (
+        <>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          {filtered.map(item => (
+          {visibleItems.map(item => (
             <div
               key={item.id}
               className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
@@ -360,6 +374,31 @@ export default function Transactions() {
             </div>
           ))}
         </div>
+        {hasMore && (
+          <div className="flex justify-center mt-6 sm:mt-8">
+            <button
+              onClick={() => setShowAll(prev => !prev)}
+              className="group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-md hover:from-green-600 hover:to-emerald-700 hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold text-sm sm:text-base"
+            >
+              {showAll ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                  </svg>
+                  {t('transactions.showLess')}
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                  {t('transactions.showAll', { count: filtered.length })}
+                </>
+              )}
+            </button>
+          </div>
+        )}
+        </>
       )}
 
       {showModal && (

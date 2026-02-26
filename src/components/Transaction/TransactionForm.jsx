@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
 import { fetchCategories, addCategory } from '../../utils/api'
-import { translateCategoryName, getCategoryEmoji } from '../../utils/categoryTranslation'
+import { translateCategoryName, getCategoryEmoji, EMOJI_PALETTE } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation'
 import { getInputClassName } from '../../utils/classNames'
@@ -27,6 +27,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [errors, setErrors] = useState({})
 	const [showProposalInput, setShowProposalInput] = useState(false)
 	const [proposedCategoryName, setProposedCategoryName] = useState('')
+	const [proposedCategoryEmoji, setProposedCategoryEmoji] = useState('📂')
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
 	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || APP_CONFIG.BASE_CURRENCY)
 	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE)
@@ -209,7 +210,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		}
 
 		try {
-			const newCategory = await addCategory({ name: proposedCategoryName.trim() })
+			const newCategory = await addCategory({ name: proposedCategoryName.trim(), emoji: proposedCategoryEmoji })
 			addToast(t('categoryProposal.submitted'), 'success')
 			setCategoryProposalSuccess(true)
 
@@ -451,12 +452,15 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								{t('categoryProposal.proposedName')}
 							</label>
 							<div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-								<Input
-									placeholder={t('categoryProposal.proposedNamePlaceholder')}
-									value={proposedCategoryName}
-									onChange={e => setProposedCategoryName(e.target.value)}
-									className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-gray-600 min-w-0"
-								/>
+								<div className="flex items-center gap-2 flex-1 min-w-0">
+									<span className="text-2xl leading-none select-none flex-shrink-0">{proposedCategoryEmoji}</span>
+									<Input
+										placeholder={t('categoryProposal.proposedNamePlaceholder')}
+										value={proposedCategoryName}
+										onChange={e => setProposedCategoryName(e.target.value)}
+										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-gray-600 min-w-0"
+									/>
+								</div>
 								<Button
 									type="button"
 									onClick={handleSubmitProposal}
@@ -464,6 +468,26 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								>
 									{t('categoryProposal.submit')}
 								</Button>
+							</div>
+							{/* Emoji picker */}
+							<div className="mt-2 sm:mt-3">
+								<label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">
+									{t('categories.emojiLabel')}
+								</label>
+								<div className="grid grid-cols-8 sm:grid-cols-10 gap-1 max-h-28 overflow-y-auto p-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+									{EMOJI_PALETTE.map(em => (
+										<button
+											key={em}
+											type="button"
+											onClick={() => setProposedCategoryEmoji(em)}
+											className={`text-lg sm:text-xl p-1 rounded-lg transition hover:bg-blue-100 dark:hover:bg-blue-900 ${
+												proposedCategoryEmoji === em ? 'bg-blue-200 dark:bg-blue-800 ring-2 ring-blue-500' : ''
+											}`}
+										>
+											{em}
+										</button>
+									))}
+								</div>
 							</div>
 							{categoryProposalSuccess && (
 								<p className="text-xs text-green-600 dark:text-green-400 mt-2">

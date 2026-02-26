@@ -70,6 +70,8 @@
     "edit": "Edit",
     "delete": "Delete",
     "noTransactions": "No transactions found",
+    "showAll": "Show All Transactions ({{count}})",
+    "showLess": "Show Less",
     "filter": "Filter",
     "all": "All",
     "export": "Export CSV",

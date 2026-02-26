@@ -70,6 +70,8 @@
     "edit": "Modifiko",
     "delete": "Fshi",
     "noTransactions": "Nuk u gjetën transaksione",
+    "showAll": "Shfaq Të Gjitha Transaksionet ({{count}})",
+    "showLess": "Shfaq Më Pak",
     "filter": "Filtro",
     "all": "Të Gjitha",
     "export": "Eksporto CSV",
