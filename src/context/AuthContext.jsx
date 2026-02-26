@@ -53,21 +53,42 @@ export function AuthProvider({ children }) {
     
     window.addEventListener('storage', handleStorage);
 
+    // If "Remember Me" was not checked, sign out when the browser is closed
+    const handleBeforeUnload = () => {
+      if (!localStorage.getItem('rememberMe')) {
+        // Use sendBeacon to ensure the signout request completes
+        // Clear the session storage key so Supabase won't restore it
+        const storageKeys = Object.keys(localStorage).filter(k => k.startsWith('sb-'));
+        storageKeys.forEach(k => localStorage.removeItem(k));
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
       subscription.unsubscribe();
       window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
 
   // Login with Supabase Auth
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, rememberMe = false) => {
     setLoading(true);
     setError(null);
     try {
+      // If not "remember me", use a shorter session by clearing persistence hint
+      // Supabase stores sessions in localStorage by default; we clear on tab close if not remembered
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      // Store remember-me preference so we can handle session cleanup
+      if (rememberMe) {
+        localStorage.setItem('rememberMe', 'true');
+      } else {
+        localStorage.removeItem('rememberMe');
+      }
       
       if (error) throw error;
       

@@ -182,7 +182,13 @@
     "passwordSameAsOld": "New password must be different from the old one",
     "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
     "verifying": "Verifying...",
-    "continueWithGoogle": "Continue with Google"
+    "continueWithGoogle": "Continue with Google",
+    "rememberMe": "Remember me",
+    "agreeToTerms": "I agree to the",
+    "termsOfService": "Terms of Service",
+    "andThe": "and the",
+    "privacyPolicy": "Privacy Policy",
+    "termsError": "You must agree to the Terms of Service and Privacy Policy."
   },
   "account": {
     "title": "Account Settings",
@@ -736,13 +742,11 @@
     "step2Desc": "View monthly charts and spending breakdowns",
     "step3": "Set up your categories",
     "step3Desc": "Organize your transactions with custom categories",
-    "step4": "Import transactions via CSV",
-    "step4Desc": "Bulk-import past transactions from a CSV file using the Import CSV button below",
-    "step5": "Create a budget",
-    "step5Desc": "Set monthly spending limits and track your progress",
+    "step4": "Create a budget",
+    "step4Desc": "Set monthly spending limits and track your progress",
     "action1": "Add Transaction",
     "action3": "Manage Categories",
-    "action5": "Create Budget",
+    "action4": "Create Budget",
     "completed": "Done"
   },
   "shortcuts": {
@@ -822,7 +826,7 @@
         "item1": "Email address and password",
         "item2": "Financial transaction data (amounts, categories, dates, descriptions)",
         "item3": "Budget and goal information",
-        "item4": "Payment information (processed securely by our payment processor, Paddle)"
+        "item4": "Payment information (processed solely by our payment processor, Paddle — we never store or access your payment details)"
       },
       "section2": {
         "title": "2. How We Use Your Information",
@@ -840,7 +844,7 @@
       },
       "section4": {
         "title": "4. Payment Processing",
-        "content": "Payment information is processed by Paddle, our third-party payment processor. We do not store your full credit card information on our servers. Paddle's privacy policy governs the collection and processing of your payment information."
+        "content": "Payment information is collected and processed solely by Paddle, our third-party payment processor. We never receive, store, or have access to your credit card or payment details. Paddle's privacy policy governs the collection and processing of your payment information."
       },
       "section5": {
         "title": "5. Data Retention",

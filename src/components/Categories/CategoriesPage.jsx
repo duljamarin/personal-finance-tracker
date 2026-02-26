@@ -4,12 +4,14 @@ import { addCategory, updateCategory, deleteCategory, fetchTransactions } from '
 import Button from '../UI/Button.jsx';
 import Modal from '../UI/Modal.jsx';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { translateCategoryName, getCategoryEmoji, EMOJI_PALETTE } from '../../utils/categoryTranslation';
 
 export default function CategoriesPage() {
   const { categories, catError, reloadCategories, reloadTransactions: reloadExpenses } = useTransactions();
   const { addToast } = useToast();
+  const { user } = useAuth();
   const { t } = useTranslation();
 
   const [transactions, setTransactions] = useState([]);
@@ -65,7 +67,7 @@ export default function CategoriesPage() {
         reloadCategories?.();
         reloadExpenses?.();
         closeModal();
-        localStorage.setItem('onboarding_category_done', '1');
+        if (user?.id) localStorage.setItem(`onboarding_categories_done_${user.id}`, '1');
         addToast(t('messages.categoryAdded'), 'success');
       } catch (err) {
         if (err?.message?.toLowerCase().includes('already')) {
@@ -81,6 +83,7 @@ export default function CategoriesPage() {
         reloadCategories?.();
         reloadExpenses?.();
         closeModal();
+        if (user?.id) localStorage.setItem(`onboarding_categories_done_${user.id}`, '1');
         addToast(t('messages.categoryUpdated'), 'success');
       } catch (err) {
         if (err?.message?.toLowerCase().includes('already')) {

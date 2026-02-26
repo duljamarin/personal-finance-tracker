@@ -159,7 +159,6 @@ export default function CSVImport({ categories, onImportComplete }) {
     try {
       const result = await bulkImportTransactions(dataToImport);
       addToast(t('import.success', { count: result.count }), 'success');
-      localStorage.setItem('onboarding_csv_imported', '1');
       setShowModal(false);
       onImportComplete?.();
       // Refresh subscription so monthly transaction count updates immediately

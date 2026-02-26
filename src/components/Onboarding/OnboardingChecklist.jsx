@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 /**
  * Shown to users on the dashboard until all tracked steps are done or dismissed.
- * Steps 1 (transaction), 3 (categories), 4 (csv), 5 (budget) are tracked; 2 (dashboard) is informational.
+ * Steps 1 (transaction), 3 (categories), 4 (budget) are tracked; 2 (dashboard) is informational.
  */
 export default function OnboardingChecklist({ transactionCount, categoryCount = 0, budgetCount = 0, onAddTransaction }) {
   const { t } = useTranslation();
@@ -13,22 +13,24 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
   const { user } = useAuth();
 
   const storageKey = user ? `onboarding_dismissed_${user.id}` : null;
+  const categoriesKey = user ? `onboarding_categories_done_${user.id}` : null;
+
   const [dismissed, setDismissed] = useState(
     () => storageKey ? localStorage.getItem(storageKey) === 'true' : false
   );
-  const [doneCsv, setDoneCsv] = useState(
-    () => localStorage.getItem('onboarding_csv_imported') === '1'
+  const [doneCategories, setDoneCategories] = useState(
+    () => categoriesKey ? localStorage.getItem(categoriesKey) === '1' : false
   );
 
-  // Re-read CSV flag whenever transactionCount changes
+  // Re-read categories flag whenever categoryCount changes (user added/customized categories)
   useEffect(() => {
-    setDoneCsv(localStorage.getItem('onboarding_csv_imported') === '1');
-  }, [transactionCount]);
+    if (categoriesKey) setDoneCategories(localStorage.getItem(categoriesKey) === '1');
+  }, [categoryCount, categoriesKey]);
 
   const step1Done = transactionCount > 0;
-  const step3Done = categoryCount > 0;
-  const step5Done = budgetCount > 0;
-  const allDone = step1Done && step3Done && doneCsv && step5Done;
+  const step3Done = doneCategories;
+  const step4Done = budgetCount > 0;
+  const allDone = step1Done && step3Done && step4Done;
 
   if (dismissed || allDone) return null;
 
@@ -77,26 +79,14 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
     {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-      ),
-      color: 'teal',
-      done: doneCsv,
-      title: t('onboarding.step4'),
-      desc: t('onboarding.step4Desc'),
-      action: null,
-    },
-    {
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       ),
       color: 'indigo',
-      done: step5Done,
-      title: t('onboarding.step5'),
-      desc: t('onboarding.step5Desc'),
-      action: step5Done ? null : { label: t('onboarding.action5'), onClick: () => navigate('/budgets') },
+      done: step4Done,
+      title: t('onboarding.step4'),
+      desc: t('onboarding.step4Desc'),
+      action: step4Done ? null : { label: t('onboarding.action4'), onClick: () => navigate('/budgets') },
     },
   ];
 
@@ -104,7 +94,6 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
     green:  { bg: 'bg-green-100 dark:bg-green-900/30',  icon: 'text-green-600 dark:text-green-400',  btn: 'bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600' },
     blue:   { bg: 'bg-blue-100 dark:bg-blue-900/30',    icon: 'text-blue-600 dark:text-blue-400',    btn: 'bg-blue-600 hover:bg-blue-700' },
     purple: { bg: 'bg-purple-100 dark:bg-purple-900/30',icon: 'text-purple-600 dark:text-purple-400',btn: 'bg-purple-600 hover:bg-purple-700' },
-    teal:   { bg: 'bg-teal-100 dark:bg-teal-900/30',    icon: 'text-teal-600 dark:text-teal-400',    btn: 'bg-teal-600 hover:bg-teal-700' },
     indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30',icon: 'text-indigo-600 dark:text-indigo-400',btn: 'bg-indigo-600 hover:bg-indigo-700' },
   };
 

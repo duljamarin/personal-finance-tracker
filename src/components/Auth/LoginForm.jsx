@@ -22,6 +22,7 @@ export default function LoginForm() {
   const [passwordError, setPasswordError] = useState('');
   const [formError, setFormError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Re-render when language changes to update translated validation messages
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function LoginForm() {
     if (!validate()) return;
     try {
       // Trim email before sending to Supabase
-      await login(email.trim(), password);
+      await login(email.trim(), password, rememberMe);
       navigate('/');
     } catch (err) {
       // Map common Supabase errors to translation keys 
@@ -161,7 +162,16 @@ export default function LoginForm() {
               </button>
             </div>
             {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
-            <div className="text-right mt-1">
+            <div className="flex items-center justify-between mt-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={e => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-green-600 focus:ring-green-500 dark:bg-gray-700 cursor-pointer"
+                />
+                <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('auth.rememberMe')}</span>
+              </label>
               <Link to="/forgot-password" className="text-xs text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-semibold transition-colors">
                 {t('auth.forgotPassword')}
               </Link>

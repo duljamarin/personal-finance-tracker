@@ -26,6 +26,8 @@ export default function RegisterForm() {
   const [formError, setFormError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [termsError, setTermsError] = useState('');
 
   useEffect(() => {
     // Clear field errors when language changes
@@ -53,6 +55,7 @@ export default function RegisterForm() {
     setEmailError('');
     setUsernameError('');
     setPasswordError('');
+    setTermsError('');
     
     // Trim email and validate with stricter regex matching Supabase requirements
     const trimmedEmail = email.trim();
@@ -68,6 +71,10 @@ export default function RegisterForm() {
     }
     if (!password || password.length < 6) {
       setPasswordError('auth.passwordError');
+      valid = false;
+    }
+    if (!agreeTerms) {
+      setTermsError('auth.termsError');
       valid = false;
     }
     return valid;
@@ -227,6 +234,27 @@ export default function RegisterForm() {
               </button>
             </div>
             {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
+          </div>
+
+          <div>
+            <label className="flex items-start gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={agreeTerms}
+                onChange={e => {
+                  setAgreeTerms(e.target.checked);
+                  if (termsError) setTermsError('');
+                }}
+                className="w-4 h-4 mt-0.5 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700 cursor-pointer flex-shrink-0"
+              />
+              <span className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                {t('auth.agreeToTerms')}{' '}
+                <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">{t('auth.termsOfService')}</Link>
+                {' '}{t('auth.andThe')}{' '}
+                <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">{t('auth.privacyPolicy')}</Link>
+              </span>
+            </label>
+            {termsError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(termsError)}</span>}
           </div>
 
           {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-center text-sm p-3 rounded-xl font-medium">{t(formError)}</div>}

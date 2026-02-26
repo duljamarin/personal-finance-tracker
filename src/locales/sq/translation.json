@@ -182,7 +182,13 @@
     "passwordSameAsOld": "Fjalëkalimi i ri nuk mund të jetë i njëjtë me të vjetrin",
     "invalidResetLink": "Lidhja e rivendosjes është e pavlefshme ose ka skaduar. Ju lutem kërkoni një lidhje të re.",
     "verifying": "Duke verifikuar...",
-    "continueWithGoogle": "Vazhdo me Google"
+    "continueWithGoogle": "Vazhdo me Google",
+    "rememberMe": "Më mbaj mend",
+    "agreeToTerms": "Pranoj",
+    "termsOfService": "Kushtet e Shërbimit",
+    "andThe": "dhe",
+    "privacyPolicy": "Politikën e Privatësisë",
+    "termsError": "Duhet të pranoni Kushtet e Shërbimit dhe Politikën e Privatësisë."
   },
   "account": {
     "title": "Cilësimet e Llogarisë",
@@ -736,13 +742,11 @@
     "step2Desc": "Shikoni grafikët mujore dhe ndarjet e shpenzimeve",
     "step3": "Konfiguroni kategoritë tuaja",
     "step3Desc": "Organizoni transaksionet tuaja me kategori të personalizuara",
-    "step4": "Importoni transaksione nga CSV",
-    "step4Desc": "Importoni transaksionet e kaluara nga një skedar CSV duke përdorur butonin Importo CSV më poshtë",
-    "step5": "Krijoni një buxhet",
-    "step5Desc": "Vendosni kufij mujorë shpenzimesh dhe ndiqni progresin tuaj",
+    "step4": "Krijoni një buxhet",
+    "step4Desc": "Vendosni kufij mujorë shpenzimesh dhe ndiqni progresin tuaj",
     "action1": "Shto Transaksion",
     "action3": "Menaxho Kategoritë",
-    "action5": "Krijo Buxhet",
+    "action4": "Krijo Buxhet",
     "completed": "Përfunduar"
   },
   "shortcuts": {
@@ -822,7 +826,7 @@
         "item1": "Adresën e emailit dhe fjalëkalimin",
         "item2": "Të dhënat e transaksioneve financiare (shumat, kategoritë, datat, përshkrimet)",
         "item3": "Informacionin e buxhetit dhe qëllimeve",
-        "item4": "Informacionin e pagesës (përpunohet në mënyrë të sigurt nga procesori ynë i pagesave, Paddle)"
+        "item4": "Informacionin e pagesës (përpunohet vetëm nga procesori ynë i pagesave, Paddle — ne nuk i ruajmë apo aksesojmë detajet tuaja të pagesës)"
       },
       "section2": {
         "title": "2. Si e Përdorim Informacionin Tuaj",
@@ -840,7 +844,7 @@
       },
       "section4": {
         "title": "4. Përpunimi i Pagesave",
-        "content": "Informacioni i pagesës përpunohet nga Paddle, procesori ynë i palës së tretë të pagesave. Ne nuk ruajmë informacionin tuaj të plotë të kartës së kreditit në serverët tanë. Politika e privatësisë së Paddle rregullon mbledhjen dhe përpunimin e informacionit tuaj të pagesës."
+        "content": "Informacioni i pagesës mblidhet dhe përpunohet vetëm nga Paddle, procesori ynë i palës së tretë të pagesave. Ne nuk marrim, ruajmë apo kemi akses në detajet tuaja të kartës së kreditit ose pagesës. Politika e privatësisë së Paddle rregullon mbledhjen dhe përpunimin e informacionit tuaj të pagesës."
       },
       "section5": {
         "title": "5. Ruajtja e të Dhënave",
