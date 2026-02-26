@@ -97,6 +97,8 @@
   },
   "categories": {
     "title": "Kategoritë",
+    "emoji": "Ikona",
+    "emojiLabel": "Zgjidh një ikonë",
     "addNew": "Shto Kategori",
     "name": "Emri",
     "edit": "Modifiko",
@@ -348,7 +350,23 @@
     "Salary": "Pagë",
     "Shopping": "Blerje",
     "Transportation": "Transport",
-    "Utilities": "Shërbime"
+    "Utilities": "Shërbime",
+    "Housing & Rent": "Banim & Qira",
+    "Education": "Arsim",
+    "Travel": "Udhëtim",
+    "Personal Care": "Kujdes Personal",
+    "Subscriptions": "Abonime",
+    "Gifts & Donations": "Dhurata & Donacione",
+    "Insurance": "Sigurim",
+    "Pets": "Kafshë Shtëpiake",
+    "Sports & Fitness": "Sport & Fitness",
+    "Coffee & Snacks": "Kafe & Rostiçeri",
+    "Freelance": "Punë e Lirë",
+    "Savings": "Kursime",
+    "Taxes": "Taksa",
+    "Communication": "Komunikim",
+    "Home & Garden": "Shtëpi & Kopsht",
+    "Kids & Family": "Fëmijë & Familje"
   },
   "recurring": {
     "makeRecurring": "Bëje këtë transaksion të përsëritur",

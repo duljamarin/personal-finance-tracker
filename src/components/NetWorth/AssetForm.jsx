@@ -23,6 +23,28 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
     'personal_loan', 'medical_debt', 'other_debt'
   ];
 
+  const assetTypeEmojis = {
+    cash:        '💵',
+    checking:    '🏦',
+    savings:     '🐷',
+    investment:  '📈',
+    retirement:  '🏖️',
+    real_estate: '🏠',
+    vehicle:     '🚗',
+    crypto:      '🪙',
+    other:       '📦',
+  };
+
+  const liabilityTypeEmojis = {
+    credit_card:   '💳',
+    mortgage:      '🏛️',
+    car_loan:      '🚘',
+    student_loan:  '🎓',
+    personal_loan: '💸',
+    medical_debt:  '🏥',
+    other_debt:    '📋',
+  };
+
   const validate = () => {
     const newErrors = {};
     if (!name.trim()) newErrors.name = 'networth.nameError';
@@ -129,11 +151,14 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
           onChange={(e) => setAssetType(e.target.value)}
           className={getInputClassName()}
         >
-          {(type === 'asset' ? assetTypes : liabilityTypes).map(typeKey => (
-            <option key={typeKey} value={typeKey}>
-              {t(`networth.${type === 'asset' ? 'assetTypes' : 'liabilityTypes'}.${typeKey}`)}
-            </option>
-          ))}
+          {(type === 'asset' ? assetTypes : liabilityTypes).map(typeKey => {
+            const emojiMap = type === 'asset' ? assetTypeEmojis : liabilityTypeEmojis;
+            return (
+              <option key={typeKey} value={typeKey}>
+                {emojiMap[typeKey]} {t(`networth.${type === 'asset' ? 'assetTypes' : 'liabilityTypes'}.${typeKey}`)}
+              </option>
+            );
+          })}
         </select>
       </div>
 

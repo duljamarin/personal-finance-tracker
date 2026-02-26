@@ -176,7 +176,10 @@ export default function NetWorthPage() {
                     {asset.name}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {t(`networth.assetTypes.${asset.asset_type}`)}
+                    {{
+                      cash: '💵', checking: '🏦', savings: '🐷', investment: '📈',
+                      retirement: '🏖️', real_estate: '🏠', vehicle: '🚗', crypto: '🪙', other: '📦'
+                    }[asset.asset_type] || '📦'} {t(`networth.assetTypes.${asset.asset_type}`)}
                   </div>
                 </div>
                 <div className="text-right mr-4">
@@ -228,7 +231,10 @@ export default function NetWorthPage() {
                     {liability.name}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {t(`networth.liabilityTypes.${liability.asset_type}`)}
+                    {{
+                      credit_card: '💳', mortgage: '🏛️', car_loan: '🚘', student_loan: '🎓',
+                      personal_loan: '💸', medical_debt: '🏥', other_debt: '📋'
+                    }[liability.asset_type] || '📋'} {t(`networth.liabilityTypes.${liability.asset_type}`)}
                   </div>
                 </div>
                 <div className="text-right mr-4">

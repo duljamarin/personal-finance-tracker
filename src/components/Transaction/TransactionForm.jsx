@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
 import { fetchCategories, addCategory } from '../../utils/api'
-import { translateCategoryName } from '../../utils/categoryTranslation'
+import { translateCategoryName, getCategoryEmoji } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation'
 import { getInputClassName } from '../../utils/classNames'
@@ -437,7 +437,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					>
 						<option value="">{t('transactions.selectCategory')}</option>
 						{categories.map(cat => (
-							<option key={cat.id} value={cat.id}>{translateCategoryName(cat.name)}</option>
+							<option key={cat.id} value={cat.id}>{getCategoryEmoji(cat)} {translateCategoryName(cat.name)}</option>
 						))}
 						<option value="other">➕ {t('categoryProposal.other')}</option>
 					</select>
