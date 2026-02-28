@@ -103,14 +103,11 @@ export default function CSVImport({ categories, onImportComplete }) {
         errors.push(t('import.invalidDate'));
       }
 
-      // Match category
+      // Match category (optional — unrecognised names are silently accepted as uncategorised)
       const categoryName = row.category || row.Category || '';
       const category = categories.find(c => 
         c.name.toLowerCase() === categoryName.toLowerCase()
       );
-      if (!category) {
-        errors.push(t('import.categoryNotFound', { category: categoryName }));
-      }
 
       if (errors.length > 0) {
         invalid.push({ line: lineNum, errors, row });
@@ -120,7 +117,7 @@ export default function CSVImport({ categories, onImportComplete }) {
           amount,
           type,
           date,
-          category_id: category.id,
+          category_id: category?.id ?? null,
           tags: parseTags(row.tags || row.Tags),
           currency_code: row.currency_code || row.Currency || 'EUR',
           exchange_rate: parseFloat(row.exchange_rate || row.ExchangeRate) || 1.0,
