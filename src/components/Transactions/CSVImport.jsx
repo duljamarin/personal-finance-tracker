@@ -298,7 +298,10 @@ export default function CSVImport({ categories, onImportComplete }) {
                       </td>
                       <td className="px-2 py-1 text-right">{row.amount.toFixed(2)}</td>
                       <td className="px-2 py-1">
-                        {categories.find(c => c.id === row.category_id)?.name}
+                        {categories.find(c => c.id === row.category_id)?.name
+                          || (row._categoryName
+                            ? <span className="italic text-amber-600 dark:text-amber-400">{row._categoryName} (+)</span>
+                            : null)}
                       </td>
                       <td className="px-2 py-1">{row.date}</td>
                     </tr>
