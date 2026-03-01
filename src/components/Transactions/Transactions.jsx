@@ -178,7 +178,7 @@ export default function Transactions() {
               <span className="hidden sm:inline">{t('transactions.addNew')}</span>
               <span className="sm:hidden">{t('forms.add')}</span>
             </button>
-            <CSVImport categories={categories} onImportComplete={onReload} />
+            <CSVImport categories={categories} onImportComplete={() => { onReload(); reloadCategories(); }} />
             <button onClick={exportCSV} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-md hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg transition-all font-semibold text-sm sm:text-base min-h-[48px]">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span className="hidden sm:inline">{t('transactions.export')}</span>
