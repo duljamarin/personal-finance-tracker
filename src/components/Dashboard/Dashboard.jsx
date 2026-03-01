@@ -72,6 +72,7 @@ export default function Dashboard() {
         transactionCount={transactions.length}
         categoryCount={categories.length}
         budgetCount={budgetCount}
+        loading={loading}
         onAddTransaction={handleAddTransaction}
       />
 

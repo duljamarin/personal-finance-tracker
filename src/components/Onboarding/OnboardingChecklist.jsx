@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
  * Shown to users on the dashboard until all tracked steps are done or dismissed.
  * Steps 1 (transaction), 3 (categories), 4 (budget) are tracked; 2 (dashboard) is informational.
  */
-export default function OnboardingChecklist({ transactionCount, categoryCount = 0, budgetCount = 0, onAddTransaction }) {
+export default function OnboardingChecklist({ transactionCount, categoryCount = 0, budgetCount = 0, loading = false, onAddTransaction }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -41,6 +41,8 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
   const step4Done = budgetCount > 0;
   const allDone = step1Done && step3Done && step4Done;
 
+  // Don't render while data is still loading — counts are unreliable (all zeros)
+  if (loading) return null;
   if (dismissed || allDone) return null;
 
   function handleDismiss() {
