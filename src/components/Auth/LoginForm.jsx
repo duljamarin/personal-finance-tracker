@@ -30,6 +30,8 @@ export default function LoginForm() {
   }, [i18n.language]);
 
   async function handleGoogleLogin() {
+    // OAuth is an explicit trusted sign-in — always treat as "remembered"
+    localStorage.setItem('rememberMe', 'true');
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/dashboard' },
