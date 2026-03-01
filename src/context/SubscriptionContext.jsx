@@ -155,7 +155,11 @@ export function SubscriptionProvider({ children }) {
   }, [subscription]);
 
   const trialEndsAt = useMemo(() => {
-    // During trialing, period_end IS the trial end date
+    // When trialing, use trial_end (the actual trial expiry).
+    // period_end is current_period_end which can differ from trial_end.
+    if (subscription?.is_trialing && subscription?.trial_end) {
+      return subscription.trial_end;
+    }
     return subscription?.period_end ?? null;
   }, [subscription]);
 
