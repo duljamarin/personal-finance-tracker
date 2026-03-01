@@ -31,6 +31,7 @@ export default function Dashboard() {
 
   const [showGreeting, setShowGreeting] = useState(false);
   const [budgetCount, setBudgetCount] = useState(0);
+  const [budgetsLoaded, setBudgetsLoaded] = useState(false);
   const username = localStorage.getItem('username');
 
   useEffect(() => {
@@ -46,7 +47,9 @@ export default function Dashboard() {
       const now = new Date();
       const data = await fetchBudgets(now.getFullYear(), now.getMonth() + 1);
       setBudgetCount(data.length);
-    } catch { /* ignore */ }
+    } catch { /* ignore */ } finally {
+      setBudgetsLoaded(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -72,7 +75,7 @@ export default function Dashboard() {
         transactionCount={transactions.length}
         categoryCount={categories.length}
         budgetCount={budgetCount}
-        loading={loading}
+        loading={loading || !budgetsLoaded}
         onAddTransaction={handleAddTransaction}
       />
 
