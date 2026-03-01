@@ -714,6 +714,7 @@
     "onTrial": "On Trial",
     "subscribe": "Subscribe",
     "trialEndsIn": "Trial ends in {{days}} days",
+    "trialEndsInHours": "Trial ends in {{hours}}h {{minutes}}m",
     "renewsOn": "Renews on {{date}}",
     "enjoyingPremium": "Enjoying all premium features during your trial",
     "trialDaysRemaining": "{{count}} day of free trial remaining",

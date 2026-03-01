@@ -714,6 +714,7 @@
     "onTrial": "Në Provë",
     "subscribe": "Abonohu",
     "trialEndsIn": "Prova mbaron në {{days}} ditë",
+    "trialEndsInHours": "Prova mbaron në {{hours}}h {{minutes}}m",
     "renewsOn": "Rinovohet më {{date}}",
     "enjoyingPremium": "Shijoni të gjitha funksionet premium gjatë provës suaj",
     "trialDaysRemaining": "{{count}} ditë provë falas e mbetur",

@@ -154,6 +154,11 @@ export function SubscriptionProvider({ children }) {
     return subscription.trial_days_left ?? 0;
   }, [subscription]);
 
+  const trialEndsAt = useMemo(() => {
+    // During trialing, period_end IS the trial end date
+    return subscription?.period_end ?? null;
+  }, [subscription]);
+
   const canAddTransaction = useMemo(() => {
     if (isPremium) return true;
     return monthlyTransactionCount < FREE_TRANSACTION_LIMIT;
@@ -179,6 +184,7 @@ export function SubscriptionProvider({ children }) {
       isPremium,
       isTrialing,
       trialDaysLeft,
+      trialEndsAt,
       monthlyTransactionCount,
       canAddTransaction,
       transactionLimit: FREE_TRANSACTION_LIMIT,

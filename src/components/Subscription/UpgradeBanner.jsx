@@ -10,9 +10,20 @@ export default function UpgradeBanner() {
     subscription,
     isTrialing,
     trialDaysLeft,
+    trialEndsAt,
     monthlyTransactionCount,
     transactionLimit,
   } = useSubscription();
+
+  const trialTimeLabel = (() => {
+    if (trialDaysLeft === 0 && trialEndsAt) {
+      const msLeft = new Date(trialEndsAt) - Date.now();
+      const hoursLeft = Math.max(0, Math.floor(msLeft / 3600000));
+      const minsLeft = Math.max(0, Math.floor((msLeft % 3600000) / 60000));
+      return t('subscription.trialEndsInHours', { hours: hoursLeft, minutes: minsLeft });
+    }
+    return t('subscription.trialEndsIn', { days: trialDaysLeft });
+  })();
 
   // Check if user has ever had a trial (trial_end being set means they had one)
   const hasHadTrial = subscription?.subscription_status !== 'none'
@@ -69,7 +80,7 @@ export default function UpgradeBanner() {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-bold mb-1">
-                {t('subscription.trialEndsIn', { days: trialDaysLeft })}
+                {trialTimeLabel}
               </h3>
               <p className="text-sm text-blue-100">
                 {t('subscription.enjoyingPremium')}
@@ -81,11 +92,13 @@ export default function UpgradeBanner() {
             <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-yellow-300 to-orange-300 h-full rounded-full transition-all duration-300"
-                style={{ width: `${Math.max(5, (trialDaysLeft / APP_CONFIG.TRIAL_DAYS) * 100)}%` }}
+                style={{ width: `${trialDaysLeft === 0 && trialEndsAt
+                  ? Math.max(5, ((new Date(trialEndsAt) - Date.now()) / (APP_CONFIG.TRIAL_DAYS * 86400000)) * 100)
+                  : Math.max(5, (trialDaysLeft / APP_CONFIG.TRIAL_DAYS) * 100)}%` }}
               />
             </div>
             <p className="text-xs text-blue-100 mt-1">
-              {t('subscription.trialDaysRemaining', { count: trialDaysLeft })}
+              {trialDaysLeft === 0 && trialEndsAt ? trialTimeLabel : t('subscription.trialDaysRemaining', { count: trialDaysLeft })}
             </p>
           </div>
         </>

@@ -14,11 +14,21 @@ const YEARLY_PRICE_ID = import.meta.env.VITE_PADDLE_YEARLY_PRICE_ID;
 export default function PricingPage() {
   const { t } = useTranslation();
   const { accessToken, user } = useAuth();
-  const { subscription, isPremium, isTrialing, trialDaysLeft } = useSubscription();
+  const { subscription, isPremium, isTrialing, trialDaysLeft, trialEndsAt } = useSubscription();
   const paddle = usePaddle();
   const navigate = useNavigate();
   const { addToast } = useToast();
   const checkoutInitiatedRef = useRef(false);
+
+  const trialTimeLabel = (() => {
+    if (trialDaysLeft === 0 && trialEndsAt) {
+      const msLeft = new Date(trialEndsAt) - Date.now();
+      const hoursLeft = Math.max(0, Math.floor(msLeft / 3600000));
+      const minsLeft = Math.max(0, Math.floor((msLeft % 3600000) / 60000));
+      return t('subscription.trialEndsInHours', { hours: hoursLeft, minutes: minsLeft });
+    }
+    return t('subscription.trialEndsIn', { days: trialDaysLeft });
+  })();
 
   // Navigate to dashboard once subscription becomes premium after a checkout
   useEffect(() => {
@@ -161,7 +171,7 @@ export default function PricingPage() {
             </span>
             <span className="text-green-800 dark:text-green-200 font-medium">
               {isTrialing
-                ? t('subscription.trialEndsIn', { days: trialDaysLeft })
+                ? trialTimeLabel
                 : t('subscription.active')}
             </span>
           </div>
@@ -247,7 +257,7 @@ export default function PricingPage() {
                     <span className="inline-block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                     <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
                       {isTrialing
-                        ? t('subscription.trialEndsIn', { days: trialDaysLeft })
+                        ? trialTimeLabel
                         : t('pricing.currentPlan')}
                     </span>
                   </div>
@@ -308,7 +318,7 @@ export default function PricingPage() {
                     <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
                       {isTrialing
-                        ? t('subscription.trialEndsIn', { days: trialDaysLeft })
+                        ? trialTimeLabel
                         : t('pricing.currentPlan')}
                     </span>
                   </div>
