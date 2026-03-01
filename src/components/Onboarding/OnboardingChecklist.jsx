@@ -22,9 +22,18 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
     () => categoriesKey ? localStorage.getItem(categoriesKey) === '1' : false
   );
 
-  // Re-read categories flag whenever categoryCount changes (user added/customized categories)
+  // Update dismissed state when user loads (storageKey becomes available)
   useEffect(() => {
-    if (categoriesKey) setDoneCategories(localStorage.getItem(categoriesKey) === '1');
+    if (storageKey) {
+      setDismissed(localStorage.getItem(storageKey) === 'true');
+    }
+  }, [storageKey]);
+
+  // Re-read categories flag when user loads or categoryCount changes
+  useEffect(() => {
+    if (categoriesKey) {
+      setDoneCategories(localStorage.getItem(categoriesKey) === '1');
+    }
   }, [categoryCount, categoriesKey]);
 
   const step1Done = transactionCount > 0;
