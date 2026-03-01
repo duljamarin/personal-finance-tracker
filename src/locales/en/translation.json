@@ -716,13 +716,14 @@
     "trialEndsIn": "Trial ends in {{days}} days",
     "trialEndsInHours": "Trial ends in {{hours}}h {{minutes}}m",
     "renewsOn": "Renews on {{date}}",
+    "accessEndsOn": "Access ends on {{date}}",
+    "cancelledAccessUntil": "Cancelled - Access until {{date}}",
     "enjoyingPremium": "Enjoying all premium features during your trial",
     "trialDaysRemaining": "{{count}} day of free trial remaining",
     "trialDaysRemaining_other": "{{count}} days of free trial remaining",
     "freeTransactionsInfo": "Start with 30 free transactions/month • Upgrade anytime for unlimited transactions and premium features"
   },
   "upgrade": {
-    "bannerGracePeriod": "Your free access to premium features expires in {{days}} days",
     "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",
     "upgradeCta": "Upgrade to Premium",
     "viewPlans": "View Plans",

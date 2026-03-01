@@ -716,13 +716,14 @@
     "trialEndsIn": "Prova mbaron në {{days}} ditë",
     "trialEndsInHours": "Prova mbaron në {{hours}}h {{minutes}}m",
     "renewsOn": "Rinovohet më {{date}}",
+    "accessEndsOn": "Aksesi mbaron më {{date}}",
+    "cancelledAccessUntil": "Anuluar - Akses deri më {{date}}",
     "enjoyingPremium": "Shijoni të gjitha funksionet premium gjatë provës suaj",
     "trialDaysRemaining": "{{count}} ditë provë falas e mbetur",
     "trialDaysRemaining_other": "{{count}} ditë provë falas të mbetura",
     "freeTransactionsInfo": "Filloni me 30 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numër të pakufizuar transaksionesh dhe funksione premium"
   },
   "upgrade": {
-    "bannerGracePeriod": "Aksesi juaj falas në funksionet premium skadon në {{days}} ditë",
     "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",
     "upgradeCta": "Kaloni në Premium",
     "viewPlans": "Shiko Planet",

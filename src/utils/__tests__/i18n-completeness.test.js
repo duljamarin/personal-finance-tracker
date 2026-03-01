@@ -59,7 +59,7 @@ describe('i18n Translation Completeness', () => {
   });
 
   it('subscription section has all required keys in both locales', () => {
-    const requiredSubKeys = ['active', 'trialing', 'cancelled', 'past_due', 'paused', 'none', 'proBadge', 'trialEndsIn'];
+    const requiredSubKeys = ['active', 'trialing', 'cancelled', 'past_due', 'paused', 'none', 'proBadge', 'trialEndsIn', 'accessEndsOn', 'cancelledAccessUntil'];
     requiredSubKeys.forEach(key => {
       expect(enTranslations.subscription).toHaveProperty(key);
       expect(sqTranslations.subscription).toHaveProperty(key);

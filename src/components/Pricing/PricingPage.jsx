@@ -164,18 +164,31 @@ export default function PricingPage() {
 
       {/* Active subscription notice */}
       {isPremium && subscription?.subscription_status !== 'none' && (
-        <div className="mb-8 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-center">
+        <div className={`mb-8 p-4 rounded-xl text-center ${
+          subscription?.subscription_cancel_at
+            ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
+            : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+        }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200">
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
+              subscription?.subscription_cancel_at
+                ? 'bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-200'
+                : 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200'
+            }`}>
               {t('subscription.proBadge')}
             </span>
-            <span className="text-green-800 dark:text-green-200 font-medium">
-              {isTrialing
+            <span className={subscription?.subscription_cancel_at
+              ? 'text-amber-800 dark:text-amber-200 font-medium'
+              : 'text-green-800 dark:text-green-200 font-medium'
+            }>
+              {subscription?.subscription_cancel_at && subscription?.period_end
+                ? t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() })
+                : isTrialing
                 ? trialTimeLabel
                 : t('subscription.active')}
             </span>
           </div>
-          {subscription?.paddle_subscription_id && (
+          {subscription?.paddle_subscription_id && !subscription?.subscription_cancel_at && (
             <button
               onClick={handleManageSubscription}
               className="text-sm text-green-700 dark:text-green-300 underline hover:no-underline"
