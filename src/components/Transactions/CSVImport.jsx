@@ -6,7 +6,7 @@ import Modal from '../UI/Modal';
 import Card from '../UI/Card';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
-import { bulkImportTransactions } from '../../utils/api';
+import { bulkImportTransactions, addCategory } from '../../utils/api';
 
 export default function CSVImport({ categories, onImportComplete }) {
   const { t } = useTranslation();
@@ -118,6 +118,8 @@ export default function CSVImport({ categories, onImportComplete }) {
           type,
           date,
           category_id: category?.id ?? null,
+          // Keep the raw name so handleImport can create missing categories
+          _categoryName: !category && categoryName ? categoryName : null,
           tags: parseTags(row.tags || row.Tags),
           currency_code: row.currency_code || row.Currency || 'EUR',
           exchange_rate: parseFloat(row.exchange_rate || row.ExchangeRate) || 1.0,
@@ -154,7 +156,29 @@ export default function CSVImport({ categories, onImportComplete }) {
 
     setImporting(true);
     try {
-      const result = await bulkImportTransactions(dataToImport);
+      // Auto-create any categories that don't exist yet
+      const missingNames = [...new Set(
+        dataToImport.filter(r => r._categoryName).map(r => r._categoryName)
+      )];
+      const createdCategories = {};
+      for (const name of missingNames) {
+        try {
+          const cat = await addCategory({ name });
+          createdCategories[name.toLowerCase()] = cat.id;
+        } catch {
+          // Category may have been created concurrently — try to find it in existing list
+          const existing = categories.find(c => c.name.toLowerCase() === name.toLowerCase());
+          if (existing) createdCategories[name.toLowerCase()] = existing.id;
+        }
+      }
+
+      // Resolve category IDs and strip internal fields before insert
+      const resolvedData = dataToImport.map(({ _categoryName, ...row }) => ({
+        ...row,
+        category_id: row.category_id ?? ((_categoryName && createdCategories[_categoryName.toLowerCase()]) || null),
+      }));
+
+      const result = await bulkImportTransactions(resolvedData);
       addToast(t('import.success', { count: result.count }), 'success');
       setShowModal(false);
       onImportComplete?.();
