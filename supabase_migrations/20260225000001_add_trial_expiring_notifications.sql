@@ -29,7 +29,7 @@ BEGIN
   WHERE user_id = p_user_id;
 
   -- Only relevant when user is in an active trial
-  IF NOT FOUND OR v_sub.subscription_status != 'trialing' OR v_sub.trial_end IS NULL THEN
+  IF NOT FOUND OR v_sub.status != 'trialing' OR v_sub.trial_end IS NULL THEN
     RETURN;
   END IF;
 
