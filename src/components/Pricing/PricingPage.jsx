@@ -188,10 +188,13 @@ export default function PricingPage() {
                 : t('subscription.active')}
             </span>
           </div>
-          {subscription?.paddle_subscription_id && !subscription?.subscription_cancel_at && (
+          {subscription?.paddle_subscription_id && (
             <button
               onClick={handleManageSubscription}
-              className="text-sm text-green-700 dark:text-green-300 underline hover:no-underline"
+              className={subscription?.subscription_cancel_at
+                ? "text-sm text-amber-700 dark:text-amber-300 underline hover:no-underline"
+                : "text-sm text-green-700 dark:text-green-300 underline hover:no-underline"
+              }
             >
               {t('pricing.managePlan')}
             </button>
