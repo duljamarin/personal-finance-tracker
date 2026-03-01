@@ -205,6 +205,9 @@ serve(async (req: Request) => {
           price_id: priceId,
           current_period_start: data.current_billing_period?.starts_at || null,
           current_period_end: data.current_billing_period?.ends_at || null,
+          // Always clear cancellation fields for new subscriptions
+          cancel_at: null,
+          cancelled_at: null,
         };
 
         if (eventId) upsertData.last_event_id = eventId;
@@ -246,10 +249,23 @@ serve(async (req: Request) => {
       }
 
       case "subscription.updated": {
+        // Verify this event is for the current subscription
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("paddle_subscription_id")
+          .eq("user_id", userId)
+          .single();
+
+        if (currentSub?.paddle_subscription_id && currentSub.paddle_subscription_id !== data.id) {
+          console.warn(`Ignoring update for old subscription ${data.id}, current is ${currentSub.paddle_subscription_id}`);
+          break;
+        }
+
         const priceId = data.items?.[0]?.price?.id || "";
         let plan = derivePlan(priceId);
 
         const updateData: Record<string, any> = {
+          paddle_subscription_id: data.id,
           status: data.status,
           current_period_start: data.current_billing_period?.starts_at || null,
           current_period_end: data.current_billing_period?.ends_at || null,
@@ -286,20 +302,25 @@ serve(async (req: Request) => {
       }
 
       case "subscription.activated": {
-        // Validate state transition: only trialing -> active is expected
+        // Check if this is a new subscription activation vs old cancelled one
         const { data: currentSub } = await supabase
           .from("subscriptions")
-          .select("status")
+          .select("status, paddle_subscription_id")
           .eq("user_id", userId)
           .single();
 
         const currentStatus = currentSub?.status || "";
-        if (currentStatus === "cancelled") {
-          console.warn(`Ignoring activation for cancelled subscription (user ${userId})`);
+        const currentSubId = currentSub?.paddle_subscription_id || "";
+        
+        // Only ignore if status is cancelled AND it's the same subscription ID
+        if (currentStatus === "cancelled" && currentSubId === data.id) {
+          console.warn(`Ignoring activation for cancelled subscription ${data.id} (user ${userId})`);
           break;
         }
 
+        // If different subscription ID, this is a new sub replacing the old one - always activate
         const updateData: Record<string, any> = {
+          paddle_subscription_id: data.id,
           status: "active",
           cancel_at: null,
           cancelled_at: null,
@@ -318,6 +339,18 @@ serve(async (req: Request) => {
       }
 
       case "subscription.canceled": {
+        // Only process cancellation if it's for the current subscription
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("paddle_subscription_id")
+          .eq("user_id", userId)
+          .single();
+
+        if (currentSub?.paddle_subscription_id && currentSub.paddle_subscription_id !== data.id) {
+          console.warn(`Ignoring cancellation for old subscription ${data.id}, current is ${currentSub.paddle_subscription_id}`);
+          break;
+        }
+
         const updateData: Record<string, any> = {
           status: "cancelled",
           cancelled_at: data.canceled_at || new Date().toISOString(),
@@ -336,6 +369,18 @@ serve(async (req: Request) => {
       }
 
       case "subscription.paused": {
+        // Only process if it's for the current subscription
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("paddle_subscription_id")
+          .eq("user_id", userId)
+          .single();
+
+        if (currentSub?.paddle_subscription_id && currentSub.paddle_subscription_id !== data.id) {
+          console.warn(`Ignoring pause for old subscription ${data.id}, current is ${currentSub.paddle_subscription_id}`);
+          break;
+        }
+
         const updateData: Record<string, any> = { status: "paused" };
         if (eventId) updateData.last_event_id = eventId;
 
@@ -350,6 +395,18 @@ serve(async (req: Request) => {
       }
 
       case "subscription.resumed": {
+        // Only process if it's for the current subscription
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("paddle_subscription_id")
+          .eq("user_id", userId)
+          .single();
+
+        if (currentSub?.paddle_subscription_id && currentSub.paddle_subscription_id !== data.id) {
+          console.warn(`Ignoring resume for old subscription ${data.id}, current is ${currentSub.paddle_subscription_id}`);
+          break;
+        }
+
         const updateData: Record<string, any> = { status: "active", cancel_at: null, cancelled_at: null };
         if (eventId) updateData.last_event_id = eventId;
 
@@ -364,6 +421,18 @@ serve(async (req: Request) => {
       }
 
       case "subscription.past_due": {
+        // Only process if it's for the current subscription
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("paddle_subscription_id")
+          .eq("user_id", userId)
+          .single();
+
+        if (currentSub?.paddle_subscription_id && currentSub.paddle_subscription_id !== data.id) {
+          console.warn(`Ignoring past_due for old subscription ${data.id}, current is ${currentSub.paddle_subscription_id}`);
+          break;
+        }
+
         const updateData: Record<string, any> = { status: "past_due" };
         if (eventId) updateData.last_event_id = eventId;
 
