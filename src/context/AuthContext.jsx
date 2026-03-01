@@ -15,6 +15,27 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      // "Sign out on close" logic:
+      // beforeunload fires on BOTH tab-close AND reload. To tell them apart we use
+      // sessionStorage: it persists across reloads but is cleared when the tab closes.
+      //
+      // • If _reloadFlag is absent  → fresh open after tab close → clear session (no rememberMe)
+      // • If _reloadFlag is present → it was a reload → keep session, clear flag
+      const reloadFlag = sessionStorage.getItem('_reloadFlag');
+      if (reloadFlag) {
+        // It was a reload — just clear the flag and continue normally
+        sessionStorage.removeItem('_reloadFlag');
+      } else if (!localStorage.getItem('rememberMe') && session) {
+        // Tab was closed and re-opened without "Remember Me" — sign out
+        const storageKeys = Object.keys(localStorage).filter(k => k.startsWith('sb-'));
+        storageKeys.forEach(k => localStorage.removeItem(k));
+        supabase.auth.signOut().catch(() => {});
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -53,13 +74,12 @@ export function AuthProvider({ children }) {
     
     window.addEventListener('storage', handleStorage);
 
-    // If "Remember Me" was not checked, sign out when the browser is closed
+    // If "Remember Me" was not checked, sign out when the browser tab is closed.
+    // We set a sessionStorage flag here instead of clearing immediately because
+    // beforeunload fires on reload too — sessionStorage lets us tell them apart.
     const handleBeforeUnload = () => {
       if (!localStorage.getItem('rememberMe')) {
-        // Use sendBeacon to ensure the signout request completes
-        // Clear the session storage key so Supabase won't restore it
-        const storageKeys = Object.keys(localStorage).filter(k => k.startsWith('sb-'));
-        storageKeys.forEach(k => localStorage.removeItem(k));
+        sessionStorage.setItem('_reloadFlag', '1');
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
