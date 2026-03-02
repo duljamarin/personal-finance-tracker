@@ -22,7 +22,7 @@ function derivePlan(priceId: string): "monthly" | "yearly" | null {
 function derivePlanFromAmount(amount: number): "monthly" | "yearly" | null {
   // Fallback: detect plan based on transaction amount
   // Only used when priceId-based detection fails
-  if (amount >= 40 && amount <= 60) return "yearly";
+  if (amount >= 30 && amount <= 50) return "yearly";
   if (amount >= 4 && amount <= 10) return "monthly";
   return null;
 }
