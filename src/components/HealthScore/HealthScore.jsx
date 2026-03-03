@@ -22,7 +22,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         setError(null);
         
         const [scoreData, historyData] = await Promise.all([
-          fetchHealthScore({ month: selectedMonth, forceRecalculate: true }),
+          fetchHealthScore({ month: selectedMonth, forceRecalculate: false }),
           compact ? Promise.resolve([]) : fetchHealthScoreHistory(6)
         ]);
         
