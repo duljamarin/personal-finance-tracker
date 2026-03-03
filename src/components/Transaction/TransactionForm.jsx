@@ -274,12 +274,12 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	}
 
 	return (
-		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full">
+		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto">
 			<h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
-			<div className="flex flex-col gap-3 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
+			<div className="flex flex-col gap-3 sm:gap-6 pr-2 sm:pr-3">
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
 					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-2 sm:p-4">
@@ -683,7 +683,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			</div>
 
 			{/* Buttons */}
-			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 flex-col sm:flex-row flex-shrink-0 mt-auto">
+			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 flex-col sm:flex-row flex-shrink-0">
 				<Button
 					type="button"
 					className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"

@@ -23,8 +23,8 @@ export default function Modal({ children, onClose, className = '', drawer = fals
       <div className={`
         bg-white dark:bg-gray-800 shadow-2xl relative w-full
         ${isMobileDrawer 
-          ? 'md:rounded-3xl md:max-w-lg md:animate-fade-in rounded-3xl mb-4 sm:mb-0 md:relative max-h-[85vh] md:max-h-none overflow-y-auto animate-slide-up' 
-          : 'rounded-3xl max-w-lg animate-fade-in'
+          ? 'md:rounded-3xl md:max-w-lg md:animate-fade-in rounded-3xl mb-4 sm:mb-0 md:relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto animate-slide-up' 
+          : 'rounded-3xl max-w-lg max-h-[90vh] overflow-y-auto animate-fade-in'
         }
         ${className}
       `}>
