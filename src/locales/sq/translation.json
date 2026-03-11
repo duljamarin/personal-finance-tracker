@@ -95,7 +95,12 @@
     "selectCategory": "Zgjidhni kategorinë",
     "search": "Kërko",
     "searchPlaceholder": "Kërko sipas titullit, kategorisë ose etiketës...",
-    "noSearchResults": "Asnjë transaksion nuk përputhet me kërkimin tuaj"
+    "noSearchResults": "Asnjë transaksion nuk përputhet me kërkimin tuaj",
+    "quickStart": "Fillim i Shpejtë",
+    "quickStartDesc": "Kliko një shabllon për të krijuar transaksionin e parë",
+    "templateCoffee": "Kafja e Mëngjesit",
+    "templateGroceries": "Blerjet Javore",
+    "templateSalary": "Rroga Mujore"
   },
   "categories": {
     "title": "Kategoritë",

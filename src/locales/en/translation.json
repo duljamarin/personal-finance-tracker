@@ -95,7 +95,12 @@
     "selectCategory": "Select category",
     "search": "Search",
     "searchPlaceholder": "Search by title, category or tag...",
-    "noSearchResults": "No transactions match your search"
+    "noSearchResults": "No transactions match your search",
+    "quickStart": "Quick Start",
+    "quickStartDesc": "Tap a template to create your first transaction",
+    "templateCoffee": "Morning Coffee",
+    "templateGroceries": "Weekly Groceries",
+    "templateSalary": "Monthly Salary"
   },
   "categories": {
     "title": "Categories",

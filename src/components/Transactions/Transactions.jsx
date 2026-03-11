@@ -39,6 +39,7 @@ export default function Transactions() {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState(null);
+  const [prefillData, setPrefillData] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [recurringFilter, setRecurringFilter] = useState(RECURRING_FILTERS.ALL);
   const [activeRecurringCount, setActiveRecurringCount] = useState(0);
@@ -164,6 +165,60 @@ export default function Transactions() {
     return () => window.removeEventListener('openAddTransaction', handleOpenAdd);
   }, [handleAdd]);
 
+  const QUICK_TEMPLATES = [
+    { emoji: '☕', titleKey: 'transactions.templateCoffee', amount: 3.50, type: 'expense', categoryHint: 'Coffee & Snacks' },
+    { emoji: '🛒', titleKey: 'transactions.templateGroceries', amount: 50, type: 'expense', categoryHint: 'Food & Dining' },
+    { emoji: '💼', titleKey: 'transactions.templateSalary', amount: 2000, type: 'income', categoryHint: 'Salary' },
+  ];
+
+  function handleTemplateClick(tpl) {
+    if (!canAddTransaction) {
+      addToast(t('upgrade.transactionLimitReached'), 'warning');
+      navigate('/pricing');
+      return;
+    }
+    const matchedCategory = categories.find(c => c.name === tpl.categoryHint);
+    setPrefillData({
+      title: t(tpl.titleKey),
+      amount: tpl.amount,
+      type: tpl.type,
+      date: new Date().toISOString().split('T')[0],
+      categoryId: matchedCategory?.id || '',
+    });
+    setShowModal(true);
+  }
+
+  const QuickStartTemplates = () => (
+    <div>
+      <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{t('transactions.quickStart')}</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">{t('transactions.quickStartDesc')}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {QUICK_TEMPLATES.map((tpl) => (
+          <button
+            key={tpl.titleKey}
+            onClick={() => handleTemplateClick(tpl)}
+            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02] hover:shadow-md text-left ${
+              tpl.type === 'income'
+                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 hover:border-green-400 dark:hover:border-green-600'
+                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-300 dark:hover:border-indigo-600'
+            }`}
+          >
+            <span className="text-2xl">{tpl.emoji}</span>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-sm text-gray-800 dark:text-white truncate">{t(tpl.titleKey)}</div>
+              <div className={`text-xs font-medium ${
+                tpl.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'
+              }`}>
+                {tpl.type === 'income' ? '+' : '-'}€{tpl.amount.toFixed(2)}
+              </div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <Card className="mt-4 sm:mt-6">
       <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 shadow-md border-b border-gray-200 dark:border-gray-700">
@@ -288,14 +343,19 @@ export default function Transactions() {
           <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-6 max-w-sm">
             {searchQuery.trim() ? `"${searchQuery}"` : ''}
           </p>
-          {items.length === 0 && !searchQuery && (
-            <button
-              onClick={handleAdd}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:from-green-600 hover:to-emerald-700 hover:shadow-xl hover:scale-105 transition-all font-semibold text-base sm:text-lg"
-            >
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
-              {t('transactions.addNew')}
-            </button>
+          {items.length < 5 && !searchQuery && (
+            <div className="w-full max-w-2xl">
+              {items.length === 0 && (
+                <button
+                  onClick={handleAdd}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:from-green-600 hover:to-emerald-700 hover:shadow-xl hover:scale-105 transition-all font-semibold text-base sm:text-lg mx-auto mb-8"
+                >
+                  <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
+                  {t('transactions.addNew')}
+                </button>
+              )}
+              <QuickStartTemplates />
+            </div>
           )}
         </div>
       ) : (
@@ -398,13 +458,18 @@ export default function Transactions() {
             </button>
           </div>
         )}
+        {items.length > 0 && items.length < 5 && !searchQuery && (
+          <div className="mt-8 px-2">
+            <QuickStartTemplates />
+          </div>
+        )}
         </>
       )}
 
       {showModal && (
-        <Modal drawer onClose={() => { setShowModal(false); setEditTx(null); }}>
+        <Modal drawer onClose={() => { setShowModal(false); setEditTx(null); setPrefillData(null); }}>
           <TransactionForm
-            initial={editTx}
+            initial={editTx || prefillData}
             onSubmit={async data => {
               if (editTx) {
                 // Update only the transaction instance, not the recurring template
@@ -424,6 +489,7 @@ export default function Transactions() {
                 }
                 setShowModal(false);
                 setEditTx(null);
+                setPrefillData(null);
               } else if (data.isRecurring) {
                 // Create recurring transaction
                 try {
@@ -439,6 +505,7 @@ export default function Transactions() {
                   setActiveRecurringCount(c => c + 1);
                   setShowModal(false);
                   setEditTx(null);
+                  setPrefillData(null);
                 } catch (error) {
                   console.error('Error creating recurring transaction:', error);
                   addToast(t('recurring.createError'), 'error');
@@ -456,14 +523,16 @@ export default function Transactions() {
                 }
                 setShowModal(false);
                 setEditTx(null);
+                setPrefillData(null);
               } else if (onAdd) {
                 await onAdd(data);
                 // refreshSubscription is called inside onAdd (TransactionContext)
                 setShowModal(false);
                 setEditTx(null);
+                setPrefillData(null);
               }
             }}
-            onCancel={() => { setShowModal(false); setEditTx(null); }}
+            onCancel={() => { setShowModal(false); setEditTx(null); setPrefillData(null); }}
             onCategoryAdded={reloadCategories}
             allowRecurring={!editTx && (isPremium || canCreateRecurring(activeRecurringCount))}
           />
