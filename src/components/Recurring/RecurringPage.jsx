@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Modal from '../UI/Modal';
-import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction } from '../../utils/api';
+import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction, processRecurringTransactions } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
@@ -278,6 +278,8 @@ export default function RecurringPage() {
             onSubmit={async () => {
               setShowModal(false);
               setEditRecurring(null);
+              // Process recurring transactions immediately after update to generate instances
+              await processRecurringTransactions();
               await loadRecurrings();
             }}
             onCancel={() => { setShowModal(false); setEditRecurring(null); }}
