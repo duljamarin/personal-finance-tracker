@@ -66,12 +66,12 @@ export default function BudgetSummaryBar({ maxItems = 5 }) {
         <div className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-gray-800 dark:text-white flex items-center gap-2">
-              <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               {t('dashboard.budgetProgress')}
             </h3>
-            <Link to="/budgets" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+            <Link to="/budgets" className="text-sm text-brand-600 dark:text-brand-400 hover:underline font-medium">
               {t('dashboard.setupBudgets')}
             </Link>
           </div>
@@ -88,12 +88,12 @@ export default function BudgetSummaryBar({ maxItems = 5 }) {
       <div className="p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-bold text-gray-800 dark:text-white flex items-center gap-2">
-            <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             {t('dashboard.budgetProgress')}
           </h3>
-          <Link to="/budgets" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+          <Link to="/budgets" className="text-sm text-brand-600 dark:text-brand-400 hover:underline font-medium">
             {t('dashboard.viewAllBudgets')}
           </Link>
         </div>
@@ -132,7 +132,7 @@ export default function BudgetSummaryBar({ maxItems = 5 }) {
         </div>
 
         {budgets.length > maxItems && (
-          <Link to="/budgets" className="block text-center text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium mt-3">
+          <Link to="/budgets" className="block text-center text-sm text-brand-600 dark:text-brand-400 hover:underline font-medium mt-3">
             +{budgets.length - maxItems} {t('dashboard.viewAllBudgets')}
           </Link>
         )}

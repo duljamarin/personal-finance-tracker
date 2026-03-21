@@ -263,14 +263,57 @@
   },
   "landing": {
     "hero": {
+      "titleLine1": "Take Control of Your",
+      "titleAccent": "Finances",
       "title": "Take Control of Your Personal Finances",
-      "subtitle": "Track incomes and expenses, visualize spending patterns, and achieve your financial goals with our intuitive finance tracker",
+      "subtitle": "Track spending, set budgets, and reach your financial goals — all in one beautifully simple dashboard.",
       "getStarted": "Get Started Free",
-      "signIn": "Sign In"
+      "signIn": "Sign In",
+      "badge": "Free to start · No credit card required",
+      "trustNote": "✓ Free forever plan  ·  ✓ 30 transactions/month  ·  ✓ Upgrade anytime"
     },
     "preview": {
       "monthlyOverview": "Monthly Overview",
       "categoryBreakdown": "Category Breakdown"
+    },
+    "stats": {
+      "freeTransactions": "Free Transactions / Month",
+      "features": "Built-in Features",
+      "currencies": "Currencies Supported",
+      "cloudSync": "Cloud Sync",
+      "free": "Free to Start"
+    },
+    "howItWorks": {
+      "title": "Get Started in Minutes",
+      "subtitle": "Three simple steps to financial clarity",
+      "step1": {
+        "title": "Create Your Account",
+        "desc": "Sign up in seconds with just your email. No credit card needed."
+      },
+      "step2": {
+        "title": "Track Your Money",
+        "desc": "Log income and expenses, set budgets, and create recurring entries."
+      },
+      "step3": {
+        "title": "See Clear Insights",
+        "desc": "Get charts, health scores, benchmarks, and progress toward your goals."
+      }
+    },
+    "showcase": {
+      "title": "Clarity Meets Simplicity",
+      "desc": "See your complete financial picture with intuitive charts and real-time tracking. Make smarter decisions with data you can actually understand.",
+      "showcase1": "Real-time spending breakdowns by category",
+      "showcase2": "Monthly budget tracking with forecasts",
+      "showcase3": "Financial health score with actionable tips",
+      "imageAlt": "Financial analytics dashboard"
+    },
+    "mockup": {
+      "dashboard": "Dashboard",
+      "balance": "Balance",
+      "income": "Income",
+      "expenses": "Expenses",
+      "budget": "Monthly Budget",
+      "recent": "Recent"
     },
     "features": {
       "title": "Everything You Need to Manage Your Money",
@@ -675,8 +718,10 @@
     "perMonth": "/month",
     "perYear": "/year",
     "saveYearly": "Save 40% vs monthly",
-    "freeTrial": "5-day free trial",
-    "subscribe": "Start Free Trial",
+    "freeTrial": "7-day free trial",
+    "startFreeTrial": "Start 7-Day Free Trial",
+    "noCardRequired": "No credit card required",
+    "subscribe": "Subscribe Now",
     "currentPlan": "Current Plan",
     "managePlan": "Manage Subscription",
     "features": "What's included",
@@ -687,8 +732,8 @@
       "categories": "Custom categories",
       "dashboard": "Basic dashboard",
       "budgets": "Up to 3 budget categories",
-      "recurring": "Up to 3 recurring transactions",
-      "goals": "1 financial goal",
+      "recurring": "Up to 5 recurring transactions",
+      "goals": "Up to 3 financial goals",
       "healthScoreBasic": "Basic health score (headline number)",
       "benchmarksBasic": "Basic spending benchmarks"
     },
@@ -726,11 +771,16 @@
     "enjoyingPremium": "Enjoying all premium features during your trial",
     "trialDaysRemaining": "{{count}} day of free trial remaining",
     "trialDaysRemaining_other": "{{count}} days of free trial remaining",
-    "freeTransactionsInfo": "Start with 30 free transactions/month • Upgrade anytime for unlimited transactions and premium features"
+    "freeTransactionsInfo": "Start with 30 free transactions/month • Upgrade anytime for unlimited transactions and premium features",
+    "trialStarted": "Your 7-day free trial has started! Enjoy all premium features.",
+    "trialAlreadyUsed": "You have already used your free trial.",
+    "trialEnded": "Your free trial has ended",
+    "trialEndedDesc": "Upgrade to keep using all premium features with no limits."
   },
   "upgrade": {
     "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",
     "upgradeCta": "Upgrade to Premium",
+    "goPremium": "Go Premium",
     "viewPlans": "View Plans",
     "premiumFeature": "{{feature}} is a premium feature",
     "transactionLimitReached": "You've reached your free transaction limit for this month. Upgrade for unlimited transactions.",

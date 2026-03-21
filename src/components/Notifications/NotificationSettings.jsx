@@ -73,7 +73,7 @@ export default function NotificationSettings() {
         {/* Individual Notification Types */}
         <div className="space-y-3">
           {/* Budget Overrun */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-red-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-red-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -94,7 +94,7 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.budget_threshold}
                       onChange={(e) => handleChange('budget_threshold', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
                       disabled={!settings.email_enabled}
                     />
                     <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">%</span>
@@ -106,13 +106,13 @@ export default function NotificationSettings() {
                 checked={settings.budget_overrun_enabled}
                 onChange={() => handleToggle('budget_overrun_enabled')}
                 disabled={!settings.email_enabled}
-                className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 disabled:opacity-50"
+                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 disabled:opacity-50"
               />
             </label>
           </div>
 
           {/* Recurring Due */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-blue-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-blue-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -132,7 +132,7 @@ export default function NotificationSettings() {
                       max="7"
                       value={settings.recurring_advance_days}
                       onChange={(e) => handleChange('recurring_advance_days', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
                     />
                     <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">
                       {t('notifications.daysLabel')}
@@ -144,13 +144,13 @@ export default function NotificationSettings() {
                 type="checkbox"
                 checked={settings.recurring_due_enabled}
                 onChange={() => handleToggle('recurring_due_enabled')}
-                className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500"
               />
             </label>
           </div>
 
           {/* Goal Milestone */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-emerald-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-emerald-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -171,7 +171,7 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.goal_milestone_percentage}
                       onChange={(e) => handleChange('goal_milestone_percentage', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
                     />
                     <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">%</span>
                   </div>
@@ -181,13 +181,13 @@ export default function NotificationSettings() {
                 type="checkbox"
                 checked={settings.goal_milestone_enabled}
                 onChange={() => handleToggle('goal_milestone_enabled')}
-                className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500"
               />
             </label>
           </div>
 
           {/* Trial Expiring */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm border-l-4 border-l-amber-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-amber-400 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-gray-900 dark:text-white">
@@ -201,7 +201,7 @@ export default function NotificationSettings() {
                 type="checkbox"
                 checked={settings.trial_expiring_enabled}
                 onChange={() => handleToggle('trial_expiring_enabled')}
-                className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500"
               />
             </label>
           </div>
@@ -209,7 +209,7 @@ export default function NotificationSettings() {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end pt-4 border-t dark:border-gray-700">
+      <div className="flex justify-end pt-4 border-t dark:border-zinc-800">
         <Button onClick={handleSave} disabled={saving}>
           {saving ? t('account.saving') : t('forms.save')}
         </Button>

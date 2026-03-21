@@ -214,8 +214,8 @@ export default function BudgetsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
-            <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             {t('budgets.title')}
           </h1>
@@ -227,8 +227,8 @@ export default function BudgetsPage() {
             disabled={!canCreateBudget(budgets.length)}
             className={`px-4 py-2 text-sm font-medium border rounded-lg transition ${
               canCreateBudget(budgets.length)
-                ? 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border-indigo-200 dark:border-indigo-800'
-                : 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 cursor-not-allowed'
+                ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/30 border-brand-200 dark:border-brand-800'
+                : 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-surface-dark-tertiary border-gray-200 dark:border-zinc-700 cursor-not-allowed'
             }`}
           >
             {t('budgets.copyFromPrevious')}
@@ -243,10 +243,10 @@ export default function BudgetsPage() {
       </div>
 
       {/* Month Navigator */}
-      <div className="flex items-center justify-center gap-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+      <div className="flex items-center justify-center gap-4 bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-3">
         <button
           onClick={goToPrevMonth}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition"
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-300 transition"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -257,14 +257,14 @@ export default function BudgetsPage() {
         </span>
         <button
           onClick={goToNextMonth}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition"
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-300 transition"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
         {isCurrentMonth && (
-          <span className="ml-2 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full">
+          <span className="ml-2 text-xs font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 px-2 py-0.5 rounded-full">
             {t('budgets.currentMonth')}
           </span>
         )}
@@ -272,11 +272,11 @@ export default function BudgetsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && budgets.length >= budgetLimit && (
-        <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl flex items-center justify-between gap-3">
-          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-xl flex items-center justify-between gap-3">
+          <p className="text-sm text-brand-800 dark:text-brand-200">
             {t('limits.budgetLimitReached', { limit: budgetLimit })}
           </p>
-          <a href="/pricing" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">
+          <a href="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
           </a>
         </div>
@@ -288,7 +288,7 @@ export default function BudgetsPage() {
           <Card>
             <div className="p-4">
               <p className="text-sm text-gray-600 dark:text-gray-400">{t('budgets.stats.totalBudgeted')}</p>
-              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+              <p className="text-2xl font-bold text-brand-600 dark:text-brand-400">
                 €{totalBudgeted.toFixed(2)}
               </p>
             </div>
@@ -308,7 +308,7 @@ export default function BudgetsPage() {
             <div className="p-4">
               <p className="text-sm text-gray-600 dark:text-gray-400">{t('budgets.stats.totalRemaining')}</p>
               <p className={`text-2xl font-bold ${getValueColorClass(totalRemaining, 0, {
-                positive: 'text-green-600 dark:text-green-400',
+                positive: 'text-brand-600 dark:text-brand-400',
                 negative: 'text-red-600 dark:text-red-400'
               })}`}>
                 €{totalRemaining.toFixed(2)}
@@ -330,8 +330,8 @@ export default function BudgetsPage() {
       {budgets.length === 0 ? (
         <Card>
           <div className="text-center py-16">
-            <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900 dark:to-indigo-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-10 h-10 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>

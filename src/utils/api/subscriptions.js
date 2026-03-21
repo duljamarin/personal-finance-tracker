@@ -62,3 +62,17 @@ export async function checkTrialExpiringNotifications() {
     if (error) throw error;
   });
 }
+
+/**
+ * Starts a card-free 7-day trial for the current user.
+ * No Paddle checkout required — trial is managed entirely in the DB.
+ * Throws if user has already used their trial or is already subscribed.
+ */
+export async function startFreeTrial() {
+  return withAuth(async (user) => {
+    const { error } = await supabase.rpc('start_free_trial', {
+      p_user_id: user.id,
+    });
+    if (error) throw error;
+  });
+}

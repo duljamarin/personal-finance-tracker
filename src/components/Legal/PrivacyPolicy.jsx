@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-md p-8 border border-gray-200 dark:border-zinc-800">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('legal.privacy.title')}
         </h1>
@@ -125,7 +125,7 @@ export default function PrivacyPolicy() {
           </p>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-zinc-800">
           <Link
             to="/"
             className="text-blue-600 dark:text-blue-400 hover:underline"

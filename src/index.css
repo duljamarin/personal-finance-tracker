@@ -2,16 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* small helper */
-html { height: 100%; }
-body { min-height: 100%; }
-
-.dark .bg-gradient-to-b {
-  /* example override if needed */
-  background-color: transparent;
+@layer base {
+  html {
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  body {
+    min-height: 100%;
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-surface-secondary text-gray-900;
+  }
+  .dark body {
+    @apply bg-surface-dark text-gray-100;
+  }
+  /* Numeric alignment for financial data */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  .summary-eur-label {
+    color: #000;
+  }
+  .dark .summary-eur-label {
+    color: #fff;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
 }
 
-/* Toast animations */
+/* Animations */
 @keyframes slideInRight {
   from {
     transform: translateX(100%);
@@ -23,6 +44,17 @@ body { min-height: 100%; }
   }
 }
 
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-8px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
 .animate-slide-in-right {
-  animation: slideInRight 0.3s ease-out;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-fade-in-out {
+  animation: fadeInOut 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

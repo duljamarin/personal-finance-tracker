@@ -64,8 +64,7 @@ export default function Dashboard() {
     <>
       {/* Welcome greeting toast */}
       {showGreeting && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white px-6 py-4 rounded-2xl shadow-2xl text-base font-semibold animate-fade-in-out max-w-md text-center border border-white/20">
-          <span className="text-2xl mr-2">👋</span>
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium animate-fade-in-out max-w-sm text-center border border-gray-200 dark:border-zinc-700">
           {t('dashboard.welcomeBack')}, {username}!
         </div>
       )}
@@ -94,19 +93,15 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Tier divider */}
-      <div className="my-8 border-t border-gray-200 dark:border-gray-700" />
-
       {/* ═══ TIER 2: INSIGHT — one scroll ═══ */}
+      <div className="mt-10" />
       <section>
         <BudgetSummaryBar />
         <ChartWithTimeRange transactions={transactions} />
       </section>
 
-      {/* Tier divider */}
-      <div className="my-8 border-t border-gray-200 dark:border-gray-700" />
-
       {/* ═══ TIER 3: DETAIL — intentional scroll ═══ */}
+      <div className="mt-10" />
       <section>
         {/* Page-level error (non-auth) */}
         {error && (
@@ -118,7 +113,7 @@ export default function Dashboard() {
         <Suspense fallback={<LoadingSpinner size="md" text={t('dashboard.loadingData')} />}>
           {loading ? (
             <div className="flex items-center justify-center py-12 text-gray-600 dark:text-gray-300">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 dark:border-green-400 mr-3"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 dark:border-brand-400 mr-3"></div>
               {t('dashboard.loadingData')}
             </div>
           ) : (
@@ -127,16 +122,16 @@ export default function Dashboard() {
 
           {/* Income & Expense category breakdowns */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6 mb-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-green-100 dark:border-gray-700">
-              <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-green-700 dark:text-green-400 flex items-center gap-2">
-                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+            <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800">
+              <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                 {t('transactions.incomes')} {t('chart.byCategory')}
               </h3>
               <CategoryPieChart transactions={transactions} type="income" />
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 border border-red-100 dark:border-gray-700">
-              <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-red-700 dark:text-red-400 flex items-center gap-2">
-                <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+            <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800">
+              <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
                 {t('transactions.expenses')} {t('chart.byCategory')}
               </h3>
               <CategoryPieChart transactions={transactions} type="expense" />
@@ -154,7 +149,7 @@ export default function Dashboard() {
       {/* Mobile FAB — Add Transaction */}
       <button
         onClick={handleAddTransaction}
-        className="fixed bottom-6 right-6 z-40 md:hidden w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full shadow-xl hover:shadow-2xl transition-all flex items-center justify-center active:scale-95"
+        className="fixed bottom-6 right-6 z-40 md:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg transition-all flex items-center justify-center active:scale-95"
         aria-label={t('dashboard.addTransaction')}
       >
         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">

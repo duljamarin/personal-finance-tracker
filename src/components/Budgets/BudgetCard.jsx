@@ -17,7 +17,7 @@ export default function BudgetCard({ budget, spent, isCurrentMonth, isFutureMont
     if (ratio >= 1.0) return 'bg-red-500';
     if (ratio >= 0.9) return 'bg-orange-500';
     if (ratio >= 0.7) return 'bg-yellow-500';
-    return 'bg-green-500';
+    return 'bg-brand-500';
   };
 
   // Forecast calculation for the current month
@@ -43,7 +43,7 @@ export default function BudgetCard({ budget, spent, isCurrentMonth, isFutureMont
           <div className="flex gap-1">
             <button
               onClick={() => onEdit(budget)}
-              className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              className="p-2 text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition"
               title={t('budgets.editBudget')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@ export default function BudgetCard({ budget, spent, isCurrentMonth, isFutureMont
         {/* Forecast line */}
         <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-600">
           {forecast && (
-            <p className={`text-sm font-medium ${forecast.willExceed ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+            <p className={`text-sm font-medium ${forecast.willExceed ? 'text-red-600 dark:text-red-400' : 'text-brand-600 dark:text-brand-400'}`}>
               {forecast.willExceed
                 ? t('budgets.forecast.willExceed', { amount: forecast.exceedBy.toFixed(2) })
                 : t('budgets.forecast.onTrack', { amount: forecast.projected.toFixed(2) })

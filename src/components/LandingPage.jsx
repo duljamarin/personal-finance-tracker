@@ -1,262 +1,333 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
-import useDarkMode from '../hooks/useDarkMode';
+import { useEffect, useState } from 'react';
+import showcaseImg from '../assets/showcase-finance.jpg';
+
+/* ─── Mini dashboard mockup for the hero ─── */
+function DashboardPreview({ t }) {
+  return (
+    <div className="relative">
+      <div className="absolute -inset-4 bg-brand-400/10 dark:bg-brand-500/5 rounded-3xl blur-2xl pointer-events-none" />
+      <div className="relative bg-white dark:bg-surface-dark-elevated rounded-2xl border border-gray-200/80 dark:border-zinc-800 shadow-xl overflow-hidden">
+        {/* Window chrome */}
+        <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100 dark:border-zinc-800/80">
+          <div className="flex gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+          </div>
+          <span className="text-[11px] text-gray-400 dark:text-gray-500 ml-2 font-medium tracking-wide">
+            {t('landing.mockup.dashboard')}
+          </span>
+        </div>
+
+        {/* Summary row */}
+        <div className="grid grid-cols-3 gap-4 px-5 pt-5 pb-4">
+          <div>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">{t('landing.mockup.balance')}</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">€1,353</p>
+          </div>
+          <div>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">{t('landing.mockup.income')}</p>
+            <p className="text-lg font-bold text-brand-600 dark:text-brand-400 tabular-nums">+€3,200</p>
+          </div>
+          <div>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">{t('landing.mockup.expenses')}</p>
+            <p className="text-lg font-bold text-red-500 dark:text-red-400 tabular-nums">-€1,847</p>
+          </div>
+        </div>
+
+        {/* Mini bar chart */}
+        <div className="px-5 pb-4">
+          <div className="flex items-end gap-[5px] h-14">
+            {[35, 58, 42, 72, 50, 64, 85, 55, 68, 78, 46, 90].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-[3px] bg-brand-500/70 dark:bg-brand-400/60"
+                style={{ height: `${h}%` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Budget bar */}
+        <div className="px-5 pb-4">
+          <div className="flex items-center justify-between text-[11px] mb-1.5">
+            <span className="text-gray-500 dark:text-gray-400 font-medium">{t('landing.mockup.budget')}</span>
+            <span className="text-gray-400 dark:text-gray-500 tabular-nums">60%</span>
+          </div>
+          <div className="h-1.5 bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-full bg-brand-500 rounded-full" style={{ width: '60%' }} />
+          </div>
+        </div>
+
+        {/* Recent transactions */}
+        <div className="border-t border-gray-100 dark:border-zinc-800/80 px-5 py-3">
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">{t('landing.mockup.recent')}</p>
+          {[
+            { emoji: '☕', label: 'Coffee', amount: '-€4.50', positive: false },
+            { emoji: '💰', label: 'Salary', amount: '+€3,200', positive: true },
+            { emoji: '🏠', label: 'Rent', amount: '-€850.00', positive: false },
+          ].map((tx, i) => (
+            <div key={i} className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">{tx.emoji}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-300">{tx.label}</span>
+              </div>
+              <span className={`text-xs font-semibold tabular-nums ${tx.positive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-600 dark:text-gray-300'}`}>
+                {tx.amount}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Feature icons (Heroicons outline 24×24) ─── */
+const featureIcons = {
+  tracking: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+    </svg>
+  ),
+  charts: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+    </svg>
+  ),
+  budgets: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+    </svg>
+  ),
+  goals: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
+    </svg>
+  ),
+  recurring: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+    </svg>
+  ),
+  multicurrency: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+    </svg>
+  ),
+};
 
 export default function LandingPage() {
   const { t } = useTranslation();
-  const [dark] = useDarkMode();
+  const [visible, setVisible] = useState(false);
 
-  // Dummy data for preview charts
-  const dummyMonthlyData = [
-    { month: t('landing.months.jan'), income: 3500, expense: 2200 },
-    { month: t('landing.months.feb'), income: 3200, expense: 2800 },
-    { month: t('landing.months.mar'), income: 4000, expense: 2500 },
-    { month: t('landing.months.apr'), income: 3800, expense: 3000 },
-  ];
+  useEffect(() => {
+    const id = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(id);
+  }, []);
 
-  const dummyCategoryData = [
-    { name: t('landing.categories.food'), value: 800, color: '#ef4444' },
-    { name: t('landing.categories.transport'), value: 300, color: '#f59e0b' },
-    { name: t('landing.categories.entertainment'), value: 200, color: '#8b5cf6' },
-    { name: t('landing.categories.utilities'), value: 400, color: '#3b82f6' },
-  ];
+  const features = ['tracking', 'charts', 'budgets', 'goals', 'recurring', 'multicurrency'];
 
-  const features = [
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-      titleKey: 'landing.features.tracking.title',
-      descKey: 'landing.features.tracking.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-        </svg>
-      ),
-      titleKey: 'landing.features.charts.title',
-      descKey: 'landing.features.charts.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      titleKey: 'landing.features.categories.title',
-      descKey: 'landing.features.categories.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      titleKey: 'landing.features.multicurrency.title',
-      descKey: 'landing.features.multicurrency.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      ),
-      titleKey: 'landing.features.recurring.title',
-      descKey: 'landing.features.recurring.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-        </svg>
-      ),
-      titleKey: 'landing.features.goals.title',
-      descKey: 'landing.features.goals.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 10h6m-6 4h6m-6 4h4" />
-        </svg>
-      ),
-      titleKey: 'landing.features.budgets.title',
-      descKey: 'landing.features.budgets.desc',
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M22 12h-4l-3 9L9 3l-3 9H2" />
-        </svg>
-      ),
-      titleKey: 'landing.features.healthscore.title',
-      descKey: 'landing.features.healthscore.desc',
-    },
+  const steps = [
+    { num: '1', key: 'step1' },
+    { num: '2', key: 'step2' },
+    { num: '3', key: 'step3' },
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 dark:from-blue-600/5 dark:via-purple-600/5 dark:to-pink-600/5"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6">
-              {t('landing.hero.title')}
+      {/* ── Hero ── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-16 sm:pb-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Copy */}
+          <div className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-medium mb-6 border border-brand-200/60 dark:border-brand-800/30">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
+              </span>
+              {t('landing.hero.badge')}
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-gray-900 dark:text-white tracking-display leading-[1.1] mb-5">
+              {t('landing.hero.titleLine1')}{' '}
+              <span className="text-brand-600 dark:text-brand-400">{t('landing.hero.titleAccent')}</span>
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-2 max-w-3xl mx-auto">
+
+            <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-8 max-w-lg">
               {t('landing.hero.subtitle')}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-              {t('subscription.freeTransactionsInfo')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+            <div className="flex flex-col sm:flex-row gap-3 mb-5">
               <Link
                 to="/register"
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all text-lg"
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg shadow-sm transition-all active:scale-[0.98] text-sm"
               >
                 {t('landing.hero.getStarted')}
-              </Link>
-              <Link
-                to="/pricing"
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all text-lg"
-              >
-                {t('nav.pricing')}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-0.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
               </Link>
               <Link
                 to="/login"
-                className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 dark:hover:border-green-500 text-gray-700 dark:text-gray-200 font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-lg"
+                className="inline-flex items-center justify-center px-6 py-3 bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg shadow-xs transition-all text-sm"
               >
                 {t('landing.hero.signIn')}
               </Link>
             </div>
+
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              {t('landing.hero.trustNote')}
+            </p>
           </div>
 
-          {/* Feature Preview - Dummy Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {/* Bar Chart Preview */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
-                {t('landing.preview.monthlyOverview')}
-              </h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={dummyMonthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
-                  <XAxis 
-                    dataKey="month" 
-                    tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
-                  />
-                  <Tooltip 
-                    formatter={(value, name) => [`€${value}`, t(`transactions.${name}`)]}
-                    contentStyle={{
-                      backgroundColor: 'rgb(31 41 55)',
-                      border: 'none',
-                      borderRadius: '0.5rem',
-                      color: 'white'
-                    }}
-                    itemSorter={(item) => item.dataKey === 'income' ? -1 : 1}
-                  />
-                  <Bar dataKey="income" fill="#10b981" name="income" radius={[8, 8, 0, 0]} />
-                  <Bar dataKey="expense" fill="#ef4444" name="expense" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Pie Chart Preview */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
-                {t('landing.preview.categoryBreakdown')}
-              </h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
-                  <Pie
-                    data={dummyCategoryData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    dataKey="value"
-                  >
-                    {dummyCategoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value) => {
-                      // Calculate total from dummyCategoryData
-                      const total = dummyCategoryData.reduce((sum, entry) => sum + (entry.value || 0), 0);
-                      const percent = total ? ((value / total) * 100).toFixed(1) : 0;
-                      return [`€${value} (${percent}%)`];
-                    }}
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '0.5rem',
-                      color: '#1f2937',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                    }}
-                  />
-                  <Legend 
-                    wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
-                    iconType="circle"
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          {/* Dashboard Mockup */}
+          <div className={`transition-all duration-700 delay-150 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <DashboardPreview t={t} />
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Features Section */}
-      <div className="bg-white dark:bg-gray-900 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
-            {t('landing.features.title')}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+      {/* ── Product Stats ── */}
+      <section className="border-y border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {[
+              { value: '30', label: t('landing.stats.freeTransactions') },
+              { value: '10+', label: t('landing.stats.features') },
+              { value: '24/7', label: t('landing.stats.cloudSync') },
+              { value: '100%', label: t('landing.stats.free') },
+            ].map((stat, i) => (
+              <div key={i}>
+                <p className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features ── */}
+      <section className="py-20 sm:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
+              {t('landing.features.title')}
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+              {t('landing.cta.subtitle')}
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {features.map((key) => (
               <div
-                key={index}
-                className="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-shadow"
+                key={key}
+                className="group p-6 rounded-xl border border-gray-200/80 dark:border-zinc-800 bg-white dark:bg-surface-dark-tertiary hover:border-brand-300 dark:hover:border-brand-800/60 hover:shadow-md transition-all duration-200"
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-md">
-                  {feature.icon}
+                <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4 group-hover:scale-110 transition-transform">
+                  {featureIcons[key]}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  {t(feature.titleKey)}
+                <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-1.5">
+                  {t(`landing.features.${key}.title`)}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {t(feature.descKey)}
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                  {t(`landing.features.${key}.desc`)}
                 </p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+      {/* ── How It Works ── */}
+      <section className="border-y border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary py-20 sm:py-24">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
+              {t('landing.howItWorks.title')}
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400">
+              {t('landing.howItWorks.subtitle')}
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-10">
+            {steps.map((step) => (
+              <div key={step.key} className="text-center">
+                <div className="w-12 h-12 rounded-full bg-brand-600 text-white font-display font-bold text-lg flex items-center justify-center mx-auto mb-5">
+                  {step.num}
+                </div>
+                <h3 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {t(`landing.howItWorks.${step.key}.title`)}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
+                  {t(`landing.howItWorks.${step.key}.desc`)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Showcase (Image + text) ── */}
+      <section className="py-20 sm:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+                {t('landing.showcase.title')}
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
+                {t('landing.showcase.desc')}
+              </p>
+              <ul className="space-y-3">
+                {['showcase1', 'showcase2', 'showcase3'].map((key) => (
+                  <li key={key} className="flex items-start gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-brand-500 mt-0.5 flex-shrink-0">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{t(`landing.showcase.${key}`)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-200/80 dark:border-zinc-800">
+              <img
+                src={showcaseImg}
+                alt={t('landing.showcase.imageAlt')}
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="border-t border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary py-20 sm:py-24">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
             {t('landing.cta.title')}
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
             {t('landing.cta.subtitle')}
           </p>
           <Link
             to="/register"
-            className="inline-block px-8 py-4 bg-white hover:bg-gray-100 text-blue-600 font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all text-lg"
+            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg shadow-sm transition-all active:scale-[0.98] text-sm"
           >
             {t('landing.cta.button')}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-0.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
           </Link>
+          <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+            {t('landing.hero.trustNote')}
+          </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

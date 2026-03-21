@@ -1,20 +1,21 @@
 
 export default function Card({ children, className = '', variant = 'default', padding = 'md' }) {
   const variants = {
-    default: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700',
-    gradient: 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700',
-    outlined: 'bg-transparent border-2 border-gray-200 dark:border-gray-700'
+    default: 'bg-white dark:bg-surface-dark-tertiary border border-gray-200/80 dark:border-zinc-800',
+    elevated: 'bg-white dark:bg-surface-dark-tertiary border border-gray-200/80 dark:border-zinc-800 shadow-md',
+    interactive: 'bg-white dark:bg-surface-dark-tertiary border border-gray-200/80 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700 hover:shadow-md transition-all duration-200',
+    outlined: 'bg-transparent border border-gray-200 dark:border-zinc-800'
   };
   
   const paddings = {
     none: '',
-    sm: 'p-2',
-    md: 'p-4',
+    sm: 'p-3',
+    md: 'p-5',
     lg: 'p-6'
   };
   
   return (
-    <div className={`${variants[variant]} ${paddings[padding]} rounded-2xl shadow ${className}`}>
+    <div className={`${variants[variant]} ${paddings[padding]} rounded-xl shadow-sm ${className}`}>
       {children}
     </div>
   );

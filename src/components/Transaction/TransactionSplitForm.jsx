@@ -92,7 +92,7 @@ export default function TransactionSplitForm({
         </Button>
       </div>
 
-      <div className="space-y-2 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+      <div className="space-y-2 bg-gray-50 dark:bg-surface-dark-tertiary p-3 rounded-lg">
         {splits.map((split, index) => (
           <div key={index} className="flex items-start gap-2">
             {/* Category */}
@@ -165,7 +165,7 @@ export default function TransactionSplitForm({
       </div>
 
       {/* Summary */}
-      <div className="text-sm space-y-1 bg-gray-100 dark:bg-gray-700 p-3 rounded">
+      <div className="text-sm space-y-1 bg-gray-100 dark:bg-zinc-800 p-3 rounded">
         <div className="flex justify-between">
           <span className="text-gray-600 dark:text-gray-400">{t('split.totalAmount')}:</span>
           <span className="font-medium text-gray-900 dark:text-white">

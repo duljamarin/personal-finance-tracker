@@ -55,11 +55,18 @@ export function useToast() {
 }
 
 function Toast({ message, type, onClose }) {
-  const styles = {
-    success: 'bg-green-600 border-green-700',
-    error: 'bg-red-600 border-red-700',
-    info: 'bg-blue-600 border-blue-700',
-    warning: 'bg-yellow-600 border-yellow-700'
+  const borderColors = {
+    success: 'border-l-emerald-500',
+    error: 'border-l-red-500',
+    info: 'border-l-brand-500',
+    warning: 'border-l-amber-500'
+  };
+
+  const iconColors = {
+    success: 'text-emerald-500',
+    error: 'text-red-500',
+    info: 'text-brand-500',
+    warning: 'text-amber-500'
   };
 
   const icons = {
@@ -87,18 +94,18 @@ function Toast({ message, type, onClose }) {
 
   return (
     <div 
-      className={`${styles[type]} text-white px-4 py-3 rounded-lg shadow-2xl border-2 flex items-center gap-3 min-w-[280px] max-w-md pointer-events-auto animate-slide-in-right`}
+      className={`bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 border-l-4 ${borderColors[type]} px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[280px] max-w-md pointer-events-auto animate-slide-in-right`}
       onClick={onClose}
     >
-      <div className="flex-shrink-0">
+      <div className={`flex-shrink-0 ${iconColors[type]}`}>
         {icons[type]}
       </div>
-      <p className="text-sm font-medium flex-1">{message}</p>
+      <p className="text-sm font-medium text-gray-800 dark:text-gray-100 flex-1">{message}</p>
       <button
         onClick={onClose}
-        className="flex-shrink-0 hover:bg-white/20 rounded p-1 transition"
+        className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded p-1 transition-colors"
       >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>

@@ -96,7 +96,7 @@ export default function RecurringPage() {
 
   return (
     <Card className="mt-4 sm:mt-6">
-      <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 shadow-md border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-tertiary rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 shadow-sm border-b border-gray-200 dark:border-zinc-800">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
           {t('recurring.manageTitle')}
         </h2>
@@ -107,11 +107,11 @@ export default function RecurringPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && recurrings.filter(r => r.is_active).length >= recurringLimit && (
-        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl flex items-center justify-between gap-3">
-          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-xl flex items-center justify-between gap-3">
+          <p className="text-sm text-brand-800 dark:text-brand-200">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}
           </p>
-          <a href="/pricing" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">
+          <a href="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
           </a>
         </div>
@@ -119,9 +119,9 @@ export default function RecurringPage() {
 
       {recurrings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-full flex items-center justify-center mb-6 shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mb-6 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </div>
           <h3 className="text-gray-700 dark:text-gray-300 text-lg sm:text-xl font-bold mb-2">
@@ -136,10 +136,10 @@ export default function RecurringPage() {
           {recurrings.map(recurring => (
             <div
               key={recurring.id}
-              className={`bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-850 rounded-xl shadow-lg p-5 sm:p-6 border transition-all ${
+              className={`bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-5 sm:p-6 border transition-all ${
                 recurring.is_active 
-                  ? 'border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-xl' 
-                  : 'border-gray-300 dark:border-gray-600 opacity-60'
+                  ? 'border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-md' 
+                  : 'border-gray-300 dark:border-zinc-600 opacity-60'
               }`}
             >
               <div className="flex justify-between items-start mb-4">
@@ -172,7 +172,7 @@ export default function RecurringPage() {
                 <div className="text-right">
                   <div className={`font-bold text-2xl ${
                     recurring.type === 'income' 
-                      ? 'text-green-600 dark:text-green-400' 
+                      ? 'text-brand-600 dark:text-brand-400' 
                       : 'text-red-600 dark:text-red-400'
                   }`}>
                     {currencySymbols[recurring.currency_code || 'EUR']}
@@ -180,7 +180,7 @@ export default function RecurringPage() {
                   </div>
                   <span className={`text-xs font-bold uppercase ${
                     recurring.type === 'income' 
-                      ? 'text-green-600 dark:text-green-400' 
+                      ? 'text-brand-600 dark:text-brand-400' 
                       : 'text-red-600 dark:text-red-400'
                   }`}>
                     {recurring.type === 'income' ? t('transactions.income') : t('transactions.expense')}
@@ -221,36 +221,36 @@ export default function RecurringPage() {
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex gap-2 pt-3 border-t border-gray-200 dark:border-zinc-700">
                 <button
                   onClick={() => handleEdit(recurring)}
-                  className="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 px-4 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                   {t('transactions.edit')}
                 </button>
                 <button
                   onClick={() => handleToggleActive(recurring)}
-                  className={`flex-1 px-4 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 ${
+                  className={`flex-1 px-4 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 ${
                     recurring.is_active
-                      ? 'bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white'
-                      : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
+                      ? 'bg-orange-400 hover:bg-orange-500 text-white'
+                      : 'bg-brand-600 hover:bg-brand-700 text-white'
                   }`}
                 >
                   {recurring.is_active ? (
                     <>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {t('recurring.pause')}
                     </>
                   ) : (
                     <>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {t('recurring.resume')}
                     </>
@@ -258,10 +258,10 @@ export default function RecurringPage() {
                 </button>
                 <button
                   onClick={() => setDeleteConfirm(recurring)}
-                  className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                   {t('transactions.delete')}
                 </button>
@@ -310,7 +310,7 @@ export default function RecurringPage() {
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm.id)}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors"
               >
                 {t('transactions.delete')}
               </button>

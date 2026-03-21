@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import { fetchSubscription, getMonthlyTransactionCount, checkTrialExpiringNotifications } from '../utils/api';
+import { fetchSubscription, getMonthlyTransactionCount, checkTrialExpiringNotifications, startFreeTrial } from '../utils/api';
 import { APP_CONFIG } from '../config/app';
 
 const SubscriptionContext = createContext();
@@ -182,6 +182,18 @@ export function SubscriptionProvider({ children }) {
 
   const canSplitTransaction = isPremium;
 
+  const hasHadTrial = useMemo(() => {
+    if (!subscription) return false;
+    return subscription.had_trial === true
+      || subscription.subscription_status !== 'none'
+      || subscription.period_end != null;
+  }, [subscription]);
+
+  const startTrial = useCallback(async () => {
+    await startFreeTrial();
+    await refreshSubscription();
+  }, [refreshSubscription]);
+
   return (
     <SubscriptionContext.Provider value={{
       subscription,
@@ -199,6 +211,8 @@ export function SubscriptionProvider({ children }) {
       canCreateRecurring,
       canCreateGoal,
       canSplitTransaction,
+      hasHadTrial,
+      startTrial,
       refreshSubscription,
       loading,
     }}>

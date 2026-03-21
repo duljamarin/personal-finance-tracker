@@ -140,7 +140,7 @@ export default function NetWorthPage() {
           </div>
           <div className={`text-3xl font-bold ${
             netWorth >= 0 
-              ? 'text-indigo-600 dark:text-indigo-400' 
+              ? 'text-brand-600 dark:text-brand-400' 
               : 'text-red-600 dark:text-red-400'
           }`}>
             {CURRENCY_SYMBOLS.EUR}{netWorth.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -190,7 +190,7 @@ export default function NetWorthPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(asset)}
-                    className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                    className="text-brand-600 hover:text-brand-700 dark:text-brand-400"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -245,7 +245,7 @@ export default function NetWorthPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(liability)}
-                    className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                    className="text-brand-600 hover:text-brand-700 dark:text-brand-400"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

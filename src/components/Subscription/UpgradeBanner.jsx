@@ -13,6 +13,8 @@ export default function UpgradeBanner() {
     trialEndsAt,
     monthlyTransactionCount,
     transactionLimit,
+    hasHadTrial,
+    isPremium,
   } = useSubscription();
 
   const trialTimeLabel = (() => {
@@ -25,9 +27,8 @@ export default function UpgradeBanner() {
     return t('subscription.trialEndsIn', { days: trialDaysLeft });
   })();
 
-  // Check if user has ever had a trial (trial_end being set means they had one)
-  const hasHadTrial = subscription?.subscription_status !== 'none'
-    || subscription?.period_end != null;
+  // Derive trial-expired state: user had a trial (or subscription) but is no longer premium
+  const trialExpired = hasHadTrial && !isPremium && !isTrialing;
 
   const [dismissed, setDismissed] = useState(false);
 
@@ -46,18 +47,18 @@ export default function UpgradeBanner() {
     setDismissed(true);
   };
 
-  // Show banner if cancelled OR if on free tier with usage
+  // Show banner if cancelled, trial expired, or on free tier with usage
   const isCancelled = subscription?.subscription_cancel_at != null;
   const hasActivePaidSubscription = subscription?.subscription_status === 'active' && !isCancelled;
   if (hasActivePaidSubscription || dismissed) return null;
 
-  // Don't show if no usage yet (except during trial)
-  if (!isTrialing && monthlyTransactionCount === 0) return null;
+  // Always show if trial expired; otherwise only if there's usage or trialing
+  if (!trialExpired && !isTrialing && !isCancelled && monthlyTransactionCount === 0) return null;
 
   const usagePercent = Math.min((monthlyTransactionCount / transactionLimit) * 100, 100);
 
   return (
-    <div className="mb-6 relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-6 text-white shadow-lg">
+    <div className="mb-6 relative overflow-hidden rounded-xl bg-brand-600 p-6 text-white shadow-sm">
       {/* Close button */}
       <button
         onClick={handleDismiss}
@@ -87,10 +88,11 @@ export default function UpgradeBanner() {
               </p>
             </div>
           </div>
-          <Link to="/pricing">
-            <button className="w-full sm:w-auto bg-white text-indigo-600 px-6 py-2.5 rounded-lg font-bold hover:bg-blue-50 transition-colors shadow-md">
-              {t('upgrade.upgradeCta')}
-            </button>
+          <Link to="/pricing" className="inline-flex items-center gap-2 w-full sm:w-auto bg-white text-brand-600 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-50 transition-colors shadow-sm">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            {t('upgrade.viewPlans')}
           </Link>
         </>
       ) : isTrialing ? (
@@ -115,7 +117,7 @@ export default function UpgradeBanner() {
           <div>
             <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-yellow-300 to-orange-300 h-full rounded-full transition-all duration-300"
+                className="bg-white/80 h-full rounded-full transition-all duration-300"
                 style={{ width: `${trialDaysLeft === 0 && trialEndsAt
                   ? Math.max(5, ((new Date(trialEndsAt) - Date.now()) / (APP_CONFIG.TRIAL_DAYS * 86400000)) * 100)
                   : Math.max(5, (trialDaysLeft / APP_CONFIG.TRIAL_DAYS) * 100)}%` }}
@@ -125,6 +127,31 @@ export default function UpgradeBanner() {
               {trialDaysLeft === 0 && trialEndsAt ? trialTimeLabel : t('subscription.trialDaysRemaining', { count: trialDaysLeft })}
             </p>
           </div>
+        </>
+      ) : trialExpired ? (
+        // Trial expired — nudge to subscribe (no trial option)
+        <>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold mb-1">
+                {t('subscription.trialEnded')}
+              </h3>
+              <p className="text-sm text-blue-100">
+                {t('subscription.trialEndedDesc')}
+              </p>
+            </div>
+          </div>
+          <Link to="/pricing" className="inline-flex items-center gap-2 w-full sm:w-auto bg-white text-brand-600 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-50 transition-colors shadow-sm">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            {t('upgrade.upgradeCta')}
+          </Link>
         </>
       ) : (
         // Free tier usage variant
@@ -163,7 +190,7 @@ export default function UpgradeBanner() {
             </p>
           </div>
           <Link to="/pricing">
-            <button className="w-full sm:w-auto bg-white text-indigo-600 px-6 py-2.5 rounded-lg font-bold hover:bg-blue-50 transition-colors shadow-md">
+            <button className="w-full sm:w-auto bg-white text-brand-600 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-50 transition-colors shadow-sm">
               {hasHadTrial ? t('upgrade.upgradeCta') : t('pricing.subscribe')}
             </button>
           </Link>

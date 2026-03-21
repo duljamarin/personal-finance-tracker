@@ -126,19 +126,19 @@ export default function RegisterForm() {
 
   return (
     <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border-2 border-blue-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+          <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-2">{t('auth.registerTitle')}</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white font-display mb-2">{t('auth.registerTitle')}</h2>
           <p className="text-gray-600 dark:text-gray-400 text-sm">{t('auth.joinDescription')}</p>
         </div>
         {/* Google OAuth */}
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl font-semibold text-sm shadow-sm hover:shadow transition-all"
+          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-gray-500 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-lg font-semibold text-sm shadow-sm hover:shadow transition-all"
         >
           <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -167,7 +167,7 @@ export default function RegisterForm() {
                 if (emailError) setEmailError('');
               }}
               placeholder={t('auth.emailPlaceholder')}
-              className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${emailError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
+              className={`w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${emailError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'}`}
             />
             {emailError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(emailError)}</span>}
           </div>
@@ -182,7 +182,7 @@ export default function RegisterForm() {
                 if (usernameError) setUsernameError('');
               }}
               placeholder={t('auth.usernamePlaceholder')}
-              className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${usernameError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
+              className={`w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${usernameError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'}`}
             />
             {usernameError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(usernameError)}</span>}
           </div>
@@ -192,7 +192,7 @@ export default function RegisterForm() {
             <select
               value={language}
               onChange={e => setLanguage(e.target.value)}
-              className="w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all shadow-sm border-gray-200 dark:border-gray-600"
+              className="w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all shadow-sm border-gray-200 dark:border-zinc-800"
             >
               <option value="en">{t('languages.english', 'English')}</option>
               <option value="sq">{t('languages.albanian', 'Shqip (Albanian)')}</option>
@@ -213,11 +213,11 @@ export default function RegisterForm() {
                   if (passwordError) setPasswordError('');
                 }}
                 placeholder={t('auth.passwordPlaceholder')}
-                className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-700'}`}
+                className={`w-full border-2 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'}`}
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 focus:outline-none transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 focus:outline-none transition-colors"
                 onClick={() => setShowPassword((prev) => !prev)}
                 tabIndex={-1}
               >
@@ -245,13 +245,13 @@ export default function RegisterForm() {
                   setAgreeTerms(e.target.checked);
                   if (termsError) setTermsError('');
                 }}
-                className="w-4 h-4 mt-0.5 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700 cursor-pointer flex-shrink-0"
+                className="w-4 h-4 mt-0.5 rounded border-gray-300 dark:border-gray-600 text-brand-600 focus:ring-brand-500 dark:bg-gray-700 cursor-pointer flex-shrink-0"
               />
               <span className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                 {t('auth.agreeToTerms')}{' '}
-                <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">{t('auth.termsOfService')}</Link>
+                <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-semibold hover:underline">{t('auth.termsOfService')}</Link>
                 {' '}{t('auth.andThe')}{' '}
-                <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">{t('auth.privacyPolicy')}</Link>
+                <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-semibold hover:underline">{t('auth.privacyPolicy')}</Link>
               </span>
             </label>
             {termsError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(termsError)}</span>}
@@ -263,7 +263,7 @@ export default function RegisterForm() {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-3.5 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             disabled={loading}
           >
             {t('auth.createAccount')}
@@ -271,7 +271,7 @@ export default function RegisterForm() {
         </form>
         <div className="text-center text-sm text-gray-600 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
           {t('auth.hasAccount')}{' '}
-          <Link to="/login" className="text-blue-600 dark:text-blue-400 font-bold hover:underline transition-colors">{t('auth.signIn')}</Link>
+          <Link to="/login" className="text-brand-600 dark:text-brand-400 font-bold hover:underline transition-colors">{t('auth.signIn')}</Link>
         </div>
       </div>
     </div>

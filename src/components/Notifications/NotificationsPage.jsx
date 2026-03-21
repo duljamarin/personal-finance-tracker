@@ -146,7 +146,7 @@ export default function NotificationsPage() {
           {notifications.some(n => !n.is_read) && (
             <button
               onClick={handleMarkAllAsRead}
-              className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium px-3 py-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+              className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium px-3 py-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
             >
               {t('notifications.markAllAsRead')}
             </button>
@@ -183,7 +183,7 @@ export default function NotificationsPage() {
             return (
             <Card
               key={notification.id}
-              className={`p-4 ${!notification.is_read ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800' : ''}`}
+              className={`p-4 ${!notification.is_read ? 'bg-brand-50 dark:bg-brand-900/20 border-brand-200 dark:border-brand-800' : ''}`}
             >
               <div className="flex items-start gap-4">
                 {getNotificationIcon(notification.notification_type)}
@@ -211,7 +211,7 @@ export default function NotificationsPage() {
                     {!notification.is_read && (
                       <button
                         onClick={() => handleMarkAsRead(notification.id)}
-                        className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+                        className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
                       >
                         {t('notifications.markAsRead')}
                       </button>

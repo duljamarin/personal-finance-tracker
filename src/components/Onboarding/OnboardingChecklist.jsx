@@ -102,19 +102,19 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
   ];
 
   const colorMap = {
-    green:  { bg: 'bg-green-100 dark:bg-green-900/30',  icon: 'text-green-600 dark:text-green-400',  btn: 'bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600' },
+    green:  { bg: 'bg-brand-50 dark:bg-brand-900/30',  icon: 'text-brand-600 dark:text-brand-400',  btn: 'bg-brand-600 hover:bg-brand-700' },
     blue:   { bg: 'bg-blue-100 dark:bg-blue-900/30',    icon: 'text-blue-600 dark:text-blue-400',    btn: 'bg-blue-600 hover:bg-blue-700' },
     purple: { bg: 'bg-purple-100 dark:bg-purple-900/30',icon: 'text-purple-600 dark:text-purple-400',btn: 'bg-purple-600 hover:bg-purple-700' },
-    indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30',icon: 'text-indigo-600 dark:text-indigo-400',btn: 'bg-indigo-600 hover:bg-indigo-700' },
+    indigo: { bg: 'bg-brand-100 dark:bg-brand-900/30',icon: 'text-brand-600 dark:text-brand-400',btn: 'bg-brand-600 hover:bg-brand-700' },
   };
 
   return (
-    <div className="mb-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-indigo-100 dark:border-indigo-900/40 overflow-hidden">
+    <div className="mb-6 bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm border border-brand-100 dark:border-brand-900/40 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-indigo-500 to-purple-600">
+      <div className="flex items-center justify-between px-5 py-4 bg-brand-600">
         <div>
           <h3 className="text-white font-bold text-base sm:text-lg">{t('onboarding.title')}</h3>
-          <p className="text-indigo-100 text-xs sm:text-sm mt-0.5">{t('onboarding.subtitle')}</p>
+          <p className="text-white/90 text-xs sm:text-sm mt-0.5">{t('onboarding.subtitle')}</p>
         </div>
         <button
           onClick={handleDismiss}
@@ -125,13 +125,13 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
       </div>
 
       {/* Steps */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 divide-gray-100 dark:divide-gray-700">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 divide-gray-100 dark:divide-zinc-700">
         {steps.map((step, i) => {
           const c = colorMap[step.color];
           return (
             <div key={i} className={`relative flex flex-col gap-3 p-4 sm:p-5 transition-all ${step.done ? 'opacity-60' : ''}`}>
               {step.done && (
-                <span className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-bold text-green-600 dark:text-green-400">
+                <span className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-bold text-brand-600 dark:text-brand-400">
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
@@ -139,8 +139,8 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
                 </span>
               )}
               <div className="flex items-start gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${step.done ? 'bg-green-100 dark:bg-green-900/30' : c.bg}`}>
-                  <span className={step.done ? 'text-green-600 dark:text-green-400' : c.icon}>{step.icon}</span>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${step.done ? 'bg-brand-50 dark:bg-brand-900/30' : c.bg}`}>
+                  <span className={step.done ? 'text-brand-600 dark:text-brand-400' : c.icon}>{step.icon}</span>
                 </div>
                 <div className="min-w-0">
                   <p className={`font-semibold text-sm ${step.done ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-white'}`}>{step.title}</p>
@@ -161,7 +161,7 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
       </div>
 
       {/* Keyboard shortcut hint */}
-      <div className="px-5 py-2.5 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 flex items-center gap-4 flex-wrap">
+      <div className="px-5 py-2.5 bg-gray-50 dark:bg-surface-dark border-t border-gray-100 dark:border-zinc-700 flex items-center gap-4 flex-wrap">
         <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">{t('shortcuts.title')}:</span>
         <ShortcutBadge keys={['Alt', 'N']} label={t('shortcuts.addTransaction')} />
         <ShortcutBadge keys={['Ctrl', 'K']} label={t('shortcuts.search')} />

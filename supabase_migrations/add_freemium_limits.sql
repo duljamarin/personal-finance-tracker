@@ -4,7 +4,7 @@
 --
 -- Adds server-side enforcement triggers for free-tier users:
 -- 1. Budget limit: 3 per month
--- 2. Recurring transaction limit: 3 active
+-- 2. Recurring transaction limit: 5 active
 -- 3. Goal limit: 1 active
 --
 -- Follows the pattern from check_transaction_limit()
@@ -60,7 +60,7 @@ CREATE TRIGGER enforce_budget_limit
 
 
 -- ===========================================
--- Limit #2: Recurring transaction limit (3 active for free users)
+-- Limit #2: Recurring transaction limit (5 active for free users)
 -- ===========================================
 
 CREATE OR REPLACE FUNCTION check_recurring_limit()
@@ -68,7 +68,7 @@ RETURNS TRIGGER AS $$
 DECLARE
     user_is_premium BOOLEAN;
     active_count INTEGER;
-    free_limit CONSTANT INTEGER := 3;
+    free_limit CONSTANT INTEGER := 5;
 BEGIN
     -- Check if user has an active/trialing subscription OR is within their paid period
     SELECT EXISTS (
@@ -107,7 +107,7 @@ CREATE TRIGGER enforce_recurring_limit
 
 
 -- ===========================================
--- Limit #3: Goal limit (1 active for free users)
+-- Limit #3: Goal limit (3 active for free users)
 -- ===========================================
 
 CREATE OR REPLACE FUNCTION check_goal_limit()
@@ -115,7 +115,7 @@ RETURNS TRIGGER AS $$
 DECLARE
     user_is_premium BOOLEAN;
     active_count INTEGER;
-    free_limit CONSTANT INTEGER := 1;
+    free_limit CONSTANT INTEGER := 3;
 BEGIN
     -- Check if user has an active/trialing subscription OR is within their paid period
     SELECT EXISTS (

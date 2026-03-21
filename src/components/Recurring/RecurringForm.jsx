@@ -8,7 +8,7 @@ import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recur
 
 const inputBaseClass = 'border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-xl sm:w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition'
 const inputErrorClass = 'border-red-500 focus:ring-red-500'
-const inputNormalClass = 'border-gray-300 dark:border-gray-600'
+const inputNormalClass = 'border-gray-300 dark:border-zinc-700'
 
 export default function RecurringForm({ onSubmit, onCancel, initial }) {
   const { t } = useTranslation();
@@ -196,7 +196,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs rounded-lg font-medium border transition-all ${
                   endType === option
                     ? 'bg-purple-600 text-white border-purple-700'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-purple-400'
+                    : 'bg-white dark:bg-surface-dark-tertiary text-gray-700 dark:text-gray-300 border-gray-300 dark:border-zinc-700 hover:border-purple-400'
                 }`}
               >
                 {t(`recurring.end${option.charAt(0).toUpperCase() + option.slice(1)}`)}
@@ -246,17 +246,17 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 flex-col sm:flex-row flex-shrink-0 mt-auto">
+      <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-zinc-800 flex-col sm:flex-row flex-shrink-0 mt-auto">
         <Button
           type="button"
-          className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
+          className="flex-1 border-2 border-gray-300 dark:border-zinc-700 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-800 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
           onClick={onCancel}
         >
           {t('forms.cancel')}
         </Button>
         <Button
           type="submit"
-          className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-lg transition-all text-sm sm:text-base"
+          className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-sm transition-all text-sm sm:text-base"
         >
           {t('recurring.saveChanges')}
         </Button>

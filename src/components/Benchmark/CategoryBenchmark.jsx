@@ -38,9 +38,9 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       case 'below':
         return {
           label: t('benchmark.statusBelow'),
-          bgColor: 'bg-green-100 dark:bg-green-900/40',
-          textColor: 'text-green-700 dark:text-green-400',
-          borderColor: 'border-green-200 dark:border-green-700',
+          bgColor: 'bg-brand-50 dark:bg-brand-900/40',
+          textColor: 'text-brand-700 dark:text-brand-400',
+          borderColor: 'border-brand-200 dark:border-brand-700',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
@@ -134,8 +134,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               {t('benchmark.title')}
             </h2>
@@ -151,8 +151,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                 onClick={() => setMonths(1)}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                   months === 1
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-brand-600 text-white shadow-sm'
+                    : 'bg-gray-100 dark:bg-zinc-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600'
                 }`}
               >
                 {t('benchmark.period1Month')}
@@ -161,8 +161,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                 onClick={() => setMonths(6)}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                   months === 6
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-brand-600 text-white shadow-sm'
+                    : 'bg-gray-100 dark:bg-zinc-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600'
                 }`}
               >
                 {t('benchmark.period6Months')}
@@ -170,10 +170,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
             </div>
           ) : (
             <div className="flex gap-2 items-center">
-              <span className="px-4 py-2 rounded-lg font-medium text-sm bg-indigo-600 text-white shadow-md">
+              <span className="px-4 py-2 rounded-lg font-medium text-sm bg-brand-600 text-white shadow-sm">
                 {t('benchmark.period1Month')}
               </span>
-              <a href="/pricing" className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
+              <a href="/pricing" className="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">
                 {t('benchmark.unlockPeriods')}
               </a>
             </div>
@@ -183,8 +183,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         {/* Benchmarks list */}
         {benchmarks.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-brand-400 dark:text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
@@ -271,7 +271,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                         </div>
                       </div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <a href="/pricing" className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
+                        <a href="/pricing" className="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">
                           {t('upgrade.upgradeCta')}
                         </a>
                       </div>

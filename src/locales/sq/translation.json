@@ -263,14 +263,57 @@
   },
   "landing": {
     "hero": {
+      "titleLine1": "Merrni Kontrollin e",
+      "titleAccent": "Financave Tuaja",
       "title": "Merrni Kontrollin e Financave Tuaja Personale",
-      "subtitle": "Ndiqni të ardhurat dhe shpenzimet, vizualizoni modelet e shpenzimeve dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv",
+      "subtitle": "Ndiqni shpenzimet, vendosni buxhete dhe arrini qëllimet tuaja financiare - të gjitha në një panel të thjeshtë dhe elegant.",
       "getStarted": "Filloni Falas",
-      "signIn": "Identifikohu"
+      "signIn": "Identifikohu",
+      "badge": "Falas · Pa kartë krediti",
+      "trustNote": "✓ Plan falas përgjithmonë  ·  ✓ 30 transaksione/muaj  ·  ✓ Përmirësoni kurdo"
     },
     "preview": {
       "monthlyOverview": "Përmbledhje sipas Muajve",
       "categoryBreakdown": "Ndarje sipas Kategorisë"
+    },
+    "stats": {
+      "freeTransactions": "Transaksione Falas / Muaj",
+      "features": "Funksionalitete të Integruara",
+      "currencies": "Valuta të Mbështetura",
+      "cloudSync": "Sinkronizim Cloud",
+      "free": "Falas për të Filluar"
+    },
+    "howItWorks": {
+      "title": "Filloni Brenda Minutave",
+      "subtitle": "Tre hapa të thjeshtë drejt qartësisë financiare",
+      "step1": {
+        "title": "Krijoni Llogarinë",
+        "desc": "Regjistrohuni në sekonda vetëm me emailin tuaj. Pa kartë krediti."
+      },
+      "step2": {
+        "title": "Ndiqni Paratë Tuaja",
+        "desc": "Regjistroni të ardhurat dhe shpenzimet, vendosni buxhete dhe krijoni transaksione të përsëritura."
+      },
+      "step3": {
+        "title": "Merrni Njohuri të Qarta",
+        "desc": "Shikoni grafikë, rezultatin e shëndetit financiar, krahasime dhe progresin drejt qëllimeve."
+      }
+    },
+    "showcase": {
+      "title": "Qartësia Takon Thjeshtësinë",
+      "desc": "Shikoni pamjen e plotë financiare me grafikë intuitivë dhe ndjekje në kohë reale. Merrni vendime më të mira me të dhëna që i kuptoni lehtë.",
+      "showcase1": "Analiza e shpenzimeve sipas kategorisë në kohë reale",
+      "showcase2": "Ndjekja e buxhetit mujor me parashikime",
+      "showcase3": "Rezultat i shëndetit financiar me këshilla praktike",
+      "imageAlt": "Panel analitik financiar"
+    },
+    "mockup": {
+      "dashboard": "Paneli",
+      "balance": "Bilanci",
+      "income": "Të ardhura",
+      "expenses": "Shpenzime",
+      "budget": "Buxheti Mujor",
+      "recent": "Të fundit"
     },
     "features": {
       "title": "Gjithçka që Ju Nevojitet për të Menaxhuar Paratë Tuaja",
@@ -675,8 +718,10 @@
     "perMonth": "/muaj",
     "perYear": "/vit",
     "saveYearly": "Kurseni 40% kundrejt planit mujor",
-    "freeTrial": "Provë falas 5-ditore",
-    "subscribe": "Fillo Provën Falas",
+    "freeTrial": "Provë falas 7-ditore",
+    "startFreeTrial": "Fillo Provën Falas 7-Ditore",
+    "noCardRequired": "Pa nevojë për kartë krediti",
+    "subscribe": "Abonohu Tani",
     "currentPlan": "Plani Aktual",
     "managePlan": "Menaxho Abonimin",
     "features": "Çfarë përfshihet",
@@ -687,8 +732,8 @@
       "categories": "Kategori të personalizuara",
       "dashboard": "Paneli bazik",
       "budgets": "Deri në 3 kategori buxheti",
-      "recurring": "Deri në 3 transaksione të përsëritura",
-      "goals": "1 objektiv financiar",
+      "recurring": "Deri në 5 transaksione të përsëritura",
+      "goals": "Deri në 3 objektiva financiare",
       "healthScoreBasic": "Rezultati bazë i shëndetit financiar",
       "benchmarksBasic": "Krahasime bazë të shpenzimeve"
     },
@@ -726,11 +771,16 @@
     "enjoyingPremium": "Shijoni të gjitha funksionet premium gjatë provës suaj",
     "trialDaysRemaining": "{{count}} ditë provë falas e mbetur",
     "trialDaysRemaining_other": "{{count}} ditë provë falas të mbetura",
-    "freeTransactionsInfo": "Filloni me 30 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numër të pakufizuar transaksionesh dhe funksione premium"
+    "freeTransactionsInfo": "Filloni me 30 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numër të pakufizuar transaksionesh dhe funksione premium",
+    "trialStarted": "Prova juaj falas 7-ditore ka filluar! Shijoni të gjitha funksionet premium.",
+    "trialAlreadyUsed": "Ju e keni përdorur tashmë provën tuaj falas.",
+    "trialEnded": "Prova juaj falas ka përfunduar",
+    "trialEndedDesc": "Kaloni në premium për të vazhduar me të gjitha funksionet pa kufizime."
   },
   "upgrade": {
     "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",
     "upgradeCta": "Kaloni në Premium",
+    "goPremium": "Kaloni Premium",
     "viewPlans": "Shiko Planet",
     "premiumFeature": "{{feature}} është funksion premium",
     "transactionLimitReached": "Keni arritur kufirin e transaksioneve falas për këtë muaj. Kaloni në premium për transaksione të pakufizuara.",

@@ -150,14 +150,14 @@ export default function CategoriesPage() {
           placeholder={t('categories.name')}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 p-3 rounded-lg w-full text-base focus:ring-2 focus:ring-emerald-400 dark:focus:ring-emerald-600 transition"
+          className="border border-gray-300 dark:border-zinc-800 bg-white dark:bg-surface-dark-tertiary text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 p-3 rounded-lg w-full text-base focus:ring-2 focus:ring-brand-500 transition"
         />
         <Button
           onClick={openAddModal}
-          className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:from-green-600 hover:to-emerald-700 transition font-semibold text-base whitespace-nowrap"
+          className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-xl shadow-sm hover:bg-brand-700 transition font-semibold text-base whitespace-nowrap"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
           </svg>
           {t('categories.addNew')}
         </Button>
@@ -200,7 +200,7 @@ export default function CategoriesPage() {
                 <span className="text-4xl leading-none">{editEmoji}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">{t('categories.emoji')}</span>
               </div>
-              <div className="grid grid-cols-10 gap-1 max-h-36 overflow-y-auto p-1 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-10 gap-1 max-h-36 overflow-y-auto p-1 bg-gray-50 dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800">
                 {EMOJI_PALETTE.map(em => (
                   <button
                     key={em}
@@ -225,7 +225,7 @@ export default function CategoriesPage() {
                 type="text"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
-                className={`border p-3 text-base rounded-lg w-full bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-400 transition ${
+                className={`border p-3 text-base rounded-lg w-full bg-white dark:bg-surface-dark-tertiary dark:text-white border-gray-300 dark:border-zinc-700 focus:ring-2 focus:ring-brand-500 transition ${
                   modalError ? 'border-red-500' : ''
                 }`}
                 autoFocus
@@ -234,7 +234,7 @@ export default function CategoriesPage() {
             </div>
 
             <div className="flex gap-4 justify-end">
-              <Button type="button" onClick={closeModal} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white">
+              <Button type="button" onClick={closeModal} className="bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white">
                 {t('forms.cancel')}
               </Button>
               <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
@@ -252,7 +252,7 @@ export default function CategoriesPage() {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{t('categories.delete')}</h3>
             <p className="text-gray-700 dark:text-gray-300">{t('categories.deleteConfirm')}</p>
             <div className="flex gap-3 justify-end">
-              <Button onClick={() => setModal({ open: false, categoryId: null })} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white">
+              <Button onClick={() => setModal({ open: false, categoryId: null })} className="bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white">
                 {t('forms.cancel')}
               </Button>
               <Button onClick={confirmDelete} className="bg-red-600 hover:bg-red-700 text-white">
@@ -272,7 +272,7 @@ function CategoryCard({ cat, onEdit, onDelete, editLabel, deleteLabel }) {
   const displayName = translateCategoryName(cat.name);
 
   return (
-    <div className="relative group flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow hover:shadow-lg hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-200 cursor-pointer min-h-[110px]">
+    <div className="relative group flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white dark:bg-surface-dark-tertiary border border-gray-100 dark:border-zinc-800 shadow hover:shadow-lg hover:border-brand-400 dark:hover:border-brand-600 transition-all duration-200 cursor-pointer min-h-[110px]">
       {/* Emoji icon */}
       <span className="text-4xl leading-none select-none">{emoji}</span>
 
@@ -282,17 +282,17 @@ function CategoryCard({ cat, onEdit, onDelete, editLabel, deleteLabel }) {
       </span>
 
       {/* Hover overlay with edit / delete */}
-      <div className="absolute inset-0 rounded-2xl flex items-end justify-center gap-1 pb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/30 dark:from-black/50 to-transparent pointer-events-none group-hover:pointer-events-auto">
+      <div className="absolute inset-0 rounded-2xl flex items-end justify-center gap-1 pb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 dark:bg-black/40 pointer-events-none group-hover:pointer-events-auto">
         <button
           onClick={e => { e.stopPropagation(); onEdit(); }}
-          className="bg-yellow-400 hover:bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-lg shadow transition"
+          className="bg-yellow-400 hover:bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-lg shadow-sm transition"
           title={editLabel}
         >
           ✏️
         </button>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
-          className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow transition"
+          className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm transition"
           title={deleteLabel}
         >
           🗑️

@@ -22,7 +22,7 @@ export default function GoalCard({ goal, onEdit, onAddContribution, onDelete }) 
     : null;
   
   const getStatusColor = () => {
-    if (goal.is_completed) return 'text-green-600 dark:text-green-400';
+    if (goal.is_completed) return 'text-brand-600 dark:text-brand-400';
     if (!daysLeft) return 'text-gray-500';
     if (daysLeft < 0) return 'text-red-600 dark:text-red-400';
     if (daysLeft < 30) return 'text-orange-600 dark:text-orange-400';
@@ -105,7 +105,7 @@ export default function GoalCard({ goal, onEdit, onAddContribution, onDelete }) 
               {remaining > 0 ? (
                 <>€{remaining.toFixed(2)} {t('goals.card.remaining')}</>
               ) : (
-                <span className="text-green-600 dark:text-green-400 font-semibold">
+                <span className="text-brand-600 dark:text-brand-400 font-semibold">
                   {t('goals.status.completed')}
                 </span>
               )}
@@ -128,7 +128,7 @@ export default function GoalCard({ goal, onEdit, onAddContribution, onDelete }) 
 
           <button
             onClick={() => onAddContribution(goal)}
-            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition text-sm"
+            className="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition text-sm"
           >
             + {t('goals.card.addContribution')}
           </button>

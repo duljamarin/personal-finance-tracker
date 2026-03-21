@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { useMemo, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { usePaddle } from '../../hooks/usePaddle';
@@ -14,11 +14,12 @@ const YEARLY_PRICE_ID = import.meta.env.VITE_PADDLE_YEARLY_PRICE_ID;
 export default function PricingPage() {
   const { t } = useTranslation();
   const { accessToken, user } = useAuth();
-  const { subscription, isPremium, isTrialing, trialDaysLeft, trialEndsAt } = useSubscription();
+  const { subscription, isPremium, isTrialing, trialDaysLeft, trialEndsAt, hasHadTrial, startTrial } = useSubscription();
   const paddle = usePaddle();
   const navigate = useNavigate();
   const { addToast } = useToast();
   const checkoutInitiatedRef = useRef(false);
+  const [trialLoading, setTrialLoading] = useState(false);
 
   const trialTimeLabel = (() => {
     if (trialDaysLeft === 0 && trialEndsAt) {
@@ -37,6 +38,28 @@ export default function PricingPage() {
       navigate('/dashboard', { replace: true });
     }
   }, [isPremium, navigate]);
+
+  const handleStartTrial = async () => {
+    if (!accessToken) {
+      navigate('/register');
+      return;
+    }
+    setTrialLoading(true);
+    try {
+      await startTrial();
+      addToast(t('subscription.trialStarted'), 'success');
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      const msg = err?.message || '';
+      if (msg.includes('Trial already used')) {
+        addToast(t('subscription.trialAlreadyUsed'), 'error');
+      } else {
+        addToast(t('messages.error'), 'error');
+      }
+    } finally {
+      setTrialLoading(false);
+    }
+  };
 
   const handleSubscribe = (priceId) => {
     if (!accessToken) {
@@ -112,13 +135,6 @@ export default function PricingPage() {
     return subPlan === plan && (status === 'active' || status === 'trialing');
   };
 
-  // Check if user has ever had a trial or subscription
-  const hasHadTrial = useMemo(() => {
-    if (!subscription) return false;
-    const status = subscription.subscription_status;
-    return status !== 'none' || subscription.period_end != null;
-  }, [subscription]);
-
   // Determine button state for premium plans
   const getButtonState = (plan) => {
     if (!accessToken) return 'login';
@@ -167,13 +183,13 @@ export default function PricingPage() {
         <div className={`mb-8 p-4 rounded-xl text-center ${
           subscription?.subscription_cancel_at
             ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
-            : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+            : 'bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800'
         }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
               subscription?.subscription_cancel_at
                 ? 'bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-200'
-                : 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200'
+                : 'bg-brand-100 text-brand-800 dark:bg-brand-800 dark:text-brand-200'
             }`}>
               {t('subscription.proBadge')}
             </span>
@@ -205,7 +221,7 @@ export default function PricingPage() {
       {/* Plan Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         {/* Free Plan */}
-        <Card className="relative border-2 border-gray-200 dark:border-gray-600 h-full">
+        <Card className="relative border-2 border-gray-200 dark:border-zinc-700 h-full">
           <div className="p-6 flex flex-col h-full">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {t('pricing.free')}
@@ -239,9 +255,9 @@ export default function PricingPage() {
         </Card>
 
         {/* Monthly Plan */}
-        <Card className="relative border-2 border-indigo-500 dark:border-indigo-400 shadow-lg h-full">
+        <Card className="relative border-2 border-brand-500 dark:border-brand-400 shadow-sm h-full">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+            <span className="bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">
               {t('pricing.popular')}
             </span>
           </div>
@@ -253,13 +269,13 @@ export default function PricingPage() {
               <span className="text-4xl font-extrabold text-gray-900 dark:text-white">{t('pricing.monthlyPrice')}</span>
               <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perMonth')}</span>
             </div>
-            <p className="text-sm font-medium mb-4 min-h-[1.25rem] text-indigo-600 dark:text-indigo-400">
+            <p className="text-sm font-medium mb-4 min-h-[1.25rem] text-brand-600 dark:text-brand-400">
               {!hasHadTrial ? t('pricing.freeTrial') : ''}
             </p>
             <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <svg className="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -270,8 +286,8 @@ export default function PricingPage() {
               {isCurrentPlan('monthly') ? (
                 <>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                    <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                    <span className="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+                    <span className="text-sm font-medium text-brand-600 dark:text-brand-400">
                       {isTrialing
                         ? trialTimeLabel
                         : t('pricing.currentPlan')}
@@ -285,6 +301,20 @@ export default function PricingPage() {
                 <Button variant="secondary" className="w-full" onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}>
                   {t('pricing.switchToMonthly')}
                 </Button>
+              ) : !hasHadTrial ? (
+                <>
+                  <Button
+                    variant="primary"
+                    className="w-full mb-2"
+                    onClick={handleStartTrial}
+                    disabled={trialLoading}
+                  >
+                    {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
+                  </Button>
+                  <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                    {t('pricing.noCardRequired')}
+                  </p>
+                </>
               ) : (
                 <Button variant="primary" className="w-full" onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}>
                   {t('pricing.subscribe')}
@@ -346,6 +376,20 @@ export default function PricingPage() {
                 <Button variant="secondary" className="w-full" onClick={() => handleSubscribe(YEARLY_PRICE_ID)}>
                   {t('pricing.switchToYearly')}
                 </Button>
+              ) : !hasHadTrial ? (
+                <>
+                  <Button
+                    variant="success"
+                    className="w-full mb-2"
+                    onClick={handleStartTrial}
+                    disabled={trialLoading}
+                  >
+                    {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
+                  </Button>
+                  <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                    {t('pricing.noCardRequired')}
+                  </p>
+                </>
               ) : (
                 <Button variant="success" className="w-full" onClick={() => handleSubscribe(YEARLY_PRICE_ID)}>
                   {t('pricing.subscribe')}

@@ -200,7 +200,7 @@ export default function Transactions() {
             className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02] hover:shadow-md text-left ${
               tpl.type === 'income'
                 ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 hover:border-green-400 dark:hover:border-green-600'
-                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-300 dark:hover:border-indigo-600'
+                : 'border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-dark-tertiary hover:border-brand-300 dark:hover:border-brand-600'
             }`}
           >
             <span className="text-2xl">{tpl.emoji}</span>
@@ -221,27 +221,27 @@ export default function Transactions() {
 
   return (
     <Card className="mt-4 sm:mt-6">
-      <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 shadow-md border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-tertiary rounded-t-xl p-4 sm:p-6 mb-4 shadow-md border-b border-gray-200 dark:border-zinc-800">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">{t('transactions.title')}</h2>
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           <div className="flex gap-2 sm:gap-3 w-full sm:w-auto flex-wrap">
             <button
               onClick={handleAdd}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-md hover:from-green-600 hover:to-emerald-700 hover:shadow-lg transition-all font-semibold text-sm sm:text-base min-h-[48px]"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-3 rounded-xl shadow-sm transition-all font-semibold text-sm sm:text-base min-h-[48px]"
             >
               <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
               <span className="hidden sm:inline">{t('transactions.addNew')}</span>
               <span className="sm:hidden">{t('forms.add')}</span>
             </button>
             <CSVImport categories={categories} onImportComplete={() => { onReload(); reloadCategories(); }} />
-            <button onClick={exportCSV} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-md hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg transition-all font-semibold text-sm sm:text-base min-h-[48px]">
+            <button onClick={exportCSV} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-3 rounded-xl shadow-sm transition-all font-semibold text-sm sm:text-base min-h-[48px]">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span className="hidden sm:inline">{t('transactions.export')}</span>
               <span className="sm:hidden">CSV</span>
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="sm:hidden flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-all font-semibold text-sm min-h-[48px]"
+              className="sm:hidden flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl shadow-sm hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all font-semibold text-sm min-h-[48px]"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -263,7 +263,7 @@ export default function Transactions() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder={t('transactions.searchPlaceholder')}
-            className="w-full pl-9 pr-9 py-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700/60 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900 transition"
+            className="w-full pl-9 pr-9 py-2.5 text-sm border border-gray-200 dark:border-zinc-700 rounded-xl bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-brand-400 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900 transition"
           />
           {searchQuery && (
             <button
@@ -282,7 +282,7 @@ export default function Transactions() {
           <select
             value={yearFilter}
             onChange={e => setYearFilter(e.target.value)}
-            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:border-green-500 dark:focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 min-w-[100px] sm:min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
+            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[100px] sm:min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
           >
             {years.map(y => (
               <option key={y} value={y}>{y}</option>
@@ -292,7 +292,7 @@ export default function Transactions() {
           <select
             value={categoryFilter}
             onChange={e => setCategoryFilter(e.target.value)}
-            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:border-green-500 dark:focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 min-w-[120px] sm:min-w-[160px] font-medium transition shadow-sm min-h-[48px]"
+            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[120px] sm:min-w-[160px] font-medium transition shadow-sm min-h-[48px]"
           >
             <option value="All">{t('transactions.all')}</option>
             {(Array.isArray(categories) ? categories : []).map(cat => (
@@ -307,11 +307,11 @@ export default function Transactions() {
                 onClick={() => setTypeFilter(type)}
                 className={`px-4 py-3 text-sm sm:text-base rounded-lg font-semibold border-2 transition-all shadow-sm min-h-[48px] ${typeFilter === type
                   ? (type === 'income'
-                      ? 'bg-green-600 text-white border-green-700 shadow-md scale-105'
+                      ? 'bg-brand-600 text-white border-brand-700 shadow-md scale-105'
                       : type === 'expense'
                         ? 'bg-red-600 text-white border-red-700 shadow-md scale-105'
-                        : 'bg-blue-600 text-white border-blue-700 shadow-md scale-105')
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500'}`}
+                        : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-md scale-105')
+                  : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 hover:border-gray-400 dark:hover:border-zinc-600'}`}
               >
                 {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.incomes') : t('transactions.expenses')}
               </button>
@@ -322,7 +322,7 @@ export default function Transactions() {
             <select
               value={recurringFilter}
               onChange={e => setRecurringFilter(e.target.value)}
-              className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
+              className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
             >
               <option value="all">{t('recurring.filterAll')}</option>
               <option value="regular">{t('recurring.filterRegular')}</option>
@@ -334,7 +334,7 @@ export default function Transactions() {
 
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mb-6 shadow-inner">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-6 shadow-inner">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
           </div>
           <h3 className="text-gray-700 dark:text-gray-300 text-lg sm:text-xl font-bold mb-2">
@@ -348,7 +348,7 @@ export default function Transactions() {
               {items.length === 0 && (
                 <button
                   onClick={handleAdd}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:from-green-600 hover:to-emerald-700 hover:shadow-xl hover:scale-105 transition-all font-semibold text-base sm:text-lg mx-auto mb-8"
+                  className="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-sm hover:scale-105 transition-all font-semibold text-base sm:text-lg mx-auto mb-8"
                 >
                   <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
                   {t('transactions.addNew')}
@@ -364,11 +364,11 @@ export default function Transactions() {
           {visibleItems.map(item => (
             <div
               key={item.id}
-              className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
+              className={`bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm hover:shadow-lg p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-zinc-800 hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex flex-col gap-1">
-                  <span className="font-bold text-lg sm:text-xl text-gray-800 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">{item.title}</span>
+                  <span className="font-bold text-lg sm:text-xl text-gray-800 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{item.title}</span>
                   {/* Recurring/Scheduled Badges */}
                   <div className="flex gap-1.5 flex-wrap">
                     {item.source_recurring_id && (
@@ -389,7 +389,7 @@ export default function Transactions() {
                     )}
                   </div>
                 </div>
-                <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm ${item.type === 'income' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 dark:border dark:border-green-600' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 dark:border dark:border-red-600'}`}>{item.type === 'income' ? t('transactions.income') : t('transactions.expense')}</span>
+                <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm ${item.type === 'income' ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400 dark:border dark:border-brand-600' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 dark:border dark:border-red-600'}`}>{item.type === 'income' ? t('transactions.income') : t('transactions.expense')}</span>
               </div>
               {
               <div className="text-gray-500 dark:text-gray-400 text-sm mb-3 flex items-center gap-1.5">
@@ -401,7 +401,7 @@ export default function Transactions() {
               {Array.isArray(item.tags) && item.tags.length > 0 && (
                 <div className="flex gap-2 flex-wrap mb-3">
                   {item.tags.map(tag => (
-                    <span key={tag} className="bg-gray-100 dark:bg-gray-700/60 dark:border dark:border-gray-600 rounded-md px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-300">#{tag}</span>
+                    <span key={tag} className="bg-gray-100 dark:bg-zinc-800 dark:border dark:border-zinc-700 rounded-md px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-300">#{tag}</span>
                   ))}
                 </div>
               )}
@@ -415,16 +415,16 @@ export default function Transactions() {
                   {translateCategoryName(item.category.name)}
                 </div>
               )}
-              <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-zinc-700">
                 <button
-                  className="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
+                  className="flex-1 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-semibold shadow-sm transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
                   onClick={() => handleEdit(item)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   {t('transactions.edit')}
                 </button>
                 <button
-                  className="flex-1 bg-red-500/10 dark:bg-red-500/20 hover:bg-red-500/20 dark:hover:bg-red-500/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
+                  className="flex-1 bg-red-500/10 dark:bg-red-500/20 hover:bg-red-500/20 dark:hover:bg-red-500/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg font-semibold shadow-sm transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
                   onClick={() => onDelete(item.id)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -438,7 +438,7 @@ export default function Transactions() {
           <div className="flex justify-center mt-6 sm:mt-8">
             <button
               onClick={() => setShowAll(prev => !prev)}
-              className="group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-md hover:from-green-600 hover:to-emerald-700 hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold text-sm sm:text-base"
+              className="group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm hover:scale-105 transition-all duration-300 font-semibold text-sm sm:text-base"
             >
               {showAll ? (
                 <>

@@ -98,7 +98,7 @@ export default function AccountPage() {
       <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">{t('account.title')}</h1>
 
       {/* Display Name Section */}
-      <Card padding="lg" className="border border-gray-100 dark:border-gray-700">
+      <Card padding="lg" className="border border-gray-100 dark:border-zinc-800">
         <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">{t('account.displayName')}</h2>
         <form onSubmit={handleSaveName} className="flex flex-col gap-4">
           <div>
@@ -110,13 +110,13 @@ export default function AccountPage() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder={t('account.displayNamePlaceholder')}
-              className="w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm border-gray-200 dark:border-gray-600"
+              className="w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm border-gray-200 dark:border-zinc-800"
             />
           </div>
           <button
             type="submit"
             disabled={savingName || !displayName.trim()}
-            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingName ? t('account.saving') : t('account.saveDisplayName')}
           </button>
@@ -124,7 +124,7 @@ export default function AccountPage() {
       </Card>
 
       {/* Change Password Section */}
-      <Card padding="lg" className="border border-gray-100 dark:border-gray-700">
+      <Card padding="lg" className="border border-gray-100 dark:border-zinc-800">
         <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">{t('account.changePassword')}</h2>
         <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
           <div>
@@ -141,13 +141,13 @@ export default function AccountPage() {
                 }}
                 placeholder={t('account.newPasswordPlaceholder')}
                 autoComplete="new-password"
-                className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
+                className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
               />
               <button
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 focus:outline-none transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 focus:outline-none transition-colors"
                 aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
               >
                 {showPassword ? (
@@ -177,13 +177,13 @@ export default function AccountPage() {
                 }}
                 placeholder={t('account.confirmPasswordPlaceholder')}
                 autoComplete="new-password"
-                className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
+                className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
               />
               <button
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 focus:outline-none transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 focus:outline-none transition-colors"
                 aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
               >
                 {showPassword ? (
@@ -207,7 +207,7 @@ export default function AccountPage() {
           <button
             type="submit"
             disabled={savingPassword || !newPassword || !confirmPassword}
-            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-lg font-semibold text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingPassword ? t('account.saving') : t('account.savePassword')}
           </button>
@@ -215,21 +215,21 @@ export default function AccountPage() {
       </Card>
 
       {/* Danger Zone */}
-      <div className="border-2 border-red-200 dark:border-red-800 rounded-2xl overflow-hidden">
+      <div className="border-2 border-red-200 dark:border-red-800 rounded-xl overflow-hidden">
         <div className="bg-red-50 dark:bg-red-900/20 px-6 py-4 flex items-center gap-3 border-b border-red-200 dark:border-red-800">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           </svg>
           <h2 className="text-lg font-bold text-red-700 dark:text-red-400">{t('account.dangerZone')}</h2>
         </div>
-        <div className="bg-white dark:bg-gray-800 px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="bg-white dark:bg-surface-dark-tertiary px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="font-semibold text-gray-900 dark:text-white text-sm">{t('account.deleteAccountTitle')}</p>
             <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">{t('account.deleteAccountDesc')}</p>
           </div>
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="flex-shrink-0 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-all"
+            className="flex-shrink-0 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm hover:shadow-md transition-all"
           >
             {t('account.deleteAccountBtn')}
           </button>
@@ -239,7 +239,7 @@ export default function AccountPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 flex flex-col gap-5">
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-2xl max-w-md w-full p-6 flex flex-col gap-5">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -269,7 +269,7 @@ export default function AccountPage() {
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm border-gray-200 dark:border-gray-600 font-mono tracking-widest"
+                className="w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm border-gray-200 dark:border-zinc-800 font-mono tracking-widest"
               />
             </div>
 
@@ -277,14 +277,14 @@ export default function AccountPage() {
               <button
                 onClick={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}
                 disabled={deleting}
-                className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-bold text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50"
+                className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50"
               >
                 {t('common.cancel')}
               </button>
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmText !== 'DELETE' || deleting}
-                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {deleting ? t('account.deleting') : t('account.deleteAccountBtn')}
               </button>

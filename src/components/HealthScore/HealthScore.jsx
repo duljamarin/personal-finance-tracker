@@ -39,7 +39,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   }, [selectedMonth, onReloadTrigger]);
 
   const getScoreColor = (value) => {
-    if (value >= 80) return { bg: 'bg-green-500', text: 'text-green-600 dark:text-green-400', ring: 'ring-green-500' };
+    if (value >= 80) return { bg: 'bg-brand-500', text: 'text-brand-600 dark:text-brand-400', ring: 'ring-brand-500' };
     if (value >= 60) return { bg: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400', ring: 'ring-blue-500' };
     if (value >= 40) return { bg: 'bg-yellow-500', text: 'text-yellow-600 dark:text-yellow-400', ring: 'ring-yellow-500' };
     return { bg: 'bg-red-500', text: 'text-red-600 dark:text-red-400', ring: 'ring-red-500' };
@@ -109,7 +109,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         );
       case 'savings':
         return (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
         );
@@ -333,7 +333,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                 </div>
                 <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-green-500 rounded-full transition-all duration-500"
+                    className="h-full bg-brand-500 rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(score.savingsConsistencyScore, 100)}%` }}
                   />
                 </div>
@@ -364,12 +364,12 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           <div className="mt-6">
             <Link
               to="/pricing"
-              className="flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 border border-indigo-200/50 dark:border-indigo-700/30 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all group"
+              className="flex items-center justify-between px-4 py-3 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-700 hover:border-brand-300 dark:hover:border-brand-600 transition-all group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <div className="w-9 h-9 rounded-lg bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
                 <div>
@@ -377,8 +377,8 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                   <p className="text-xs text-gray-500 dark:text-gray-400">{t('healthScore.unlockFullDesc')}</p>
                 </div>
               </div>
-              <svg className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-indigo-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-brand-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
           </div>
@@ -390,8 +390,8 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
             onClick={() => setShowExplainer(prev => !prev)}
             className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors group"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {showExplainer ? t('healthScore.howItWorksHide') : t('healthScore.howItWorks')}
             <svg
@@ -455,16 +455,16 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                 </div>
 
                 {/* Saving Habits */}
-                <div className="p-3 sm:p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                <div className="p-3 sm:p-4 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/40 flex items-center justify-center flex-shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/40 flex items-center justify-center flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-green-800 dark:text-green-300">{t('healthScore.savings')}</h4>
-                      <span className="text-xs font-medium text-green-600 dark:text-green-400">{t('healthScore.pillarWeight', { weight: 10 })}</span>
+                      <h4 className="text-sm font-semibold text-brand-800 dark:text-brand-300">{t('healthScore.savings')}</h4>
+                      <span className="text-xs font-medium text-brand-600 dark:text-brand-400">{t('healthScore.pillarWeight', { weight: 10 })}</span>
                     </div>
                   </div>
                   <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarSavingsDesc')}</p>
@@ -506,7 +506,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('healthScore.income')}</p>
-                <p className="text-sm sm:text-base font-semibold text-green-600 dark:text-green-400">
+                <p className="text-sm sm:text-base font-semibold text-brand-600 dark:text-brand-400">
                   €{score.totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>

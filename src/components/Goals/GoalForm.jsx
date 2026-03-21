@@ -131,7 +131,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
           <select
             value={formData.goalType}
             onChange={(e) => setFormData({ ...formData, goalType: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-500 dark:bg-gray-700 dark:text-white"
           >
             {goalTypes.map(type => (
               <option key={type} value={type}>
@@ -148,7 +148,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
           <select
             value={formData.priority}
             onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-500 dark:bg-gray-700 dark:text-white"
           >
             {priorities.map(p => (
               <option key={p.value} value={p.value}>
@@ -169,7 +169,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
                 type="button"
                 onClick={() => setFormData({ ...formData, color })}
                 className={`w-10 h-10 rounded-full transition ${
-                  formData.color === color ? 'ring-2 ring-offset-2 ring-indigo-500' : ''
+                  formData.color === color ? 'ring-2 ring-offset-2 ring-brand-500' : ''
                 }`}
                 style={{ backgroundColor: color }}
               />

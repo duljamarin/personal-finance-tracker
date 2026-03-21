@@ -404,7 +404,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								<button
 									type="button"
 									onClick={() => { setIsSplit(v => !v); setSplits([]); }}
-									className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+								className="flex items-center gap-1.5 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
 								>
 									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -458,7 +458,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										placeholder={t('categoryProposal.proposedNamePlaceholder')}
 										value={proposedCategoryName}
 										onChange={e => setProposedCategoryName(e.target.value)}
-										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-gray-600 min-w-0"
+										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-zinc-700 min-w-0"
 									/>
 								</div>
 								<Button
@@ -474,7 +474,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								<label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">
 									{t('categories.emojiLabel')}
 								</label>
-								<div className="grid grid-cols-8 sm:grid-cols-10 gap-1 max-h-28 overflow-y-auto p-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+								<div className="grid grid-cols-8 sm:grid-cols-10 gap-1 max-h-28 overflow-y-auto p-1 bg-white dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-zinc-800">
 									{EMOJI_PALETTE.map(em => (
 										<button
 											key={em}
@@ -518,7 +518,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Recurring Transaction Toggle - only show for new transactions, hide when split is enabled or editing split transaction */}
 				{allowRecurring && !initial?.id && !initial?.source_recurring_id && !isSplit && !initial?.has_splits && (
-					<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+					<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
 								<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -598,7 +598,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 												className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs rounded-lg font-medium border transition-all ${
 													endType === option
 														? 'bg-purple-600 text-white border-purple-700'
-														: 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-purple-400'
+														: 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-zinc-700 hover:border-brand-400'
 												}`}
 											>
 												{t(`recurring.end${option.charAt(0).toUpperCase() + option.slice(1)}`)}
@@ -683,17 +683,17 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			</div>
 
 			{/* Buttons */}
-			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 flex-col sm:flex-row flex-shrink-0">
+			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-zinc-800 flex-col sm:flex-row flex-shrink-0">
 				<Button
 					type="button"
-					className="flex-1 border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
+					className="flex-1 border-2 border-gray-300 dark:border-zinc-700 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-700 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
 					onClick={onCancel}
 				>
 					{t('forms.cancel')}
 				</Button>
 				<Button
 					type="submit"
-					className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-lg transition-all text-sm sm:text-base"
+					className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-sm transition-all text-sm sm:text-base"
 				>
 					{t('transactions.saveTransaction')}
 				</Button>

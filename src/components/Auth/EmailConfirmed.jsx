@@ -46,7 +46,7 @@ export default function EmailConfirmed() {
 
   return (
     <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border-2 border-green-100 dark:border-gray-700 text-center">
+      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800 text-center">
         {isError ? (
           <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,8 +54,8 @@ export default function EmailConfirmed() {
             </svg>
           </div>
         ) : (
-          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -94,7 +94,7 @@ export default function EmailConfirmed() {
 
         {!isError && (
           <div className="flex items-center justify-center">
-            <div className={`rounded-full h-8 w-8 border-b-2 ${isLoading ? 'animate-spin border-green-600 dark:border-green-400' : 'border-transparent'}`}></div>
+            <div className={`rounded-full h-8 w-8 border-b-2 ${isLoading ? 'animate-spin border-brand-600 dark:border-brand-400' : 'border-transparent'}`}></div>
           </div>
         )}
       </div>

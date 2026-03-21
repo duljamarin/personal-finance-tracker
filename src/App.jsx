@@ -115,9 +115,9 @@ function AuthGlobalUI() {
       {/* Global loading spinner overlay */}
       {authLoading && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl">
-            <div className="w-16 h-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-700 dark:text-gray-300 font-medium text-center">{t('dashboard.processing')}</p>
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-8 shadow-lg">
+            <div className="w-12 h-12 border-4 border-gray-200 dark:border-zinc-700 border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-300 font-medium text-sm text-center">{t('dashboard.processing')}</p>
           </div>
         </div>
       )}
@@ -134,7 +134,7 @@ function InnerAppContent() {
   const shouldShowHeader = !hideHeaderRoutes.includes(location.pathname);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300">
       <AuthGlobalUI />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-3rem)]">
         {shouldShowHeader && <Header />}

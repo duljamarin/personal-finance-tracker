@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
 const COLORS = [
-  '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', 
+  '#3b82f6', '#ef4444', '#0D9488', '#f59e0b', '#8b5cf6', 
   '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16'
 ];
 
@@ -52,7 +52,7 @@ export default function CategoryPieChart({ transactions, type }) {
     if (active && payload && payload.length) {
       const percentage = ((payload[0].value / total) * 100).toFixed(1);
       return (
-        <div className="bg-gray-800 dark:bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg border border-gray-700">
+        <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 rounded-lg shadow-lg">
           <p className="font-semibold">{payload[0].name}</p>
           <p className="text-sm">€{payload[0].value.toFixed(2)}</p>
           <p className="text-xs text-gray-300">{percentage}%</p>

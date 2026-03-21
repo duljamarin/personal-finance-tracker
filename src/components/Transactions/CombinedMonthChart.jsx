@@ -15,7 +15,7 @@ function CombinedMonthChartLegend() {
   const { t } = useTranslation();
 
   const items = [
-    { key: 'income', color: '#10b981', label: t('chart.income') },
+    { key: 'income', color: '#0D9488', label: t('chart.income') },
     { key: 'expense', color: '#ef4444', label: t('chart.expense') }
   ];
 
@@ -66,7 +66,7 @@ function CombinedMonthTooltip({ active, payload, label }) {
   })}`;
 
   return (
-    <div className="bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
+    <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
       <p className="font-semibold mb-1">{label}</p>
       <p className="text-emerald-400">
         {t('chart.income')} : {formatCurrency(incomeValue)}
@@ -152,7 +152,7 @@ export default function CombinedMonthChart({ transactions }) {
             height={40}
             content={<CombinedMonthChartLegend />}
           />
-          <Bar dataKey="income" fill="#10b981" name="income" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="income" fill="#0D9488" name="income" radius={[8, 8, 0, 0]} />
           <Bar dataKey="expense" fill="#ef4444" name="expense" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>

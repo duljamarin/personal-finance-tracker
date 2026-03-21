@@ -784,7 +784,7 @@ AS $$
 DECLARE
   user_is_premium BOOLEAN;
   active_count    INTEGER;
-  free_limit CONSTANT INTEGER := 3;
+  free_limit CONSTANT INTEGER := 5;
 BEGIN
   SELECT EXISTS (
     SELECT 1 FROM public.subscriptions s
@@ -830,7 +830,7 @@ AS $$
 DECLARE
   user_is_premium BOOLEAN;
   active_count    INTEGER;
-  free_limit CONSTANT INTEGER := 1;
+  free_limit CONSTANT INTEGER := 3;
 BEGIN
   SELECT EXISTS (
     SELECT 1 FROM public.subscriptions s
