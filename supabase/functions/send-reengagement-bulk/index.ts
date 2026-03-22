@@ -42,7 +42,11 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
         { emoji: '📊', title: 'Dashboard & Charts', desc: 'Visualize your income, expenses, and trends at a glance' },
         { emoji: '🎯', title: 'Financial Goals', desc: 'Set savings targets, track debt payoff, and celebrate milestones' },
         { emoji: '🔁', title: 'Recurring Transactions', desc: 'Automate bills, subscriptions, and regular income' },
-        { emoji: '🏦', title: 'Net Worth Tracking', desc: 'Monitor your assets and liabilities over time' }
+        { emoji: '🏦', title: 'Net Worth', desc: 'Monitor your assets and liabilities over time' },
+        { emoji: '📅', title: 'Monthly Budgets', desc: 'Set spending limits per category and get alerted before you overspend' },
+        { emoji: '❤️', title: 'Financial Health Score', desc: 'Get a monthly score with insights on how to improve your finances' },
+        { emoji: '📈', title: 'Spending Benchmarks', desc: 'See how your spending compares to similar households' },
+        { emoji: '🔔', title: 'Smart Notifications', desc: 'Stay on top of budget limits, goal milestones, and upcoming bills' }
       ],
       ctaText: 'Log In Now →',
       trustLine: 'Your data is safe, secure, and waiting for you.',
@@ -62,7 +66,11 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
         { emoji: '📊', title: 'Dashboard & Grafikë', desc: 'Shikoni të ardhurat, shpenzimet dhe tendencat tuaja në një vështrim' },
         { emoji: '🎯', title: 'Qëllime Financiare', desc: 'Vendosni objektiva kursimi, gjurmoni shlyerjen e borxheve dhe festoni arritjet' },
         { emoji: '🔁', title: 'Transaksione Periodike', desc: 'Automatizoni faturat, abonimet dhe të ardhurat e rregullta' },
-        { emoji: '🏦', title: 'Gjurmim Pasurie Neto', desc: 'Monitoroni aktivet dhe detyrimet tuaja me kalimin e kohës' }
+        { emoji: '🏦', title: 'Pasuria Neto', desc: 'Monitoroni aktivet dhe detyrimet tuaja me kalimin e kohës' },
+        { emoji: '📅', title: 'Buxhete Mujore', desc: 'Vendosni kufij shpenzimesh për çdo kategori dhe merrni sinjalizime para tejkalimit' },
+        { emoji: '❤️', title: 'Shëndeti Financiar', desc: 'Merrni një rezultat mujor me sugjerime për të përmirësuar financat tuaja' },
+        { emoji: '📈', title: 'Krahasime Shpenzimesh', desc: 'Shikoni si krahasohen shpenzimet tuaja me familje të ngjashme' },
+        { emoji: '🔔', title: 'Njoftimet Inteligjente', desc: 'Qëndroni të informuar për kufijtë e buxhetit, arritjet e qëllimeve dhe faturat e ardhshme' }
       ],
       ctaText: 'Hyni në Llogari →',
       trustLine: 'Të dhënat tuaja janë të sigurta dhe po ju presin.',
@@ -193,8 +201,8 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       display: inline-block;
       padding: 16px 40px;
       background: linear-gradient(135deg, #4f8a4c 0%, #2f6b35 100%);
-      color: #ffffff;
-      text-decoration: none;
+      color: #ffffff !important;
+      text-decoration: none !important;
       border-radius: 10px;
       font-weight: 700;
       font-size: 18px;
@@ -283,7 +291,7 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
         </div>
 
         <div class="cta-section">
-          <a href="${loginUrl}" class="cta-button">${c.ctaText}</a>
+          <a href="${loginUrl}" class="cta-button" style="color: #ffffff !important; text-decoration: none !important;">${c.ctaText}</a>
           <p class="trust-line">🔒 ${c.trustLine}</p>
         </div>
 
