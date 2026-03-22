@@ -285,7 +285,7 @@ export default function Transactions() {
             className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[100px] sm:min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
           >
             {years.map(y => (
-              <option key={y} value={y}>{y}</option>
+              <option key={y} value={y}>{y === 'All' ? t('transactions.allYears') : y}</option>
             ))}
           </select>
           {/* Category filter */}

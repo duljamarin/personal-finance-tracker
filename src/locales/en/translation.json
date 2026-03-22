@@ -74,6 +74,7 @@
     "showLess": "Show Less",
     "filter": "Filter",
     "all": "All",
+    "allYears": "All Years",
     "export": "Export CSV",
     "deleteConfirm": "Are you sure you want to delete this transaction?",
     "titleLabel": "Title",

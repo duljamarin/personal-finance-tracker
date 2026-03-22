@@ -187,210 +187,220 @@ serve(async (req: Request) => {
   }
 });
 
+const TERMS_URL = "https://personal-finances.app/terms";
+const PRIVACY_URL = "https://personal-finances.app/privacy";
+
+const EMAIL_CSS = `
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #1f2937;
+      background-color: #f9fafb;
+    }
+    .email-wrapper {
+      width: 100%;
+      background-color: #f9fafb;
+      padding: 20px 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      background: linear-gradient(135deg, #2f7c31 0%, #1e4620 100%);
+      padding: 40px 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header-emoji {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .header-title {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .body-text {
+      font-size: 16px;
+      color: #4b5563;
+      margin: 0 0 20px 0;
+      line-height: 1.7;
+    }
+    .cta-section {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #4f8a4c 0%, #2f6b35 100%);
+      color: #ffffff !important;
+      text-decoration: none !important;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 6px 14px rgba(47, 107, 53, 0.35);
+    }
+    .fallback-section {
+      font-size: 13px;
+      color: #6b7280;
+      margin: 24px 0 0 0;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .fallback-section a {
+      color: #2f7c31;
+      word-break: break-all;
+    }
+    .warning-text {
+      color: #dc2626;
+      font-weight: 600;
+      margin: 12px 0 0 0;
+    }
+    .footer {
+      background-color: #f3f4f6;
+      padding: 24px 30px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer-copyright {
+      font-size: 13px;
+      color: #6b7280;
+      margin: 0 0 10px 0;
+    }
+    .footer-links {
+      font-size: 13px;
+    }
+    .footer-links a {
+      color: #2f7c31;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    @media only screen and (max-width: 600px) {
+      .content { padding: 30px 20px; }
+      .header { padding: 30px 20px; }
+      .header-title { font-size: 22px; }
+      .cta-button { padding: 14px 32px; font-size: 16px; }
+    }
+`;
+
 function buildEmail(
   language: Language,
   actionUrl: string,
   email: string,
   actionType: string = "signup"
 ): { subject: string; html: string } {
-  // Determine if this is a password recovery email
   const isRecovery = actionType === "recovery";
-  
-  if (language === "sq") {
-    // Albanian templates
-    if (isRecovery) {
-      const subject = "Rivendosni fjalëkalimin tuaj";
-      const html = `
-<!doctype html>
-<html lang="sq">
-  <head>
-    <meta charset="utf-8" />
-    <title>Rivendosni fjalëkalimin</title>
-  </head>
-  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color:#0f172a; color:#e5e7eb; padding:24px;">
-    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background-color:#020617;border-radius:12px;border:1px solid #1f2937;">
-      <tr>
-        <td style="padding:24px 24px 8px 24px;">
-          <h1 style="font-size:24px;margin:0 0 12px 0;color:#e5e7eb;">Rivendosni Fjalëkalimin Tuaj 🔑</h1>
-          <p style="margin:0 0 12px 0;color:#9ca3af;">
-            Kemi marrë një kërkesë për të rivendosur fjalëkalimin për llogarinë <strong>${email}</strong>.
-          </p>
-          <p style="margin:0 0 12px 0;color:#9ca3af;">
-            Klikoni butonin më poshtë për të krijuar një fjalëkalim të ri:
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 16px 24px; text-align:center;">
-          <a href="${actionUrl}"
-             style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
-            Rivendos Fjalëkalimin
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 24px 24px;color:#6b7280;font-size:14px;">
-          <p style="margin:16px 0 8px 0;">
-            Nëse butoni nuk funksionon, kopjoni dhe ngjisni këtë link në shfletuesin tuaj:
-          </p>
-          <p style="word-break:break-all;margin:0 0 16px 0;">
-            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
-          </p>
-          <p style="margin:0;color:#ef4444;font-weight:600;">
-            Ky link skadon pas 60 minutave dhe mund të përdoret vetëm një herë.
-          </p>
-          <p style="margin:12px 0 0 0;">
-            Nëse nuk e keni kërkuar këtë rivendosje, mund ta injoroni këtë email me siguri. Fjalëkalimi juaj nuk do të ndryshohet derisa të klikoni linkun më sipër.
-          </p>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
-      return { subject, html };
-    }
-    
-    // Albanian signup confirmation template
-    const subject = "Konfirmoni adresën tuaj të emailit";
-    const html = `
-<!doctype html>
-<html lang="sq">
-  <head>
-    <meta charset="utf-8" />
-    <title>Konfirmoni emailin</title>
-  </head>
-  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color:#0f172a; color:#e5e7eb; padding:24px;">
-    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background-color:#020617;border-radius:12px;border:1px solid #1f2937;">
-      <tr>
-        <td style="padding:24px 24px 8px 24px;">
-          <h1 style="font-size:24px;margin:0 0 12px 0;color:#e5e7eb;">Mirë se erdhët në Personal Finance Tracker 👋</h1>
-          <p style="margin:0 0 12px 0;color:#9ca3af;">
-            Për të përfunduar krijimin e llogarisë për <strong>${email}</strong>, ju lutem konfirmoni adresën tuaj të emailit duke klikuar butonin më poshtë.
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 16px 24px; text-align:center;">
-          <a href="${actionUrl}"
-             style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
-            Konfirmo emailin
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 24px 24px;color:#6b7280;font-size:14px;">
-          <p style="margin:16px 0 8px 0;">
-            Nëse butoni nuk funksionon, kopjoni dhe ngjisni këtë link në shfletuesin tuaj:
-          </p>
-          <p style="word-break:break-all;margin:0 0 16px 0;">
-            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
-          </p>
-          <p style="margin:0;">
-            Nëse nuk e keni kërkuar ju këtë email, mund ta injoroni.
-          </p>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
-    return { subject, html };
-  }
 
-  // English templates
-  if (isRecovery) {
-    const subject = "Reset your password";
-    const html = `
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Reset your password</title>
-  </head>
-  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color:#0f172a; color:#e5e7eb; padding:24px;">
-    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background-color:#020617;border-radius:12px;border:1px solid #1f2937;">
-      <tr>
-        <td style="padding:24px 24px 8px 24px;">
-          <h1 style="font-size:24px;margin:0 0 12px 0;color:#e5e7eb;">Reset Your Password 🔑</h1>
-          <p style="margin:0 0 12px 0;color:#9ca3af;">
-            We received a request to reset the password for your account <strong>${email}</strong>.
-          </p>
-          <p style="margin:0 0 12px 0;color:#9ca3af;">
-            Click the button below to create a new password:
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 16px 24px; text-align:center;">
-          <a href="${actionUrl}"
-             style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
-            Reset Password
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 24px 24px;color:#6b7280;font-size:14px;">
-          <p style="margin:16px 0 8px 0;">
-            If the button doesn't work, copy and paste this link into your browser:
-          </p>
-          <p style="word-break:break-all;margin:0 0 16px 0;">
-            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
-          </p>
-          <p style="margin:0;color:#ef4444;font-weight:600;">
-            This link expires in 60 minutes and can only be used once.
-          </p>
-          <p style="margin:12px 0 0 0;">
-            If you didn't request this password reset, you can safely ignore this email. Your password will not be changed until you click the link above.
-          </p>
-        </td>
-      </tr>
-    </table>
-  </body>
+  const content = {
+    en: {
+      signup: {
+        subject: "Confirm your email address",
+        title: "Welcome to Personal Finance Tracker",
+        emoji: "💰",
+        body: `To finish creating your account for <strong>${email}</strong>, please confirm your email address by clicking the button below.`,
+        cta: "Confirm Email",
+        fallbackLabel: "If the button doesn't work, copy and paste this link into your browser:",
+        ignoreNote: "If you didn't request this email, you can safely ignore it.",
+      },
+      recovery: {
+        subject: "Reset your password",
+        title: "Reset Your Password",
+        emoji: "🔑",
+        body: `We received a request to reset the password for <strong>${email}</strong>. Click the button below to create a new password.`,
+        cta: "Reset Password",
+        fallbackLabel: "If the button doesn't work, copy and paste this link into your browser:",
+        ignoreNote: "If you didn't request this password reset, you can safely ignore this email. Your password will not be changed until you click the link above.",
+        warning: "This link expires in 60 minutes and can only be used once.",
+      },
+      footerCopyright: "© 2026 Personal Finance Tracker. All rights reserved.",
+      footerTerms: "Terms of Use",
+      footerPrivacy: "Privacy Policy",
+    },
+    sq: {
+      signup: {
+        subject: "Konfirmoni adresën tuaj të emailit",
+        title: "Mirë se erdhët në Personal Finance Tracker",
+        emoji: "💰",
+        body: `Për të përfunduar krijimin e llogarisë për <strong>${email}</strong>, ju lutem konfirmoni adresën tuaj të emailit duke klikuar butonin më poshtë.`,
+        cta: "Konfirmo Emailin",
+        fallbackLabel: "Nëse butoni nuk funksionon, kopjoni dhe ngjisni këtë link në shfletuesin tuaj:",
+        ignoreNote: "Nëse nuk e keni kërkuar ju këtë email, mund ta injoroni me siguri.",
+      },
+      recovery: {
+        subject: "Rivendosni fjalëkalimin tuaj",
+        title: "Rivendosni Fjalëkalimin",
+        emoji: "🔑",
+        body: `Kemi marrë një kërkesë për të rivendosur fjalëkalimin e llogarisë <strong>${email}</strong>. Klikoni butonin më poshtë për të krijuar një fjalëkalim të ri.`,
+        cta: "Rivendos Fjalëkalimin",
+        fallbackLabel: "Nëse butoni nuk funksionon, kopjoni dhe ngjisni këtë link në shfletuesin tuaj:",
+        ignoreNote: "Nëse nuk e keni kërkuar këtë rivendosje, mund ta injoroni këtë email me siguri. Fjalëkalimi juaj nuk do të ndryshohet derisa të klikoni linkun më sipër.",
+        warning: "Ky link skadon pas 60 minutave dhe mund të përdoret vetëm një herë.",
+      },
+      footerCopyright: "© 2026 Personal Finance Tracker. Të gjitha të drejtat e rezervuara.",
+      footerTerms: "Kushtet e Përdorimit",
+      footerPrivacy: "Politika e Privatësisë",
+    },
+  };
+
+  const lang = content[language];
+  const c = isRecovery ? lang.recovery : lang.signup;
+  const langCode = language === "sq" ? "sq" : "en";
+
+  const html = `<!DOCTYPE html>
+<html lang="${langCode}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <!--[if mso]>
+  <style>body, table, td { font-family: Arial, sans-serif !important; }</style>
+  <![endif]-->
+  <title>${c.subject}</title>
+  <style>${EMAIL_CSS}</style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="email-container">
+      <div class="header">
+        <span class="header-emoji">${c.emoji}</span>
+        <h1 class="header-title">${c.title}</h1>
+      </div>
+      <div class="content">
+        <p class="body-text">${c.body}</p>
+        <div class="cta-section">
+          <a href="${actionUrl}" class="cta-button" style="color: #ffffff !important; text-decoration: none !important;">${c.cta}</a>
+        </div>
+        <div class="fallback-section">
+          <p style="margin:0 0 8px 0;">${c.fallbackLabel}</p>
+          <p style="margin:0 0 12px 0;"><a href="${actionUrl}">${actionUrl}</a></p>
+          ${"warning" in c ? `<p class="warning-text">⚠️ ${c.warning}</p>` : ""}
+          <p style="margin:12px 0 0 0;">${c.ignoreNote}</p>
+        </div>
+      </div>
+      <div class="footer">
+        <p class="footer-copyright">${lang.footerCopyright}</p>
+        <p class="footer-links">
+          <a href="${TERMS_URL}">${lang.footerTerms}</a> &bull;
+          <a href="${PRIVACY_URL}">${lang.footerPrivacy}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
 </html>`;
-    return { subject, html };
-  }
-  
-  // English signup confirmation template (default)
-  const subject = "Confirm your email address";
-  const html = `
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Confirm your email</title>
-  </head>
-  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color:#0f172a; color:#e5e7eb; padding:24px;">
-    <table width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background-color:#020617;border-radius:12px;border:1px solid #1f2937;">
-      <tr>
-        <td style="padding:24px 24px 8px 24px;">
-          <h1 style="font-size:24px;margin:0 0 12px 0;color:#e5e7eb;">Welcome to Personal Finance Tracker 👋</h1>
-          <p style="margin:0 0 12px 0;color:#9ca3af;">
-            To finish creating your account for <strong>${email}</strong>, please confirm your email address by clicking the button below.
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 16px 24px; text-align:center;">
-          <a href="${actionUrl}"
-             style="display:inline-block;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;margin-top:8px;">
-            Confirm email
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 24px 24px 24px;color:#6b7280;font-size:14px;">
-          <p style="margin:16px 0 8px 0;">
-            If the button doesn't work, copy and paste this link into your browser:
-          </p>
-          <p style="word-break:break-all;margin:0 0 16px 0;">
-            <a href="${actionUrl}" style="color:#60a5fa;">${actionUrl}</a>
-          </p>
-          <p style="margin:0;">
-            If you didn't request this email, you can safely ignore it.
-          </p>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
-  return { subject, html };
+
+  return { subject: c.subject, html };
 }
