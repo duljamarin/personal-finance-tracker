@@ -22,13 +22,8 @@ export default function BudgetSummaryBar({ maxItems = 5 }) {
           fetchMonthlyExpensesByCategory(year, month)
         ]);
         setBudgets(budgetData);
-        // Build map: category_id -> spent amount
-        const map = {};
-        for (const row of expenseData) {
-          const catId = row.category_id;
-          map[catId] = (map[catId] || 0) + Number(row.base_amount || 0);
-        }
-        setExpenses(map);
+        // fetchMonthlyExpensesByCategory already returns a { category_id -> total } map
+        setExpenses(expenseData);
       } catch {
         // silent fail — budget bar is supplementary
       } finally {
