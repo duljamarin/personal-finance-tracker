@@ -96,7 +96,7 @@ export default function Dashboard() {
       {/* ═══ TIER 2: INSIGHT — one scroll ═══ */}
       <div className="mt-10" />
       <section>
-        <BudgetSummaryBar reloadTrigger={transactions.length} />
+        <BudgetSummaryBar reloadTrigger={totalExpense} />
         <ChartWithTimeRange transactions={transactions} />
       </section>
 
