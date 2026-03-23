@@ -5,7 +5,7 @@ import { fetchBudgets, fetchMonthlyExpensesByCategory } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import Card from '../UI/Card';
 
-export default function BudgetSummaryBar({ maxItems = 5 }) {
+export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   const { t } = useTranslation();
   const [budgets, setBudgets] = useState([]);
   const [expenses, setExpenses] = useState({});
@@ -31,7 +31,7 @@ export default function BudgetSummaryBar({ maxItems = 5 }) {
       }
     }
     load();
-  }, []);
+  }, [reloadTrigger]);
 
   const getProgressColor = (ratio) => {
     if (ratio >= 1.0) return 'bg-red-500';
