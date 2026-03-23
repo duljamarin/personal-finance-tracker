@@ -364,7 +364,7 @@ export default function Transactions() {
           {visibleItems.map(item => (
             <div
               key={item.id}
-              className={`bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm hover:shadow-lg p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-zinc-800 hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 group backdrop-blur-sm ${item.is_scheduled ? 'opacity-75' : ''}`}
+              className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm hover:shadow-lg p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-zinc-800 hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 group backdrop-blur-sm"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex flex-col gap-1">
@@ -379,14 +379,7 @@ export default function Transactions() {
                         {t('recurring.badge')}
                       </span>
                     )}
-                    {item.is_scheduled && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 dark:border dark:border-blue-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {t('recurring.scheduledBadge')}
-                      </span>
-                    )}
+
                   </div>
                 </div>
                 <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm ${item.type === 'income' ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400 dark:border dark:border-brand-600' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 dark:border dark:border-red-600'}`}>{item.type === 'income' ? t('transactions.income') : t('transactions.expense')}</span>

@@ -1,7 +1,7 @@
 import { supabase } from '../supabaseClient';
 import { withAuth, withAuthOrEmpty } from './_auth';
 
-export async function fetchTransactions({ type, includeScheduled = true } = {}) {
+export async function fetchTransactions({ type } = {}) {
   return withAuthOrEmpty(async (user) => {
     let query = supabase
       .from('transactions')
@@ -16,11 +16,6 @@ export async function fetchTransactions({ type, includeScheduled = true } = {}) 
     // Filter by type if specified
     if (type && type !== 'all') {
       query = query.eq('type', type);
-    }
-
-    // Optionally exclude scheduled (future) transactions
-    if (!includeScheduled) {
-      query = query.or('is_scheduled.is.null,is_scheduled.eq.false');
     }
 
     const { data, error } = await query;

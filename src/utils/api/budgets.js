@@ -82,7 +82,8 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
     const nextYear = month === 12 ? year + 1 : year;
     const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
 
-    // Direct (non-split) transactions — category_id is set
+    // Direct (non-split) transactions — category_id is set.
+    // Direct (non-split) transactions — category_id is set.
     const { data: txData, error: txError } = await supabase
       .from('transactions')
       .select('category_id, base_amount')
@@ -90,24 +91,24 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
       .eq('type', 'expense')
       .gte('date', startDate)
       .lt('date', endDate)
-      .eq('is_scheduled', false)
       .not('category_id', 'is', null);
 
     if (txError) throw txError;
 
-    // Split transaction amounts — join through transactions for date/type filter
+    // Split transaction amounts — join through transactions for date/type filter.
+    // Client-side date guard is also applied because nested PostgREST filters on
+    // aliased relations can be silently ignored.
     const { data: splitData, error: splitError } = await supabase
       .from('transaction_splits')
       .select(`
         category_id,
         amount,
-        transaction:transactions!inner(type, date, exchange_rate, is_scheduled)
+        transaction:transactions!inner(type, date, exchange_rate)
       `)
       .eq('user_id', user.id)
       .eq('transaction.type', 'expense')
       .gte('transaction.date', startDate)
-      .lt('transaction.date', endDate)
-      .eq('transaction.is_scheduled', false);
+      .lt('transaction.date', endDate);
 
     if (splitError) throw splitError;
 
@@ -117,6 +118,9 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
     }
     for (const split of (splitData || [])) {
       if (!split.category_id) continue;
+      // Client-side date guard in case the nested PostgREST filter was ignored
+      const txDate = split.transaction?.date;
+      if (txDate && (txDate < startDate || txDate >= endDate)) continue;
       const rate = split.transaction?.exchange_rate || 1.0;
       totals[split.category_id] = (totals[split.category_id] || 0) + Number(split.amount) * rate;
     }

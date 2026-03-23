@@ -305,7 +305,6 @@ export async function processRecurringTransactions() {
               base_amount: baseAmount,
               user_id: user.id,
               source_recurring_id: recurring.id,
-              is_scheduled: false, // Never scheduled since we only generate due instances
             }])
             .select(`
               *,
