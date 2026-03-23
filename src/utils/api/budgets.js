@@ -82,48 +82,41 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
     const nextYear = month === 12 ? year + 1 : year;
     const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
 
-    // Direct (non-split) transactions — category_id is set, has_splits excluded.
+    // All expense transactions for this month
     const { data: txData, error: txError } = await supabase
       .from('transactions')
-      .select('category_id, base_amount')
+      .select('id, category_id, base_amount, has_splits, exchange_rate')
       .eq('user_id', user.id)
       .eq('type', 'expense')
-      .gte('date', startDate)
-      .lt('date', endDate)
-      .not('category_id', 'is', null)
-      .or('has_splits.is.null,has_splits.eq.false');
-
-    if (txError) throw txError;
-
-    // For split transactions: first find qualifying parent transaction IDs,
-    // then fetch their splits. This avoids relying on PostgREST nested filters
-    // on aliased relations which can be silently ignored.
-    const { data: splitParents, error: parentError } = await supabase
-      .from('transactions')
-      .select('id, exchange_rate')
-      .eq('user_id', user.id)
-      .eq('type', 'expense')
-      .eq('has_splits', true)
       .gte('date', startDate)
       .lt('date', endDate);
 
-    if (parentError) throw parentError;
+    if (txError) throw txError;
 
+    const allTx = txData || [];
+    const splitParentIds = [];
     const totals = {};
-    for (const tx of (txData || [])) {
-      totals[tx.category_id] = (totals[tx.category_id] || 0) + Number(tx.base_amount || 0);
+
+    // Sum direct (non-split) transactions
+    for (const tx of allTx) {
+      if (tx.has_splits) {
+        splitParentIds.push(tx.id);
+      } else if (tx.category_id) {
+        totals[tx.category_id] = (totals[tx.category_id] || 0) + Number(tx.base_amount || 0);
+      }
     }
 
-    // Fetch splits only for the qualifying parent transactions
-    if (splitParents && splitParents.length > 0) {
-      const parentIds = splitParents.map(p => p.id);
-      const rateMap = Object.fromEntries(splitParents.map(p => [p.id, p.exchange_rate || 1.0]));
+    // Fetch splits for parent transactions and sum by category
+    if (splitParentIds.length > 0) {
+      const rateMap = Object.fromEntries(
+        allTx.filter(tx => tx.has_splits).map(tx => [tx.id, tx.exchange_rate || 1.0])
+      );
 
       const { data: splitData, error: splitError } = await supabase
         .from('transaction_splits')
         .select('category_id, amount, transaction_id')
         .eq('user_id', user.id)
-        .in('transaction_id', parentIds);
+        .in('transaction_id', splitParentIds);
 
       if (splitError) throw splitError;
 
