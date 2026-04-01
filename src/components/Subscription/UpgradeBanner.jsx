@@ -27,8 +27,10 @@ export default function UpgradeBanner() {
     return t('subscription.trialEndsIn', { days: trialDaysLeft });
   })();
 
-  // Derive trial-expired state: user had a trial (or subscription) but is no longer premium
-  const trialExpired = hasHadTrial && !isPremium && !isTrialing;
+  // Derive trial-expired state: user had a trial but NEVER paid, and is no longer premium.
+  // If the user ever had a Paddle subscription (paid), show the regular free-tier banner instead.
+  const hadPaidSubscription = !!subscription?.paddle_subscription_id;
+  const trialExpired = hasHadTrial && !isPremium && !isTrialing && !hadPaidSubscription;
 
   const [dismissed, setDismissed] = useState(false);
 
