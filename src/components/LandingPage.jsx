@@ -65,9 +65,9 @@ function DashboardPreview({ t }) {
         <div className="border-t border-gray-100 dark:border-zinc-800/80 px-5 py-3">
           <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">{t('landing.mockup.recent')}</p>
           {[
-            { emoji: '☕', label: 'Coffee', amount: '-€4.50', positive: false },
-            { emoji: '💰', label: 'Salary', amount: '+€3,200', positive: true },
-            { emoji: '🏠', label: 'Rent', amount: '-€850.00', positive: false },
+            { emoji: '☕', label: t('landing.mockup.coffee'), amount: '-€4.50', positive: false },
+            { emoji: '💰', label: t('landing.mockup.salary'), amount: '+€3,200', positive: true },
+            { emoji: '🏠', label: t('landing.mockup.rent'), amount: '-€850.00', positive: false },
           ].map((tx, i) => (
             <div key={i} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">

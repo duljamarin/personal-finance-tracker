@@ -314,7 +314,10 @@
       "income": "Income",
       "expenses": "Expenses",
       "budget": "Monthly Budget",
-      "recent": "Recent"
+      "recent": "Recent",
+      "coffee": "Coffee",
+      "salary": "Salary",
+      "rent": "Rent"
     },
     "features": {
       "title": "Everything You Need to Manage Your Money",

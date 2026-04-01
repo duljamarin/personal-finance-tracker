@@ -314,7 +314,10 @@
       "income": "Të ardhura",
       "expenses": "Shpenzime",
       "budget": "Buxheti Mujor",
-      "recent": "Të fundit"
+      "recent": "Të fundit",
+      "coffee": "Kafe",
+      "salary": "Paga",
+      "rent": "Qira"
     },
     "features": {
       "title": "Gjithçka që Ju Nevojitet për të Menaxhuar Paratë Tuaja",
