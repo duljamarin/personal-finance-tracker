@@ -53,6 +53,24 @@
       "all": "All"
     }
   },
+  "cashFlow": {
+    "title": "Cash Flow Forecast",
+    "subtitle": "Projected balance based on recurring transactions",
+    "currentBalance": "Current balance",
+    "balance": "Balance",
+    "projectedIn": {
+      "30": "Projected in 30 days",
+      "60": "Projected in 60 days",
+      "90": "Projected in 90 days"
+    },
+    "horizon": {
+      "30": "30D",
+      "60": "60D",
+      "90": "90D"
+    },
+    "noRecurring": "No active recurring transactions",
+    "noRecurringHint": "Add recurring income or expenses to see your cash flow forecast"
+  },
   "transactions": {
     "title": "Transactions",
     "addNew": "Add Transaction",

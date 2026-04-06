@@ -10,6 +10,7 @@ import SummaryCards from './SummaryCards';
 import BudgetSummaryBar from './BudgetSummaryBar';
 import ChartWithTimeRange from './ChartWithTimeRange';
 import AddTransactionCTA from './AddTransactionCTA';
+import CashFlowForecast from './CashFlowForecast';
 import { fetchBudgets } from '../../utils/api';
 
 const Transactions = lazy(() => import('../Transactions/Transactions'));
@@ -98,6 +99,7 @@ export default function Dashboard() {
       <section>
         <BudgetSummaryBar reloadTrigger={totalExpense} />
         <ChartWithTimeRange transactions={transactions} />
+        <CashFlowForecast />
       </section>
 
       {/* ═══ TIER 3: DETAIL — intentional scroll ═══ */}

@@ -53,6 +53,24 @@
       "all": "Të gjitha"
     }
   },
+  "cashFlow": {
+    "title": "Parashikimi i Fluksit të Parasë",
+    "subtitle": "Bilanci i parashikuar bazuar në transaksionet periodike",
+    "currentBalance": "Bilanci aktual",
+    "balance": "Bilanci",
+    "projectedIn": {
+      "30": "Parashikuar në 30 ditë",
+      "60": "Parashikuar në 60 ditë",
+      "90": "Parashikuar në 90 ditë"
+    },
+    "horizon": {
+      "30": "30D",
+      "60": "60D",
+      "90": "90D"
+    },
+    "noRecurring": "Nuk ka transaksione periodike aktive",
+    "noRecurringHint": "Shtoni të ardhura ose shpenzime periodike për të parë parashikimin e fluksit të parasë"
+  },
   "transactions": {
     "title": "Transaksionet",
     "addNew": "Shto Transaksion",

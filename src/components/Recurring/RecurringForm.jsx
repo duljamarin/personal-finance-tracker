@@ -249,6 +249,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
       <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-zinc-800 flex-col sm:flex-row flex-shrink-0 mt-auto">
         <Button
           type="button"
+          variant="secondary"
           className="flex-1 border-2 border-gray-300 dark:border-zinc-700 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-800 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
           onClick={onCancel}
         >
