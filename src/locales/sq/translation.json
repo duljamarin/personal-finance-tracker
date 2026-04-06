@@ -69,7 +69,8 @@
       "90": "90D"
     },
     "noRecurring": "Nuk ka transaksione periodike aktive",
-    "noRecurringHint": "Shtoni të ardhura ose shpenzime periodike për të parë parashikimin e fluksit të parasë"
+    "noRecurringHint": "Shtoni të ardhura ose shpenzime periodike për të parë parashikimin e fluksit të parasë",
+    "premiumOnly": "E disponueshme vetëm në planin me pagesë"
   },
   "transactions": {
     "title": "Transaksionet",

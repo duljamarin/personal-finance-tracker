@@ -69,7 +69,8 @@
       "90": "90D"
     },
     "noRecurring": "No active recurring transactions",
-    "noRecurringHint": "Add recurring income or expenses to see your cash flow forecast"
+    "noRecurringHint": "Add recurring income or expenses to see your cash flow forecast",
+    "premiumOnly": "Available on paid plan"
   },
   "transactions": {
     "title": "Transactions",

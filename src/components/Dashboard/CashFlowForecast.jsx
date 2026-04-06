@@ -11,10 +11,12 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { useTransactions } from '../../context/TransactionContext';
+import { useSubscription } from '../../context/SubscriptionContext';
 import { fetchRecurringTransactions, calculateNextDate } from '../../utils/api';
 import useDarkMode from '../../hooks/useDarkMode';
 
 const HORIZONS = [30, 60, 90];
+const PREMIUM_HORIZONS = [60, 90];
 
 // Returns today's UTC date string (YYYY-MM-DD)
 function utcDateStr(date) {
@@ -126,8 +128,15 @@ function ForecastTooltip({ active, payload, label }) {
 export default function CashFlowForecast() {
   const { t } = useTranslation();
   const { net } = useTransactions();
+  const { isPremium, isTrialing } = useSubscription();
+  const isPaid = isPremium || isTrialing;
   const [dark] = useDarkMode();
   const [horizon, setHorizon] = useState(30);
+
+  // Reset to 30 if subscription lapses while a premium horizon is active
+  useEffect(() => {
+    if (!isPaid && PREMIUM_HORIZONS.includes(horizon)) setHorizon(30);
+  }, [isPaid, horizon]);
   const [recurring, setRecurring] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -174,19 +183,30 @@ export default function CashFlowForecast() {
           </p>
         </div>
         <div className="flex gap-1">
-          {HORIZONS.map((h) => (
-            <button
-              key={h}
-              onClick={() => setHorizon(h)}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                horizon === h
-                  ? 'bg-brand-600 text-white'
-                  : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
-              }`}
-            >
-              {t(`cashFlow.horizon.${h}`)}
-            </button>
-          ))}
+          {HORIZONS.map((h) => {
+            const locked = PREMIUM_HORIZONS.includes(h) && !isPaid;
+            return (
+              <button
+                key={h}
+                onClick={() => !locked && setHorizon(h)}
+                title={locked ? t('cashFlow.premiumOnly') : undefined}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                  locked
+                    ? 'bg-gray-100 dark:bg-zinc-800 text-gray-300 dark:text-zinc-600 cursor-not-allowed'
+                    : horizon === h
+                      ? 'bg-brand-600 text-white'
+                      : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
+                }`}
+              >
+                {t(`cashFlow.horizon.${h}`)}
+                {locked && (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
