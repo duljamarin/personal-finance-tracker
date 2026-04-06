@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,25 +7,69 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Gjurmues i Financave Personale</title>
-    
+    <link rel="canonical" href="https://personal-finances.app" />
+
+    <!-- hreflang for bilingual support -->
+    <link rel="alternate" hreflang="en" href="https://personal-finances.app" />
+    <link rel="alternate" hreflang="sq" href="https://personal-finances.app" />
+    <link rel="alternate" hreflang="x-default" href="https://personal-finances.app" />
+
+    <title>Personal Finance Tracker — Track Income, Expenses & Goals</title>
+    <meta name="description" content="Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow — free to start." />
+    <meta name="robots" content="index, follow" />
+
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Gjurmues i Financave Personale" />
-    <!-- Static default description is Albanian so LinkedIn previews use SQ -->
-    <meta property="og:description" content="Merrni Kontrollin e Financave Tuaja Personale - Ndiqni të ardhurat dhe shpenzimet, vizualizoni modelet dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv" />
-    <!-- Use a PNG image URL for better social network support -->
-    <meta property="og:image" content="https://personal-finances.app/social-card-sq.png" />
+    <meta property="og:title" content="Personal Finance Tracker — Track Income, Expenses & Goals" />
+    <meta property="og:description" content="Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow — free to start." />
+    <meta property="og:image" content="https://personal-finances.app/social-card-en.png" />
     <meta property="og:url" content="https://personal-finances.app" />
+    <meta property="og:site_name" content="Personal Finance Tracker" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="sq_AL" />
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Gjurmues i Financave Personale" />
-    <meta name="twitter:description" content="Merrni Kontrollin e Financave Tuaja Personale - Ndiqni të ardhurat dhe shpenzimet, vizualizoni modelet dhe arrini qëllimet tuaja financiare me gjurmuesin tonë intuitiv" />
-    <meta name="twitter:image" content="https://personal-finances.app/social-card-sq.png" />
+    <meta name="twitter:title" content="Personal Finance Tracker — Track Income, Expenses & Goals" />
+    <meta name="twitter:description" content="Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow — free to start." />
+    <meta name="twitter:image" content="https://personal-finances.app/social-card-en.png" />
+
+    <!-- Structured data for rich results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Personal Finance Tracker",
+      "url": "https://personal-finances.app",
+      "description": "Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "featureList": [
+        "Income and expense tracking",
+        "Monthly budget management",
+        "Financial goals",
+        "Recurring transactions",
+        "Cash flow forecasting",
+        "Multi-currency support",
+        "Financial health score"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Fallback content for crawlers that do not execute JavaScript -->
+    <noscript>
+      <h1>Personal Finance Tracker — Take Control of Your Finances</h1>
+      <p>Track your income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow. Free to start — no credit card required.</p>
+      <p>Features: expense tracking, budget management, recurring transactions, financial goals, multi-currency support, cash flow forecasting, financial health score.</p>
+      <a href="/register">Get started for free</a> or <a href="/login">sign in</a>.
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,0 +1,33 @@
+# Personal Finance Tracker
+
+> A personal finance web application for tracking income, expenses, budgets, and financial goals.
+
+## About
+
+Personal Finance Tracker is a free-to-start web app that helps individuals take control of their money. It runs entirely in the browser backed by a secure cloud database.
+
+## Features
+
+- **Transaction tracking**: Log income and expense transactions with categories, tags, and multi-currency support
+- **Budget management**: Set monthly spending limits per category and track progress in real time
+- **Financial goals**: Create savings goals (savings, debt payoff, investment, purchase) with milestones and contribution tracking
+- **Recurring transactions**: Automate repeating income and expenses (daily, weekly, monthly, yearly)
+- **Cash flow forecasting**: Project your balance 30, 60, or 90 days ahead based on recurring transactions
+- **Financial health score**: Monthly snapshot scoring budget adherence, savings rate, and spending consistency
+- **Category benchmarks**: Compare your spending against typical patterns
+- **Net worth tracking**: Track assets and view historical net worth (premium)
+- **CSV import/export**: Bulk import transactions from any bank export
+- **Multi-currency**: All amounts normalized to EUR via exchange rates
+
+## Pricing
+
+- **Free**: 30 transactions/month, 3 budgets, 5 recurring rules, 3 goals, 7-day free trial
+- **Premium**: Unlimited everything, net worth tracking, extended forecasting horizons, advanced analytics
+
+## Links
+
+- [Home](https://personal-finances.app/)
+- [Register](https://personal-finances.app/register)
+- [Pricing](https://personal-finances.app/pricing)
+- [Privacy Policy](https://personal-finances.app/privacy)
+- [Terms of Service](https://personal-finances.app/terms)
