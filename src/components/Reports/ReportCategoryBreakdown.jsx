@@ -93,7 +93,7 @@ export default function ReportCategoryBreakdown({ transactions }) {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Table */}
         <div className="flex-1 min-w-0">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 dark:border-zinc-700">
