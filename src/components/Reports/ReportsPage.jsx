@@ -153,10 +153,6 @@ export default function ReportsPage() {
 
   const hasData = transactions.length > 0;
 
-  if (loading) {
-    return <LoadingSpinner size="md" className="min-h-[60vh]" />;
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* Header */}
@@ -212,7 +208,9 @@ export default function ReportsPage() {
 
       {/* Report content */}
       <div className="space-y-6">
-        {!hasData ? (
+        {loading ? (
+          <LoadingSpinner size="md" className="min-h-[40vh]" />
+        ) : !hasData ? (
           <Card>
             <div className="text-center py-16">
               <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
