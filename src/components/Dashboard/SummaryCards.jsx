@@ -3,24 +3,42 @@ import { useTranslation } from 'react-i18next';
 export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedCurrencies }) {
   const { t } = useTranslation();
 
+  const cards = [
+    {
+      label: t('dashboard.totalIncome'),
+      value: totalIncome,
+      color: 'text-brand-600 dark:text-brand-400',
+      dot: 'bg-brand-500',
+    },
+    {
+      label: t('dashboard.totalExpenses'),
+      value: totalExpense,
+      color: 'text-red-600 dark:text-red-400',
+      dot: 'bg-red-500',
+    },
+    {
+      label: t('dashboard.balance'),
+      value: net,
+      color: net >= 0 ? 'text-gray-900 dark:text-white' : 'text-red-600 dark:text-red-400',
+      dot: 'bg-gray-400 dark:bg-gray-500',
+    },
+  ];
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-5 border border-gray-200 dark:border-zinc-800">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider mb-2">{t('dashboard.totalIncome')}</p>
-          <p className="text-2xl sm:text-3xl font-bold tabular-nums text-brand-600 dark:text-brand-400 tracking-tight">&euro;{totalIncome.toFixed(2)}</p>
-          <p className="text-xs mt-1 summary-eur-label">{t('currency.baseCurrency')}</p>
-        </div>
-        <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-5 border border-gray-200 dark:border-zinc-800">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider mb-2">{t('dashboard.totalExpenses')}</p>
-          <p className="text-2xl sm:text-3xl font-bold tabular-nums text-red-600 dark:text-red-400 tracking-tight">&euro;{totalExpense.toFixed(2)}</p>
-          <p className="text-xs mt-1 summary-eur-label">{t('currency.baseCurrency')}</p>
-        </div>
-        <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-5 border border-gray-200 dark:border-zinc-800">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider mb-2">{t('dashboard.balance')}</p>
-          <p className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight text-gray-900 dark:text-white">&euro;{net.toFixed(2)}</p>
-          <p className="text-xs mt-1 summary-eur-label">{t('currency.baseCurrency')}</p>
-        </div>
+        {cards.map((card, i) => (
+          <div key={i} className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-5 border border-gray-200 dark:border-zinc-800">
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`w-1.5 h-1.5 rounded-full ${card.dot}`} />
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">{card.label}</p>
+            </div>
+            <p className={`text-2xl sm:text-3xl font-bold tabular-nums tracking-tight ${card.color}`}>
+              &euro;{card.value.toFixed(2)}
+            </p>
+            <p className="text-xs mt-1.5 text-gray-400 dark:text-gray-500">{t('currency.baseCurrency')}</p>
+          </div>
+        ))}
       </div>
 
       {hasMixedCurrencies && (

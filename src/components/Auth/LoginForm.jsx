@@ -16,7 +16,7 @@ export default function LoginForm() {
       navigate('/', { replace: true });
     }
   }, [accessToken, navigate]);
-  
+
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -42,11 +42,11 @@ export default function LoginForm() {
     let valid = true;
     setEmailError('');
     setPasswordError('');
-    
+
     // Trim email and validate with stricter regex matching Supabase requirements
     const trimmedEmail = email.trim();
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    
+
     if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setEmailError('auth.emailError');
       valid = false;
@@ -67,11 +67,11 @@ export default function LoginForm() {
       await login(email.trim(), password, rememberMe);
       navigate('/');
     } catch (err) {
-      // Map common Supabase errors to translation keys 
+      // Map common Supabase errors to translation keys
       // Map common Supabase errors to translation keys (store key, not translated message)
       let errorKey = 'auth.loginError';
       const errorMsg = err?.message || '';
-      
+
       if (errorMsg.toLowerCase().includes('invalid') || errorMsg.toLowerCase().includes('credentials')) {
         errorKey = 'auth.invalidCredentials';
       } else if (errorMsg.toLowerCase().includes('not found')) {
@@ -84,116 +84,130 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4m-5-4l5-5m0 0l-5-5m5 5H3" /></svg>
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white font-display mb-2">{t('auth.loginTitle')}</h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">{t('auth.signInDescription')}</p>
-        </div>
-        {/* Google OAuth */}
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-gray-500 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-lg font-semibold text-sm shadow-sm hover:shadow transition-all"
-        >
-          <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          {t('auth.continueWithGoogle')}
-        </button>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600"></div>
-          <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">OR</span>
-          <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600"></div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{t('auth.loginTitle')}</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth.signInDescription')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
-          <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">{t('auth.email')}</label>
-            <input
-              type="text"
-              value={email}
-              onChange={e => {
-                setEmail(e.target.value);
-                if (emailError) setEmailError('');
-              }}
-              placeholder={t('auth.emailPlaceholder')}
-              className={`w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${emailError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'}`}
-            />
-            {emailError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(emailError)}</span>}
+        {/* Card */}
+        <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
+          {/* Google OAuth */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-surface-dark-tertiary text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"
+          >
+            <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            {t('auth.continueWithGoogle')}
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700"></div>
+            <span className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase">or</span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700"></div>
           </div>
 
-          <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">{t('auth.password')}</label>
-            <div className="relative">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.email')}</label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
+                type="text"
+                value={email}
                 onChange={e => {
-                  setPassword(e.target.value);
-                  if (passwordError) setPasswordError('');
+                  setEmail(e.target.value);
+                  if (emailError) setEmailError('');
                 }}
-                placeholder={t('auth.passwordPlaceholder')}
-                className={`w-full border-2 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'}`}
+                placeholder={t('auth.emailPlaceholder')}
+                className={`w-full border rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-colors ${emailError ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-zinc-700'}`}
               />
-              <button
-                type="button"
-                tabIndex={-1}
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 focus:outline-none transition-colors"
-                aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-              >
-                {showPassword ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                  </svg>
-                )}
-              </button>
+              {emailError && <span className="text-red-500 text-xs mt-1.5 block">{t(emailError)}</span>}
             </div>
-            {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
-            <div className="flex items-center justify-between mt-4">
-              <label className="flex items-center gap-2 cursor-pointer select-none ml-1">
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.password')}</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => {
+                    setPassword(e.target.value);
+                    if (passwordError) setPasswordError('');
+                  }}
+                  placeholder={t('auth.passwordPlaceholder')}
+                  className={`w-full border rounded-lg px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-colors ${passwordError ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-zinc-700'}`}
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4.5 h-4.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4.5 h-4.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+              {passwordError && <span className="text-red-500 text-xs mt-1.5 block">{t(passwordError)}</span>}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={e => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-brand-600 focus:ring-brand-500 dark:bg-gray-700 cursor-pointer"
+                  className="w-4 h-4 rounded border-gray-300 dark:border-zinc-600 text-brand-600 focus:ring-brand-500 dark:bg-surface-dark-elevated cursor-pointer"
                 />
-                <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('auth.rememberMe')}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{t('auth.rememberMe')}</span>
               </label>
-              <Link to="/forgot-password" className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-semibold transition-colors">
+              <Link to="/forgot-password" className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
                 {t('auth.forgotPassword')}
               </Link>
             </div>
-          </div>
 
-          {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-center text-sm p-3 rounded-xl font-medium">{t(formError)}</div>}
+            {formError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-center text-sm p-3 rounded-lg">
+                {t(formError)}
+              </div>
+            )}
 
-          <button
-            type="submit"
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
-            disabled={loading}
-          >
-            {t('auth.signIn')}
-          </button>
-        </form>
-        <div className="text-center text-sm text-gray-600 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
-          {t('auth.noAccount')}{' '}
-          <Link to="/register" className="text-brand-600 dark:text-brand-400 font-bold hover:underline transition-colors">{t('auth.createAccount')}</Link>
+            <button
+              type="submit"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              disabled={loading}
+            >
+              {t('auth.signIn')}
+            </button>
+          </form>
         </div>
+
+        {/* Footer link */}
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+          {t('auth.noAccount')}{' '}
+          <Link to="/register" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.createAccount')}</Link>
+        </p>
       </div>
     </div>
   );

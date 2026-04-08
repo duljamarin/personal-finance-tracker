@@ -42,8 +42,8 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
 
   if (loading) {
     return (
-      <Card className="mb-6">
-        <div className="p-4 sm:p-6">
+      <Card className="mb-6" padding="none">
+        <div className="p-4 sm:p-5">
           <div className="animate-pulse space-y-3">
             <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-1/3"></div>
             {[1, 2, 3].map(i => (
@@ -57,8 +57,8 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
 
   if (budgets.length === 0) {
     return (
-      <Card className="mb-6">
-        <div className="p-4 sm:p-6">
+      <Card className="mb-6" padding="none">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-gray-800 dark:text-white flex items-center gap-2">
               <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
+import Sidebar from './components/Sidebar.jsx';
 import Dashboard from './components/Dashboard/Dashboard.jsx';
 import CategoriesPage from './components/Categories/CategoriesPage.jsx';
 import RecurringPage from './components/Recurring/RecurringPage.jsx';
@@ -60,60 +61,42 @@ function AuthGlobalUI() {
     document.title = t('meta.title');
   }, [i18n.language, t]);
 
-  // Map auth error to translation key based on actual Supabase error messages
   const getErrorMessage = (error) => {
     if (!error) return '';
     const errorLower = error.toLowerCase();
 
-    // Invalid login credentials
     if (errorLower.includes('invalid') && errorLower.includes('credentials')) {
       return t('auth.invalidCredentials');
     }
-
-    // Email already registered
     if (errorLower.includes('already registered')) {
       return t('auth.registrationError');
     }
-
-    // Weak password
     if (errorLower.includes('password') && errorLower.includes('character')) {
       return t('auth.weakPassword');
     }
-
-    // User not found
     if (errorLower.includes('user not found')) {
       return t('auth.userNotFound');
     }
-
-    // Rate limiting
     if (errorLower.includes('rate limit') || errorLower.includes('too many')) {
       return t('auth.tooManyRequests');
     }
-
-    // Network errors
     if (errorLower.includes('network') || errorLower.includes('fetch')) {
       return t('auth.networkError');
     }
-
-    // Email confirmation required
     if (errorLower.includes('check your email')) {
       return t('auth.registrationSuccess');
     }
-
-    // Fallback: show generic error
     return t('auth.genericError');
   };
 
   return (
     <>
-      {/* Global error banner */}
       {authError && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-50 dark:bg-red-900/90 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-6 py-3 rounded-xl shadow-xl text-sm font-medium animate-fade-in max-w-md text-center backdrop-blur-sm">
           <span className="inline-block mr-2">⚠️</span>
           {getErrorMessage(authError)}
         </div>
       )}
-      {/* Global loading spinner overlay */}
       {authLoading && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-8 shadow-lg">
@@ -126,21 +109,49 @@ function AuthGlobalUI() {
   );
 }
 
+/* Authenticated app shell with sidebar */
+function AuthenticatedLayout({ children }) {
+  return (
+    <div className="flex min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300">
+      <Sidebar />
+      <main className="flex-1 min-w-0 overflow-x-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+/* Public layout without sidebar */
+function PublicLayout({ children }) {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300">
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </div>
+  );
+}
+
 function InnerAppContent() {
   const location = useLocation();
   const { accessToken } = useAuth();
 
-  // Routes where Header should not be shown (auth flows)
-  const hideHeaderRoutes = ['/reset-password'];
-  const shouldShowHeader = !hideHeaderRoutes.includes(location.pathname);
+  // Public routes that use the public layout (header + footer, no sidebar)
+  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/pricing', '/terms', '/privacy'];
+  const isPublicRoute = publicRoutes.includes(location.pathname) || (!accessToken && location.pathname === '/');
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300">
+    <>
       <AuthGlobalUI />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-3rem)]">
-        {shouldShowHeader && <Header />}
-        <main className="flex-1 mt-4">
-        <Routes>
+      {isPublicRoute ? (
+        <PublicLayout>
+          <Routes>
             <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
             <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
             <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
@@ -149,60 +160,48 @@ function InnerAppContent() {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/account" element={
-              <PrivateRoute>
-                <AccountPage />
-              </PrivateRoute>
-            } />
-            <Route path="/categories" element={
-              <PrivateRoute>
-                <CategoriesPage />
-              </PrivateRoute>
-            } />
-            <Route path="/recurring" element={
-              <PrivateRoute>
-                <RecurringPage />
-              </PrivateRoute>
-            } />
-            <Route path="/goals" element={
-              <PrivateRoute>
-                <GoalsPage />
-              </PrivateRoute>
-            } />
-            <Route path="/budgets" element={
-              <PrivateRoute>
-                <BudgetsPage />
-              </PrivateRoute>
-            } />
-            <Route path="/networth" element={
-              <PremiumRoute>
-                <NetWorthPage />
-              </PremiumRoute>
-            } />
-            <Route path="/notifications" element={
-              <PrivateRoute>
-                <NotificationsPage />
-              </PrivateRoute>
-            } />
-            <Route path="/reports" element={
-              <PrivateRoute>
-                <ReportsPage />
-              </PrivateRoute>
-            } />
-            <Route path="/dashboard" element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            } />
-            <Route path="/" element={accessToken ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
-            {/* Catch-all route: redirect to login if not authenticated, else to home */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="*" element={<CatchAllRedirect />} />
           </Routes>
-          </main>
-          <Footer />
-        </div>
-      </div>
-    );
+        </PublicLayout>
+      ) : (
+        <AuthenticatedLayout>
+          <Routes>
+            <Route path="/account" element={
+              <PrivateRoute><AccountPage /></PrivateRoute>
+            } />
+            <Route path="/categories" element={
+              <PrivateRoute><CategoriesPage /></PrivateRoute>
+            } />
+            <Route path="/recurring" element={
+              <PrivateRoute><RecurringPage /></PrivateRoute>
+            } />
+            <Route path="/goals" element={
+              <PrivateRoute><GoalsPage /></PrivateRoute>
+            } />
+            <Route path="/budgets" element={
+              <PrivateRoute><BudgetsPage /></PrivateRoute>
+            } />
+            <Route path="/networth" element={
+              <PremiumRoute><NetWorthPage /></PremiumRoute>
+            } />
+            <Route path="/notifications" element={
+              <PrivateRoute><NotificationsPage /></PrivateRoute>
+            } />
+            <Route path="/reports" element={
+              <PrivateRoute><ReportsPage /></PrivateRoute>
+            } />
+            <Route path="/dashboard" element={
+              <PrivateRoute><Dashboard /></PrivateRoute>
+            } />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<CatchAllRedirect />} />
+          </Routes>
+        </AuthenticatedLayout>
+      )}
+    </>
+  );
 }
 
 export default function App() {

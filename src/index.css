@@ -21,7 +21,7 @@
   }
   body {
     min-height: 100%;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
     @apply bg-surface-secondary text-gray-900;
   }
   .dark body {
@@ -38,7 +38,7 @@
     color: #fff;
   }
   h1, h2, h3, h4 {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
 }
 

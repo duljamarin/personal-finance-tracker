@@ -152,7 +152,7 @@ export default function LandingPage() {
               {t('landing.hero.badge')}
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-gray-900 dark:text-white tracking-display leading-[1.1] mb-5">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-gray-900 dark:text-white tracking-display leading-[1.1] mb-5">
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-400">{t('landing.hero.titleAccent')}</span>
             </h1>
