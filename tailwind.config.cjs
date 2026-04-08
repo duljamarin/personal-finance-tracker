@@ -7,33 +7,33 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         brand: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-          950: '#042f2e',
+          50: '#eefbf7',
+          100: '#d5f5ec',
+          200: '#aeebdb',
+          300: '#79dbc5',
+          400: '#43c5aa',
+          500: '#22ad93',
+          600: '#168b78',
+          700: '#137062',
+          800: '#12594f',
+          900: '#114a43',
+          950: '#062b27',
         },
         surface: {
           DEFAULT: '#ffffff',
-          secondary: '#f8fafc',
-          dark: '#0A0A0B',
-          'dark-secondary': '#141416',
-          'dark-tertiary': '#1C1C1F',
-          'dark-elevated': '#232326',
+          secondary: '#f9fafb',
+          dark: '#0C0C0E',
+          'dark-secondary': '#141417',
+          'dark-tertiary': '#1A1A1E',
+          'dark-elevated': '#222226',
         },
         border: {
-          DEFAULT: '#e2e8f0',
+          DEFAULT: '#e5e7eb',
           dark: '#27272a',
         },
       },
@@ -50,6 +50,7 @@ module.exports = {
         'scale-in': 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-in-left': 'slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
         'fade-in': 'fadeIn 0.2s ease-out',
       },
       keyframes: {
@@ -72,6 +73,10 @@ module.exports = {
         slideInRight: {
           '0%': { transform: 'translateX(100%)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideInLeft: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0)' },
         },
         fadeIn: {
           '0%': { opacity: '0' },
