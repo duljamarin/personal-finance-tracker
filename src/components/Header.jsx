@@ -135,6 +135,9 @@ export default function Header() {
                     <Link to="/networth" onClick={() => setMoreOpen(false)} className="block px-3.5 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-700/50 transition-colors">
                       {t('networth.title')}
                     </Link>
+                    <Link to="/reports" onClick={() => setMoreOpen(false)} className="block px-3.5 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-700/50 transition-colors">
+                      {t('reports.title')}
+                    </Link>
                     <Link to="/recurring" onClick={() => setMoreOpen(false)} className="block px-3.5 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-700/50 transition-colors">
                       {t('nav.recurring')}
                     </Link>
@@ -247,7 +250,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu — full-width slide-down */}
+      {/* Mobile Menu - full-width slide-down */}
       {menuOpen && (
         <div className="md:hidden border-t border-gray-200/80 dark:border-zinc-800 bg-white dark:bg-surface-dark animate-in">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-0.5">
@@ -268,7 +271,11 @@ export default function Header() {
                 <Link to="/networth" className="px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-lg transition flex items-center gap-3" onClick={() => setMenuOpen(false)}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
                   {t('networth.title')}
-                </Link> 
+                </Link>
+                <Link to="/reports" className="px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-lg transition flex items-center gap-3" onClick={() => setMenuOpen(false)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  {t('reports.title')}
+                </Link>
                 <Link to="/recurring" className="px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-lg transition flex items-center gap-3" onClick={() => setMenuOpen(false)}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                   {t('nav.recurring')}

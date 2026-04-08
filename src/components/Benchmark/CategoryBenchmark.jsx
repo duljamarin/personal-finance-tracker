@@ -235,7 +235,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                     </div>
                   </div>
 
-                  {/* Progress bar & Thresholds — locked for free users */}
+                  {/* Progress bar & Thresholds - locked for free users */}
                   {isPremium ? (
                     <>
                       <div className="mb-3">

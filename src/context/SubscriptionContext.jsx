@@ -43,7 +43,7 @@ export function SubscriptionProvider({ children }) {
     setLoading(false);
   }, []);
 
-  /** Deduplicated refresh — concurrent calls share the same promise */
+  /** Deduplicated refresh - concurrent calls share the same promise */
   const refreshSubscription = useCallback(async () => {
     // If a refresh is already in-flight, return the same promise
     if (refreshInFlightRef.current) {
@@ -106,7 +106,7 @@ export function SubscriptionProvider({ children }) {
             const isPremiumNow = sub?.is_premium === true;
 
             if (isPremiumNow) {
-              // Webhook has been processed — do a full refresh
+              // Webhook has been processed - do a full refresh
               await refreshSubscription();
               return;
             }

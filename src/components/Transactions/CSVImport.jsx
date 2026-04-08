@@ -103,7 +103,7 @@ export default function CSVImport({ categories, onImportComplete }) {
         errors.push(t('import.invalidDate'));
       }
 
-      // Match category (optional — unrecognised names are silently accepted as uncategorised)
+      // Match category (optional - unrecognised names are silently accepted as uncategorised)
       const categoryName = row.category || row.Category || '';
       const category = categories.find(c => 
         c.name.toLowerCase() === categoryName.toLowerCase()
@@ -166,7 +166,7 @@ export default function CSVImport({ categories, onImportComplete }) {
           const cat = await addCategory({ name });
           createdCategories[name.toLowerCase()] = cat.id;
         } catch {
-          // Category may have been created concurrently — try to find it in existing list
+          // Category may have been created concurrently - try to find it in existing list
           const existing = categories.find(c => c.name.toLowerCase() === name.toLowerCase());
           if (existing) createdCategories[name.toLowerCase()] = existing.id;
         }

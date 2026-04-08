@@ -286,7 +286,7 @@
       "titleLine1": "Take Control of Your",
       "titleAccent": "Finances",
       "title": "Take Control of Your Personal Finances",
-      "subtitle": "Track spending, set budgets, and reach your financial goals — all in one beautifully simple dashboard.",
+      "subtitle": "Track spending, set budgets, and reach your financial goals - all in one beautifully simple dashboard.",
       "getStarted": "Get Started Free",
       "signIn": "Sign In",
       "badge": "Free to start · No credit card required",
@@ -362,7 +362,7 @@
       },
       "goals": {
         "title": "Financial Goals",
-        "desc": "Set savings, debt payoff, investment, and purchase goals — track progress with contributions"
+        "desc": "Set savings, debt payoff, investment, and purchase goals - track progress with contributions"
       },
       "budgets": {
         "title": "Monthly Budgets",
@@ -578,11 +578,11 @@
     "quickStats": "Quick Stats",
     "unlockFull": "Unlock detailed breakdown",
     "unlockFullDesc": "Get score details, insights & tips, and quick stats",
-    "insightsLockedHint": "{{count}} insights available — upgrade to view",
+    "insightsLockedHint": "{{count}} insights available - upgrade to view",
     "howItWorks": "How is this calculated?",
     "howItWorksHide": "Hide explanation",
     "pillarBudgetDesc": "We compare your spending in each category to your own 6-month average. Sticking to your personal budget keeps this score high.",
-    "pillarRatioDesc": "Measures how much of your income you keep. Spending less than half earns top marks — going over income pulls it down.",
+    "pillarRatioDesc": "Measures how much of your income you keep. Spending less than half earns top marks - going over income pulls it down.",
     "pillarStabilityDesc": "Rewards steady, predictable spending over the last 6 months. Big swings from month to month lower this score.",
     "pillarSavingsDesc": "Tracks how many of the past 7 months you saved money. Consistency matters more than the amount.",
     "pillarWeight": "{{weight}}% of your score",
@@ -698,7 +698,7 @@
       "overflow": "over budget"
     },
     "forecast": {
-      "onTrack": "On track — projected €{{amount}} by month end",
+      "onTrack": "On track - projected €{{amount}} by month end",
       "willExceed": "Will exceed by €{{amount}}",
       "notStarted": "Not started yet"
     },
@@ -906,7 +906,7 @@
         "item1": "Email address and password",
         "item2": "Financial transaction data (amounts, categories, dates, descriptions)",
         "item3": "Budget and goal information",
-        "item4": "Payment information (processed solely by our payment processor, Paddle — we never store or access your payment details)"
+        "item4": "Payment information (processed solely by our payment processor, Paddle - we never store or access your payment details)"
       },
       "section2": {
         "title": "2. How We Use Your Information",
@@ -980,7 +980,7 @@
     "importing": "Importing...",
     "confirmImport": "Import {{count}} Transactions",
     "lineError": "Line {{line}}",
-    "limitWarning": "{{capped}} row(s) from this month will be skipped — you have {{remaining}} of {{limit}} free monthly slots left. Upgrade to import unlimited transactions.",
+    "limitWarning": "{{capped}} row(s) from this month will be skipped - you have {{remaining}} of {{limit}} free monthly slots left. Upgrade to import unlimited transactions.",
     "limitBlocked": "You've reached your {{limit}}-transaction monthly limit. Upgrade to import more."
   },
   "networth": {
@@ -1059,7 +1059,7 @@
     "budgetAlertMessage": "You have spent {{spent}} of your {{budget}} budget ({{percent}}%) for {{category}}",
     "recurringDueTitle": "Upcoming: {{title}}",
     "recurringDueMessage": "Your recurring transaction \"{{title}}\" ({{currency}} {{amount}}) is due on {{date}}.",
-    "goalMilestoneTitle": "🎯 {{percent}}% reached — {{name}}",
+    "goalMilestoneTitle": "🎯 {{percent}}% reached - {{name}}",
     "goalMilestoneMessage": "You've reached {{percent}}% of your goal \"{{name}}\" ({{current}} / {{target}}).",
     "trialExpiringTitle": "Trial ends in {{days}} day(s)",
     "trialExpiringMessage": "Your free trial expires on {{date}}. Upgrade to keep access to all premium features.",
@@ -1092,5 +1092,30 @@
     "goalLimitReached": "You've reached your limit of {{limit}} active goal. Upgrade for unlimited goals.",
     "upgradeForMore": "Upgrade to create more",
     "freeLimit": "Free plan: up to {{limit}} allowed"
+  },
+  "reports": {
+    "title": "Financial Reports",
+    "exportPdf": "Export PDF",
+    "exporting": "Exporting...",
+    "totalIncome": "Total Income",
+    "totalExpenses": "Total Expenses",
+    "netSavings": "Net Savings",
+    "categoryBreakdown": "Spending by Category",
+    "periodComparison": "Period Comparison",
+    "currentPeriod": "Current Period",
+    "previousPeriod": "Previous Period",
+    "category": "Category",
+    "amount": "Amount",
+    "percentage": "Percentage",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "thisQuarter": "This Quarter",
+    "last3Months": "Last 3 Months",
+    "thisYear": "This Year",
+    "custom": "Custom",
+    "noData": "No transactions found for this period",
+    "vsLastPeriod": "vs previous period",
+    "income": "Income",
+    "expenses": "Expenses"
   }
 }

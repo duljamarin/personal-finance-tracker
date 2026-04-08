@@ -7,7 +7,7 @@ import Papa from 'papaparse';
  * @property {number}  amount        always positive
  * @property {'income'|'expense'} type
  * @property {string}  date          YYYY-MM-DD
- * @property {string}  categoryName  raw string — caller resolves to categoryId
+ * @property {string}  categoryName  raw string - caller resolves to categoryId
  * @property {string[]} tags
  * @property {string}  currencyCode  default 'EUR'
  * @property {number}  exchangeRate  default 1.0
@@ -185,7 +185,7 @@ export function parseCSVFile(file) {
 /**
  * Check which of the candidate rows are likely duplicates of existing transactions.
  * @param {ImportRow[]} candidates
- * @param {Object[]} existing  — transaction objects already in state
+ * @param {Object[]} existing  - transaction objects already in state
  * @returns {Set<string>}  set of "date|amount|title" keys that are duplicates
  */
 export function findDuplicates(candidates, existing) {

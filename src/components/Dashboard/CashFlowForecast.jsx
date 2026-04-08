@@ -43,7 +43,7 @@ function buildForecast(startingBalance, recurringList, days) {
   for (const rec of recurringList) {
     if (!rec.is_active) continue;
 
-    // Extract the UTC date directly from the ISO string — never round-trip through
+    // Extract the UTC date directly from the ISO string - never round-trip through
     // a local Date object, which would shift the date in non-UTC timezones.
     let currentDateStr = rec.next_run_at
       ? rec.next_run_at.split('T')[0]
@@ -65,7 +65,7 @@ function buildForecast(startingBalance, recurringList, days) {
         changesByDate[currentDateStr] = (changesByDate[currentDateStr] || 0) + delta;
       }
 
-      // calculateNextDate returns an ISO string — take only the date part (UTC)
+      // calculateNextDate returns an ISO string - take only the date part (UTC)
       currentDateStr = calculateNextDate(
         currentDateStr,
         rec.frequency,

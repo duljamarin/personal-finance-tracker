@@ -76,7 +76,7 @@ export async function fetchNotificationSettings() {
       .single();
 
     if (error) {
-      // No settings row yet — return defaults
+      // No settings row yet - return defaults
       if (error.code === 'PGRST116') return null;
       throw error;
     }

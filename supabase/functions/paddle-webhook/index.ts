@@ -32,12 +32,12 @@ function derivePlanFromAmount(amount: number): "monthly" | "yearly" | null {
 /**
  * Tell Paddle to skip the trial and bill immediately.
  * Called when we detect a returning customer who should not receive a second trial.
- * If PADDLE_API_KEY is not configured the function logs a warning and returns — our DB
+ * If PADDLE_API_KEY is not configured the function logs a warning and returns - our DB
  * will still be correct (status=active), but Paddle will bill at its own trial end date.
  */
 async function skipPaddleTrial(paddleSubscriptionId: string): Promise<void> {
   if (!PADDLE_API_KEY) {
-    console.warn("PADDLE_API_KEY not set — cannot skip trial on Paddle side for", paddleSubscriptionId);
+    console.warn("PADDLE_API_KEY not set - cannot skip trial on Paddle side for", paddleSubscriptionId);
     return;
   }
 
@@ -122,7 +122,7 @@ async function verifyWebhookSignature(
 }
 
 serve(async (req: Request) => {
-  // Webhooks are server-to-server — no CORS needed
+  // Webhooks are server-to-server - no CORS needed
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 405 });
   }
@@ -146,9 +146,9 @@ serve(async (req: Request) => {
   const rawBody = await req.text();
   const signatureHeader = req.headers.get("Paddle-Signature") || "";
 
-  // Always verify webhook signature — fail if secret is missing
+  // Always verify webhook signature - fail if secret is missing
   if (!PADDLE_WEBHOOK_SECRET) {
-    console.error("PADDLE_WEBHOOK_SECRET is not configured — rejecting webhook");
+    console.error("PADDLE_WEBHOOK_SECRET is not configured - rejecting webhook");
     return new Response(JSON.stringify({ error: "Server configuration error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -233,7 +233,7 @@ serve(async (req: Request) => {
 
         // --- Trial guard ---
         // Fetch the existing subscription row to check had_trial.
-        // A user is only entitled to one trial — their very first subscription.
+        // A user is only entitled to one trial - their very first subscription.
         const { data: existingSub } = await supabase
           .from("subscriptions")
           .select("had_trial")
@@ -247,11 +247,11 @@ serve(async (req: Request) => {
 
         if (isIllegalSecondTrial) {
           // Override: treat this re-subscribe as a regular active subscription.
-          console.warn(`User ${userId} attempted a second trial — overriding status to active.`);
+          console.warn(`User ${userId} attempted a second trial - overriding status to active.`);
           status = "active";
           // Ask Paddle to skip the trial period and bill immediately.
           // Fire-and-forget; failure is logged inside skipPaddleTrial but does not
-          // block the DB update — our feature gating is driven by our DB status.
+          // block the DB update - our feature gating is driven by our DB status.
           skipPaddleTrial(data.id);
         }
 
@@ -282,7 +282,7 @@ serve(async (req: Request) => {
           // Clear any stale trial dates left over from the previous subscription.
           upsertData.trial_start = null;
           upsertData.trial_end = null;
-          // had_trial is never reset — preserve whatever the DB already has.
+          // had_trial is never reset - preserve whatever the DB already has.
           // If this IS the first subscription and it's active (no trial), keep had_trial=false.
           // Only force it to true when a real trial fires.
         }
@@ -304,7 +304,7 @@ serve(async (req: Request) => {
                 console.warn(`Plan derived from amount fallback: ${amount} -> ${plan}`);
               }
             }
-            // Do NOT override priceId-based plan with amount — priceId is authoritative
+            // Do NOT override priceId-based plan with amount - priceId is authoritative
           }
         }
 
@@ -336,7 +336,7 @@ serve(async (req: Request) => {
         // Trial guard: if Paddle sends trialing for a returning customer, override to active.
         let updatedStatus: string = data.status;
         if (updatedStatus === "trialing" && currentSub?.had_trial === true) {
-          console.warn(`User ${userId} subscription.updated with trialing but had_trial=true — overriding to active.`);
+          console.warn(`User ${userId} subscription.updated with trialing but had_trial=true - overriding to active.`);
           updatedStatus = "active";
           skipPaddleTrial(data.id);
         }
@@ -547,7 +547,7 @@ serve(async (req: Request) => {
             const planFromPriceId = derivePlan(priceId);
 
             if (planFromPriceId) {
-              // We have a reliable priceId — use it to correct plan if needed
+              // We have a reliable priceId - use it to correct plan if needed
               const { data: currentSub } = await supabase
                 .from("subscriptions")
                 .select("plan")
@@ -559,10 +559,10 @@ serve(async (req: Request) => {
                 updateData.plan = planFromPriceId;
               }
             } else {
-              // No priceId match — log amount for debugging but don't override plan
+              // No priceId match - log amount for debugging but don't override plan
               const planFromAmount = derivePlanFromAmount(amount);
               if (planFromAmount) {
-                console.log(`Amount ${amount} suggests plan ${planFromAmount} (no priceId match — not overriding)`);
+                console.log(`Amount ${amount} suggests plan ${planFromAmount} (no priceId match - not overriding)`);
               }
             }
           }

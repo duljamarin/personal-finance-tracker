@@ -317,7 +317,7 @@ export default function Transactions() {
               </button>
             ))}
           </div>
-          {/* Recurring filter — only show for premium users who can have recurring transactions */}
+          {/* Recurring filter - only show for premium users who can have recurring transactions */}
           {isPremium && (
             <select
               value={recurringFilter}

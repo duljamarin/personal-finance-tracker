@@ -41,7 +41,7 @@ export default function OnboardingChecklist({ transactionCount, categoryCount = 
   const step4Done = budgetCount > 0;
   const allDone = step1Done && step3Done && step4Done;
 
-  // Don't render while data is still loading — counts are unreliable (all zeros)
+  // Don't render while data is still loading - counts are unreliable (all zeros)
   if (loading) return null;
   if (dismissed || allDone) return null;
 

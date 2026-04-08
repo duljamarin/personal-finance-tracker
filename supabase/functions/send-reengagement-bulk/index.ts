@@ -32,11 +32,11 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
 
   const content = {
     en: {
-      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting — log back in`,
-      previewText: 'Track spending, hit goals, and take control — it only takes a minute.',
+      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting - log back in`,
+      previewText: 'Track spending, hit goals, and take control - it only takes a minute.',
       headline: 'We Miss You!',
       openingStrong: "It's been a while...",
-      openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you — and we've added some powerful new features to help you take control.",
+      openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you - and we've added some powerful new features to help you take control.",
       featureTitle: "What's Waiting for You:",
       features: [
         { emoji: '📊', title: 'Dashboard & Charts', desc: 'Visualize your income, expenses, and trends at a glance' },
@@ -56,11 +56,11 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       footerPrivacy: 'Privacy Policy'
     },
     sq: {
-      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin — hyni sërish`,
-      previewText: 'Gjurmoni shpenzimet, arrini qëllimet — vetëm një minutë mjafton.',
+      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin - hyni sërish`,
+      previewText: 'Gjurmoni shpenzimet, arrini qëllimet - vetëm një minutë mjafton.',
       headline: 'Na Mungoni!',
       openingStrong: 'Ka kaluar kohë...',
-      openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme — dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
+      openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme - dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
       featureTitle: 'Çfarë ju Pret:',
       features: [
         { emoji: '📊', title: 'Dashboard & Grafikë', desc: 'Shikoni të ardhurat, shpenzimet dhe tendencat tuaja në një vështrim' },

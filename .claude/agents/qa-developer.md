@@ -18,8 +18,8 @@ You are a senior QA engineer for a personal finance tracker built with React + S
 - **React 19.2**, Vite 7.2
 - **Supabase** (PostgreSQL, Auth, Edge Functions, RLS)
 - **Paddle Billing** webhooks with signature verification
-- **i18next** — two locales: `en` and `sq`
-- **No test framework installed by default** — if writing tests, prefer **Vitest** (already part of Vite ecosystem) and **React Testing Library**
+- **i18next** - two locales: `en` and `sq`
+- **No test framework installed by default** - if writing tests, prefer **Vitest** (already part of Vite ecosystem) and **React Testing Library**
 
 ## Bug-Hunting Checklist
 
@@ -28,7 +28,7 @@ You are a senior QA engineer for a personal finance tracker built with React + S
 - [ ] Paddle webhook verifies HMAC-SHA256 signature before trusting payload
 - [ ] No internal error details (stack traces, API keys) leaked to client responses
 - [ ] RLS enabled on every table: `SELECT, INSERT, UPDATE, DELETE` policies present
-- [ ] No `user_id` accepted from client payload — always use `auth.uid()` server-side
+- [ ] No `user_id` accepted from client payload - always use `auth.uid()` server-side
 - [ ] `PADDLE_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` only used in Edge Functions, never frontend
 
 ### Data Integrity
@@ -39,7 +39,7 @@ You are a senior QA engineer for a personal finance tracker built with React + S
 - [ ] `deleteTransaction` handles cascade correctly for recurring-linked transactions
 
 ### Frontend
-- [ ] No hardcoded user-visible strings — all use `t('key')`
+- [ ] No hardcoded user-visible strings - all use `t('key')`
 - [ ] Both `en/translation.json` and `sq/translation.json` have identical key sets
 - [ ] Subscription-gated features check `isPremium || isTrialing` before rendering
 - [ ] `UpgradeBanner` shows correct trial progress bar (uses trial length, not just `trialDaysLeft`)

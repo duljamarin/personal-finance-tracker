@@ -6,16 +6,16 @@ A full-featured personal finance web app built with React, Tailwind CSS, Vite, a
 
 ### Core
 - Add, edit, delete transactions (income & expense) with category, tags, and multi-currency support
-- Transaction splits — split a single transaction across multiple categories
-- Recurring transactions — define schedules (daily/weekly/monthly/yearly) that auto-generate entries on app load
+- Transaction splits - split a single transaction across multiple categories
+- Recurring transactions - define schedules (daily/weekly/monthly/yearly) that auto-generate entries on app load
 - CSV export and CSV import (with auto-creation of unrecognised categories, duplicate detection)
 - Category management (add, edit, delete; categories with emoji support)
 
 ### Analytics & Insights
 - Dashboard with combined monthly income/expense bar chart and category pie chart
-- Financial Health Score — composite monthly score across 4 pillars: budget adherence, income/expense ratio, spending stability, and savings consistency
-- Category Benchmarks — compare your spending against your own 6-month averages
-- Net Worth tracker — assets & liabilities with historical chart (Premium)
+- Financial Health Score - composite monthly score across 4 pillars: budget adherence, income/expense ratio, spending stability, and savings consistency
+- Category Benchmarks - compare your spending against your own 6-month averages
+- Net Worth tracker - assets & liabilities with historical chart (Premium)
 
 ### Budgets & Goals
 - Monthly budgets per category with real-time progress tracking
@@ -30,9 +30,9 @@ A full-featured personal finance web app built with React, Tailwind CSS, Vite, a
 ### Auth & UX
 - Email/password and Google OAuth sign-in
 - Forgot / reset password flow
-- "Remember Me" — session is cleared on tab close when not checked; Google OAuth always remembers
+- "Remember Me" - session is cleared on tab close when not checked; Google OAuth always remembers
 - Dark mode (persisted via localStorage)
-- Internationalisation — English and Albanian (sq) via i18next
+- Internationalisation - English and Albanian (sq) via i18next
 - Onboarding checklist for new users
 - Keyboard shortcuts (Alt+N to add transaction, Ctrl+K to focus search)
 

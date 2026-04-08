@@ -73,7 +73,7 @@ export default function BudgetsPage() {
     }
   };
 
-  // Re-fetch only expenses (cheap) — called by realtime subscription
+  // Re-fetch only expenses (cheap) - called by realtime subscription
   const refreshExpenses = useCallback(async () => {
     try {
       const fresh = await fetchMonthlyExpensesByCategory(selectedYear, selectedMonth);
@@ -191,7 +191,7 @@ export default function BudgetsPage() {
           });
           copied++;
         } catch {
-          // Skip silently — category may have been deleted or constraint hit
+          // Skip silently - category may have been deleted or constraint hit
         }
       }
 

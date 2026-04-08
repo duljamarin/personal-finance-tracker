@@ -1,4 +1,4 @@
-// Barrel file — re-exports every public API function from domain modules.
+// Barrel file - re-exports every public API function from domain modules.
 // Import from this file (or from 'src/utils/api') to access all API functions.
 
 export * from './categories';

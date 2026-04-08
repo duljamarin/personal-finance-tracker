@@ -23,10 +23,10 @@ export function AuthProvider({ children }) {
       // • If _reloadFlag is present → it was a reload → keep session, clear flag
       const reloadFlag = sessionStorage.getItem('_reloadFlag');
       if (reloadFlag) {
-        // It was a reload — just clear the flag and continue normally
+        // It was a reload - just clear the flag and continue normally
         sessionStorage.removeItem('_reloadFlag');
       } else if (!localStorage.getItem('rememberMe') && session) {
-        // Tab was closed and re-opened without "Remember Me" — sign out
+        // Tab was closed and re-opened without "Remember Me" - sign out
         const storageKeys = Object.keys(localStorage).filter(k => k.startsWith('sb-'));
         storageKeys.forEach(k => localStorage.removeItem(k));
         supabase.auth.signOut().catch(() => {});
@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
 
     // If "Remember Me" was not checked, sign out when the browser tab is closed.
     // We set a sessionStorage flag here instead of clearing immediately because
-    // beforeunload fires on reload too — sessionStorage lets us tell them apart.
+    // beforeunload fires on reload too - sessionStorage lets us tell them apart.
     const handleBeforeUnload = () => {
       if (!localStorage.getItem('rememberMe')) {
         sessionStorage.setItem('_reloadFlag', '1');

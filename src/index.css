@@ -32,6 +32,31 @@
   }
 }
 
+/* Prevent selection/focus rectangles on Recharts SVG charts */
+.recharts-wrapper,
+.recharts-wrapper svg,
+.recharts-wrapper svg * {
+  outline: none !important;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.recharts-wrapper svg:focus,
+.recharts-wrapper svg *:focus {
+  outline: none !important;
+}
+/* Hide the invisible tooltip-tracking rect that shows a border on click */
+.recharts-tooltip-cursor {
+  stroke: none !important;
+  fill: none !important;
+}
+/* Hide bar/area cursor highlight */
+.recharts-rectangle.recharts-tooltip-cursor,
+.recharts-cursor {
+  fill: none !important;
+  stroke: none !important;
+}
+
 /* Animations */
 @keyframes slideInRight {
   from {

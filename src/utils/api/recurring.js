@@ -68,13 +68,13 @@ export async function addRecurringTransaction(recurring) {
       startDate,
       endDate,
       occurrencesLimit,
-      date,               // Exclude — recurring_transactions uses start_date instead
+      date,               // Exclude - recurring_transactions uses start_date instead
       isRecurring,        // Exclude frontend-only flag
       endType,            // Exclude frontend-only field
       updateRecurringTemplate, // Exclude frontend-only field
       sourceRecurringId,  // Exclude frontend-only field
-      has_splits,         // Exclude — not a column on recurring_transactions
-      splits,             // Exclude — not a column on recurring_transactions
+      has_splits,         // Exclude - not a column on recurring_transactions
+      splits,             // Exclude - not a column on recurring_transactions
       ...rest
     } = recurring;
 
@@ -123,11 +123,11 @@ export async function updateRecurringTransaction(id, recurring) {
       isActive,
       updateRecurringTemplate, // Exclude frontend-only field
       sourceRecurringId,       // Exclude frontend-only field
-      has_splits,              // Exclude — not a column on recurring_transactions
-      splits,                  // Exclude — not a column on recurring_transactions
+      has_splits,              // Exclude - not a column on recurring_transactions
+      splits,                  // Exclude - not a column on recurring_transactions
       isRecurring,             // Exclude frontend-only flag
       endType,                 // Exclude frontend-only field
-      date,                    // Exclude — recurring uses start_date
+      date,                    // Exclude - recurring uses start_date
       ...rest
     } = recurring;
 
@@ -278,7 +278,7 @@ export async function processRecurringTransactions() {
           break;
         }
 
-        // Check for idempotency — don't create if already exists for this period
+        // Check for idempotency - don't create if already exists for this period
         const { data: existing } = await supabase
           .from('transactions')
           .select('id')

@@ -19,7 +19,7 @@ BEGIN
   WHERE user_id = p_user_id;
 
   IF NOT FOUND THEN
-    -- User hasn't configured settings yet — use the column defaults
+    -- User hasn't configured settings yet - use the column defaults
     v_settings.goal_milestone_enabled    := true;
     v_settings.goal_milestone_percentage := 25;
   END IF;
@@ -66,7 +66,7 @@ BEGIN
       PERFORM create_notification(
         p_user_id,
         'goal_milestone',
-        v_milestone::text || '% reached — ' || v_goal.name,
+        v_milestone::text || '% reached - ' || v_goal.name,
         'You''ve reached ' || v_milestone || '% of your goal "' || v_goal.name
           || '" (' || round(v_goal.current_amount, 2)::text
           || ' / ' || v_goal.target_amount::text || ')',

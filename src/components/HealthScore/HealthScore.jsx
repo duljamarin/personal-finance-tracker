@@ -275,7 +275,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
             </div>
           </div>
 
-          {/* Score Breakdown — locked for free users */}
+          {/* Score Breakdown - locked for free users */}
           {isPremium ? (
             <div className="flex-1 w-full space-y-3">
               {/* Budget Adherence */}

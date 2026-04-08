@@ -79,7 +79,7 @@ export default function Dashboard() {
         onAddTransaction={handleAddTransaction}
       />
 
-      {/* ═══ TIER 1: GLANCE — above the fold ═══ */}
+      {/* ═══ TIER 1: GLANCE - above the fold ═══ */}
       <section>
         <SummaryCards
           totalIncome={totalIncome}
@@ -94,7 +94,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* ═══ TIER 2: INSIGHT — one scroll ═══ */}
+      {/* ═══ TIER 2: INSIGHT - one scroll ═══ */}
       <div className="mt-10" />
       <section>
         <BudgetSummaryBar reloadTrigger={totalExpense} />
@@ -102,7 +102,7 @@ export default function Dashboard() {
         <CashFlowForecast />
       </section>
 
-      {/* ═══ TIER 3: DETAIL — intentional scroll ═══ */}
+      {/* ═══ TIER 3: DETAIL - intentional scroll ═══ */}
       <div className="mt-10" />
       <section>
         {/* Page-level error (non-auth) */}
@@ -148,7 +148,7 @@ export default function Dashboard() {
         </Suspense>
       </section>
 
-      {/* Mobile FAB — Add Transaction */}
+      {/* Mobile FAB - Add Transaction */}
       <button
         onClick={handleAddTransaction}
         className="fixed bottom-6 right-6 z-40 md:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg transition-all flex items-center justify-center active:scale-95"

@@ -131,7 +131,7 @@ export default function UpgradeBanner() {
           </div>
         </>
       ) : trialExpired ? (
-        // Trial expired — nudge to subscribe (no trial option)
+        // Trial expired - nudge to subscribe (no trial option)
         <>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">

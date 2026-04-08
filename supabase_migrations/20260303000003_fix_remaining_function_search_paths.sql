@@ -2,7 +2,7 @@
 -- Description: Extends the search_path security fix to ALL remaining PostgreSQL functions
 --              not covered in 20260303000002. Every function is recreated with
 --              SET search_path = '' and fully-qualified public.table_name references.
---              No logic changes — purely a security hardening migration.
+--              No logic changes - purely a security hardening migration.
 
 -- ============================================================
 -- 1. update_notification_settings_updated_at  (trigger function)
@@ -331,7 +331,7 @@ BEGIN
       PERFORM public.create_notification(
         p_user_id,
         'goal_milestone',
-        v_milestone::text || '% reached — ' || v_goal.name,
+        v_milestone::text || '% reached - ' || v_goal.name,
         'You''ve reached ' || v_milestone || '% of your goal "' || v_goal.name
           || '" (' || round(v_goal.current_amount, 2)::text
           || ' / ' || v_goal.target_amount::text || ')',
@@ -434,7 +434,7 @@ $$;
 GRANT EXECUTE ON FUNCTION check_trial_expiring_notifications(uuid) TO authenticated;
 
 -- ============================================================
--- 8. get_subscription_status  (most recent: 20260301000001 — includes trial_end column)
+-- 8. get_subscription_status  (most recent: 20260301000001 - includes trial_end column)
 --    Must DROP first because the return type (OUT columns) changed across migrations.
 -- ============================================================
 DROP FUNCTION IF EXISTS get_subscription_status(UUID);
@@ -522,7 +522,7 @@ GRANT EXECUTE ON FUNCTION get_monthly_transaction_count(UUID) TO authenticated;
 
 -- ============================================================
 -- 10. seed_default_categories_for_user
---     (previously had SET search_path = public — tightened to '')
+--     (previously had SET search_path = public - tightened to '')
 -- ============================================================
 CREATE OR REPLACE FUNCTION seed_default_categories_for_user(p_user_id UUID)
 RETURNS VOID
@@ -565,7 +565,7 @@ GRANT EXECUTE ON FUNCTION seed_default_categories_for_user(UUID) TO service_role
 
 -- ============================================================
 -- 11. create_default_categories_for_new_user  (trigger function)
---     (previously had SET search_path = public — tightened to '')
+--     (previously had SET search_path = public - tightened to '')
 --     Calls public.seed_default_categories_for_user explicitly.
 -- ============================================================
 DROP TRIGGER IF EXISTS on_auth_user_created_categories ON auth.users;
@@ -595,7 +595,7 @@ CREATE TRIGGER on_auth_user_created_categories
 
 -- ============================================================
 -- 12. create_subscription_for_new_user  (trigger function)
---     (previously had SET search_path = public — tightened to '')
+--     (previously had SET search_path = public - tightened to '')
 -- ============================================================
 DROP TRIGGER IF EXISTS on_auth_user_created_subscription ON auth.users;
 DROP FUNCTION IF EXISTS create_subscription_for_new_user();
@@ -867,7 +867,7 @@ CREATE TRIGGER enforce_goal_limit
 
 -- ============================================================
 -- 17. delete_user_account
---     (previously had SET search_path = public — tightened to '')
+--     (previously had SET search_path = public - tightened to '')
 --     All table references are already fully qualified with public.
 -- ============================================================
 CREATE OR REPLACE FUNCTION public.delete_user_account()

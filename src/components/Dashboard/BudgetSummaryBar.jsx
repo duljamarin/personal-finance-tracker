@@ -25,7 +25,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
         // fetchMonthlyExpensesByCategory already returns a { category_id -> total } map
         setExpenses(expenseData);
       } catch {
-        // silent fail — budget bar is supplementary
+        // silent fail - budget bar is supplementary
       } finally {
         setLoading(false);
       }

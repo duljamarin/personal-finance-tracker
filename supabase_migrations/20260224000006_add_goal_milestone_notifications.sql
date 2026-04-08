@@ -62,7 +62,7 @@ BEGIN
       PERFORM create_notification(
         p_user_id,
         'goal_milestone',
-        v_milestone::text || '% reached — ' || v_goal.name,
+        v_milestone::text || '% reached - ' || v_goal.name,
         'You''ve reached ' || v_milestone || '% of your goal "' || v_goal.name
           || '" (' || round(v_goal.current_amount, 2)::text
           || ' / ' || v_goal.target_amount::text || ')',

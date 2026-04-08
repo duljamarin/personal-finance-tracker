@@ -33,7 +33,7 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);
 -- 3. Enable Row Level Security
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 
--- 4. RLS Policy — users can only read their own subscription
+-- 4. RLS Policy - users can only read their own subscription
 -- All writes go through service_role (webhook edge function)
 DROP POLICY IF EXISTS "Users can read own subscription" ON subscriptions;
 CREATE POLICY "Users can read own subscription"

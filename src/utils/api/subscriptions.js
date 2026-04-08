@@ -36,7 +36,7 @@ export async function getMonthlyTransactionCount() {
 /**
  * Deletes the currently authenticated user's account and all associated data.
  * Cancels any active Paddle subscription, deletes all application data,
- * and removes the auth.users record — all handled by the delete-user Edge Function.
+ * and removes the auth.users record - all handled by the delete-user Edge Function.
  */
 export async function deleteUserAccount() {
   return withAuth(async () => {
@@ -65,7 +65,7 @@ export async function checkTrialExpiringNotifications() {
 
 /**
  * Starts a card-free 7-day trial for the current user.
- * No Paddle checkout required — trial is managed entirely in the DB.
+ * No Paddle checkout required - trial is managed entirely in the DB.
  * Throws if user has already used their trial or is already subscribed.
  */
 export async function startFreeTrial() {

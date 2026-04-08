@@ -578,11 +578,11 @@
     "quickStats": "Statistika të shpejta",
     "unlockFull": "Zhbllokoni zbërthimin e detajuar",
     "unlockFullDesc": "Merrni detajet e pikave, këshilla dhe statistika të shpejta",
-    "insightsLockedHint": "{{count}} këshilla të disponueshme — abonohuni për t'i parë",
+    "insightsLockedHint": "{{count}} këshilla të disponueshme - abonohuni për t'i parë",
     "howItWorks": "Si llogaritet ky rezultat?",
     "howItWorksHide": "Fshih shpjegimin",
     "pillarBudgetDesc": "Krahasojmë shpenzimet tuaja në çdo kategori me mesataren tuaj 6-mujore. Qëndrueshmëria ndaj buxhetit personal e mban këtë pikë lart.",
-    "pillarRatioDesc": "Mat sa nga të ardhurat tuaja mbani. Shpenzimi nën gjysmën e të ardhurave merr pikë maksimale — tejkalimi i tyre e ul rezultatin.",
+    "pillarRatioDesc": "Mat sa nga të ardhurat tuaja mbani. Shpenzimi nën gjysmën e të ardhurave merr pikë maksimale - tejkalimi i tyre e ul rezultatin.",
     "pillarStabilityDesc": "Shpërblen shpenzime të qëndrueshme gjatë 6 muajve të fundit. Luhatjet e mëdha nga muaji në muaj e ulin këtë rezultat.",
     "pillarSavingsDesc": "Gjurmon sa muaj nga 7 të fundit keni kursyer para. Qëndrueshmëria ka më shumë rëndësi se shuma.",
     "pillarWeight": "{{weight}}% e rezultatit tuaj",
@@ -698,7 +698,7 @@
       "overflow": "mbi buxhet"
     },
     "forecast": {
-      "onTrack": "Në rrugë — parashikuar €{{amount}} deri fundit i muajit",
+      "onTrack": "Në rrugë - parashikuar €{{amount}} deri fundit i muajit",
       "willExceed": "Do të tejkalohet me €{{amount}}",
       "notStarted": "Ende nuk ka filluar"
     },
@@ -906,7 +906,7 @@
         "item1": "Adresën e emailit dhe fjalëkalimin",
         "item2": "Të dhënat e transaksioneve financiare (shumat, kategoritë, datat, përshkrimet)",
         "item3": "Informacionin e buxhetit dhe qëllimeve",
-        "item4": "Informacionin e pagesës (përpunohet vetëm nga procesori ynë i pagesave, Paddle — ne nuk i ruajmë apo aksesojmë detajet tuaja të pagesës)"
+        "item4": "Informacionin e pagesës (përpunohet vetëm nga procesori ynë i pagesave, Paddle - ne nuk i ruajmë apo aksesojmë detajet tuaja të pagesës)"
       },
       "section2": {
         "title": "2. Si e Përdorim Informacionin Tuaj",
@@ -980,7 +980,7 @@
     "importing": "Duke importuar...",
     "confirmImport": "Importo {{count}} Transaksione",
     "lineError": "Rreshti {{line}}",
-    "limitWarning": "{{capped}} rresht(a) nga ky muaj do të anashkalohen — ju keni {{remaining}} nga {{limit}} hapësirat falas mujore. Azhurnoni për të importuar pa kufizim.",
+    "limitWarning": "{{capped}} rresht(a) nga ky muaj do të anashkalohen - ju keni {{remaining}} nga {{limit}} hapësirat falas mujore. Azhurnoni për të importuar pa kufizim.",
     "limitBlocked": "Keni arritur kufirin mujor prej {{limit}} transaksioneve. Azhurnoni për të importuar më shumë."
   },
   "networth": {
@@ -1055,7 +1055,7 @@
     "advanceDays": "Njofto paraprakisht",
     "daysLabel": "ditë",
     "milestoneInterval": "Intervali i etapave",
-    "goalMilestoneTitle": "🎯 {{percent}}% arritur — {{name}}",
+    "goalMilestoneTitle": "🎯 {{percent}}% arritur - {{name}}",
     "goalMilestoneMessage": "Keni arritur {{percent}}% të objektivit \"{{name}}\" ({{current}} / {{target}}).",
     "trialExpiringTitle": "Prova mbaron pas {{days}} ditë",
     "trialExpiringMessage": "Prova juaj falas skadon më {{date}}. Abonohu për të ruajtur aksesin në të gjitha funksionalitetet premium.",
@@ -1092,5 +1092,30 @@
     "goalLimitReached": "Keni arritur kufirin prej {{limit}} objektivi aktiv. Përmirësoni për objektiva pa limit.",
     "upgradeForMore": "Përmirësoni për të krijuar më shumë",
     "freeLimit": "Plani falas: deri në {{limit}} të lejuara"
+  },
+  "reports": {
+    "title": "Raportet Financiare",
+    "exportPdf": "Eksporto PDF",
+    "exporting": "Duke eksportuar...",
+    "totalIncome": "Të ardhurat totale",
+    "totalExpenses": "Shpenzimet totale",
+    "netSavings": "Kursimet neto",
+    "categoryBreakdown": "Shpenzimet sipas kategorisë",
+    "periodComparison": "Krahasimi i periudhave",
+    "currentPeriod": "Periudha aktuale",
+    "previousPeriod": "Periudha e mëparshme",
+    "category": "Kategoria",
+    "amount": "Shuma",
+    "percentage": "Përqindja",
+    "thisMonth": "Ky muaj",
+    "lastMonth": "Muaji i kaluar",
+    "thisQuarter": "Ky tremujor",
+    "last3Months": "3 muajt e fundit",
+    "thisYear": "Ky vit",
+    "custom": "Personalizuar",
+    "noData": "Nuk u gjetën transaksione për këtë periudhë",
+    "vsLastPeriod": "krahasuar me periudhën e mëparshme",
+    "income": "Të ardhurat",
+    "expenses": "Shpenzimet"
   }
 }

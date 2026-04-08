@@ -164,6 +164,7 @@ VITE_SUPABASE_ANON_KEY=[anon-key]
 4. **Database changes** require SQL migrations in `supabase_migrations/` with RLS policies
 5. **State changes** - components manage their own state, lift to App.jsx only if shared
 6. **Styling** - use Tailwind classes, support dark mode with `dark:` prefix
+7. **Context management** - When conversation context exceeds ~50%, suggest starting a new conversation or delegate independent tasks to subagents (`backend-developer`, `frontend-developer`, `qa-developer`, `devops`) to preserve context space. Prefer subagents for file-heavy or exploratory work that would bloat the main conversation.
 
 ## Specialized Sub-Agents
 
@@ -182,9 +183,9 @@ Each agent file has a `model:` line at the top. Edit it to switch models:
 
 ```markdown
 ---
-model: claude-opus-4-5-20251101   # Most capable — use for complex reasoning
+model: claude-opus-4-5-20251101   # Most capable - use for complex reasoning
 # model: claude-sonnet-4-6        # Balanced speed/quality (default)
-# model: claude-haiku-4-5         # Fastest — use for simple, repetitive tasks
+# model: claude-haiku-4-5         # Fastest - use for simple, repetitive tasks
 ---
 ```
 

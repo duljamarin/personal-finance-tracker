@@ -117,7 +117,7 @@ export async function updateTransaction(id, transaction) {
     if (amount !== undefined && rate !== undefined) {
       updateData.base_amount = amount * rate;
     } else if (amount !== undefined) {
-      // Amount changed but no new rate — use rate of 1.0 as fallback
+      // Amount changed but no new rate - use rate of 1.0 as fallback
       updateData.base_amount = amount * 1.0;
     }
     // If only rate changed without amount, skip base_amount update
@@ -329,6 +329,21 @@ export async function updateTransactionWithSplits(id, transaction, splits) {
     // Fire budget notification check asynchronously (non-blocking)
     supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
     return tx;
+  });
+}
+
+export async function fetchTransactionsForReport(startDate, endDate) {
+  return withAuth(async (user) => {
+    const { data, error } = await supabase
+      .from('transactions')
+      .select('*, categories(name)')
+      .eq('user_id', user.id)
+      .gte('date', startDate)
+      .lte('date', endDate)
+      .order('date', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
   });
 }
 

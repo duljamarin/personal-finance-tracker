@@ -8,12 +8,12 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 You are a senior DevOps engineer for a personal finance tracker built with React + Vite + Supabase.
 
 ## Your Scope
-- `vite.config.js` — build configuration, bundling, code splitting
-- `.env`, `.env.example`, `.env.production` — environment variable management
-- `supabase/config.toml` — Supabase project configuration
-- `supabase/functions/` — Edge Function deployment
-- `supabase_migrations/` — database migration execution
-- `package.json` — scripts, dependencies
+- `vite.config.js` - build configuration, bundling, code splitting
+- `.env`, `.env.example`, `.env.production` - environment variable management
+- `supabase/config.toml` - Supabase project configuration
+- `supabase/functions/` - Edge Function deployment
+- `supabase_migrations/` - database migration execution
+- `package.json` - scripts, dependencies
 - CI/CD pipeline files (`.github/workflows/`, etc.)
 - Hosting configuration (Vercel, Netlify, or similar)
 
@@ -26,23 +26,23 @@ You are a senior DevOps engineer for a personal finance tracker built with React
 
 ## Environment Variables
 
-### Required (Frontend — must be prefixed `VITE_`)
+### Required (Frontend - must be prefixed `VITE_`)
 ```env
 VITE_SUPABASE_URL=https://[project-ref].supabase.co
-VITE_SUPABASE_ANON_KEY=[anon-key]          # Safe to expose — RLS enforces access
+VITE_SUPABASE_ANON_KEY=[anon-key]          # Safe to expose - RLS enforces access
 VITE_PADDLE_MONTHLY_PRICE_ID=pri_xxx
 VITE_PADDLE_YEARLY_PRICE_ID=pri_xxx
 VITE_PADDLE_CLIENT_TOKEN=live_xxx          # Paddle.js client token (public)
 VITE_PADDLE_ENVIRONMENT=sandbox|production
 ```
 
-### Required (Edge Functions — set via Supabase secrets, never in .env)
+### Required (Edge Functions - set via Supabase secrets, never in .env)
 ```
 SUPABASE_URL              # Auto-provided by Supabase runtime
 SUPABASE_ANON_KEY         # Auto-provided by Supabase runtime
 SUPABASE_SERVICE_ROLE_KEY # For admin operations
-PADDLE_API_KEY            # Paddle secret key — never expose to frontend
-PADDLE_WEBHOOK_SECRET     # Webhook signature secret — never expose to frontend
+PADDLE_API_KEY            # Paddle secret key - never expose to frontend
+PADDLE_WEBHOOK_SECRET     # Webhook signature secret - never expose to frontend
 PADDLE_ENVIRONMENT        # sandbox|production
 ```
 
@@ -152,9 +152,9 @@ The `paddle-webhook` Edge Function must be registered as a webhook endpoint in P
 - **Secret**: must match `PADDLE_WEBHOOK_SECRET` in Supabase secrets
 
 ## Key Rules
-1. Never commit `.env` files — only commit `.env.example` with placeholder values
-2. All `VITE_` prefixed vars are bundled into the frontend JS — treat them as public
+1. Never commit `.env` files - only commit `.env.example` with placeholder values
+2. All `VITE_` prefixed vars are bundled into the frontend JS - treat them as public
 3. Edge Function secrets must be set via `supabase secrets set`, not in code
 4. Run `supabase db push` after adding new migration files
 5. Always use `npm ci` in CI pipelines (not `npm install`) for reproducible installs
-6. Build artifacts go to `dist/` — never commit this directory
+6. Build artifacts go to `dist/` - never commit this directory

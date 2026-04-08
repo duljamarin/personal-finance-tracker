@@ -24,7 +24,7 @@ export async function fetchCategoryBenchmarks(months = 1) {
  */
 export async function fetchHealthScore({ month, forceRecalculate = false } = {}) {
   return withAuth(async (user) => {
-    // Build RPC params — let SQL handle current month if not specified
+    // Build RPC params - let SQL handle current month if not specified
     const params = {
       p_user_id: user.id,
       p_force_recalculate: forceRecalculate,

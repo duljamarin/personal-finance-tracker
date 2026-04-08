@@ -27,6 +27,7 @@ import { TransactionProvider } from './context/TransactionContext';
 import { SubscriptionProvider, useSubscription } from './context/SubscriptionContext';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 import PricingPage from './components/Pricing/PricingPage.jsx';
+import ReportsPage from './components/Reports/ReportsPage.jsx';
 
 
 function PrivateRoute({ children }) {
@@ -181,6 +182,11 @@ function InnerAppContent() {
             <Route path="/notifications" element={
               <PrivateRoute>
                 <NotificationsPage />
+              </PrivateRoute>
+            } />
+            <Route path="/reports" element={
+              <PrivateRoute>
+                <ReportsPage />
               </PrivateRoute>
             } />
             <Route path="/dashboard" element={
