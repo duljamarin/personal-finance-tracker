@@ -152,6 +152,8 @@ export default function PricingPage() {
     t('pricing.freeFeatures.benchmarksBasic'),
     t('pricing.freeFeatures.categories'),
     t('pricing.freeFeatures.dashboard'),
+    t('pricing.freeFeatures.netWorth'),
+    t('pricing.freeFeatures.reports'),
   ];
 
   const premiumFeatures = [
@@ -164,6 +166,7 @@ export default function PricingPage() {
     t('pricing.premiumFeatures.splits'),
     t('pricing.premiumFeatures.categories'),
     t('pricing.premiumFeatures.netWorth'),
+    t('pricing.premiumFeatures.reports'),
   ];
 
   return (

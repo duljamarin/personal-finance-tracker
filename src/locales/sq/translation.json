@@ -758,7 +758,9 @@
       "recurring": "Deri në 5 transaksione të përsëritura",
       "goals": "Deri në 3 objektiva financiare",
       "healthScoreBasic": "Rezultati bazë i shëndetit financiar",
-      "benchmarksBasic": "Krahasime bazë të shpenzimeve"
+      "benchmarksBasic": "Krahasime bazë të shpenzimeve",
+      "netWorth": "Gjurmimi i vlerës neto",
+      "reports": "Raportet financiare"
     },
     "premiumFeatures": {
       "transactions": "Transaksione të pakufizuara",
@@ -769,7 +771,8 @@
       "healthScore": "Rezultati i shëndetit",
       "benchmarks": "Krahasimet e shpenzimeve",
       "splits": "Ndarje e transaksioneve",
-      "netWorth": "Gjurmimi i vlerës neto"
+      "netWorth": "Gjurmimi i vlerës neto",
+      "reports": "Raportet financiare"
     },
     "popular": "Më i Popullarizuari",
     "bestValue": "Vlera Më e Mirë",

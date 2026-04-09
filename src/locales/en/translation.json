@@ -758,7 +758,9 @@
       "recurring": "Up to 5 recurring transactions",
       "goals": "Up to 3 financial goals",
       "healthScoreBasic": "Basic health score (headline number)",
-      "benchmarksBasic": "Basic spending benchmarks"
+      "benchmarksBasic": "Basic spending benchmarks",
+      "netWorth": "Net worth tracking",
+      "reports": "Financial reports"
     },
     "premiumFeatures": {
       "transactions": "Unlimited transactions",
@@ -769,7 +771,8 @@
       "healthScore": "Full health score with insights",
       "benchmarks": "Full spending benchmarks with trends",
       "splits": "Transaction splitting",
-      "netWorth": "Net worth tracking"
+      "netWorth": "Net worth tracking",
+      "reports": "Financial reports"
     },
     "popular": "Most Popular",
     "bestValue": "Best Value",
