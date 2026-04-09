@@ -154,7 +154,7 @@ export default function Sidebar() {
       getUnreadNotificationCount()
         .then(count => setUnreadCount(count || 0))
         .catch(() => {});
-    }, 30000);
+    }, 10000);
 
     return () => {
       window.removeEventListener('notifications:changed', handleNotifChanged);

@@ -51,7 +51,7 @@ export default function ForgotPassword() {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
+      <div className="max-w-md lg:max-w-lg xl:max-w-xl mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
       <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
         <div className="text-center">
           <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -81,7 +81,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
+    <div className="max-w-md lg:max-w-lg xl:max-w-xl mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
       <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
         <div className="text-center">
           <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">

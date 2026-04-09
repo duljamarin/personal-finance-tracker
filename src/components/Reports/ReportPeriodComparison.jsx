@@ -35,7 +35,7 @@ function PctChange({ current, previous, positiveIsGood }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       )}
-      {Math.abs(pct)}%
+      {isUp ? '+' : '-'}{Math.abs(pct)}%
     </span>
   );
 }
