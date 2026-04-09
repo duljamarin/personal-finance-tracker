@@ -183,7 +183,7 @@ function InnerAppContent() {
               <PrivateRoute><BudgetsPage /></PrivateRoute>
             } />
             <Route path="/networth" element={
-              <PremiumRoute><NetWorthPage /></PremiumRoute>
+              <PrivateRoute><NetWorthPage /></PrivateRoute>
             } />
             <Route path="/notifications" element={
               <PrivateRoute><NotificationsPage /></PrivateRoute>

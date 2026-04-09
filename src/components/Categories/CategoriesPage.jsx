@@ -234,10 +234,10 @@ export default function CategoriesPage() {
             </div>
 
             <div className="flex gap-4 justify-end">
-              <Button type="button" onClick={closeModal} className="bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white">
+              <Button type="button" onClick={closeModal} variant="secondary">
                 {t('forms.cancel')}
               </Button>
-              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button type="submit" variant="success">
                 {t('forms.save')}
               </Button>
             </div>
@@ -252,10 +252,10 @@ export default function CategoriesPage() {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{t('categories.delete')}</h3>
             <p className="text-gray-700 dark:text-gray-300">{t('categories.deleteConfirm')}</p>
             <div className="flex gap-3 justify-end">
-              <Button onClick={() => setModal({ open: false, categoryId: null })} className="bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white">
+              <Button onClick={() => setModal({ open: false, categoryId: null })} variant="secondary">
                 {t('forms.cancel')}
               </Button>
-              <Button onClick={confirmDelete} className="bg-red-600 hover:bg-red-700 text-white">
+              <Button onClick={confirmDelete} variant="danger">
                 {t('forms.submit')}
               </Button>
             </div>

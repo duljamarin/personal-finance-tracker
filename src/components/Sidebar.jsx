@@ -50,19 +50,6 @@ const navItems = [
     ),
   },
   {
-    key: 'reports',
-    path: '/reports',
-    labelKey: 'reports.title',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-      </svg>
-    ),
-  },
-];
-
-const secondaryItems = [
-  {
     key: 'recurring',
     path: '/recurring',
     labelKey: 'nav.recurring',
@@ -83,7 +70,18 @@ const secondaryItems = [
       </svg>
     ),
   },
+  {
+    key: 'reports',
+    path: '/reports',
+    labelKey: 'reports.title',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+      </svg>
+    ),
+  },
 ];
+
 
 function NavItem({ item, isActive, collapsed, onClick }) {
   const { t } = useTranslation();
@@ -99,10 +97,10 @@ function NavItem({ item, isActive, collapsed, onClick }) {
       } ${collapsed ? 'justify-center' : ''}`}
       title={collapsed ? t(item.labelKey) : undefined}
     >
-      <span className={isActive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}>
+      <span className={isActive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}>
         {item.icon}
       </span>
-      {!collapsed && <span>{t(item.labelKey)}</span>}
+      {!collapsed && <span className="font-display">{t(item.labelKey)}</span>}
     </Link>
   );
 }
@@ -196,7 +194,7 @@ export default function Sidebar() {
           </svg>
         </div>
         {!collapsed && (
-          <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate">
+          <span className="text-sm font-bold font-display text-gray-900 dark:text-white tracking-tight truncate">
             {t('app.shortName')}
           </span>
         )}
@@ -205,25 +203,6 @@ export default function Sidebar() {
       {/* Main nav */}
       <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
         {navItems.map(item => (
-          <NavItem
-            key={item.key}
-            item={item}
-            isActive={location.pathname === item.path}
-            collapsed={collapsed}
-            onClick={() => setMobileOpen(false)}
-          />
-        ))}
-
-        {/* Divider */}
-        <div className="!my-3 border-t border-gray-200 dark:border-zinc-800" />
-
-        <div className={`${collapsed ? 'hidden' : ''} px-3 py-1`}>
-          <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-            {t('nav.more')}
-          </span>
-        </div>
-
-        {secondaryItems.map(item => (
           <NavItem
             key={item.key}
             item={item}
@@ -244,7 +223,7 @@ export default function Sidebar() {
           } ${collapsed ? 'justify-center' : ''}`}
         >
           <span className="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-5 h-5 ${location.pathname === '/notifications' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-5 h-5 ${location.pathname === '/notifications' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}`}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
             </svg>
             {unreadCount > 0 && (
@@ -254,7 +233,7 @@ export default function Sidebar() {
             )}
           </span>
           {!collapsed && (
-            <span>{t('notifications.title')}</span>
+            <span className="font-display">{t('notifications.title')}</span>
           )}
         </Link>
       </nav>

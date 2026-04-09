@@ -1033,7 +1033,12 @@
       "personal_loan": "Personal Loan",
       "medical_debt": "Medical Debt",
       "other_debt": "Other Debt"
-    }
+    },
+    "cashFlow": "Cash Flow",
+    "cashFlowDesc": "Net balance from all tracked income and expenses",
+    "totalIncomeAll": "Total Income",
+    "totalExpensesAll": "Total Expenses",
+    "cashBalance": "Cash Balance"
   },
   "notifications": {
     "title": "Notifications",
@@ -1116,6 +1121,21 @@
     "noData": "No transactions found for this period",
     "vsLastPeriod": "vs previous period",
     "income": "Income",
-    "expenses": "Expenses"
+    "expenses": "Expenses",
+    "savingsRate": "Savings Rate",
+    "savingsRateDesc": "Percentage of income saved",
+    "dailySpendingTrend": "Daily Spending Trend",
+    "dailyIncome": "Daily Income",
+    "dailyExpenses": "Daily Expenses",
+    "topTransactions": "Top Transactions",
+    "topExpenses": "Largest Expenses",
+    "topIncome": "Largest Income",
+    "incomeByCategory": "Income by Category",
+    "transactionCount": "Transactions",
+    "avgTransaction": "Avg Transaction",
+    "avgDailySpend": "Avg Daily Spend",
+    "noExpenses": "No expenses in this period",
+    "noIncome": "No income in this period",
+    "date": "Date"
   }
 }

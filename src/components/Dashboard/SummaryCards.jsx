@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedCurrencies }) {
+export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedCurrencies, loading }) {
   const { t } = useTranslation();
 
   const cards = [
@@ -24,6 +24,8 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
     },
   ];
 
+  const showSkeleton = loading && totalIncome === 0 && totalExpense === 0;
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -33,9 +35,13 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
               <span className={`w-1.5 h-1.5 rounded-full ${card.dot}`} />
               <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">{card.label}</p>
             </div>
-            <p className={`text-2xl sm:text-3xl font-bold tabular-nums tracking-tight ${card.color}`}>
-              &euro;{card.value.toFixed(2)}
-            </p>
+            {showSkeleton ? (
+              <div className="h-8 sm:h-9 bg-gray-200 dark:bg-zinc-700 rounded-lg w-2/3 animate-pulse" />
+            ) : (
+              <p className={`text-2xl sm:text-3xl font-bold tabular-nums tracking-tight ${card.color}`}>
+                &euro;{card.value.toFixed(2)}
+              </p>
+            )}
             <p className="text-xs mt-1.5 text-gray-400 dark:text-gray-500">{t('currency.baseCurrency')}</p>
           </div>
         ))}

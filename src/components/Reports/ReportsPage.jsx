@@ -6,6 +6,9 @@ import Card from '../UI/Card';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ReportSummaryCards from './ReportSummaryCards';
 import ReportCategoryBreakdown from './ReportCategoryBreakdown';
+import ReportIncomeBreakdown from './ReportIncomeBreakdown';
+import ReportDailyTrend from './ReportDailyTrend';
+import ReportTopTransactions from './ReportTopTransactions';
 import ReportPeriodComparison from './ReportPeriodComparison';
 
 // ─── Date helpers ────────────────────────────────────────────────────────────
@@ -231,8 +234,17 @@ export default function ReportsPage() {
             <ReportSummaryCards
               transactions={transactions}
               prevTransactions={prevTransactions}
+              startDate={startDate}
+              endDate={endDate}
+            />
+            <ReportDailyTrend
+              transactions={transactions}
+              startDate={startDate}
+              endDate={endDate}
             />
             <ReportCategoryBreakdown transactions={transactions} />
+            <ReportIncomeBreakdown transactions={transactions} />
+            <ReportTopTransactions transactions={transactions} />
             <ReportPeriodComparison
               transactions={transactions}
               prevTransactions={prevTransactions}

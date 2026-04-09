@@ -7,17 +7,16 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import AssetForm from './AssetForm';
 import NetWorthChart from './NetWorthChart';
 import { useToast } from '../../context/ToastContext';
-import { useSubscription } from '../../context/SubscriptionContext';
-import PremiumFeatureLock from '../Subscription/PremiumFeatureLock';
-import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory } from '../../utils/api';
+import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory, fetchTransactions } from '../../utils/api';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
 
 export default function NetWorthPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
-  const { isPremium, isTrialing } = useSubscription();
   const [assets, setAssets] = useState([]);
   const [netWorthHistory, setNetWorthHistory] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [cashFlow, setCashFlow] = useState({ income: 0, expenses: 0, net: 0 });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editAsset, setEditAsset] = useState(null);
@@ -29,12 +28,22 @@ export default function NetWorthPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [assetsData, historyData] = await Promise.all([
+      const [assetsData, historyData, txData] = await Promise.all([
         fetchAssets(),
-        fetchNetWorthHistory()
+        fetchNetWorthHistory(),
+        fetchTransactions(),
       ]);
       setAssets(assetsData);
       setNetWorthHistory(historyData);
+      setAllTransactions(txData);
+
+      const income = txData
+        .filter(tx => tx.type === 'income')
+        .reduce((sum, tx) => sum + (tx.base_amount ?? tx.amount ?? 0), 0);
+      const expenses = txData
+        .filter(tx => tx.type === 'expense')
+        .reduce((sum, tx) => sum + (tx.base_amount ?? tx.amount ?? 0), 0);
+      setCashFlow({ income, expenses, net: income - expenses });
     } catch (error) {
       console.error('Error loading net worth data:', error);
       addToast(t('networth.loadError'), 'error');
@@ -83,10 +92,6 @@ export default function NetWorthPage() {
     }
   };
 
-  if (!isPremium && !isTrialing) {
-    return <PremiumFeatureLock feature={t('networth.title')} />;
-  }
-
   if (loading) {
     return <LoadingSpinner text={t('messages.loading')} />;
   }
@@ -95,12 +100,15 @@ export default function NetWorthPage() {
   const totalAssets = assets
     .filter(a => a.type === 'asset')
     .reduce((sum, a) => sum + (a.current_value || 0), 0);
-    
+
   const totalLiabilities = assets
     .filter(a => a.type === 'liability')
     .reduce((sum, a) => sum + (a.current_value || 0), 0);
-    
-  const netWorth = totalAssets - totalLiabilities;
+
+  const assetsWithCashFlow = totalAssets + cashFlow.net;
+  const netWorth = assetsWithCashFlow - totalLiabilities;
+
+  const fmt = (v) => CURRENCY_SYMBOLS.EUR + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2 });
 
   return (
     <div className="space-y-6">
@@ -115,22 +123,32 @@ export default function NetWorthPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-6">
           <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
             {t('networth.totalAssets')}
           </div>
-          <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-            {CURRENCY_SYMBOLS.EUR}{totalAssets.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            {fmt(totalAssets)}
           </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+            {t('networth.cashBalance')}
+          </div>
+          <div className={`text-2xl font-bold ${cashFlow.net >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-red-600 dark:text-red-400'}`}>
+            {cashFlow.net < 0 ? '-' : ''}{fmt(cashFlow.net)}
+          </div>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('networth.cashFlowDesc')}</p>
         </Card>
 
         <Card className="p-6">
           <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
             {t('networth.totalLiabilities')}
           </div>
-          <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-            {CURRENCY_SYMBOLS.EUR}{totalLiabilities.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+            {fmt(totalLiabilities)}
           </div>
         </Card>
 
@@ -138,25 +156,46 @@ export default function NetWorthPage() {
           <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
             {t('networth.netWorth')}
           </div>
-          <div className={`text-3xl font-bold ${
-            netWorth >= 0 
-              ? 'text-brand-600 dark:text-brand-400' 
+          <div className={`text-2xl font-bold ${
+            netWorth >= 0
+              ? 'text-brand-600 dark:text-brand-400'
               : 'text-red-600 dark:text-red-400'
           }`}>
-            {CURRENCY_SYMBOLS.EUR}{netWorth.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {netWorth < 0 ? '-' : ''}{fmt(netWorth)}
           </div>
         </Card>
       </div>
 
+      {/* Cash Flow Breakdown */}
+      <Card className="p-6">
+        <h2 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+          {t('networth.cashFlow')}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('networth.totalIncomeAll')}</p>
+            <p className="text-lg font-semibold text-brand-600 dark:text-brand-400">{fmt(cashFlow.income)}</p>
+          </div>
+          <div className="p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('networth.totalExpensesAll')}</p>
+            <p className="text-lg font-semibold text-red-600 dark:text-red-400">{fmt(cashFlow.expenses)}</p>
+          </div>
+          <div className="p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('networth.cashBalance')}</p>
+            <p className={`text-lg font-semibold ${cashFlow.net >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-red-600 dark:text-red-400'}`}>
+              {cashFlow.net < 0 ? '-' : ''}{fmt(cashFlow.net)}
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* Chart */}
-      {netWorthHistory.length > 0 && (
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-            {t('networth.historyChart')}
-          </h2>
-          <NetWorthChart data={netWorthHistory} />
-        </Card>
-      )}
+      <Card className="p-6">
+        <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+          {t('networth.historyChart')}
+        </h2>
+        <NetWorthChart data={netWorthHistory} transactions={allTransactions} />
+      </Card>
 
       {/* Assets List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

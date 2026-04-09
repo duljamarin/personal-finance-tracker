@@ -106,6 +106,7 @@ export default function Dashboard() {
         totalExpense={totalExpense}
         net={net}
         hasMixedCurrencies={hasMixedCurrencies}
+        loading={loading}
       />
 
       {/* Two-column layout: health + add transaction */}

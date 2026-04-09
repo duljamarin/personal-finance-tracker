@@ -1033,7 +1033,12 @@
       "personal_loan": "Kredi Personale",
       "medical_debt": "Detyrime Mjekësore",
       "other_debt": "Detyrim Tjetër"
-    }
+    },
+    "cashFlow": "Fluksi i Parave",
+    "cashFlowDesc": "Bilanci neto nga të gjitha të ardhurat dhe shpenzimet e regjistruara",
+    "totalIncomeAll": "Të Ardhurat Totale",
+    "totalExpensesAll": "Shpenzimet Totale",
+    "cashBalance": "Bilanci i Parave"
   },
   "notifications": {
     "title": "Njoftimet",
@@ -1116,6 +1121,21 @@
     "noData": "Nuk u gjetën transaksione për këtë periudhë",
     "vsLastPeriod": "krahasuar me periudhën e mëparshme",
     "income": "Të ardhurat",
-    "expenses": "Shpenzimet"
+    "expenses": "Shpenzimet",
+    "savingsRate": "Shkalla e kursimeve",
+    "savingsRateDesc": "Përqindja e të ardhurave të kursyera",
+    "dailySpendingTrend": "Trendi ditor i shpenzimeve",
+    "dailyIncome": "Të ardhurat ditore",
+    "dailyExpenses": "Shpenzimet ditore",
+    "topTransactions": "Transaksionet kryesore",
+    "topExpenses": "Shpenzimet më të mëdha",
+    "topIncome": "Të ardhurat më të mëdha",
+    "incomeByCategory": "Të ardhurat sipas kategorisë",
+    "transactionCount": "Transaksionet",
+    "avgTransaction": "Mesatarja e transaksioneve",
+    "avgDailySpend": "Mesatarja ditore e shpenzimeve",
+    "noExpenses": "Nuk ka shpenzime në këtë periudhë",
+    "noIncome": "Nuk ka të ardhura në këtë periudhë",
+    "date": "Data"
   }
 }

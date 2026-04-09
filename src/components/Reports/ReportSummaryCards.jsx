@@ -37,7 +37,7 @@ function ChangeIndicator({ current, previous }) {
   );
 }
 
-export default function ReportSummaryCards({ transactions, prevTransactions }) {
+export default function ReportSummaryCards({ transactions, prevTransactions, startDate, endDate }) {
   const { t } = useTranslation();
 
   const calcTotals = (txs) => {
@@ -53,18 +53,30 @@ export default function ReportSummaryCards({ transactions, prevTransactions }) {
   const curr = calcTotals(transactions);
   const prev = calcTotals(prevTransactions);
 
+  // Savings rate
+  const savingsRate = curr.income > 0 ? ((curr.net / curr.income) * 100) : 0;
+  const prevSavingsRate = prev.income > 0 ? ((prev.net / prev.income) * 100) : 0;
+
+  // Days in period for avg daily spend
+  const start = new Date(startDate + 'T00:00:00');
+  const end = new Date(endDate + 'T00:00:00');
+  const days = Math.max(1, Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1);
+  const avgDailySpend = curr.expenses / days;
+
   const cards = [
     {
       label: t('reports.totalIncome'),
       value: curr.income,
       prevValue: prev.income,
       colorClass: 'text-brand-600 dark:text-brand-400',
+      format: 'currency',
     },
     {
       label: t('reports.totalExpenses'),
       value: curr.expenses,
       prevValue: prev.expenses,
       colorClass: 'text-red-600 dark:text-red-400',
+      format: 'currency',
     },
     {
       label: t('reports.netSavings'),
@@ -73,21 +85,55 @@ export default function ReportSummaryCards({ transactions, prevTransactions }) {
       colorClass: curr.net >= 0
         ? 'text-blue-600 dark:text-blue-400'
         : 'text-amber-600 dark:text-amber-400',
+      format: 'currency',
+    },
+    {
+      label: t('reports.savingsRate'),
+      value: savingsRate,
+      prevValue: prevSavingsRate,
+      colorClass: savingsRate >= 20
+        ? 'text-brand-600 dark:text-brand-400'
+        : savingsRate >= 0
+          ? 'text-amber-600 dark:text-amber-400'
+          : 'text-red-600 dark:text-red-400',
+      format: 'percent',
+    },
+    {
+      label: t('reports.transactionCount'),
+      value: transactions.length,
+      prevValue: prevTransactions.length,
+      colorClass: 'text-gray-800 dark:text-gray-200',
+      format: 'number',
+    },
+    {
+      label: t('reports.avgDailySpend'),
+      value: avgDailySpend,
+      prevValue: null,
+      colorClass: 'text-gray-800 dark:text-gray-200',
+      format: 'currency',
     },
   ];
 
+  const formatValue = (val, format) => {
+    if (format === 'percent') return `${val.toFixed(1)}%`;
+    if (format === 'number') return val.toString();
+    return `${val < 0 ? '-' : ''}${formatAmount(val)}`;
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
       {cards.map((card) => (
         <Card key={card.label}>
           <div className="p-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">{card.label}</p>
-            <p className={`text-2xl font-bold ${card.colorClass}`}>
-              {card.value < 0 ? '-' : ''}{formatAmount(card.value)}
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{card.label}</p>
+            <p className={`text-lg font-bold ${card.colorClass}`}>
+              {formatValue(card.value, card.format)}
             </p>
-            <div className="mt-1.5">
-              <ChangeIndicator current={card.value} previous={card.prevValue} />
-            </div>
+            {card.prevValue !== null && (
+              <div className="mt-1">
+                <ChangeIndicator current={card.value} previous={card.prevValue} />
+              </div>
+            )}
           </div>
         </Card>
       ))}

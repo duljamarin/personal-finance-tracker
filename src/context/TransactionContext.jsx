@@ -38,26 +38,22 @@ export function TransactionProvider({ children }) {
   const reloadTransactions = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setTransactions([]);
     try {
       const data = await fetchTransactions();
       setTransactions(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error('❌ Error loading transactions:', e);
-      setTransactions([]);
     }
     setLoading(false);
   }, []);
 
   const reloadCategories = useCallback(async () => {
-    setCategories([]);
     setCatError(null);
     try {
       const cats = await fetchCategories();
       setCategories(Array.isArray(cats) ? cats : []);
     } catch (e) {
       console.error('❌ Error loading categories:', e);
-      setCategories([]);
       setCatError('Failed to load categories');
     }
   }, []);
