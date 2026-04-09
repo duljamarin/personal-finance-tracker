@@ -23,15 +23,6 @@ function ChangeIndicator({ current, previous }) {
 
   return (
     <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isUp ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'}`}>
-      {isUp ? (
-        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-        </svg>
-      ) : (
-        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      )}
       {isUp ? '+' : '-'}{Math.abs(pct)}% {t('reports.vsLastPeriod')}
     </span>
   );
