@@ -90,7 +90,7 @@ function NavItem({ item, isActive, collapsed, onClick }) {
     <Link
       to={item.path}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 group ${
+      className={`flex items-center gap-3 px-3 py-3.5 rounded-lg text-base font-medium transition-colors duration-150 group ${
         isActive
           ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-400'
           : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800/60'
@@ -100,7 +100,7 @@ function NavItem({ item, isActive, collapsed, onClick }) {
       <span className={isActive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}>
         {item.icon}
       </span>
-      {!collapsed && <span className="font-display">{t(item.labelKey)}</span>}
+      {!collapsed && <span>{t(item.labelKey)}</span>}
     </Link>
   );
 }
@@ -194,7 +194,7 @@ export default function Sidebar() {
           </svg>
         </div>
         {!collapsed && (
-          <span className="text-sm font-bold font-display text-gray-900 dark:text-white tracking-tight truncate">
+          <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate">
             {t('app.shortName')}
           </span>
         )}
@@ -216,7 +216,7 @@ export default function Sidebar() {
         <Link
           to="/notifications"
           onClick={() => setMobileOpen(false)}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 group ${
+          className={`flex items-center gap-3 px-3 py-3.5 rounded-lg text-base font-medium transition-colors duration-150 group ${
             location.pathname === '/notifications'
               ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-400'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800/60'
@@ -233,7 +233,7 @@ export default function Sidebar() {
             )}
           </span>
           {!collapsed && (
-            <span className="font-display">{t('notifications.title')}</span>
+            <span>{t('notifications.title')}</span>
           )}
         </Link>
       </nav>

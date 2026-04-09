@@ -152,7 +152,7 @@ export default function LandingPage() {
               {t('landing.hero.badge')}
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-gray-900 dark:text-white tracking-display leading-[1.1] mb-5">
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-gray-900 dark:text-white tracking-display leading-[1.1] mb-5">
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-400">{t('landing.hero.titleAccent')}</span>
             </h1>
@@ -202,7 +202,7 @@ export default function LandingPage() {
               { value: '100%', label: t('landing.stats.free') },
             ].map((stat, i) => (
               <div key={i}>
-                <p className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.label}</p>
               </div>
             ))}
@@ -214,7 +214,7 @@ export default function LandingPage() {
       <section className="py-20 sm:py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
               {t('landing.features.title')}
             </h2>
             <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -230,7 +230,7 @@ export default function LandingPage() {
                 <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4 group-hover:scale-110 transition-transform">
                   {featureIcons[key]}
                 </div>
-                <h3 className="font-display text-base font-semibold text-gray-900 dark:text-white mb-1.5">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1.5">
                   {t(`landing.features.${key}.title`)}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -246,7 +246,7 @@ export default function LandingPage() {
       <section className="border-y border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary py-20 sm:py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
               {t('landing.howItWorks.title')}
             </h2>
             <p className="text-gray-500 dark:text-gray-400">
@@ -256,10 +256,10 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-10">
             {steps.map((step) => (
               <div key={step.key} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-brand-600 text-white font-display font-bold text-lg flex items-center justify-center mx-auto mb-5">
+                <div className="w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-5">
                   {step.num}
                 </div>
-                <h3 className="font-display text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   {t(`landing.howItWorks.${step.key}.title`)}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
@@ -276,7 +276,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
                 {t('landing.showcase.title')}
               </h2>
               <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
@@ -308,7 +308,7 @@ export default function LandingPage() {
       {/* ── CTA ── */}
       <section className="border-t border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary py-20 sm:py-24">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
             {t('landing.cta.title')}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">

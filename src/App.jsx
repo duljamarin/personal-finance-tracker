@@ -112,7 +112,7 @@ function AuthGlobalUI() {
 /* Authenticated app shell with sidebar */
 function AuthenticatedLayout({ children }) {
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300 font-sans">
       <Sidebar />
       <main className="flex-1 min-w-0 overflow-x-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
@@ -126,7 +126,7 @@ function AuthenticatedLayout({ children }) {
 /* Public layout without sidebar */
 function PublicLayout({ children }) {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300 font-sans">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
         <main className="flex-1">
