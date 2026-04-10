@@ -104,24 +104,35 @@ export default function GoalsPage() {
 
   const handleAddContribution = async (contributionData) => {
     try {
-      const isWithdrawal = contributionData.amount < 0;
-      
-      // Krijo transaksionin së pari
+      const isWithdrawal = contributionData.action === 'withdraw';
+      const isExpenseGoal = ['debt_payoff', 'purchase'].includes(selectedGoal.goal_type);
+
+      // Determine transaction type based on goal type and action
+      // debt_payoff/purchase: contribution = expense, withdrawal = income
+      // savings/investment: contribution = income, withdrawal = expense
+      let txType;
+      if (isWithdrawal) {
+        txType = isExpenseGoal ? 'income' : 'expense';
+      } else {
+        txType = isExpenseGoal ? 'expense' : 'income';
+      }
+
       const transaction = await addTransaction({
         title: `${isWithdrawal ? t('goals.contributions.withdraw') : t('goals.contributions.title')} - ${selectedGoal.name}`,
-        amount: Math.abs(contributionData.amount),
+        amount: contributionData.amount,
         date: contributionData.date,
-        type: isWithdrawal ? 'income' : 'expense',
+        type: txType,
         categoryId: null, // Objektivat nuk kanë kategori - përdor tags
         tags: [t('goals.tag', 'goal')],
         currencyCode: 'EUR',
         exchangeRate: 1.0
       });
 
-      // Pastaj krijo kontributin me transaction_id
       await addContribution(selectedGoal.id, {
-        ...contributionData,
-        transactionId: transaction.id
+        amount: isWithdrawal ? -contributionData.amount : contributionData.amount,
+        date: contributionData.date,
+        note: contributionData.note,
+        transactionId: transaction.id,
       });
 
       addToast(t('goals.toast.contributionAdded'), 'success');

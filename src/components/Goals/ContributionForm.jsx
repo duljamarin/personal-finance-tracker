@@ -10,12 +10,13 @@ export default function ContributionForm({ goal, onSave, onClose }) {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+  const [action, setAction] = useState('add'); // 'add' or 'withdraw'
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const numAmount = parseFloat(amount);
-    
-    if (!amount || numAmount === 0) {
+
+    if (!amount || numAmount <= 0) {
       setError(t('transactions.amountError'));
       return;
     }
@@ -23,7 +24,8 @@ export default function ContributionForm({ goal, onSave, onClose }) {
     onSave({
       amount: numAmount,
       date,
-      note: note.trim() || null
+      note: note.trim() || null,
+      action,
     });
   };
 
@@ -37,10 +39,37 @@ export default function ContributionForm({ goal, onSave, onClose }) {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Action toggle */}
+        <div className="flex rounded-lg border border-gray-200 dark:border-zinc-700 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setAction('add')}
+            className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
+              action === 'add'
+                ? 'bg-brand-600 text-white'
+                : 'bg-white dark:bg-zinc-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-700'
+            }`}
+          >
+            {t('goals.contributions.add')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setAction('withdraw')}
+            className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
+              action === 'withdraw'
+                ? 'bg-red-500 text-white'
+                : 'bg-white dark:bg-zinc-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-700'
+            }`}
+          >
+            {t('goals.contributions.withdraw')}
+          </button>
+        </div>
+
         <Input
           label={t('goals.contributions.amount')}
           type="number"
           step="0.01"
+          min="0.01"
           value={amount}
           onChange={(e) => {
             setAmount(e.target.value);
@@ -48,7 +77,6 @@ export default function ContributionForm({ goal, onSave, onClose }) {
           }}
           placeholder="0.00"
           error={error}
-          helperText={t('goals.contributions.withdraw')}
           required
         />
 
