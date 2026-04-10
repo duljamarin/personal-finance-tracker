@@ -365,14 +365,14 @@ BEGIN
     c.name                                                               AS category_name,
     COALESCE(ROUND(cs.avg_spending, 2), 0)                               AS avg_monthly_spending,
     COALESCE(ROUND(cs.std_dev, 2), 0)                                    AS std_deviation,
-    COALESCE(ROUND(GREATEST(0, cs.avg_spending - cs.std_dev), 2), 0)     AS lower_threshold,
-    COALESCE(ROUND(cs.avg_spending + cs.std_dev, 2), 0)                  AS upper_threshold,
+    COALESCE(ROUND(GREATEST(0, cs.avg_spending - CASE WHEN cs.std_dev = 0 THEN cs.avg_spending * 0.2 ELSE cs.std_dev END), 2), 0) AS lower_threshold,
+    COALESCE(ROUND(cs.avg_spending + CASE WHEN cs.std_dev = 0 THEN cs.avg_spending * 0.2 ELSE cs.std_dev END, 2), 0) AS upper_threshold,
     COALESCE(ROUND(curr.current_amount, 2), 0)                           AS current_month_spending,
     COALESCE(cs.data_months, 0)                                          AS months_with_data,
     CASE
       WHEN cs.category_id IS NULL                                                 THEN 'new'
-      WHEN COALESCE(curr.current_amount, 0) < GREATEST(0, cs.avg_spending - cs.std_dev) THEN 'below'
-      WHEN COALESCE(curr.current_amount, 0) > cs.avg_spending + cs.std_dev       THEN 'above'
+      WHEN COALESCE(curr.current_amount, 0) < GREATEST(0, cs.avg_spending - CASE WHEN cs.std_dev = 0 THEN cs.avg_spending * 0.2 ELSE cs.std_dev END) THEN 'below'
+      WHEN COALESCE(curr.current_amount, 0) > cs.avg_spending + CASE WHEN cs.std_dev = 0 THEN cs.avg_spending * 0.2 ELSE cs.std_dev END THEN 'above'
       ELSE 'within'
     END AS status
   FROM category_stats cs
