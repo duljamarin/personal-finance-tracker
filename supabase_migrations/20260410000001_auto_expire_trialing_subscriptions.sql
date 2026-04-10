@@ -5,6 +5,11 @@
 -- Fix: Update get_subscription_status to also UPDATE the row when it detects
 --      an expired trial, so the database stays consistent.
 
+-- Add 'expired' to the status check constraint
+ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_status_check;
+ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_status_check
+    CHECK (status IN ('none', 'trialing', 'active', 'past_due', 'cancelled', 'paused', 'expired'));
+
 DROP FUNCTION IF EXISTS get_subscription_status(UUID);
 
 CREATE OR REPLACE FUNCTION get_subscription_status(p_user_id UUID)
@@ -32,13 +37,13 @@ BEGIN
     END IF;
 
     -- Auto-expire: if the trial has ended, update the row so the DB is consistent
-    UPDATE subscriptions
+    UPDATE subscriptions s_upd
     SET status = 'expired',
         updated_at = NOW()
-    WHERE user_id = p_user_id
-      AND status = 'trialing'
-      AND trial_end IS NOT NULL
-      AND trial_end <= NOW();
+    WHERE s_upd.user_id = p_user_id
+      AND s_upd.status = 'trialing'
+      AND s_upd.trial_end IS NOT NULL
+      AND s_upd.trial_end <= NOW();
 
     RETURN QUERY
     SELECT
