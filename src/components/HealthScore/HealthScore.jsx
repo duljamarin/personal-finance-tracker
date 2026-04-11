@@ -1,42 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { fetchHealthScore, fetchHealthScoreHistory } from '../../utils/api';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
 
 export default function HealthScore({ onReloadTrigger, compact = false }) {
   const { t } = useTranslation();
   const { isPremium } = useSubscription();
-  const [score, setScore] = useState(null);
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [showExplainer, setShowExplainer] = useState(false);
 
-  useEffect(() => {
-    async function loadScore() {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const [scoreData, historyData] = await Promise.all([
-          fetchHealthScore({ month: selectedMonth, forceRecalculate: false }),
-          compact ? Promise.resolve([]) : fetchHealthScoreHistory(6)
-        ]);
-        
-        setScore(scoreData);
-        setHistory(historyData || []);
-      } catch (err) {
-        console.error('Error loading health score:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadScore();
-  }, [selectedMonth, onReloadTrigger]);
+  const { data, loading, error } = useAsyncData(
+    async () => {
+      const [scoreData, historyData] = await Promise.all([
+        fetchHealthScore({ month: selectedMonth, forceRecalculate: false }),
+        compact ? Promise.resolve([]) : fetchHealthScoreHistory(6)
+      ]);
+      return { score: scoreData, history: historyData || [] };
+    },
+    [selectedMonth, onReloadTrigger, compact]
+  );
+  const score = data?.score ?? null;
+  const history = data?.history ?? [];
 
   const getScoreColor = (value) => {
     if (value >= 80) return { bg: 'bg-brand-500', text: 'text-brand-600 dark:text-brand-400', ring: 'ring-brand-500' };

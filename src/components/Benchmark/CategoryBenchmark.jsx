@@ -1,37 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchCategoryBenchmarks } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
 
 export default function CategoryBenchmark({ onReloadTrigger }) {
   const { t } = useTranslation();
   const { isPremium } = useSubscription();
-  const [benchmarks, setBenchmarks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [months, setMonths] = useState(1);
 
   // Free users are always locked to 1-month view
   const effectiveMonths = isPremium ? months : 1;
 
-  useEffect(() => {
-    async function loadBenchmarks() {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await fetchCategoryBenchmarks(effectiveMonths);
-        setBenchmarks(data);
-      } catch (err) {
-        console.error('Error loading benchmarks:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBenchmarks();
-  }, [effectiveMonths, onReloadTrigger]);
+  const { data: benchmarks, loading, error } = useAsyncData(
+    () => fetchCategoryBenchmarks(effectiveMonths),
+    [effectiveMonths, onReloadTrigger],
+    []
+  );
 
   const getStatusConfig = (status) => {
     switch (status) {

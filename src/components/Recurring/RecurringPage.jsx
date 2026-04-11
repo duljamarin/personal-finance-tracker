@@ -6,6 +6,7 @@ import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringT
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useFormModal } from '../../hooks/useFormModal';
 import RecurringForm from './RecurringForm';
 
 export default function RecurringPage() {
@@ -14,8 +15,7 @@ export default function RecurringPage() {
   const { isPremium, recurringLimit } = useSubscription();
   const [recurrings, setRecurrings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editRecurring, setEditRecurring] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const { isOpen: showModal, editingItem: editRecurring, openEdit: handleEdit, close: closeFormModal } = useFormModal();
   const [deleteConfirm, setDeleteConfirm] = useState(null); // Store the recurring to delete
 
   useEffect(() => {
@@ -60,11 +60,6 @@ export default function RecurringPage() {
       console.error('Error toggling recurring transaction:', error);
       addToast(t('recurring.toggleError'), 'error');
     }
-  }
-
-  function handleEdit(recurring) {
-    setEditRecurring(recurring);
-    setShowModal(true);
   }
 
   const currencySymbols = {
@@ -272,17 +267,16 @@ export default function RecurringPage() {
       )}
 
       {showModal && (
-        <Modal drawer onClose={() => { setShowModal(false); setEditRecurring(null); }}>
+        <Modal drawer onClose={closeFormModal}>
           <RecurringForm
             initial={editRecurring}
             onSubmit={async () => {
-              setShowModal(false);
-              setEditRecurring(null);
+              closeFormModal();
               // Process recurring transactions immediately after update to generate instances
               await processRecurringTransactions();
               await loadRecurrings();
             }}
-            onCancel={() => { setShowModal(false); setEditRecurring(null); }}
+            onCancel={closeFormModal}
           />
         </Modal>
       )}

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import Button from '../UI/Button';
 import { useToast } from '../../context/ToastContext';
 import { fetchNotificationSettings, updateNotificationSettings } from '../../utils/api';
-import { getInputClassName } from '../../utils/classNames';
 
 export default function NotificationSettings() {
   const { t } = useTranslation();

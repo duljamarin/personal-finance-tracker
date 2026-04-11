@@ -9,6 +9,7 @@ import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExp
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useFormModal } from '../../hooks/useFormModal';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
@@ -28,9 +29,7 @@ export default function BudgetsPage() {
   const [expensesByCategory, setExpensesByCategory] = useState({});
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [showBudgetForm, setShowBudgetForm] = useState(false);
-  const [editingBudget, setEditingBudget] = useState(null);
+  const { isOpen: showBudgetForm, editingItem: editingBudget, openAdd: openBudgetForm, openEdit: openBudgetEdit, close: closeBudgetForm } = useFormModal();
   const [budgetToDelete, setBudgetToDelete] = useState(null);
 
   // Derived values
@@ -133,8 +132,7 @@ export default function BudgetsPage() {
         await createBudget({ ...data, year: selectedYear, month: selectedMonth });
         addToast(t('budgets.toast.created'), 'success');
       }
-      setShowBudgetForm(false);
-      setEditingBudget(null);
+      closeBudgetForm();
       loadData();
     } catch (error) {
       console.error('Error saving budget:', error);
@@ -234,7 +232,7 @@ export default function BudgetsPage() {
             {t('budgets.copyFromPrevious')}
           </button>
           <Button
-            onClick={() => setShowBudgetForm(true)}
+            onClick={openBudgetForm}
             disabled={!canCreateBudget(budgets.length)}
           >
             + {t('budgets.addBudget')}
@@ -346,7 +344,7 @@ export default function BudgetsPage() {
                 {t('limits.freeLimit', { limit: budgetLimit })}
               </p>
             )}
-            <Button onClick={() => setShowBudgetForm(true)}>
+            <Button onClick={openBudgetForm}>
               {t('budgets.createFirst')}
             </Button>
           </div>
@@ -360,10 +358,7 @@ export default function BudgetsPage() {
               spent={expensesByCategory[budget.category_id] || 0}
               isCurrentMonth={isCurrentMonth}
               isFutureMonth={isFutureMonth}
-              onEdit={(b) => {
-                setEditingBudget(b);
-                setShowBudgetForm(true);
-              }}
+              onEdit={openBudgetEdit}
               onDelete={handleDeleteBudget}
             />
           ))}
@@ -376,10 +371,7 @@ export default function BudgetsPage() {
           budget={editingBudget}
           availableCategories={availableCategories}
           onSave={handleSaveBudget}
-          onClose={() => {
-            setShowBudgetForm(false);
-            setEditingBudget(null);
-          }}
+          onClose={closeBudgetForm}
         />
       )}
 

@@ -27,6 +27,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { TransactionProvider } from './context/TransactionContext';
 import { SubscriptionProvider, useSubscription } from './context/SubscriptionContext';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import PricingPage from './components/Pricing/PricingPage.jsx';
 import ReportsPage from './components/Reports/ReportsPage.jsx';
 
@@ -147,7 +148,7 @@ function InnerAppContent() {
   const isPublicRoute = publicRoutes.includes(location.pathname) || (!accessToken && location.pathname === '/');
 
   return (
-    <>
+    <ErrorBoundary>
       <AuthGlobalUI />
       {isPublicRoute ? (
         <PublicLayout>
@@ -200,7 +201,7 @@ function InnerAppContent() {
           </Routes>
         </AuthenticatedLayout>
       )}
-    </>
+    </ErrorBoundary>
   );
 }
 

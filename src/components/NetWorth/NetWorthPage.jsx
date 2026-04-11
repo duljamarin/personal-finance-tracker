@@ -8,6 +8,7 @@ import AssetForm from './AssetForm';
 import NetWorthChart from './NetWorthChart';
 import { useToast } from '../../context/ToastContext';
 import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory, fetchTransactions } from '../../utils/api';
+import { useFormModal } from '../../hooks/useFormModal';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
 
 export default function NetWorthPage() {
@@ -18,8 +19,7 @@ export default function NetWorthPage() {
   const [allTransactions, setAllTransactions] = useState([]);
   const [cashFlow, setCashFlow] = useState({ income: 0, expenses: 0, net: 0 });
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [editAsset, setEditAsset] = useState(null);
+  const { isOpen: showModal, editingItem: editAsset, openAdd: handleAdd, openEdit: handleEdit, close: closeAssetModal } = useFormModal();
 
   useEffect(() => {
     loadData();
@@ -52,16 +52,6 @@ export default function NetWorthPage() {
     }
   };
 
-  const handleAdd = () => {
-    setEditAsset(null);
-    setShowModal(true);
-  };
-
-  const handleEdit = (asset) => {
-    setEditAsset(asset);
-    setShowModal(true);
-  };
-
   const handleSubmit = async (data) => {
     try {
       if (editAsset) {
@@ -71,7 +61,7 @@ export default function NetWorthPage() {
         await addAsset(data);
         addToast(t('networth.assetAdded'), 'success');
       }
-      setShowModal(false);
+      closeAssetModal();
       loadData();
     } catch (error) {
       console.error('Error saving asset:', error);
@@ -313,7 +303,7 @@ export default function NetWorthPage() {
       {/* Modal */}
       {showModal && (
         <Modal
-          onClose={() => setShowModal(false)}
+          onClose={closeAssetModal}
         >
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             {editAsset ? t('networth.editAsset') : t('networth.addAsset')}
@@ -321,7 +311,7 @@ export default function NetWorthPage() {
           <AssetForm
             initial={editAsset}
             onSubmit={handleSubmit}
-            onCancel={() => setShowModal(false)}
+            onCancel={closeAssetModal}
           />
         </Modal>
       )}

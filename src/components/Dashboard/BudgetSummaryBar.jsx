@@ -1,37 +1,28 @@
-import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { fetchBudgets, fetchMonthlyExpensesByCategory } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
 
 export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   const { t } = useTranslation();
-  const [budgets, setBudgets] = useState([]);
-  const [expenses, setExpenses] = useState({});
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        const [budgetData, expenseData] = await Promise.all([
-          fetchBudgets(year, month),
-          fetchMonthlyExpensesByCategory(year, month)
-        ]);
-        setBudgets(budgetData);
-        // fetchMonthlyExpensesByCategory already returns a { category_id -> total } map
-        setExpenses(expenseData);
-      } catch {
-        // silent fail - budget bar is supplementary
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [reloadTrigger]);
+  const { data, loading } = useAsyncData(
+    async () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const [budgetData, expenseData] = await Promise.all([
+        fetchBudgets(year, month),
+        fetchMonthlyExpensesByCategory(year, month)
+      ]);
+      return { budgets: budgetData, expenses: expenseData };
+    },
+    [reloadTrigger],
+    { budgets: [], expenses: {} }
+  );
+  const { budgets, expenses } = data;
 
   const getProgressColor = (ratio) => {
     if (ratio >= 1.0) return 'bg-red-500';
