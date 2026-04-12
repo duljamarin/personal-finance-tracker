@@ -12,7 +12,7 @@ const makeChain = (overrides = {}) => {
 let currentChain;
 const mockFrom = vi.fn(() => currentChain);
 const mockGetUser = vi.fn();
-const mockRpc = vi.fn();
+const mockRpc = vi.fn().mockReturnValue({ then: (cb) => ({ catch: () => {} }) });
 
 vi.mock('../../utils/supabaseClient', () => ({
   supabase: { auth: { getUser: mockGetUser }, from: mockFrom, rpc: mockRpc },

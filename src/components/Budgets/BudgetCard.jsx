@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
-export default function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete }) {
+export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete }) {
   const { t } = useTranslation();
 
   const budgetAmount = Number(budget.amount) || 0;
@@ -116,4 +117,4 @@ export default function BudgetCard({ budget, spent, isCurrentMonth, isFutureMont
       </div>
     </Card>
   );
-}
+});

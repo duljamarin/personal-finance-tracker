@@ -36,7 +36,7 @@ describe('translateCategoryName', () => {
   });
 
   it('returns the original name for all non-default categories', () => {
-    const customCategories = ['Pet Care', 'Travel', 'Gym', 'Music Lessons'];
+    const customCategories = ['Pet Care', 'Gym', 'Music Lessons'];
     customCategories.forEach(name => {
       expect(translateCategoryName(name)).toBe(name);
     });
@@ -44,9 +44,8 @@ describe('translateCategoryName', () => {
 });
 
 describe('isDefaultCategory', () => {
-  it('returns true for all 8 default categories', () => {
-    const defaults = ['Entertainment', 'Food & Dining', 'Healthcare', 'Investments', 'Salary', 'Shopping', 'Transportation', 'Utilities'];
-    defaults.forEach(name => {
+  it('returns true for all default categories', () => {
+    DEFAULT_CATEGORIES.forEach(name => {
       expect(isDefaultCategory(name)).toBe(true);
     });
   });
@@ -64,19 +63,22 @@ describe('isDefaultCategory', () => {
 });
 
 describe('DEFAULT_CATEGORIES', () => {
-  it('exports an array of exactly 8 categories', () => {
+  it('exports an array of exactly 24 categories', () => {
     expect(Array.isArray(DEFAULT_CATEGORIES)).toBe(true);
-    expect(DEFAULT_CATEGORIES).toHaveLength(8);
+    expect(DEFAULT_CATEGORIES).toHaveLength(24);
   });
 
   it('contains all expected default category names', () => {
-    expect(DEFAULT_CATEGORIES).toContain('Entertainment');
-    expect(DEFAULT_CATEGORIES).toContain('Food & Dining');
-    expect(DEFAULT_CATEGORIES).toContain('Healthcare');
-    expect(DEFAULT_CATEGORIES).toContain('Investments');
-    expect(DEFAULT_CATEGORIES).toContain('Salary');
-    expect(DEFAULT_CATEGORIES).toContain('Shopping');
-    expect(DEFAULT_CATEGORIES).toContain('Transportation');
-    expect(DEFAULT_CATEGORIES).toContain('Utilities');
+    const expected = [
+      'Entertainment', 'Food & Dining', 'Healthcare', 'Investments',
+      'Salary', 'Shopping', 'Transportation', 'Utilities',
+      'Housing & Rent', 'Education', 'Travel', 'Personal Care',
+      'Subscriptions', 'Gifts & Donations', 'Insurance', 'Pets',
+      'Sports & Fitness', 'Coffee & Snacks', 'Freelance', 'Savings',
+      'Taxes', 'Communication', 'Home & Garden', 'Kids & Family',
+    ];
+    expected.forEach(name => {
+      expect(DEFAULT_CATEGORIES).toContain(name);
+    });
   });
 });
