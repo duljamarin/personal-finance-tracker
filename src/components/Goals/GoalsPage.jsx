@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
-import Modal from '../UI/Modal';
+import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
+import EmptyState from '../UI/EmptyState';
 import GoalCard from './GoalCard';
 import GoalForm from './GoalForm';
 import ContributionForm from './ContributionForm';
@@ -242,29 +243,14 @@ export default function GoalsPage() {
 
       {/* Goals Grid */}
       {goals.length === 0 ? (
-        <Card>
-          <div className="text-center py-16">
-            <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-              {t('goals.noGoals')}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-              {t('goals.noGoalsDesc')}
-            </p>
-            {!isPremium && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                {t('limits.freeLimit', { limit: goalLimit })}
-              </p>
-            )}
-            <Button onClick={() => setShowGoalForm(true)}>
-              {t('goals.createFirst')}
-            </Button>
-          </div>
-        </Card>
+        <EmptyState
+          icon={<svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>}
+          title={t('goals.noGoals')}
+          description={t('goals.noGoalsDesc')}
+          action={() => setShowGoalForm(true)}
+          actionLabel={t('goals.createFirst')}
+          limitText={!isPremium ? t('limits.freeLimit', { limit: goalLimit }) : null}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {goals.map(goal => (
@@ -309,40 +295,16 @@ export default function GoalsPage() {
       )}
 
       {goalToDelete && (
-        <Modal onClose={() => !deleting && setGoalToDelete(null)}>
-          <div className="text-center">
-            <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-              {t('goals.delete.title')}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-              <span className="font-medium text-gray-700 dark:text-gray-200">{goalToDelete.name}</span>
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-              {t('goals.delete.message')}
-            </p>
-            <div className="flex gap-3 justify-center">
-              <Button
-                variant="secondary"
-                onClick={() => setGoalToDelete(null)}
-                disabled={deleting}
-              >
-                {t('goals.delete.cancel')}
-              </Button>
-              <Button
-                variant="danger"
-                onClick={confirmDeleteGoal}
-                disabled={deleting}
-              >
-                {deleting ? '...' : t('goals.delete.confirm')}
-              </Button>
-            </div>
-          </div>
-        </Modal>
+        <ConfirmDeleteModal
+          title={t('goals.delete.title')}
+          message={t('goals.delete.message')}
+          itemName={goalToDelete.name}
+          onConfirm={confirmDeleteGoal}
+          onCancel={() => setGoalToDelete(null)}
+          confirmLabel={t('goals.delete.confirm')}
+          cancelLabel={t('goals.delete.cancel')}
+          deleting={deleting}
+        />
       )}
     </div>
   );

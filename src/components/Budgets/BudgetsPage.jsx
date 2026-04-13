@@ -2,13 +2,15 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
-import Modal from '../UI/Modal';
+import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
+import EmptyState from '../UI/EmptyState';
 import BudgetCard from './BudgetCard';
 import BudgetForm from './BudgetForm';
 import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExpensesByCategory, fetchCategories } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useTransactions } from '../../context/TransactionContext';
 import { useFormModal } from '../../hooks/useFormModal';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
@@ -20,6 +22,7 @@ export default function BudgetsPage() {
   const { addToast } = useToast();
   const { user } = useAuth();
   const { isPremium, canCreateBudget, budgetLimit } = useSubscription();
+  const { reloadTransactions } = useTransactions();
 
   const today = new Date();
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
@@ -154,6 +157,7 @@ export default function BudgetsPage() {
       addToast(t('budgets.toast.deleted'), 'success');
       setBudgetToDelete(null);
       loadData();
+      reloadTransactions();
     } catch (error) {
       console.error('Error deleting budget:', error);
       addToast(t('budgets.toast.error'), 'error');
@@ -326,29 +330,14 @@ export default function BudgetsPage() {
 
       {/* Budget Cards Grid or Empty State */}
       {budgets.length === 0 ? (
-        <Card>
-          <div className="text-center py-16">
-            <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-              {t('budgets.noData')}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-              {t('budgets.noDataDesc')}
-            </p>
-            {!isPremium && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                {t('limits.freeLimit', { limit: budgetLimit })}
-              </p>
-            )}
-            <Button onClick={openBudgetForm}>
-              {t('budgets.createFirst')}
-            </Button>
-          </div>
-        </Card>
+        <EmptyState
+          icon={<svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
+          title={t('budgets.noData')}
+          description={t('budgets.noDataDesc')}
+          action={openBudgetForm}
+          actionLabel={t('budgets.createFirst')}
+          limitText={!isPremium ? t('limits.freeLimit', { limit: budgetLimit }) : null}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {budgets.map(budget => (
@@ -377,22 +366,14 @@ export default function BudgetsPage() {
 
       {/* Delete Confirmation Modal */}
       {budgetToDelete && (
-        <Modal onClose={() => setBudgetToDelete(null)}>
-          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-            {t('budgets.delete.title')}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {t('budgets.deleteConfirm')}
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => setBudgetToDelete(null)}>
-              {t('budgets.delete.cancel')}
-            </Button>
-            <Button variant="danger" onClick={confirmDelete}>
-              {t('budgets.delete.confirm')}
-            </Button>
-          </div>
-        </Modal>
+        <ConfirmDeleteModal
+          title={t('budgets.delete.title')}
+          message={t('budgets.deleteConfirm')}
+          onConfirm={confirmDelete}
+          onCancel={() => setBudgetToDelete(null)}
+          confirmLabel={t('budgets.delete.confirm')}
+          cancelLabel={t('budgets.delete.cancel')}
+        />
       )}
     </div>
   );

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { addCategory, updateCategory, deleteCategory, fetchTransactions } from '../../utils/api';
+import { addCategory, updateCategory, deleteCategory } from '../../utils/api';
 import Button from '../UI/Button.jsx';
 import Modal from '../UI/Modal.jsx';
+import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionContext';
@@ -15,7 +16,6 @@ export default function CategoriesPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  const [transactions, setTransactions] = useState([]);
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState('');
@@ -25,10 +25,6 @@ export default function CategoriesPage() {
   const [error, setError] = useState(null);
   const [modalError, setModalError] = useState(null);
   const [modal, setModal] = useState({ open: false, categoryId: null });
-
-  useEffect(() => {
-    fetchTransactions().then(setTransactions).catch(() => setTransactions([]));
-  }, []);
 
   function openAddModal() {
     setModalMode('add');
@@ -98,21 +94,7 @@ export default function CategoriesPage() {
   }
 
   function handleDelete(id) {
-    const hasTransactions = transactions.some(tx => tx.category?.id === id);
-    if (hasTransactions) {
-      setModal({ open: true, categoryId: id });
-      return;
-    }
-    deleteCategory(id)
-      .then(() => {
-        reloadCategories?.();
-        reloadExpenses?.();
-        addToast(t('messages.categoryDeleted'), 'info');
-      })
-      .catch(() => {
-        setError(t('messages.error'));
-        addToast(t('messages.error'), 'error');
-      });
+    setModal({ open: true, categoryId: id });
   }
 
   function confirmDelete() {
@@ -248,20 +230,14 @@ export default function CategoriesPage() {
 
       {/* Delete confirmation */}
       {modal.open && (
-        <Modal onClose={() => setModal({ open: false, categoryId: null })}>
-          <div className="flex flex-col gap-4">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{t('categories.delete')}</h3>
-            <p className="text-gray-700 dark:text-gray-300">{t('categories.deleteConfirm')}</p>
-            <div className="flex gap-3 justify-end">
-              <Button onClick={() => setModal({ open: false, categoryId: null })} variant="secondary">
-                {t('forms.cancel')}
-              </Button>
-              <Button onClick={confirmDelete} variant="danger">
-                {t('forms.submit')}
-              </Button>
-            </div>
-          </div>
-        </Modal>
+        <ConfirmDeleteModal
+          title={t('categories.delete')}
+          message={t('categories.deleteConfirm')}
+          onConfirm={confirmDelete}
+          onCancel={() => setModal({ open: false, categoryId: null })}
+          confirmLabel={t('forms.submit')}
+          cancelLabel={t('forms.cancel')}
+        />
       )}
     </div>
   );

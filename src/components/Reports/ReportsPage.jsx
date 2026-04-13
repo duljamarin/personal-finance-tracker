@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchTransactionsForReport } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
-import Card from '../UI/Card';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import EmptyState from '../UI/EmptyState';
 import ReportSummaryCards from './ReportSummaryCards';
 import ReportCategoryBreakdown from './ReportCategoryBreakdown';
 import ReportIncomeBreakdown from './ReportIncomeBreakdown';
@@ -214,21 +214,11 @@ export default function ReportsPage() {
         {loading ? (
           <LoadingSpinner size="md" className="min-h-[40vh]" />
         ) : !hasData ? (
-          <Card>
-            <div className="text-center py-16">
-              <div className="w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                {t('reports.noData')}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 max-w-sm mx-auto">
-                {startDate} - {endDate}
-              </p>
-            </div>
-          </Card>
+          <EmptyState
+            icon={<svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
+            title={t('reports.noData')}
+            description={`${startDate} - ${endDate}`}
+          />
         ) : (
           <>
             <ReportSummaryCards

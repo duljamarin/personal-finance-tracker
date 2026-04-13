@@ -155,7 +155,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
             const emojiMap = type === 'asset' ? assetTypeEmojis : liabilityTypeEmojis;
             return (
               <option key={typeKey} value={typeKey}>
-                {emojiMap[typeKey]} {t(`networth.${type === 'asset' ? 'assetTypes' : 'liabilityTypes'}.${typeKey}`)}
+                {t(`networth.${type === 'asset' ? 'assetTypes' : 'liabilityTypes'}.${typeKey}`)} {emojiMap[typeKey]}
               </option>
             );
           })}

@@ -990,6 +990,7 @@
     "title": "Pasuria Neto",
     "addAsset": "Shto Pasuri/Detyrim",
     "editAsset": "Modifiko Pasuri/Detyrim",
+    "deleteAsset": "Fshi Pasuri/Detyrim",
     "totalAssets": "Pasuritë Totale",
     "totalLiabilities": "Detyrimet Totale",
     "netWorth": "Pasuria Neto",
@@ -1068,7 +1069,7 @@
     "trialExpiringTitle": "Prova mbaron pas {{days}} ditë",
     "trialExpiringMessage": "Prova juaj falas skadon më {{date}}. Abonohu për të ruajtur aksesin në të gjitha funksionalitetet premium.",
     "budgetAlertTitle": "Alarm Buxheti: {{category}}",
-    "budgetAlertMessage": "Keni shpenzuar {{spent}} nga buxheti juaj {{budget}} ({{percent}}%) për {{category}}",
+    "budgetAlertMessage": "Keni shpenzuar €{{spent}} nga buxheti juaj €{{budget}} ({{percent}}%) për {{category}}",
     "recurringDueTitle": "Kujtues: {{title}}",
     "recurringDueMessage": "Transaksioni i përsëritur \"{{title}}\" ({{currency}} {{amount}}) do të kryhet më {{date}}.",
     "types": {

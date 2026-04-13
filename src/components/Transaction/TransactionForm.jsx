@@ -328,8 +328,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							onChange={e => setType(e.target.value)}
 							className={getInputClassName(errors.type)}
 						>
-							<option value="expense">💸 {t('transactions.expense')}</option>
-							<option value="income">💰 {t('transactions.income')}</option>
+							<option value="expense">{t('transactions.expense')} 💸</option>
+							<option value="income">{t('transactions.income')} 💰</option>
 						</select>
 						{errors.type && (
 							<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
@@ -363,14 +363,14 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							onChange={e => setCurrencyCode(e.target.value)}
 							className={getInputClassName(false)}
 						>
-							<option value="USD">🇺🇸 {t('currency.USD')}</option>
-							<option value="EUR">🇪🇺 {t('currency.EUR')}</option>
-							<option value="GBP">🇬🇧 {t('currency.GBP')}</option>
-							<option value="ALL">🇦🇱 {t('currency.ALL')}</option>
-							<option value="CHF">🇨🇭 {t('currency.CHF')}</option>
-							<option value="JPY">🇯🇵 {t('currency.JPY')}</option>
-							<option value="CAD">🇨🇦 {t('currency.CAD')}</option>
-							<option value="AUD">🇦🇺 {t('currency.AUD')}</option>
+							<option value="USD">{t('currency.USD')} 🇺🇸</option>
+							<option value="EUR">{t('currency.EUR')} 🇪🇺</option>
+							<option value="GBP">{t('currency.GBP')} 🇬🇧</option>
+							<option value="ALL">{t('currency.ALL')} 🇦🇱</option>
+							<option value="CHF">{t('currency.CHF')} 🇨🇭</option>
+							<option value="JPY">{t('currency.JPY')} 🇯🇵</option>
+							<option value="CAD">{t('currency.CAD')} 🇨🇦</option>
+							<option value="AUD">{t('currency.AUD')} 🇦🇺</option>
 						</select>
 					</div>
 					<div className="flex flex-col gap-1 sm:gap-2">
@@ -439,9 +439,9 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					>
 						<option value="">{t('transactions.selectCategory')}</option>
 						{categories.map(cat => (
-							<option key={cat.id} value={cat.id}>{getCategoryEmoji(cat)} {translateCategoryName(cat.name)}</option>
+							<option key={cat.id} value={cat.id}>{translateCategoryName(cat.name)} {getCategoryEmoji(cat)}</option>
 						))}
-						<option value="other">➕ {t('categoryProposal.other')}</option>
+						<option value="other">{t('categoryProposal.other')} ➕</option>
 					</select>
 					{errors.categoryId && (
 						<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.categoryId)}</span>
