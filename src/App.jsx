@@ -144,8 +144,10 @@ function InnerAppContent() {
   const { accessToken } = useAuth();
 
   // Public routes that use the public layout (header + footer, no sidebar)
-  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/pricing', '/terms', '/privacy'];
-  const isPublicRoute = publicRoutes.includes(location.pathname) || (!accessToken && location.pathname === '/');
+  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy'];
+  const isPublicRoute = publicRoutes.includes(location.pathname)
+    || (!accessToken && location.pathname === '/')
+    || (!accessToken && location.pathname === '/pricing');
 
   return (
     <ErrorBoundary>
