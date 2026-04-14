@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import Card from '../UI/Card';
+import { toISODate } from '../../utils/date';
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
@@ -37,7 +38,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
 
     // Initialize all days in range
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const key = d.toISOString().slice(0, 10);
+      const key = toISODate(d);
       dayMap[key] = { date: key, income: 0, expenses: 0 };
     }
 
@@ -69,8 +70,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
       <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
         {t('reports.dailySpendingTrend')}
       </h3>
-      <div className="w-full overflow-x-auto">
-        <div className="min-w-[500px]">
+      <div className="w-full">
           <ResponsiveContainer width="100%" height={260}>
             <AreaChart data={dailyData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
@@ -118,7 +118,6 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </div>
       {/* Legend */}
       <div className="flex items-center justify-center gap-6 mt-2">
         <div className="flex items-center gap-1.5">
