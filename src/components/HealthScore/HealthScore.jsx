@@ -15,7 +15,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   const { data, loading, error } = useAsyncData(
     async () => {
       const [scoreData, historyData] = await Promise.all([
-        fetchHealthScore({ month: selectedMonth, forceRecalculate: false }),
+        fetchHealthScore({ month: selectedMonth, forceRecalculate: true }),
         compact ? Promise.resolve([]) : fetchHealthScoreHistory(6)
       ]);
       return { score: scoreData, history: historyData || [] };
