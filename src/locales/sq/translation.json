@@ -817,21 +817,41 @@
     "usageCount": "{{used}} / {{limit}} transaksione të përdorura këtë muaj"
   },
   "onboarding": {
-    "title": "Filloni",
-    "subtitle": "Disa hapa për të shfrytëzuar financat tuaja",
-    "dismiss": "Kuptova, faleminderit",
-    "step1": "Shtoni transaksionin tuaj të parë",
-    "step1Desc": "Filloni të gjurmoni të ardhurat dhe shpenzimet tuaja",
-    "step2": "Shfletoni panelin tuaj",
-    "step2Desc": "Shikoni grafikët mujore dhe ndarjet e shpenzimeve",
-    "step3": "Konfiguroni kategoritë tuaja",
-    "step3Desc": "Organizoni transaksionet tuaja me kategori të personalizuara",
-    "step4": "Krijoni një buxhet",
-    "step4Desc": "Vendosni kufij mujorë shpenzimesh dhe ndiqni progresin tuaj",
-    "action1": "Shto Transaksion",
-    "action3": "Menaxho Kategoritë",
-    "action4": "Krijo Buxhet",
-    "completed": "Përfunduar"
+    "wizard": {
+      "title": "Mirësevini! Le të konfiguronim financat tuaja",
+      "subtitle": "Plotësoni këto hapa për të personalizuar përvojën tuaj",
+      "stepOf": "Hapi {{current}} nga {{total}}",
+      "next": "Vazhdo",
+      "back": "Mbrapa",
+      "skip": "Kapërce",
+      "skipAndFinish": "Kapërce & Përfundo",
+      "finish": "Përfundo Konfigurimin",
+      "submitting": "Duke konfiguruar llogarinë tuaj..."
+    },
+    "currency": {
+      "title": "Zgjidhni monedhën tuaj",
+      "subtitle": "Kjo do të jetë monedha juaj e parazgjedhur për transaksione të reja",
+      "label": "Monedha e preferuar",
+      "exchangeRateLabel": "1 {{currency}} = ? EUR",
+      "exchangeRatePlaceholder": "p.sh., 0.92",
+      "exchangeRateHint": "{{amount}} {{currency}} = {{result}} EUR"
+    },
+    "income": {
+      "title": "Sa janë të ardhurat tuaja mujore?",
+      "subtitle": "Do të krijojmë një transaksion Page për të filluar",
+      "label": "Të ardhurat mujore",
+      "placeholder": "p.sh., 3000"
+    },
+    "expenses": {
+      "title": "Shtoni disa shpenzime të fundit",
+      "subtitle": "Shtoni 1-3 shpenzime për të filluar ndërtimin e pamjes suaj financiare",
+      "amountLabel": "Shuma",
+      "categoryLabel": "Kategoria",
+      "selectCategory": "Zgjidhni një kategori",
+      "addAnother": "Shto shpenzim tjetër",
+      "remove": "Hiq",
+      "amountPlaceholder": "p.sh., 50"
+    }
   },
   "shortcuts": {
     "title": "Shkurtoret e Tastierës",

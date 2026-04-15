@@ -10,12 +10,14 @@ import { getInputClassName } from '../../utils/classNames'
 import { RECURRING_FREQUENCIES } from '../../utils/constants'
 import { APP_CONFIG } from '../../config/app'
 import { useSubscription } from '../../context/SubscriptionContext'
+import { useAuth } from '../../context/AuthContext'
 import TransactionSplitForm from './TransactionSplitForm'
 import TransactionRecurringSection from './TransactionRecurringSection'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t, i18n } = useTranslation()
 	const { canSplitTransaction } = useSubscription()
+	const { user } = useAuth()
 	const { addToast } = useToast()
 
 	const [title, setTitle] = useState(initial?.title || '')
@@ -30,7 +32,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [proposedCategoryName, setProposedCategoryName] = useState('')
 	const [proposedCategoryEmoji, setProposedCategoryEmoji] = useState('📂')
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
-	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || APP_CONFIG.BASE_CURRENCY)
+	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || user?.user_metadata?.preferred_currency || APP_CONFIG.BASE_CURRENCY)
 	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE)
 	
 	// If editing a transaction from a recurring rule

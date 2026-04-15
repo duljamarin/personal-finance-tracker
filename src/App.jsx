@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
@@ -31,8 +31,20 @@ import ErrorBoundary from './components/ErrorBoundary.jsx';
 import PricingPage from './components/Pricing/PricingPage.jsx';
 import ReportsPage from './components/Reports/ReportsPage.jsx';
 
+const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {
+  const { t } = useTranslation();
+  const { accessToken, user, loading } = useAuth();
+  if (loading) return (
+    <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
+  );
+  if (!accessToken) return <Navigate to="/login" replace />;
+  if (!user?.user_metadata?.onboarding_completed) return <Navigate to="/onboarding" replace />;
+  return children;
+}
+
+function OnboardingRoute({ children }) {
   const { t } = useTranslation();
   const { accessToken, loading } = useAuth();
   if (loading) return (
@@ -145,6 +157,7 @@ function InnerAppContent() {
 
   // Public routes that use the public layout (header + footer, no sidebar)
   const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy'];
+  const isOnboardingRoute = location.pathname === '/onboarding';
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
     || (!accessToken && location.pathname === '/pricing');
@@ -152,7 +165,19 @@ function InnerAppContent() {
   return (
     <ErrorBoundary>
       <AuthGlobalUI />
-      {isPublicRoute ? (
+      {isOnboardingRoute ? (
+        <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300 font-sans">
+          <Routes>
+            <Route path="/onboarding" element={
+              <OnboardingRoute>
+                <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-screen" />}>
+                  <OnboardingWizard />
+                </Suspense>
+              </OnboardingRoute>
+            } />
+          </Routes>
+        </div>
+      ) : isPublicRoute ? (
         <PublicLayout>
           <Routes>
             <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />

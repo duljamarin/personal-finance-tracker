@@ -14,46 +14,6 @@ import { useSubscription } from '../../context/SubscriptionContext';
 import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
-const QUICK_TEMPLATES = [
-  { emoji: '☕', titleKey: 'transactions.templateCoffee', amount: 3.50, type: 'expense', categoryHint: 'Coffee & Snacks' },
-  { emoji: '🛒', titleKey: 'transactions.templateGroceries', amount: 50, type: 'expense', categoryHint: 'Food & Dining' },
-  { emoji: '💼', titleKey: 'transactions.templateSalary', amount: 2000, type: 'income', categoryHint: 'Salary' },
-];
-
-function QuickStartTemplates({ onTemplateClick }) {
-  const { t } = useTranslation();
-  return (
-    <div>
-      <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{t('transactions.quickStart')}</p>
-      <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">{t('transactions.quickStartDesc')}</p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {QUICK_TEMPLATES.map((tpl) => (
-          <button
-            key={tpl.titleKey}
-            onClick={() => onTemplateClick(tpl)}
-            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02] hover:shadow-md text-left ${
-              tpl.type === 'income'
-                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 hover:border-green-400 dark:hover:border-green-600'
-                : 'border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-dark-tertiary hover:border-brand-300 dark:hover:border-brand-600'
-            }`}
-          >
-            <span className="text-2xl">{tpl.emoji}</span>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm text-gray-800 dark:text-white truncate">{t(tpl.titleKey)}</div>
-              <div className={`text-xs font-medium ${
-                tpl.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'
-              }`}>
-                {tpl.type === 'income' ? '+' : '-'}€{tpl.amount.toFixed(2)}
-              </div>
-            </div>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function Transactions() {
   const {
     transactions: items,
@@ -205,22 +165,6 @@ export default function Transactions() {
     return () => window.removeEventListener('openAddTransaction', handleOpenAdd);
   }, [handleAdd]);
 
-  function handleTemplateClick(tpl) {
-    if (!canAddTransaction) {
-      addToast(t('upgrade.transactionLimitReached'), 'warning');
-      navigate('/pricing');
-      return;
-    }
-    const matchedCategory = categories.find(c => c.name === tpl.categoryHint);
-    setPrefillData({
-      title: t(tpl.titleKey),
-      amount: tpl.amount,
-      type: tpl.type,
-      date: new Date().toISOString().split('T')[0],
-      categoryId: matchedCategory?.id || '',
-    });
-    setShowModal(true);
-  }
 
   return (
     <Card className="mt-4 sm:mt-6">
@@ -346,19 +290,14 @@ export default function Transactions() {
           <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-6 max-w-sm">
             {searchQuery.trim() ? `"${searchQuery}"` : ''}
           </p>
-          {items.length < 5 && !searchQuery && (
-            <div className="w-full max-w-2xl">
-              {items.length === 0 && (
-                <button
-                  onClick={handleAdd}
-                  className="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-sm hover:scale-105 transition-all font-semibold text-base sm:text-lg mx-auto mb-8"
-                >
-                  <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
-                  {t('transactions.addNew')}
-                </button>
-              )}
-              <QuickStartTemplates onTemplateClick={handleTemplateClick} />
-            </div>
+          {items.length === 0 && !searchQuery && (
+            <button
+              onClick={handleAdd}
+              className="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-sm hover:scale-105 transition-all font-semibold text-base sm:text-lg mx-auto mb-8"
+            >
+              <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
+              {t('transactions.addNew')}
+            </button>
           )}
         </div>
       ) : (
@@ -454,11 +393,6 @@ export default function Transactions() {
             </button>
           </div>
         )}
-        {items.length > 0 && items.length < 5 && !searchQuery && (
-          <div className="mt-8 px-2">
-            <QuickStartTemplates onTemplateClick={handleTemplateClick} />
-          </div>
-        )}
         </>
       )}
 
@@ -474,7 +408,6 @@ export default function Transactions() {
                   try {
                     await updateTransactionWithSplits(editTx.id, data, data.splits);
                     addToast(t('messages.transactionUpdated'), 'success');
-                    localStorage.setItem('onboarding_split_used', '1');
                     await onReload();
                   } catch (e) {
                     console.error('Error updating split transaction:', e);
@@ -510,7 +443,6 @@ export default function Transactions() {
                 try {
                   await addTransactionWithSplits(data, data.splits);
                   addToast(t('messages.transactionAdded'), 'success');
-                  localStorage.setItem('onboarding_split_used', '1');
                   await onReload();
                   await refreshSubscription();
                 } catch (e) {

@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTransactions } from '../../context/TransactionContext';
 import UpgradeBanner from '../Subscription/UpgradeBanner';
-import OnboardingChecklist from '../Onboarding/OnboardingChecklist';
 import HealthScore from '../HealthScore/HealthScore';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import SummaryCards from './SummaryCards';
@@ -10,7 +9,6 @@ import BudgetSummaryBar from './BudgetSummaryBar';
 import ChartWithTimeRange from './ChartWithTimeRange';
 import AddTransactionCTA from './AddTransactionCTA';
 import CashFlowForecast from './CashFlowForecast';
-import { fetchBudgets } from '../../utils/api';
 
 const Transactions = lazy(() => import('../Transactions/Transactions'));
 const CategoryPieChart = lazy(() => import('../Transactions/CategoryPieChart'));
@@ -20,7 +18,6 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const {
     transactions,
-    categories,
     loading,
     error,
     totalIncome,
@@ -30,8 +27,6 @@ export default function Dashboard() {
   } = useTransactions();
 
   const [showGreeting, setShowGreeting] = useState(false);
-  const [budgetCount, setBudgetCount] = useState(0);
-  const [budgetsLoaded, setBudgetsLoaded] = useState(false);
   const username = localStorage.getItem('username');
 
   useEffect(() => {
@@ -41,20 +36,6 @@ export default function Dashboard() {
       return () => clearTimeout(timer);
     }
   }, [username]);
-
-  const refreshBudgetCount = useCallback(async () => {
-    try {
-      const now = new Date();
-      const data = await fetchBudgets(now.getFullYear(), now.getMonth() + 1);
-      setBudgetCount(data.length);
-    } catch { /* ignore */ } finally {
-      setBudgetsLoaded(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    refreshBudgetCount();
-  }, [refreshBudgetCount]);
 
   const handleAddTransaction = () => {
     window.dispatchEvent(new CustomEvent('openAddTransaction'));
@@ -91,14 +72,6 @@ export default function Dashboard() {
           {t('dashboard.addTransaction')}
         </button>
       </div>
-
-      <OnboardingChecklist
-        transactionCount={transactions.length}
-        categoryCount={categories.length}
-        budgetCount={budgetCount}
-        loading={loading || !budgetsLoaded}
-        onAddTransaction={handleAddTransaction}
-      />
 
       {/* Summary cards */}
       <SummaryCards

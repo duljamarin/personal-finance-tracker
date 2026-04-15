@@ -817,21 +817,41 @@
     "usageCount": "{{used}} / {{limit}} transactions used this month"
   },
   "onboarding": {
-    "title": "Get Started",
-    "subtitle": "A few steps to make the most of your finances",
-    "dismiss": "Got it, thanks",
-    "step1": "Add your first transaction",
-    "step1Desc": "Start tracking your income and expenses",
-    "step2": "Browse your dashboard",
-    "step2Desc": "View monthly charts and spending breakdowns",
-    "step3": "Set up your categories",
-    "step3Desc": "Organize your transactions with custom categories",
-    "step4": "Create a budget",
-    "step4Desc": "Set monthly spending limits and track your progress",
-    "action1": "Add Transaction",
-    "action3": "Manage Categories",
-    "action4": "Create Budget",
-    "completed": "Done"
+    "wizard": {
+      "title": "Welcome! Let's set up your finances",
+      "subtitle": "Complete these steps to personalize your experience",
+      "stepOf": "Step {{current}} of {{total}}",
+      "next": "Continue",
+      "back": "Back",
+      "skip": "Skip",
+      "skipAndFinish": "Skip & Finish",
+      "finish": "Finish Setup",
+      "submitting": "Setting up your account..."
+    },
+    "currency": {
+      "title": "Select your currency",
+      "subtitle": "This will be your default currency for new transactions",
+      "label": "Preferred currency",
+      "exchangeRateLabel": "1 {{currency}} = ? EUR",
+      "exchangeRatePlaceholder": "e.g., 0.92",
+      "exchangeRateHint": "{{amount}} {{currency}} = {{result}} EUR"
+    },
+    "income": {
+      "title": "What's your monthly income?",
+      "subtitle": "We'll create a Salary transaction to get you started",
+      "label": "Monthly income",
+      "placeholder": "e.g., 3000"
+    },
+    "expenses": {
+      "title": "Add a few recent expenses",
+      "subtitle": "Add 1-3 expenses to start building your financial picture",
+      "amountLabel": "Amount",
+      "categoryLabel": "Category",
+      "selectCategory": "Select a category",
+      "addAnother": "Add another expense",
+      "remove": "Remove",
+      "amountPlaceholder": "e.g., 50"
+    }
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",

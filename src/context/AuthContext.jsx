@@ -144,6 +144,7 @@ export function AuthProvider({ children }) {
           data: {
             username: username,
             language: language, // Store user's preferred language for email templates
+            onboarding_completed: false,
           },
         },
       });
@@ -208,6 +209,12 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  // Refresh user state (e.g. after updating user_metadata)
+  const refreshUser = useCallback(async () => {
+    const { data: { user: freshUser } } = await supabase.auth.getUser();
+    if (freshUser) setUser(freshUser);
+  }, []);
+
   // Clear auth error
   const clearError = useCallback(() => {
     setError(null);
@@ -223,10 +230,11 @@ export function AuthProvider({ children }) {
       accessToken, 
       loading, 
       error, 
-      login, 
-      register, 
+      login,
+      register,
       logout,
-      clearError
+      clearError,
+      refreshUser
     }}>
       {children}
     </AuthContext.Provider>

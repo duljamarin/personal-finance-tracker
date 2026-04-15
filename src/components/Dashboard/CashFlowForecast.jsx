@@ -127,7 +127,7 @@ function ForecastTooltip({ active, payload, label }) {
 
 export default function CashFlowForecast() {
   const { t } = useTranslation();
-  const { net } = useTransactions();
+  const { net, transactions } = useTransactions();
   const { isPremium, isTrialing } = useSubscription();
   const isPaid = isPremium || isTrialing;
   const [dark] = useDarkMode();
@@ -147,7 +147,7 @@ export default function CashFlowForecast() {
       .catch(() => { if (!cancelled) setRecurring([]); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, []);
+  }, [transactions]);
 
   const forecastData = useMemo(
     () => buildForecast(net, recurring, horizon),

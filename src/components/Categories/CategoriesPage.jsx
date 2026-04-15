@@ -5,7 +5,7 @@ import Button from '../UI/Button.jsx';
 import Modal from '../UI/Modal.jsx';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { useToast } from '../../context/ToastContext';
-import { useAuth } from '../../context/AuthContext';
+
 import { useTransactions } from '../../context/TransactionContext';
 import { translateCategoryName, getCategoryEmoji, EMOJI_PALETTE } from '../../utils/categoryTranslation';
 import CategoryCard from './CategoryCard';
@@ -13,7 +13,7 @@ import CategoryCard from './CategoryCard';
 export default function CategoriesPage() {
   const { categories, catError, reloadCategories, reloadTransactions: reloadExpenses } = useTransactions();
   const { addToast } = useToast();
-  const { user } = useAuth();
+
   const { t } = useTranslation();
 
   const [search, setSearch] = useState('');
@@ -64,7 +64,6 @@ export default function CategoriesPage() {
         reloadCategories?.();
         reloadExpenses?.();
         closeModal();
-        if (user?.id) localStorage.setItem(`onboarding_categories_done_${user.id}`, '1');
         addToast(t('messages.categoryAdded'), 'success');
       } catch (err) {
         if (err?.message?.toLowerCase().includes('already')) {
@@ -80,7 +79,6 @@ export default function CategoriesPage() {
         reloadCategories?.();
         reloadExpenses?.();
         closeModal();
-        if (user?.id) localStorage.setItem(`onboarding_categories_done_${user.id}`, '1');
         addToast(t('messages.categoryUpdated'), 'success');
       } catch (err) {
         if (err?.message?.toLowerCase().includes('already')) {
