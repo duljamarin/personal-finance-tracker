@@ -17,6 +17,8 @@ i18n
         translation: sqTranslation
       }
     },
+    supportedLngs: ['en', 'sq'],
+    nonExplicitSupportedLngs: true,
     fallbackLng: 'sq', // Albanian as default language
     debug: false,
     interpolation: {
