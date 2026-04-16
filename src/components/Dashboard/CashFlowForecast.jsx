@@ -147,7 +147,7 @@ export default function CashFlowForecast() {
       .catch(() => { if (!cancelled) setRecurring([]); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [transactions]);
+  }, []);
 
   const forecastData = useMemo(
     () => buildForecast(net, recurring, horizon),

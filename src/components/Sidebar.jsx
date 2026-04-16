@@ -150,16 +150,9 @@ export default function Sidebar() {
       })
       .subscribe();
 
-    const interval = setInterval(() => {
-      getUnreadNotificationCount()
-        .then(count => setUnreadCount(count || 0))
-        .catch(() => {});
-    }, 10000);
-
     return () => {
       window.removeEventListener('notifications:changed', handleNotifChanged);
       supabase.removeChannel(channel);
-      clearInterval(interval);
     };
   }, [user]);
 
