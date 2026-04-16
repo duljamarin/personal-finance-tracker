@@ -88,7 +88,6 @@
     "expenses" : "Expenses",
     "expense": "Expense",
     "edit": "Edit",
-    "delete": "Delete",
     "noTransactions": "No transactions found",
     "showAll": "Show All Transactions ({{count}})",
     "showLess": "Show Less",

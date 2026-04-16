@@ -88,7 +88,6 @@
     "incomes" : "Të Ardhurat",
     "expenses" : "Shpenzimet",
     "edit": "Modifiko",
-    "delete": "Fshi",
     "noTransactions": "Nuk u gjetën transaksione",
     "showAll": "Shfaq Të Gjitha Transaksionet ({{count}})",
     "showLess": "Shfaq Më Pak",
@@ -823,7 +822,7 @@
   },
   "onboarding": {
     "wizard": {
-      "title": "Mirësevini! Le të konfiguronim financat tuaja",
+      "title": "Mirësevini! Le të konfigurojmë financat tuaja",
       "subtitle": "Plotësoni këto hapa për të personalizuar përvojën tuaj",
       "stepOf": "Hapi {{current}} nga {{total}}",
       "next": "Vazhdo",
