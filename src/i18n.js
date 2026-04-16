@@ -19,7 +19,7 @@ i18n
     },
     supportedLngs: ['en', 'sq'],
     nonExplicitSupportedLngs: true,
-    fallbackLng: 'sq', // Albanian as default language
+    fallbackLng: 'en', // English as fallback for unsupported languages
     debug: false,
     interpolation: {
       escapeValue: false // React already escapes

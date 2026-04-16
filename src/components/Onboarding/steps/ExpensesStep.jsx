@@ -18,7 +18,7 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
 
   function addExpense() {
     if (expenses.length < MAX_EXPENSES) {
-      onChange([...expenses, { amount: '', categoryId: '' }]);
+      onChange([...expenses, { id: crypto.randomUUID(), amount: '', categoryId: '' }]);
     }
   }
 
@@ -39,7 +39,7 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
 
       <div className="max-w-md mx-auto space-y-4">
         {expenses.map((expense, index) => (
-          <div key={index} className="flex items-start gap-3">
+          <div key={expense.id} className="flex items-start gap-3">
             <div className="flex-1 space-y-3">
               <Input
                 label={`${t('onboarding.expenses.amountLabel')} (${currency})`}

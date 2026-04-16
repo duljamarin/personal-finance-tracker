@@ -14,13 +14,15 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
 
   const { data, loading, error } = useAsyncData(
     async () => {
+      // forceRecalculate only when a data mutation has occurred (onReloadTrigger),
+      // not on presentational changes like compact mode toggling.
       const [scoreData, historyData] = await Promise.all([
-        fetchHealthScore({ month: selectedMonth, forceRecalculate: true }),
+        fetchHealthScore({ month: selectedMonth, forceRecalculate: !!onReloadTrigger }),
         compact ? Promise.resolve([]) : fetchHealthScoreHistory(6)
       ]);
       return { score: scoreData, history: historyData || [] };
     },
-    [selectedMonth, onReloadTrigger, compact]
+    [selectedMonth, onReloadTrigger] // compact intentionally excluded: layout-only prop
   );
   const score = data?.score ?? null;
   const history = data?.history ?? [];

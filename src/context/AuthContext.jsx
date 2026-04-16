@@ -211,8 +211,8 @@ export function AuthProvider({ children }) {
 
   // Refresh user state (e.g. after updating user_metadata)
   const refreshUser = useCallback(async () => {
-    const { data: { user: freshUser } } = await supabase.auth.getUser();
-    if (freshUser) setUser(freshUser);
+    const { data, error } = await supabase.auth.getUser();
+    if (!error && data?.user) setUser(data.user);
   }, []);
 
   // Clear auth error
