@@ -18,7 +18,7 @@ const TOTAL_STEPS = 3;
 export default function OnboardingWizard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, refreshUser } = useAuth();
+  const { refreshUser } = useAuth();
   const { addToast } = useToast();
   const { reloadTransactions, reloadCategories } = useTransactions();
 
@@ -31,15 +31,8 @@ export default function OnboardingWizard() {
     currency: 'EUR',
     exchangeRate: 1.0,
     monthlyIncome: '',
-    expenses: [{ amount: '', categoryId: '' }],
+    expenses: [{ id: crypto.randomUUID(), amount: '', categoryId: '' }],
   });
-
-  // If user already completed onboarding, redirect
-  useEffect(() => {
-    if (user?.user_metadata?.onboarding_completed) {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [user, navigate]);
 
   useEffect(() => {
     fetchCategories()
@@ -75,9 +68,11 @@ export default function OnboardingWizard() {
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
 
-      // 1. If income was entered, find or create Salary category + add transaction
+      // 1. If income was entered, find or create Salary category + add transaction.
+      // Use case-insensitive name match to avoid creating duplicate categories
+      // if the user already has a "salary" or "SALARY" entry.
       if (monthlyIncome && Number(monthlyIncome) > 0) {
-        let salaryCategory = categories.find((c) => c.name === 'Salary');
+        let salaryCategory = categories.find((c) => c.name.toLowerCase() === 'salary');
         if (!salaryCategory) {
           salaryCategory = await addCategory({ name: 'Salary' });
           const updated = await fetchCategories();
@@ -95,11 +90,14 @@ export default function OnboardingWizard() {
         });
       }
 
-      // 2. Add expenses
-      for (const expense of expenses) {
-        if (expense.amount && Number(expense.amount) > 0 && expense.categoryId) {
+      // 2. Add all valid expenses in parallel
+      const validExpenses = expenses.filter(
+        (e) => e.amount && Number(e.amount) > 0 && e.categoryId
+      );
+      await Promise.all(
+        validExpenses.map((expense) => {
           const cat = categories.find((c) => c.id === expense.categoryId);
-          await addTransaction({
+          return addTransaction({
             title: cat?.name || 'Expense',
             amount: Number(expense.amount),
             type: 'expense',
@@ -108,8 +106,8 @@ export default function OnboardingWizard() {
             currencyCode: currency,
             exchangeRate: rate,
           });
-        }
-      }
+        })
+      );
 
       // 3. Update user metadata: currency + onboarding flag
       await supabase.auth.updateUser({
@@ -165,7 +163,7 @@ export default function OnboardingWizard() {
                 updateData('currency', val);
                 if (val === 'EUR') updateData('exchangeRate', 1.0);
               }}
-              onExchangeRateChange={(val) => updateData('exchangeRate', val)}
+              onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val) || '')}
             />
           )}
           {currentStep === 2 && (

@@ -46,11 +46,13 @@ function PrivateRoute({ children }) {
 
 function OnboardingRoute({ children }) {
   const { t } = useTranslation();
-  const { accessToken, loading } = useAuth();
+  const { accessToken, user, loading } = useAuth();
   if (loading) return (
     <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
   );
-  return accessToken ? children : <Navigate to="/login" replace />;
+  if (!accessToken) return <Navigate to="/login" replace />;
+  if (user?.user_metadata?.onboarding_completed) return <Navigate to="/dashboard" replace />;
+  return children;
 }
 
 function PremiumRoute({ children }) {
