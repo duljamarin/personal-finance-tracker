@@ -338,7 +338,20 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                     <div className="h-full bg-gray-300 dark:bg-gray-600 rounded-full" style={{ width: `${[65, 40, 75, 55][i]}%` }} />
                   </div>
                   <span className="w-10 text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-500 text-right">
-                    <span className="text-sm">🔒</span>
+                    <span className="w-10 flex justify-end items-center">
+                      <svg
+                        className="w-4 h-4 text-gray-400 dark:text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16.5 10.5V7a4.5 4.5 0 10-9 0v3.5M6 10.5h12a1.5 1.5 0 011.5 1.5v6A1.5 1.5 0 0118 19.5H6A1.5 1.5 0 014.5 18v-6A1.5 1.5 0 016 10.5z"
+                        />
+                      </svg>
+                    </span>
                   </span>
                 </div>
               ))}
