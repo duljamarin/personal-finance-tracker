@@ -96,6 +96,7 @@
     "allYears": "Të gjitha Vitet",
     "export": "Eksporto CSV",
     "deleteConfirm": "Jeni i sigurt që dëshironi të fshini këtë transaksion?",
+    "deleteBtn": "Fshi",
     "delete": {
       "title": "Fshi Transaksionin",
       "confirm": "Fshi",
