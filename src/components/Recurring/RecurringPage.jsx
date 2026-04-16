@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Modal from '../UI/Modal';
@@ -107,9 +108,9 @@ export default function RecurringPage() {
           <p className="text-sm text-brand-800 dark:text-brand-200">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}
           </p>
-          <a href="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
-          </a>
+          </Link>
         </div>
       )}
 
@@ -198,7 +199,7 @@ export default function RecurringPage() {
                 <div className="bg-white dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('recurring.nextRun')}</div>
                   <div className="font-semibold text-gray-800 dark:text-white">
-                    {new Date(recurring.next_run_at).toISOString().split('T')[0]}
+                    {recurring.next_run_at ? new Date(recurring.next_run_at).toISOString().split('T')[0] : '-'}
                   </div>
                 </div>
                 <div className="bg-white dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
@@ -9,18 +9,28 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import AssetForm from './AssetForm';
 import NetWorthChart from './NetWorthChart';
 import { useToast } from '../../context/ToastContext';
-import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory, fetchTransactions } from '../../utils/api';
+import { useTransactions } from '../../context/TransactionContext';
+import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory } from '../../utils/api';
 import { useFormModal } from '../../hooks/useFormModal';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
 
 export default function NetWorthPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
+  const { transactions } = useTransactions();
   const [assets, setAssets] = useState([]);
   const [netWorthHistory, setNetWorthHistory] = useState([]);
-  const [allTransactions, setAllTransactions] = useState([]);
-  const [cashFlow, setCashFlow] = useState({ income: 0, expenses: 0, net: 0 });
   const [loading, setLoading] = useState(true);
+
+  const cashFlow = useMemo(() => {
+    const income = transactions
+      .filter(tx => tx.type === 'income')
+      .reduce((sum, tx) => sum + (tx.base_amount ?? tx.amount ?? 0), 0);
+    const expenses = transactions
+      .filter(tx => tx.type === 'expense')
+      .reduce((sum, tx) => sum + (tx.base_amount ?? tx.amount ?? 0), 0);
+    return { income, expenses, net: income - expenses };
+  }, [transactions]);
   const { isOpen: showModal, editingItem: editAsset, openAdd: handleAdd, openEdit: handleEdit, close: closeAssetModal } = useFormModal();
   const [assetToDelete, setAssetToDelete] = useState(null);
 
@@ -31,22 +41,12 @@ export default function NetWorthPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [assetsData, historyData, txData] = await Promise.all([
+      const [assetsData, historyData] = await Promise.all([
         fetchAssets(),
         fetchNetWorthHistory(),
-        fetchTransactions(),
       ]);
       setAssets(assetsData);
       setNetWorthHistory(historyData);
-      setAllTransactions(txData);
-
-      const income = txData
-        .filter(tx => tx.type === 'income')
-        .reduce((sum, tx) => sum + (tx.base_amount ?? tx.amount ?? 0), 0);
-      const expenses = txData
-        .filter(tx => tx.type === 'expense')
-        .reduce((sum, tx) => sum + (tx.base_amount ?? tx.amount ?? 0), 0);
-      setCashFlow({ income, expenses, net: income - expenses });
     } catch (error) {
       console.error('Error loading net worth data:', error);
       addToast(t('networth.loadError'), 'error');
@@ -190,7 +190,7 @@ export default function NetWorthPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
           {t('networth.historyChart')}
         </h2>
-        <NetWorthChart data={netWorthHistory} transactions={allTransactions} />
+        <NetWorthChart data={netWorthHistory} transactions={transactions} />
       </Card>
 
       {/* Assets List */}

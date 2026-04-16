@@ -15,7 +15,7 @@ import TransactionSplitForm from './TransactionSplitForm'
 import TransactionRecurringSection from './TransactionRecurringSection'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
-	const { t, i18n } = useTranslation()
+	const { t } = useTranslation()
 	const { canSplitTransaction } = useSubscription()
 	const { user } = useAuth()
 	const { addToast } = useToast()
@@ -58,10 +58,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			}
 		}).catch(() => setCategories([]))
 	}, [])
-
-	useEffect(() => {
-		// Trigger re-render when language changes
-	}, [i18n.language])
 
 	function validate() {
 		const newErrors = {}
@@ -240,7 +236,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		const tagsList = tags.split(',').map(tag => tag.trim()).filter(Boolean)
 
 		if (!initial?.id) {
-			localStorage.setItem('lastUsedCategory', categoryId)
 			localStorage.setItem('lastUsedType', type)
 		}
 

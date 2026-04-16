@@ -39,8 +39,9 @@ export function SubscriptionProvider({ children }) {
       console.error('Error loading subscription:', e);
       setSubscription(null);
       setMonthlyTransactionCount(0);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   /** Deduplicated refresh - concurrent calls share the same promise */
