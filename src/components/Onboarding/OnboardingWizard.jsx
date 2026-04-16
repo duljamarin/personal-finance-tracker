@@ -163,7 +163,7 @@ export default function OnboardingWizard() {
                 updateData('currency', val);
                 if (val === 'EUR') updateData('exchangeRate', 1.0);
               }}
-              onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val) || '')}
+              onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val))}
             />
           )}
           {currentStep === 2 && (
