@@ -97,6 +97,11 @@
     "allYears": "All Years",
     "export": "Export CSV",
     "deleteConfirm": "Are you sure you want to delete this transaction?",
+    "delete": {
+      "title": "Delete Transaction",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
     "titleLabel": "Title",
     "titlePlaceholder": "e.g. Grocery shopping, Salary payment",
     "titleError": "This field is required.",

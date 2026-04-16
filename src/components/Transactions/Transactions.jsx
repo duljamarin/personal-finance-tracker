@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../UI/Card';
 import { toCSV, downloadCSV } from '../../utils/csv';
 import Modal from '../UI/Modal';
+import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import TransactionForm from '../Transaction/TransactionForm';
 import CSVImport from './CSVImport';
 import { translateCategoryName } from '../../utils/categoryTranslation';
@@ -45,6 +46,8 @@ export default function Transactions() {
   const [activeRecurringCount, setActiveRecurringCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAll, setShowAll] = useState(false);
+  const [txToDelete, setTxToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const searchInputRef = useRef(null);
 
   // Process recurring transactions on component mount
@@ -71,17 +74,7 @@ export default function Transactions() {
 
   useEffect(() => {
     processRecurring();
-
-    // Check if there are pending updates from goals
-    const needsRefresh = localStorage.getItem('transactions_needs_refresh');
-    if (needsRefresh === 'true') {
-      localStorage.removeItem('transactions_needs_refresh');
-      if (onReload) {
-        // Small delay to ensure data is persisted
-        setTimeout(() => onReload(), 100);
-      }
-    }
-  }, [processRecurring, onReload]);
+  }, [processRecurring]);
 
   const filtered = useMemo(() => {
     let result = items;
@@ -151,6 +144,17 @@ export default function Transactions() {
     }
     setShowModal(true);
   }
+
+  const confirmDelete = useCallback(async () => {
+    if (!txToDelete) return;
+    setDeleting(true);
+    try {
+      await onDelete(txToDelete.id);
+    } finally {
+      setDeleting(false);
+      setTxToDelete(null);
+    }
+  }, [txToDelete, onDelete]);
 
   // Keyboard shortcuts: Alt+N → add transaction, Ctrl+K → focus search
   useKeyboardShortcuts([
@@ -360,7 +364,7 @@ export default function Transactions() {
                 </button>
                 <button
                   className="flex-1 bg-red-500/10 dark:bg-red-500/20 hover:bg-red-500/20 dark:hover:bg-red-500/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg font-semibold shadow-sm transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
-                  onClick={() => onDelete(item.id)}
+                  onClick={() => setTxToDelete(item)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   {t('transactions.delete')}
@@ -394,6 +398,19 @@ export default function Transactions() {
           </div>
         )}
         </>
+      )}
+
+      {txToDelete && (
+        <ConfirmDeleteModal
+          title={t('transactions.delete.title')}
+          message={t('transactions.deleteConfirm')}
+          itemName={txToDelete.title}
+          onConfirm={confirmDelete}
+          onCancel={() => setTxToDelete(null)}
+          confirmLabel={t('transactions.delete.confirm')}
+          cancelLabel={t('transactions.delete.cancel')}
+          deleting={deleting}
+        />
       )}
 
       {showModal && (

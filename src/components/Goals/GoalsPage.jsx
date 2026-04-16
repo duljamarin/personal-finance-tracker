@@ -8,14 +8,17 @@ import GoalCard from './GoalCard';
 import GoalForm from './GoalForm';
 import ContributionForm from './ContributionForm';
 import { fetchGoals, fetchGoalsStats, createGoal, updateGoal, deleteGoal, addContribution, addTransaction } from '../../utils/api';
+import { Link } from 'react-router-dom';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useTransactions } from '../../context/TransactionContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
 
 export default function GoalsPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
   const { isPremium, canCreateGoal, goalLimit, refreshSubscription } = useSubscription();
+  const { reloadTransactions } = useTransactions();
   
   const [goals, setGoals] = useState([]);
   const [stats, setStats] = useState(null);
@@ -139,12 +142,7 @@ export default function GoalsPage() {
       addToast(t('goals.toast.contributionAdded'), 'success');
       setShowContributionForm(false);
       setSelectedGoal(null);
-      await loadData();
-      
-      // Signal that transactions need refresh
-      localStorage.setItem('transactions_needs_refresh', 'true');
-      
-      // Refresh subscription to update transaction count
+      await Promise.all([loadData(), reloadTransactions()]);
       refreshSubscription();
     } catch (error) {
       console.error('Error adding contribution:', error);
@@ -180,9 +178,9 @@ export default function GoalsPage() {
           <p className="text-sm text-brand-800 dark:text-brand-200">
             {t('limits.goalLimitReached', { limit: goalLimit })}
           </p>
-          <a href="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
-          </a>
+          </Link>
         </div>
       )}
 

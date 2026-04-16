@@ -19,6 +19,8 @@ export function TransactionProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [catError, setCatError] = useState(null);
   const [typeFilter, setTypeFilter] = useState('all');
+  // Increments on every mutation so consumers can use it as a stable onReloadTrigger
+  const [mutationCount, setMutationCount] = useState(0);
 
   const totalIncome = useMemo(
     () => transactions.filter(tx => tx.type === 'income').reduce((sum, tx) => sum + (tx.base_amount || tx.amount || 0), 0),
@@ -43,9 +45,11 @@ export function TransactionProvider({ children }) {
       setTransactions(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error('❌ Error loading transactions:', e);
+      setError(t('messages.error'));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, []);
+  }, [t]);
 
   const reloadCategories = useCallback(async () => {
     setCatError(null);
@@ -74,11 +78,10 @@ export function TransactionProvider({ children }) {
     try {
       const newItem = await apiAddTransaction(item);
       setTransactions(prev => [newItem, ...prev]);
+      setMutationCount(c => c + 1);
       addToast(t('messages.transactionAdded'), 'success');
-      // Refresh subscription to update transaction count
       refreshSubscription();
     } catch (e) {
-      // Detect server-side transaction limit error (ERRCODE P0001)
       if (e?.code === 'P0001' || e?.message?.includes('transaction limit')) {
         addToast(t('upgrade.transactionLimitReached'), 'warning');
       } else {
@@ -91,8 +94,8 @@ export function TransactionProvider({ children }) {
     try {
       const newItem = await apiUpdateTransaction(id, updated);
       setTransactions(prev => prev.map(e => e.id === id ? newItem : e));
+      setMutationCount(c => c + 1);
       addToast(t('messages.transactionUpdated'), 'success');
-      // Refresh subscription to update transaction count (date changes can affect monthly count)
       refreshSubscription();
     } catch (e) {
       addToast(t('messages.error'), 'error');
@@ -103,8 +106,8 @@ export function TransactionProvider({ children }) {
     try {
       await apiDeleteTransaction(id);
       setTransactions(prev => prev.filter(e => e.id !== id));
+      setMutationCount(c => c + 1);
       addToast(t('messages.transactionDeleted'), 'info');
-      // Refresh subscription to update transaction count
       refreshSubscription();
     } catch (e) {
       addToast(t('messages.error'), 'error');
@@ -124,6 +127,7 @@ export function TransactionProvider({ children }) {
       totalExpense,
       net,
       hasMixedCurrencies,
+      mutationCount,
       addTransaction,
       updateTransaction,
       deleteTransaction,

@@ -24,13 +24,16 @@ export default function Dashboard() {
     totalExpense,
     net,
     hasMixedCurrencies,
+    mutationCount,
   } = useTransactions();
 
   const [showGreeting, setShowGreeting] = useState(false);
   const username = localStorage.getItem('username');
 
   useEffect(() => {
-    if (username) {
+    // Only show greeting once per browser session, not on every navigation to this page
+    if (username && !sessionStorage.getItem('greetingShown')) {
+      sessionStorage.setItem('greetingShown', '1');
       setShowGreeting(true);
       const timer = setTimeout(() => setShowGreeting(false), 3500);
       return () => clearTimeout(timer);
@@ -84,7 +87,7 @@ export default function Dashboard() {
 
       {/* Two-column layout: health + add transaction */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-        <HealthScore compact onReloadTrigger={transactions.length} />
+        <HealthScore compact onReloadTrigger={mutationCount} />
         <AddTransactionCTA onClick={handleAddTransaction} />
       </div>
 
@@ -131,8 +134,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <CategoryBenchmark onReloadTrigger={transactions.length} />
-          <HealthScore onReloadTrigger={transactions.length} />
+          <CategoryBenchmark onReloadTrigger={mutationCount} />
+          <HealthScore onReloadTrigger={mutationCount} />
         </Suspense>
       </div>
 

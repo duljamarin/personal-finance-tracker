@@ -15,6 +15,7 @@ import { useFormModal } from '../../hooks/useFormModal';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 
 export default function BudgetsPage() {
@@ -278,9 +279,9 @@ export default function BudgetsPage() {
           <p className="text-sm text-brand-800 dark:text-brand-200">
             {t('limits.budgetLimitReached', { limit: budgetLimit })}
           </p>
-          <a href="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
-          </a>
+          </Link>
         </div>
       )}
 
