@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Space Grotesk"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         brand: {
@@ -26,10 +27,22 @@ module.exports = {
         surface: {
           DEFAULT: '#ffffff',
           secondary: '#f9fafb',
+          page: '#FAFAF7',
+          card: '#FFFFFF',
+          hairline: '#EDEDE8',
           dark: '#0C0C0E',
           'dark-secondary': '#141417',
           'dark-tertiary': '#1A1A1E',
           'dark-elevated': '#222226',
+          'dark-page': '#0A0A0B',
+          'dark-card': '#111113',
+          'dark-hairline': '#1F1F22',
+        },
+        ink: {
+          primary: '#111112',
+          muted: '#5A5A55',
+          'dark-primary': '#EDEDE9',
+          'dark-muted': '#8A8A85',
         },
         border: {
           DEFAULT: '#e5e7eb',
@@ -84,6 +97,7 @@ module.exports = {
       },
       letterSpacing: {
         'display': '-0.02em',
+        'tight-display': '-0.035em',
       },
     },
   },

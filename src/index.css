@@ -10,6 +10,12 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+  .eyebrow {
+    @apply font-display uppercase tracking-[0.08em] text-xs font-medium text-ink-muted dark:text-ink-dark-muted;
+  }
+  .label-display {
+    @apply font-display text-sm font-medium tracking-tight;
+  }
 }
 
 @layer base {
@@ -20,13 +26,16 @@
   }
   body {
     min-height: 100%;
-    @apply bg-surface-secondary text-gray-900;
+    background-color: #FAFAF7;
+    color: #111112;
+    font-feature-settings: 'cv02','cv03','cv04','cv11','ss01';
   }
   button, input, select, textarea {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
   .dark body {
-    @apply bg-surface-dark text-gray-100;
+    background-color: #0A0A0B;
+    color: #EDEDE9;
   }
   .tabular-nums {
     font-variant-numeric: tabular-nums;
