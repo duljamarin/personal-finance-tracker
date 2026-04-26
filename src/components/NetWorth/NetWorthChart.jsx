@@ -41,8 +41,19 @@ export default function NetWorthChart({ data, transactions = [] }) {
 
   const chartData = useMemo(() => {
     if (hasSnapshots) {
-      // Use snapshot dates, enrich with cash flow
-      return data.map(item => {
+      // Deduplicate by month, keeping the latest snapshot per month
+      const monthMap = {};
+      for (const item of data) {
+        const monthKey = item.snapshot_date.slice(0, 7);
+        if (!monthMap[monthKey] || item.snapshot_date > monthMap[monthKey].snapshot_date) {
+          monthMap[monthKey] = item;
+        }
+      }
+      const deduped = Object.values(monthMap).sort((a, b) =>
+        a.snapshot_date.localeCompare(b.snapshot_date)
+      );
+
+      return deduped.map(item => {
         const snapshotDate = item.snapshot_date.slice(0, 10);
         const cashFlowNet = getCashFlowUpTo(snapshotDate);
         return {
@@ -104,7 +115,11 @@ export default function NetWorthChart({ data, transactions = [] }) {
           tick={{ fontSize: 11, fill: '#6b7280' }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(value) => `${CURRENCY_SYMBOLS.EUR}${(value / 1000).toFixed(0)}k`}
+          tickFormatter={(value) => {
+            const abs = Math.abs(value);
+            const str = `${CURRENCY_SYMBOLS.EUR}${(abs / 1000).toFixed(0)}k`;
+            return value < 0 ? `-${str}` : str;
+          }}
           width={60}
         />
         <Tooltip content={<CustomTooltip />} />
@@ -138,9 +153,9 @@ export default function NetWorthChart({ data, transactions = [] }) {
         <Line
           type="monotone"
           dataKey={t('networth.netWorth')}
-          stroke="#168b78"
+          stroke="#8b5cf6"
           strokeWidth={3}
-          dot={{ fill: '#168b78', r: 3 }}
+          dot={{ fill: '#8b5cf6', r: 3 }}
         />
       </LineChart>
     </ResponsiveContainer>
