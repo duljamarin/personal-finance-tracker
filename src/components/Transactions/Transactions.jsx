@@ -391,7 +391,7 @@ export default function Transactions() {
                           )}
                           {Array.isArray(item.tags) && item.tags.length > 0 && (
                             <span className="text-xs text-ink-muted dark:text-ink-dark-muted truncate">
-                              · {item.tags.slice(0, 2).map(tag => `#${tag}`).join(' ')}
+                              {item.tags.slice(0, 2).map(tag => `#${tag}`).join(' ')}
                               {item.tags.length > 2 && ` +${item.tags.length - 2}`}
                             </span>
                           )}
