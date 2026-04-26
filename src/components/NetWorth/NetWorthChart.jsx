@@ -61,7 +61,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
           [t('networth.assets')]: item.total_assets,
           [t('networth.liabilities')]: item.total_liabilities,
           [t('networth.cashBalance')]: parseFloat(cashFlowNet.toFixed(2)),
-          [t('networth.netWorth')]: parseFloat((item.total_assets - item.total_liabilities).toFixed(2)),
+          [t('networth.netWorth')]: parseFloat((item.total_assets + cashFlowNet - item.total_liabilities).toFixed(2)),
         };
       });
     }
