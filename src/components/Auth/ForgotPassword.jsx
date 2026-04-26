@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
+import Input from '../UI/Input';
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
@@ -12,11 +13,8 @@ export default function ForgotPassword() {
 
   function validate() {
     setEmailError('');
-    
-    // Trim email and validate with stricter regex matching Supabase requirements
     const trimmedEmail = email.trim();
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    
     if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setEmailError('auth.emailError');
       return false;
@@ -31,96 +29,94 @@ export default function ForgotPassword() {
     setLoading(true);
     try {
       const redirectUrl = `${window.location.origin}/reset-password`;
-      // Trim email before sending to Supabase
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: redirectUrl
-      });
-
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: redirectUrl });
       if (error) throw error;
-
-      // Always show success (don't leak if email exists)
       setSuccess(true);
     } catch (err) {
       console.error('Reset password error:', err);
-      // Still show success to avoid email enumeration
       setSuccess(true);
     } finally {
       setLoading(false);
     }
   }
 
+  const Shell = ({ children }) => (
+    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+      <div aria-hidden="true" className="absolute top-6 left-6 sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
+      <div aria-hidden="true" className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
+      <div className="relative w-full max-w-md">{children}</div>
+    </div>
+  );
+
   if (success) {
     return (
-      <div className="max-w-md lg:max-w-lg xl:max-w-xl mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      <Shell>
+        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-8 sm:p-10 text-center shadow-sm">
+          <div className="w-16 h-16 bg-brand-50 dark:bg-brand-950/40 rounded-full flex items-center justify-center mx-auto mb-5 border border-brand-200/60 dark:border-brand-800/30">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
             </svg>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-4">
-              {t('auth.checkYourEmail')}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
-              {t('auth.resetEmailSent')}
-            </p>
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-semibold transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              {t('auth.backToLogin')}
-            </Link>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.1] mb-3">
+            {t('auth.checkYourEmail')}
+          </h1>
+          <p className="text-base text-ink-muted dark:text-ink-dark-muted mb-8">
+            {t('auth.resetEmailSent')}
+          </p>
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            {t('auth.backToLogin')}
+          </Link>
         </div>
-      </div>
+      </Shell>
     );
   }
 
   return (
-    <div className="max-w-md lg:max-w-lg xl:max-w-xl mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
-            {t('auth.forgotPasswordTitle')}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            {t('auth.forgotPasswordDescription')}
-          </p>
+    <Shell>
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+          <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 17 L10 11 L14 14 L20 6" />
+            <path d="M15 6 L20 6 L20 11" />
+          </svg>
         </div>
+        <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+          {t('auth.forgotPasswordTitle')}
+        </h1>
+        <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
+          {t('auth.forgotPasswordDescription')}
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
-          <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">
-              {t('auth.email')}
-            </label>
-            <input
-              type="text"
-              value={email}
-              onChange={e => {
-                setEmail(e.target.value);
-                if (emailError) setEmailError('');
-              }}
-              placeholder={t('auth.emailPlaceholder')}
-              className={`w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${
-                emailError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'
-              }`}
-            />
-            {emailError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(emailError)}</span>}
-          </div>
+      <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <Input
+            label={t('auth.email')}
+            type="text"
+            value={email}
+            onChange={e => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError('');
+            }}
+            placeholder={t('auth.emailPlaceholder')}
+            error={emailError ? t(emailError) : ''}
+            leadingIcon={
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+            }
+          />
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
           >
             {loading ? t('auth.sending') : t('auth.sendResetLink')}
           </button>
@@ -128,16 +124,16 @@ export default function ForgotPassword() {
           <div className="text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-semibold transition-colors text-sm"
+              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               {t('auth.backToLogin')}
             </Link>
           </div>
         </form>
       </div>
-    </div>
+    </Shell>
   );
 }

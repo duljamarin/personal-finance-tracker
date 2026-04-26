@@ -7,10 +7,10 @@ export default function IncomeStep({ monthlyIncome, onChange, currency }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
           {t('onboarding.income.title')}
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-ink-muted dark:text-ink-dark-muted mt-2">
           {t('onboarding.income.subtitle')}
         </p>
       </div>

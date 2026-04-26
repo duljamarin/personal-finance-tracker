@@ -20,12 +20,10 @@ export default function ResetPassword() {
   useEffect(() => {
     async function verifyRecoveryToken() {
       try {
-        // Extract token_hash and type from URL params
         const params = new URLSearchParams(window.location.search);
         const tokenHash = params.get('token_hash');
         const type = params.get('type');
 
-        // If we have token_hash and type=recovery in URL, verify it first
         if (tokenHash && type === 'recovery') {
           const { data, error } = await supabase.auth.verifyOtp({
             token_hash: tokenHash,
@@ -42,18 +40,15 @@ export default function ResetPassword() {
           if (data.session) {
             setIsValidSession(true);
             setCheckingSession(false);
-            // Clean up URL params after successful verification
             window.history.replaceState({}, '', '/reset-password');
             return;
           }
         }
 
-        // If no token_hash in URL, check if user already has a valid recovery session
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           setIsValidSession(true);
         } else {
-          // No valid session and no token to verify
           addToast(t('auth.invalidResetLink'), 'error');
           navigate('/login');
         }
@@ -68,7 +63,6 @@ export default function ResetPassword() {
 
     verifyRecoveryToken();
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setIsValidSession(true);
@@ -110,32 +104,23 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: password
-      });
-
+      const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-
       addToast(t('auth.passwordResetSuccess'), 'success');
-      
-      // Sign out and redirect to login
       await supabase.auth.signOut();
       navigate('/login');
     } catch (err) {
       console.error('Reset password error:', err);
       const errorMsg = err?.message || '';
       let errorKey = 'auth.resetPasswordError';
-
-      // Check for "same password" or "different password" error messages
-      if (errorMsg.toLowerCase().includes('same') || 
+      if (errorMsg.toLowerCase().includes('same') ||
           errorMsg.toLowerCase().includes('different') ||
           errorMsg.toLowerCase().includes('old password')) {
         errorKey = 'auth.passwordSameAsOld';
-      } else if (errorMsg.toLowerCase().includes('weak') || 
+      } else if (errorMsg.toLowerCase().includes('weak') ||
                  errorMsg.toLowerCase().includes('password is too weak')) {
         errorKey = 'auth.weakPassword';
       }
-
       addToast(t(errorKey), 'error');
     } finally {
       setLoading(false);
@@ -145,8 +130,8 @@ export default function ResetPassword() {
   if (checkingSession) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-700 border-t-brand-600 rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600 dark:text-gray-400 font-medium">{t('auth.verifying')}</p>
+        <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mb-4" />
+        <p className="text-ink-muted dark:text-ink-dark-muted font-medium">{t('auth.verifying')}</p>
       </div>
     );
   }
@@ -155,68 +140,73 @@ export default function ResetPassword() {
     return null;
   }
 
+  const pwInputClass = (hasError) =>
+    `w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 rounded-md transition-colors ${hasError ? 'border-red-400' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`;
+
   return (
-    <div className="max-w-md lg:max-w-lg xl:max-w-xl mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-gray-200 dark:border-zinc-800">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+      <div aria-hidden="true" className="absolute top-6 left-6 sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
+      <div aria-hidden="true" className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
+
+      <div className="relative w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 17 L10 11 L14 14 L20 6" />
+              <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
             {t('auth.resetPasswordTitle')}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
+          </h1>
+          <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
             {t('auth.resetPasswordDescription')}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
-          <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">
-              {t('auth.newPassword')}
-            </label>
-            <PasswordInput
-              value={password}
-              onChange={e => {
-                setPassword(e.target.value);
-                if (passwordError) setPasswordError('');
-              }}
-              placeholder={t('auth.passwordPlaceholder')}
-              className={`w-full border-2 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${
-                passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'
-              }`}
-            />
-            {passwordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(passwordError)}</span>}
-          </div>
+        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">
+                {t('auth.newPassword')}
+              </label>
+              <PasswordInput
+                value={password}
+                onChange={e => {
+                  setPassword(e.target.value);
+                  if (passwordError) setPasswordError('');
+                }}
+                placeholder={t('auth.passwordPlaceholder')}
+                className={pwInputClass(passwordError)}
+              />
+              {passwordError && <span className="text-red-500 text-xs mt-2 block">{t(passwordError)}</span>}
+            </div>
 
-          <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">
-              {t('auth.confirmNewPassword')}
-            </label>
-            <PasswordInput
-              value={confirmPassword}
-              onChange={e => {
-                setConfirmPassword(e.target.value);
-                if (confirmPasswordError) setConfirmPasswordError('');
-              }}
-              placeholder={t('auth.confirmPasswordPlaceholder')}
-              className={`w-full border-2 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${
-                confirmPasswordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-zinc-800'
-              }`}
-            />
-            {confirmPasswordError && <span className="text-red-500 text-xs mt-1.5 block font-medium">{t(confirmPasswordError)}</span>}
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">
+                {t('auth.confirmNewPassword')}
+              </label>
+              <PasswordInput
+                value={confirmPassword}
+                onChange={e => {
+                  setConfirmPassword(e.target.value);
+                  if (confirmPasswordError) setConfirmPasswordError('');
+                }}
+                placeholder={t('auth.confirmPasswordPlaceholder')}
+                className={pwInputClass(confirmPasswordError)}
+              />
+              {confirmPasswordError && <span className="text-red-500 text-xs mt-2 block">{t(confirmPasswordError)}</span>}
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? t('auth.resetting') : t('auth.resetPassword')}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
+            >
+              {loading ? t('auth.resetting') : t('auth.resetPassword')}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -8,24 +8,23 @@ function LanguageSwitcher() {
   };
 
   return (
-    <div className="flex items-center gap-0.5 text-sm">
+    <div className="inline-flex items-center gap-0.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-0.5">
       <button
         onClick={() => changeLanguage('sq')}
-        className={`px-2 py-1 rounded-md font-medium transition-colors ${
+        className={`px-2 py-1 rounded-[5px] font-medium transition-colors ${
           i18n.language === 'sq'
-            ? 'text-brand-700 dark:text-brand-400'
-            : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+            ? 'bg-brand-600 text-white'
+            : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary'
         }`}
       >
         SQ
       </button>
-      <span className="text-gray-300 dark:text-gray-600 text-xs">/</span>
       <button
         onClick={() => changeLanguage('en')}
-        className={`px-2 py-1 rounded-md font-medium transition-colors ${
+        className={`px-2 py-1 rounded-[5px] font-medium transition-colors ${
           i18n.language === 'en'
-            ? 'text-brand-700 dark:text-brand-400'
-            : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+            ? 'bg-brand-600 text-white'
+            : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary'
         }`}
       >
         EN

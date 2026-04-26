@@ -8,24 +8,19 @@ This is the contract for the editorial redesign. When in doubt, refer back here.
 - **Primary / body**: **Inter** (Google Fonts), 400 weight, with `font-feature-settings: 'cv02','cv03','cv04','cv11','ss01'` applied on `<body>`. Uses Tailwind's default `font-sans`.
 - **Display / non-primary labels**: **Space Grotesk** (Google Fonts), 500–600 weight. Exposed as Tailwind `font-display`.
 
-### When to use `font-display`
-Apply Space Grotesk to non-primary labels across the entire app:
-- Small UPPERCASE eyebrow / overline text
-- Stat labels (e.g. "Balance", "Income", "Expenses" above the numbers in `SummaryCards.jsx`, landing-page stat blocks)
-- Section subtitles / decks under h1/h2
-- Table and list column headers
-- Form field labels (the text sitting above inputs)
-- Sidebar nav labels, header nav link text
-- Chip / badge / tag text
-- Timestamps and "updated X ago" metadata
-- Secondary button labels (primary CTAs stay Inter)
+### When to use `font-display` (Space Grotesk) — broader than originally planned
+Space Grotesk is the **dominant** typographic voice of this app. Use it on all of:
+- All headings: `h1`, `h2`, `h3`, `h4`
+- Primary and secondary CTA button labels
+- All labels: form fields, stat captions, nav, chips/badges/tags, column headers
+- Eyebrow / overline text, metadata, timestamps, "updated X ago"
+- Feature card titles and their short descriptions
 - Dashboard preview mockup labels ("BALANCE", "INCOME", "EXPENSES", "BUDGET", "RECENT")
 
-### Stays Inter
-- Body paragraphs, transaction descriptions, long-form copy
-- `h1` / `h2` / `h3` headings (page titles, card titles, section heads)
-- Primary CTA button text
-- Numeric values (amounts, percentages, counts)
+### Stays Inter (narrower than originally planned)
+- Long-form body paragraphs (hero subtitle, showcase descriptions, marketing copy over ~30 words)
+- Transaction descriptions in lists
+- Numeric values (amounts, percentages, counts) — always `tabular-nums`
 
 ### Tracking
 | Size | Tracking | Notes |
@@ -117,9 +112,9 @@ Kill every stray `rounded-2xl`.
 ## AI-tell removals (apply everywhere)
 
 1. **Gradient-blur halos** — delete every `absolute -inset-* bg-brand-*/10 blur-*` (start with `LandingPage.jsx` behind `DashboardPreview`). Dashboard mockups sit on a flat surface.
-2. **Pulse-dot "live" pill** — replace with a typographic eyebrow: `<p className="eyebrow">Personal finance, simplified.</p>`. No pill, no animated dot.
+2. **Pulse-dot "live" pill** — replaced with an editorial metadata strip: a 32px horizontal rule leading into wide-tracked Space Grotesk uppercase text, splitting any `·` divider into a proper inline structure. A bare `.eyebrow` class is **not** sufficient on landing-page hero strings — they need more intentional composition.
 3. **Emoji in mockups** (`☕ 💰 🏠`) — replace with an 8px neutral category dot + the label. Replace the emoji favicon in `index.html` with an inline minimalist SVG geometric mark.
-4. **Heroicons outline feature icons** — either (a) hairline 1.5px-stroke custom SVGs sharing stroke width and a 20×20 viewbox, or (b) oversized numerals "01", "02", "03" in Space Grotesk as the visual anchor per feature card. Commit to one direction across all feature cards. **Chosen direction: (b) oversized numerals.**
+4. **Heroicons outline feature icons** — replaced with custom hairline 1.5px-stroke SVGs on a 40×40 viewBox, all sharing stroke width / linecap / aesthetic. Each feature gets a drawn-by-hand mini-illustration (trend line, bar trio, gauge, bullseye, loop, Venn, 2×2 grid, etc.). **Do NOT use numbered cards — "01/02/03" numerals were explicitly rejected by the user.**
 5. **Uniform rounded-xl / rounded-2xl** — audit every file and apply the radii scale above. Don't find-replace; decide by context.
 6. **Pure grays** — migrate to the warmer `surface.*` / `ink.*` tokens.
 7. **Soft shadows** — removed from default cards; kept only on modals + dropdowns + hero mockup.

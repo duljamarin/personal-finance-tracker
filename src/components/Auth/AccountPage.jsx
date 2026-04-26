@@ -96,14 +96,14 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-lg mx-auto py-8 px-4 flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">{t('account.title')}</h1>
+      <h1 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">{t('account.title')}</h1>
 
       {/* Display Name Section */}
-      <Card padding="lg" className="border border-gray-100 dark:border-zinc-800">
-        <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">{t('account.displayName')}</h2>
+      <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
+        <h2 className="font-display font-semibold tracking-tight text-lg text-ink-primary dark:text-ink-dark-primary mb-4">{t('account.displayName')}</h2>
         <form onSubmit={handleSaveName} className="flex flex-col gap-4">
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">
+            <label className="block font-semibold text-ink-secondary dark:text-ink-dark-secondary mb-2 text-sm">
               {t('account.displayName')}
             </label>
             <input
@@ -111,13 +111,13 @@ export default function AccountPage() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder={t('account.displayNamePlaceholder')}
-              className="w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm border-gray-200 dark:border-zinc-800"
+              className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder-ink-muted dark:placeholder-ink-dark-muted transition-all border-surface-hairline dark:border-surface-dark-hairline"
             />
           </div>
           <button
             type="submit"
             disabled={savingName || !displayName.trim()}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingName ? t('account.saving') : t('account.saveDisplayName')}
           </button>
@@ -125,11 +125,11 @@ export default function AccountPage() {
       </Card>
 
       {/* Change Password Section */}
-      <Card padding="lg" className="border border-gray-100 dark:border-zinc-800">
-        <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">{t('account.changePassword')}</h2>
+      <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
+        <h2 className="font-display font-semibold tracking-tight text-lg text-ink-primary dark:text-ink-dark-primary mb-4">{t('account.changePassword')}</h2>
         <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">
+            <label className="block font-semibold text-ink-secondary dark:text-ink-dark-secondary mb-2 text-sm">
               {t('account.newPassword')}
             </label>
             <PasswordInput
@@ -142,11 +142,11 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
+              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder-ink-muted dark:placeholder-ink-dark-muted transition-all ${passwordError ? 'border-[#e05c6b]' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">
+            <label className="block font-semibold text-ink-secondary dark:text-ink-dark-secondary mb-2 text-sm">
               {t('account.confirmPassword')}
             </label>
             <PasswordInput
@@ -159,18 +159,18 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border-2 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm ${passwordError ? 'border-red-500 dark:border-red-400' : 'border-gray-200 dark:border-gray-600'}`}
+              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder-ink-muted dark:placeholder-ink-dark-muted transition-all ${passwordError ? 'border-[#e05c6b]' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           {passwordError && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm p-3 rounded-xl font-medium">
+            <div className="border border-[#e05c6b] text-[#e05c6b] dark:text-[#f08090] text-sm p-3 rounded-md font-medium">
               {t(passwordError)}
             </div>
           )}
           <button
             type="submit"
             disabled={savingPassword || !newPassword || !confirmPassword}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-lg font-semibold text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-md font-semibold text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingPassword ? t('account.saving') : t('account.savePassword')}
           </button>
@@ -178,21 +178,22 @@ export default function AccountPage() {
       </Card>
 
       {/* Danger Zone */}
-      <div className="border-2 border-red-200 dark:border-red-800 rounded-xl overflow-hidden">
-        <div className="bg-red-50 dark:bg-red-900/20 px-6 py-4 flex items-center gap-3 border-b border-red-200 dark:border-red-800">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="border rounded-xl overflow-hidden" style={{ borderColor: '#e05c6b' }}>
+        <div className="px-6 py-4 flex items-center gap-3 border-b" style={{ borderColor: '#e05c6b', backgroundColor: 'rgba(224,92,107,0.06)' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" style={{ color: '#e05c6b' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           </svg>
-          <h2 className="text-lg font-bold text-red-700 dark:text-red-400">{t('account.dangerZone')}</h2>
+          <h2 className="font-display font-semibold tracking-tight text-lg" style={{ color: '#e05c6b' }}>{t('account.dangerZone')}</h2>
         </div>
-        <div className="bg-white dark:bg-surface-dark-tertiary px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="bg-white dark:bg-surface-dark-card px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="font-semibold text-gray-900 dark:text-white text-sm">{t('account.deleteAccountTitle')}</p>
-            <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">{t('account.deleteAccountDesc')}</p>
+            <p className="font-semibold text-ink-primary dark:text-ink-dark-primary text-sm">{t('account.deleteAccountTitle')}</p>
+            <p className="text-ink-muted dark:text-ink-dark-muted text-xs mt-1">{t('account.deleteAccountDesc')}</p>
           </div>
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="flex-shrink-0 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm hover:shadow-md transition-all"
+            className="flex-shrink-0 px-5 py-2.5 text-white text-sm font-bold rounded-md shadow-sm hover:shadow-md transition-all"
+            style={{ backgroundColor: '#e05c6b' }}
           >
             {t('account.deleteAccountBtn')}
           </button>
@@ -201,22 +202,22 @@ export default function AccountPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-2xl max-w-md w-full p-6 flex flex-col gap-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
+          <div className="bg-white dark:bg-surface-dark-card rounded-xl shadow-2xl max-w-md w-full p-6 flex flex-col gap-5 border border-surface-hairline dark:border-surface-dark-hairline">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(224,92,107,0.1)' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" style={{ color: '#e05c6b' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('account.deleteModalTitle')}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('account.deleteModalDesc')}</p>
+                <h3 className="font-display font-semibold tracking-tight text-lg text-ink-primary dark:text-ink-dark-primary">{t('account.deleteModalTitle')}</h3>
+                <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1">{t('account.deleteModalDesc')}</p>
               </div>
             </div>
 
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4">
-              <ul className="text-sm text-amber-800 dark:text-amber-300 space-y-1 list-disc list-inside">
+            <div className="border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-4 bg-surface-subtle dark:bg-surface-dark-subtle">
+              <ul className="text-sm text-ink-secondary dark:text-ink-dark-secondary space-y-1 list-disc list-inside">
                 <li>{t('account.deleteWarn1')}</li>
                 <li>{t('account.deleteWarn2')}</li>
                 <li>{t('account.deleteWarn3')}</li>
@@ -224,7 +225,7 @@ export default function AccountPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+              <label className="block text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary mb-2">
                 {t('account.deleteConfirmLabel')}
               </label>
               <input
@@ -232,7 +233,7 @@ export default function AccountPage() {
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full border-2 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all shadow-sm border-gray-200 dark:border-zinc-800 font-mono tracking-widest"
+                className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder-ink-muted dark:placeholder-ink-dark-muted transition-all border-surface-hairline dark:border-surface-dark-hairline font-mono tracking-widest"
               />
             </div>
 
@@ -240,14 +241,15 @@ export default function AccountPage() {
               <button
                 onClick={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}
                 disabled={deleting}
-                className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50"
+                className="flex-1 px-4 py-3 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary rounded-md font-bold text-sm hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle transition-all disabled:opacity-50"
               >
                 {t('common.cancel')}
               </button>
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmText !== 'DELETE' || deleting}
-                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 text-white rounded-md font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ backgroundColor: '#e05c6b' }}
               >
                 {deleting ? t('account.deleting') : t('account.deleteAccountBtn')}
               </button>

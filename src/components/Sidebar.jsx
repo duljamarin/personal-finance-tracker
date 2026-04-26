@@ -82,22 +82,34 @@ const navItems = [
   },
 ];
 
+function BrandMark({ compact = false }) {
+  return (
+    <span className={`inline-flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-10 h-10'} bg-brand-600 rounded-lg shadow-sm shadow-brand-500/25 flex-shrink-0`}>
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 17 L10 11 L14 14 L20 6" />
+        <path d="M15 6 L20 6 L20 11" />
+      </svg>
+    </span>
+  );
+}
 
 function NavItem({ item, isActive, collapsed, onClick }) {
   const { t } = useTranslation();
-
   return (
     <Link
       to={item.path}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-3.5 rounded-lg text-base font-medium transition-colors duration-150 group ${
+      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
         isActive
-          ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-400'
-          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800/60'
+          ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300'
+          : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
       } ${collapsed ? 'justify-center' : ''}`}
       title={collapsed ? t(item.labelKey) : undefined}
     >
-      <span className={isActive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}>
+      {isActive && !collapsed && (
+        <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-brand-500 rounded-r-full" />
+      )}
+      <span className={isActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-ink-dark-muted/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}>
         {item.icon}
       </span>
       {!collapsed && <span>{t(item.labelKey)}</span>}
@@ -121,7 +133,6 @@ export default function Sidebar() {
   const showProBadge = isPremium && !isTrialing && subscription?.subscription_status !== 'none';
   const showUpgrade = !isPremium || isTrialing;
 
-  // Fetch unread notification count + realtime
   useEffect(() => {
     if (!user) return;
 
@@ -156,7 +167,6 @@ export default function Sidebar() {
     };
   }, [user]);
 
-  // Close profile on outside click
   useEffect(() => {
     function handleClickOutside(e) {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -167,7 +177,6 @@ export default function Sidebar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [profileOpen]);
 
-  // Close mobile sidebar on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
@@ -177,24 +186,25 @@ export default function Sidebar() {
     navigate('/login');
   };
 
+  const notifActive = location.pathname === '/notifications';
+
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-4 h-16 shrink-0`}>
-        <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
+      <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-4 h-16 shrink-0 border-b border-surface-hairline dark:border-surface-dark-hairline`}>
+        <BrandMark compact />
         {!collapsed && (
-          <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate">
+          <span className="text-base font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight truncate">
             {t('app.shortName')}
           </span>
         )}
       </div>
 
       {/* Main nav */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {!collapsed && (
+          <p className="eyebrow px-3 mb-3 text-[10px]">Menu</p>
+        )}
         {navItems.map(item => (
           <NavItem
             key={item.key}
@@ -209,14 +219,17 @@ export default function Sidebar() {
         <Link
           to="/notifications"
           onClick={() => setMobileOpen(false)}
-          className={`flex items-center gap-3 px-3 py-3.5 rounded-lg text-base font-medium transition-colors duration-150 group ${
-            location.pathname === '/notifications'
-              ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-400'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800/60'
+          className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
+            notifActive
+              ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300'
+              : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
           } ${collapsed ? 'justify-center' : ''}`}
         >
+          {notifActive && !collapsed && (
+            <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-brand-500 rounded-r-full" />
+          )}
           <span className="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-5 h-5 ${location.pathname === '/notifications' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-5 h-5 ${notifActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-ink-dark-muted/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
             </svg>
             {unreadCount > 0 && (
@@ -225,29 +238,27 @@ export default function Sidebar() {
               </span>
             )}
           </span>
-          {!collapsed && (
-            <span>{t('notifications.title')}</span>
-          )}
+          {!collapsed && <span>{t('notifications.title')}</span>}
         </Link>
       </nav>
 
       {/* Upgrade / Manage Subscription CTA */}
       {!collapsed && (
-        <div className="px-3 pb-2">
+        <div className="px-3 pb-3">
           {showUpgrade ? (
             <Link
               to="/pricing"
-              className="flex items-center justify-center gap-2 w-full px-3 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors"
+              className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
               {t('upgrade.goPremium')}
             </Link>
           ) : (
             <Link
               to="/pricing"
-              className="flex items-center justify-center gap-2 w-full px-3 py-2 text-xs font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/30 rounded-lg transition-colors border border-brand-200 dark:border-brand-800"
+              className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/30 hover:bg-brand-100 dark:hover:bg-brand-950/50 rounded-md transition-colors border border-brand-200/60 dark:border-brand-800/30"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.204-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
               </svg>
@@ -257,17 +268,15 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Bottom section: theme, lang, profile */}
-      <div className="border-t border-gray-200 dark:border-zinc-800 px-3 py-3 shrink-0 space-y-2">
-        {/* Controls row */}
+      {/* Bottom section */}
+      <div className="border-t border-surface-hairline dark:border-surface-dark-hairline px-3 py-3 shrink-0 space-y-2">
         <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} px-1`}>
           {!collapsed && <LanguageSwitcher />}
           <div className="flex items-center gap-1">
             <ThemeToggle />
-            {/* Collapse toggle - desktop only */}
             <button
               onClick={() => setCollapsed(c => !c)}
-              className="hidden lg:flex p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+              className="hidden lg:flex p-2 rounded-md text-ink-muted/70 dark:text-ink-dark-muted/70 hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-4 h-4 transition-transform ${collapsed ? 'rotate-180' : ''}`}>
@@ -281,52 +290,52 @@ export default function Sidebar() {
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(p => !p)}
-            className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800/60 transition-colors ${collapsed ? 'justify-center' : ''}`}
+            className={`w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors ${collapsed ? 'justify-center' : ''}`}
           >
-            <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-semibold shrink-0">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-sm font-semibold shrink-0 shadow-sm shadow-brand-500/20">
               {(user?.user_metadata?.username || user?.email || '?')[0].toUpperCase()}
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                <p className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary truncate">
                   {user?.user_metadata?.username || user?.email}
                 </p>
                 {showProBadge && (
-                  <span className="text-[10px] font-semibold text-brand-600 dark:text-brand-400">PRO</span>
+                  <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40 rounded">PRO</span>
                 )}
               </div>
             )}
           </button>
 
           {profileOpen && (
-            <div className={`absolute ${collapsed ? 'left-full ml-2' : 'left-0 right-0'} bottom-full mb-2 bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 rounded-lg shadow-lg z-50 py-1 animate-scale-in min-w-[180px]`}>
+            <div className={`absolute ${collapsed ? 'left-full ml-2' : 'left-0 right-0'} bottom-full mb-2 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-xl shadow-lg z-50 py-1.5 animate-scale-in min-w-[200px]`}>
               <Link
                 to="/account"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}
-                className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-700/50 transition-colors"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 {t('nav.myProfile')}
               </Link>
               <Link
                 to="/pricing"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}
-                className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-zinc-700/50 transition-colors"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
                 </svg>
                 {t('nav.subscription')}
               </Link>
-              <div className="border-t border-gray-100 dark:border-zinc-700 my-0.5" />
+              <div className="border-t border-surface-hairline dark:border-surface-dark-hairline my-1" />
               <button
                 onClick={() => { setProfileOpen(false); handleLogout(); }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
+                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
                 {t('nav.logout')}
               </button>
@@ -340,17 +349,17 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className={`hidden lg:flex flex-col shrink-0 h-screen sticky top-0 bg-white dark:bg-surface-dark border-r border-gray-200 dark:border-zinc-800 transition-all duration-200 ${collapsed ? 'w-[68px]' : 'w-60'}`}>
+      <aside className={`hidden lg:flex flex-col shrink-0 h-screen sticky top-0 bg-white dark:bg-surface-dark-card border-r border-surface-hairline dark:border-surface-dark-hairline transition-all duration-200 ${collapsed ? 'w-[68px]' : 'w-64'}`}>
         {sidebarContent}
       </aside>
 
-      {/* Mobile hamburger trigger */}
+      {/* Mobile trigger */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 shadow-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-40 p-2.5 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline shadow-sm text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
         aria-label="Open menu"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
       </button>
@@ -359,14 +368,13 @@ export default function Sidebar() {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-surface-dark border-r border-gray-200 dark:border-zinc-800 animate-slide-in-left">
-            {/* Close button */}
+          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-surface-dark-card border-r border-surface-hairline dark:border-surface-dark-hairline animate-slide-in-left">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-3 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+              className="absolute top-4 right-3 p-1.5 rounded-md text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />

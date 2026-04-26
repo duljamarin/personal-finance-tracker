@@ -43,10 +43,10 @@ function PctChange({ current, previous, positiveIsGood }) {
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 rounded-lg shadow-lg">
-        <p className="font-semibold text-sm mb-1">{label}</p>
+      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
+        <p className="font-semibold text-sm text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
         {payload.map((entry) => (
-          <p key={entry.name} className="text-sm" style={{ color: entry.color }}>
+          <p key={entry.name} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: €{Number(entry.value).toFixed(2)}
           </p>
         ))}
@@ -126,8 +126,8 @@ export default function ReportPeriodComparison({
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: '12px' }} />
-            <Bar dataKey={currentLabel} fill="#0d9488" radius={[4, 4, 0, 0]} />
-            <Bar dataKey={previousLabel} fill="#99f6e4" radius={[4, 4, 0, 0]} />
+            <Bar dataKey={currentLabel} fill="#168b78" radius={[4, 4, 0, 0]} />
+            <Bar dataKey={previousLabel} fill="#79dbc5" radius={[4, 4, 0, 0]} />
           </BarChart>
         </div>
 

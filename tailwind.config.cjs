@@ -4,6 +4,7 @@ module.exports = {
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -40,9 +41,15 @@ module.exports = {
         },
         ink: {
           primary: '#111112',
-          muted: '#5A5A55',
+          muted: '#2F2F2C',
           'dark-primary': '#EDEDE9',
-          'dark-muted': '#8A8A85',
+          'dark-muted': '#C8C8C3',
+        },
+        expense: {
+          DEFAULT: '#e05c6b',
+          light: '#f08090',
+          bg: '#fdf2f4',
+          'dark-bg': 'rgba(224,92,107,0.12)',
         },
         border: {
           DEFAULT: '#e5e7eb',
@@ -50,11 +57,11 @@ module.exports = {
         },
       },
       boxShadow: {
-        'xs': '0 1px 2px 0 rgb(0 0 0 / 0.03)',
-        'sm': '0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
-        'md': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03)',
-        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)',
-        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.03)',
+        xs: '0 1px 2px 0 rgb(0 0 0 / 0.03)',
+        sm: '0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
+        md: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03)',
+        lg: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)',
+        xl: '0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.03)',
       },
       animation: {
         'fade-out': 'fadeOut 0.5s ease-in-out 1.5s forwards',
@@ -102,6 +109,4 @@ module.exports = {
     },
   },
   plugins: [],
-  darkMode: 'class',
 };
-

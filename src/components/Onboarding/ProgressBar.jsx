@@ -11,37 +11,50 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           const isCompleted = step < currentStep;
           const isCurrent = step === currentStep;
 
+          const circle = isCompleted
+            ? 'bg-brand-600 text-white border-brand-600'
+            : isCurrent
+              ? 'bg-brand-600 text-white border-brand-600 shadow-md shadow-brand-500/30 ring-4 ring-brand-500/15'
+              : 'bg-white dark:bg-surface-dark-card text-ink-muted dark:text-ink-dark-muted border-surface-hairline dark:border-surface-dark-hairline';
+
           return (
             <div key={step} className="flex items-center gap-2">
-              <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-colors duration-200 ${
-                  isCompleted
-                    ? 'bg-brand-600 text-white'
-                    : isCurrent
-                      ? 'bg-brand-600 text-white ring-4 ring-brand-100 dark:ring-brand-900/40'
-                      : 'bg-gray-200 dark:bg-zinc-700 text-gray-500 dark:text-gray-400'
-                }`}
-              >
+              <div className={`w-10 h-10 rounded-full border flex items-center justify-center text-sm font-semibold tabular-nums transition-all duration-200 ${circle}`}>
                 {isCompleted ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
-                  step
+                  String(step).padStart(2, '0')
                 )}
               </div>
               {step < totalSteps && (
-                <div
-                  className={`w-10 sm:w-16 h-1 rounded-full transition-colors duration-200 ${
-                    isCompleted ? 'bg-brand-600' : 'bg-gray-200 dark:bg-zinc-700'
-                  }`}
-                />
+                <div className={`w-12 sm:w-20 h-px transition-colors duration-200 ${
+                  isCompleted ? 'bg-brand-500' : 'bg-surface-hairline dark:bg-surface-dark-hairline'
+                }`} />
               )}
             </div>
           );
         })}
       </div>
-      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">
+      <div className="flex items-center justify-center gap-2 mt-3">
+        {Array.from({ length: totalSteps }, (_, i) => {
+          const step = i + 1;
+          const isCurrent = step === currentStep;
+          const labelClass = isCurrent
+            ? 'text-brand-600'
+            : 'text-ink-muted/60 dark:text-ink-dark-muted/60';
+          return (
+            <div key={`label-${step}`} className="flex items-center gap-2">
+              <span className={`w-10 text-center text-[10px] font-medium ${labelClass}`}>
+                {t(`onboarding.steps.${step}`)}
+              </span>
+              {step < totalSteps && <div className="w-12 sm:w-20" />}
+            </div>
+          );
+        })}
+      </div>
+      <p className="text-center eyebrow mt-4 text-xs">
         {t('onboarding.wizard.stepOf', { current: currentStep, total: totalSteps })}
       </p>
     </div>

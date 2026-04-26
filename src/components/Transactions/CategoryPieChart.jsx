@@ -1,18 +1,27 @@
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
-const COLORS = [
-  '#3b82f6', '#ef4444', '#0D9488', '#f59e0b', '#8b5cf6', 
-  '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16'
+/* Unified brand palette — varied, harmonious, premium */
+const CHART_PALETTE = [
+  '#168b78', // brand-600  — emerald (primary)
+  '#6A8FC4', // muted indigo-blue
+  '#C9A87C', // warm amber-sand
+  '#9B7EB3', // muted purple
+  '#C46A75', // muted rose
+  '#43c5aa', // brand-400  — light emerald
+  '#D0A96A', // golden amber
+  '#7A9E7E', // sage green
+  '#7A756A', // warm stone grey
+  '#5B8DB8', // steel blue
 ];
+const COLORS = CHART_PALETTE;
 
 export default function CategoryPieChart({ transactions, type }) {
   const { t } = useTranslation();
-  
-  // Filter by type and aggregate by category
+
   const categoryTotals = {};
-  
+
   transactions
     .filter(tx => tx.type === type)
     .forEach(tx => {
@@ -24,7 +33,6 @@ export default function CategoryPieChart({ transactions, type }) {
       categoryTotals[categoryName] += amount;
     });
 
-  // Convert to array format for Recharts
   const data = Object.entries(categoryTotals)
     .map(([name, value]) => ({
       name: translateCategoryName(name),
@@ -34,14 +42,13 @@ export default function CategoryPieChart({ transactions, type }) {
 
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-8 text-center">
-        <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
-          <svg className="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+      <div className="flex flex-col items-center justify-center py-10 text-center">
+        <div className="w-12 h-12 rounded-full bg-surface-hairline/60 dark:bg-surface-dark-hairline/60 flex items-center justify-center mb-3">
+          <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
           </svg>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">{t('chart.noData')}</p>
+        <p className="text-sm text-ink-muted dark:text-ink-dark-muted">{t('chart.noData')}</p>
       </div>
     );
   }
@@ -52,70 +59,62 @@ export default function CategoryPieChart({ transactions, type }) {
     if (active && payload && payload.length) {
       const percentage = ((payload[0].value / total) * 100).toFixed(1);
       return (
-        <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 rounded-lg shadow-lg">
-          <p className="font-semibold">{payload[0].name}</p>
-          <p className="text-sm">€{payload[0].value.toFixed(2)}</p>
-          <p className="text-xs text-gray-300">{percentage}%</p>
+        <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
+          <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary">{payload[0].name}</p>
+          <p className="text-sm text-ink-primary dark:text-ink-dark-primary tabular-nums mt-0.5">€{payload[0].value.toFixed(2)}</p>
+          <p className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums">{percentage}%</p>
         </div>
       );
     }
     return null;
   };
 
-  const renderCustomizedLabel = ({
-    cx, cy, midAngle, innerRadius, outerRadius, percent
-  }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text 
-        x={x} 
-        y={y} 
-        fill="white" 
-        textAnchor={x > cx ? 'start' : 'end'} 
-        dominantBaseline="central"
-        className="text-xs font-bold"
-        style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
-
   return (
-    <div>
-      <ResponsiveContainer width="100%" height={250}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={renderCustomizedLabel}
-            outerRadius={80}
-            innerRadius={40}
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            wrapperStyle={{ fontSize: '12px' }}
-            formatter={(value, entry) => {
-              if (!entry.payload || !entry.payload.value || total === 0) {
-                return value;
-              }
-              const percentage = ((entry.payload.value / total) * 100).toFixed(1);
-              return `${value} (${percentage}%)`;
-            }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="grid sm:grid-cols-[auto_1fr] gap-6 items-center">
+      {/* Donut with total in center */}
+      <div className="relative w-[180px] h-[180px] mx-auto sm:mx-0 shrink-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              outerRadius={85}
+              innerRadius={60}
+              paddingAngle={1.5}
+              dataKey="value"
+              stroke="none"
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Category list */}
+      <div className="space-y-2.5">
+        {data.slice(0, 6).map((entry, index) => {
+          const pct = ((entry.value / total) * 100).toFixed(1);
+          return (
+            <div key={entry.name} className="flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              />
+              <span className="text-sm text-ink-primary dark:text-ink-dark-primary flex-1 truncate">{entry.name}</span>
+              <span className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums">€{entry.value.toFixed(0)}</span>
+              <span className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums w-12 text-right">{pct}%</span>
+            </div>
+          );
+        })}
+        {data.length > 6 && (
+          <p className="text-xs text-ink-muted dark:text-ink-dark-muted pt-1">+ {data.length - 6} more</p>
+        )}
+      </div>
     </div>
   );
 }

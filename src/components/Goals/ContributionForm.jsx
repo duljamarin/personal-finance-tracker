@@ -31,23 +31,23 @@ export default function ContributionForm({ goal, onSave, onClose }) {
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+      <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary mb-2">
         {t('goals.contributions.add')}
       </h2>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-ink-secondary dark:text-ink-dark-secondary mb-6">
         {goal.name}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Action toggle */}
-        <div className="flex rounded-lg border border-gray-200 dark:border-zinc-700 overflow-hidden">
+        <div className="flex rounded-md border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
           <button
             type="button"
             onClick={() => setAction('add')}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'add'
                 ? 'bg-brand-600 text-white'
-                : 'bg-white dark:bg-zinc-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-700'
+                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-ink-dark-secondary hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
           >
             {t('goals.contributions.add')}
@@ -57,9 +57,10 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onClick={() => setAction('withdraw')}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'withdraw'
-                ? 'bg-red-500 text-white'
-                : 'bg-white dark:bg-zinc-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-700'
+                ? 'text-white'
+                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-ink-dark-secondary hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
+            style={action === 'withdraw' ? { backgroundColor: '#e05c6b' } : undefined}
           >
             {t('goals.contributions.withdraw')}
           </button>
@@ -89,7 +90,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
             {t('goals.contributions.note')}
           </label>
           <textarea
@@ -97,7 +98,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onChange={(e) => setNote(e.target.value)}
             placeholder={t('goals.contributions.notePlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary"
           />
         </div>
 

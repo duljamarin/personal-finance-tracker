@@ -34,13 +34,15 @@ export default function TransactionRecurringSection({
 				</div>
 				<button
 					type="button"
+					role="switch"
+					aria-checked={isRecurring}
 					onClick={onToggle}
-					className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
-						isRecurring ? 'bg-purple-600' : 'bg-gray-300 dark:bg-gray-600'
+					className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-1 ${
+						isRecurring ? 'bg-brand-600' : 'bg-surface-hairline dark:bg-surface-dark-hairline'
 					}`}
 				>
 					<span
-						className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+						className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
 							isRecurring ? 'translate-x-6' : 'translate-x-1'
 						}`}
 					/>
@@ -153,8 +155,10 @@ export default function TransactionRecurringSection({
 					{/* Recurring Summary */}
 					{!errors.intervalCount && !errors.endDate && !errors.occurrencesLimit && (
 						<div className="text-xs text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-lg">
-							<span className="font-medium">📅 {t('recurring.summary')}: </span>
-							{t('recurring.summaryText', {
+							<span className="inline-flex items-center gap-2 font-medium">
+								{t('recurring.summary')} : 
+							</span>
+							  {" " + t('recurring.summaryText', {
 								frequency: t(`recurring.${frequency}Summary`),
 								interval: intervalCount,
 								startDate: startDate

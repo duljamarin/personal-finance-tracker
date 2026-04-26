@@ -31,7 +31,6 @@ export default function PricingPage() {
     return t('subscription.trialEndsIn', { days: trialDaysLeft });
   })();
 
-  // Navigate to dashboard once subscription becomes premium after a checkout
   useEffect(() => {
     if (checkoutInitiatedRef.current && isPremium) {
       checkoutInitiatedRef.current = false;
@@ -83,7 +82,6 @@ export default function PricingPage() {
         theme: 'light',
       },
     });
-    // Checkout completion is handled by SubscriptionContext's paddle-event listener
   };
 
   const handleManageSubscription = async () => {
@@ -93,7 +91,6 @@ export default function PricingPage() {
     }
 
     try {
-      // Call backend edge function to get management URLs from Paddle
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const response = await fetch(
         `${supabaseUrl}/functions/v1/get-customer-portal`,
@@ -114,7 +111,6 @@ export default function PricingPage() {
 
       const data = await response.json();
 
-      // Redirect to Paddle's update payment method page (primary management action)
       if (data.update_payment_url) {
         window.open(data.update_payment_url, '_blank');
       } else if (data.cancel_url) {
@@ -124,7 +120,7 @@ export default function PricingPage() {
       }
     } catch (error) {
       console.error('Error opening subscription management:', error);
-      addToast('Unable to open subscription management. Please contact support.', 'error');
+      addToast(t('messages.error'), 'error');
     }
   };
 
@@ -133,14 +129,6 @@ export default function PricingPage() {
     const subPlan = subscription.subscription_plan;
     const status = subscription.subscription_status;
     return subPlan === plan && (status === 'active' || status === 'trialing');
-  };
-
-  // Determine button state for premium plans
-  const getButtonState = (plan) => {
-    if (!accessToken) return 'login';
-    if (isCurrentPlan(plan)) return 'current';
-    if (isPremium) return 'downgrade'; // User has different premium plan
-    return 'subscribe';
   };
 
   const freeFeatures = [
@@ -173,10 +161,10 @@ export default function PricingPage() {
     <div className="max-w-5xl mx-auto py-8 px-4">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+        <h1 className="font-display font-semibold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-ink-dark-primary mb-4">
           {t('pricing.title')}
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <p className="text-lg text-ink-muted dark:text-ink-dark-muted max-w-2xl mx-auto">
           {t('pricing.subtitle')}
         </p>
       </div>
@@ -198,7 +186,7 @@ export default function PricingPage() {
             </span>
             <span className={subscription?.subscription_cancel_at
               ? 'text-amber-800 dark:text-amber-200 font-medium'
-              : 'text-green-800 dark:text-green-200 font-medium'
+              : 'text-brand-700 dark:text-brand-300 font-medium'
             }>
               {subscription?.subscription_cancel_at && subscription?.period_end
                 ? t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() })
@@ -211,8 +199,8 @@ export default function PricingPage() {
             <button
               onClick={handleManageSubscription}
               className={subscription?.subscription_cancel_at
-                ? "text-sm text-amber-700 dark:text-amber-300 underline hover:no-underline"
-                : "text-sm text-green-700 dark:text-green-300 underline hover:no-underline"
+                ? 'text-sm text-amber-700 dark:text-amber-300 underline hover:no-underline'
+                : 'text-sm text-brand-700 dark:text-brand-300 underline hover:no-underline'
               }
             >
               {t('pricing.managePlan')}
@@ -224,26 +212,27 @@ export default function PricingPage() {
       {/* Plan Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         {/* Free Plan */}
-        <Card className="relative border-2 border-gray-200 dark:border-zinc-700 h-full">
+        <Card className="relative border border-surface-hairline dark:border-surface-dark-hairline h-full">
           <div className="p-6 flex flex-col h-full">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
               {t('pricing.free')}
             </h3>
             <div className="mb-6">
-              <span className="text-4xl font-extrabold text-gray-900 dark:text-white">€0</span>
-              <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perMonth')}</span>
+              <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">€0</span>
+              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perMonth')}</span>
             </div>
             <ul className="space-y-3 flex-1">
               {freeFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <svg className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
+                  <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
                 </li>
               ))}
             </ul>
-            <div className="mt-8">
+            <p className="text-sm font-medium min-h-[1.25rem] mt-4" />
+            <div className="mt-4">
               {!accessToken ? (
                 <Link to="/register">
                   <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
@@ -258,27 +247,27 @@ export default function PricingPage() {
         </Card>
 
         {/* Monthly Plan */}
-        <Card className="relative border-2 border-brand-500 dark:border-brand-400 shadow-sm h-full">
+        <Card className="relative ring-2 ring-brand-500 dark:ring-brand-400 border border-transparent h-full">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">
               {t('pricing.popular')}
             </span>
           </div>
           <div className="p-6 pt-8 flex flex-col h-full">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
               {t('pricing.monthly')}
             </h3>
             <div className="mb-2">
-              <span className="text-4xl font-extrabold text-gray-900 dark:text-white">{t('pricing.monthlyPrice')}</span>
-              <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perMonth')}</span>
+              <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">{t('pricing.monthlyPrice')}</span>
+              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perMonth')}</span>
             </div>
             <p className="text-sm font-medium mb-4 min-h-[1.25rem] text-brand-600 dark:text-brand-400">
               {!hasHadTrial ? t('pricing.freeTrial') : ''}
             </p>
             <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <svg className="w-5 h-5 text-brand-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
+                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -314,7 +303,7 @@ export default function PricingPage() {
                   >
                     {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
                   </Button>
-                  <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-center text-ink-muted dark:text-ink-dark-muted">
                     {t('pricing.noCardRequired')}
                   </p>
                 </>
@@ -328,19 +317,19 @@ export default function PricingPage() {
         </Card>
 
         {/* Yearly Plan */}
-        <Card className="relative border-2 border-emerald-500 dark:border-emerald-400 h-full">
+        <Card className="relative border border-emerald-500 dark:border-emerald-400 h-full">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
               {t('pricing.bestValue')}
             </span>
           </div>
           <div className="p-6 pt-8 flex flex-col h-full">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
               {t('pricing.yearly')}
             </h3>
             <div className="mb-1">
-              <span className="text-4xl font-extrabold text-gray-900 dark:text-white">{t('pricing.yearlyPrice')}</span>
-              <span className="text-gray-500 dark:text-gray-400 ml-1">{t('pricing.perYear')}</span>
+              <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">{t('pricing.yearlyPrice')}</span>
+              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perYear')}</span>
             </div>
             <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
               {t('pricing.yearlyPerMonth')}
@@ -352,15 +341,16 @@ export default function PricingPage() {
             </p>
             <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <svg className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
+                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
                 </li>
               ))}
             </ul>
-            <div className="mt-8">
+            <p className="text-sm font-medium min-h-[1.25rem] mt-4" />
+            <div className="mt-4">
               {isCurrentPlan('yearly') ? (
                 <>
                   <div className="flex items-center gap-2 mb-3">
@@ -389,7 +379,7 @@ export default function PricingPage() {
                   >
                     {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
                   </Button>
-                  <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-center text-ink-muted dark:text-ink-dark-muted">
                     {t('pricing.noCardRequired')}
                   </p>
                 </>
@@ -408,7 +398,7 @@ export default function PricingPage() {
         <div className="text-center">
           <Link
             to="/dashboard"
-            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
+            className="text-sm text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary underline"
           >
             {t('nav.dashboard')}
           </Link>

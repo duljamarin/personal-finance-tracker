@@ -6,10 +6,10 @@ import { CURRENCY_SYMBOLS } from '../../utils/constants';
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 rounded-lg shadow-lg">
-        <p className="font-semibold text-sm mb-1">{label}</p>
+      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
+        <p className="font-semibold text-sm text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
         {payload.map((entry) => (
-          <p key={entry.dataKey} className="text-sm" style={{ color: entry.color }}>
+          <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: {CURRENCY_SYMBOLS.EUR}{Number(entry.value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </p>
         ))}
@@ -50,7 +50,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
           [t('networth.assets')]: item.total_assets,
           [t('networth.liabilities')]: item.total_liabilities,
           [t('networth.cashBalance')]: parseFloat(cashFlowNet.toFixed(2)),
-          [t('networth.netWorth')]: parseFloat((item.total_assets + cashFlowNet - item.total_liabilities).toFixed(2)),
+          [t('networth.netWorth')]: parseFloat((item.total_assets - item.total_liabilities).toFixed(2)),
         };
       });
     }
@@ -113,34 +113,34 @@ export default function NetWorthChart({ data, transactions = [] }) {
           <Line
             type="monotone"
             dataKey={t('networth.assets')}
-            stroke="#10b981"
+            stroke="#168b78"
             strokeWidth={2}
-            dot={{ fill: '#10b981', r: 3 }}
+            dot={{ fill: '#168b78', r: 3 }}
           />
         )}
         <Line
           type="monotone"
           dataKey={t('networth.cashBalance')}
-          stroke="#3b82f6"
+          stroke="#6A8FC4"
           strokeWidth={2}
-          dot={{ fill: '#3b82f6', r: 3 }}
+          dot={{ fill: '#6A8FC4', r: 3 }}
           strokeDasharray="5 3"
         />
         {hasAssetData && (
           <Line
             type="monotone"
             dataKey={t('networth.liabilities')}
-            stroke="#ef4444"
+            stroke="#e05c6b"
             strokeWidth={2}
-            dot={{ fill: '#ef4444', r: 3 }}
+            dot={{ fill: '#e05c6b', r: 3 }}
           />
         )}
         <Line
           type="monotone"
           dataKey={t('networth.netWorth')}
-          stroke="#6366f1"
+          stroke="#168b78"
           strokeWidth={3}
-          dot={{ fill: '#6366f1', r: 3 }}
+          dot={{ fill: '#168b78', r: 3 }}
         />
       </LineChart>
     </ResponsiveContainer>

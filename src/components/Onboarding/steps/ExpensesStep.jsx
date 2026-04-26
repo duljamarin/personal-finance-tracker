@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import Input from '../../UI/Input';
 import Button from '../../UI/Button';
-import { translateCategoryName } from '../../../utils/categoryTranslation';
-import { getInputClassName } from '../../../utils/classNames';
+import { translateCategoryName, getCategoryIcon } from '../../../utils/categoryTranslation';
+import { CategoryIconSvg } from '../../UI/CategoryIconSvg';
+import CustomSelect from '../../UI/CustomSelect';
 
 const MAX_EXPENSES = 3;
 
@@ -29,10 +30,10 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
           {t('onboarding.expenses.title')}
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-ink-muted dark:text-ink-dark-muted mt-2">
           {t('onboarding.expenses.subtitle')}
         </p>
       </div>
@@ -51,28 +52,35 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
                 onChange={(e) => updateExpense(index, 'amount', e.target.value)}
               />
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1.5">
                   {t('onboarding.expenses.categoryLabel')}
                 </label>
-                <select
+                <CustomSelect
                   value={expense.categoryId}
-                  onChange={(e) => updateExpense(index, 'categoryId', e.target.value)}
-                  className={getInputClassName(false)}
-                >
-                  <option value="">{t('onboarding.expenses.selectCategory')}</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {translateCategoryName(cat.name)}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => updateExpense(index, 'categoryId', val)}
+                  placeholder={t('onboarding.expenses.selectCategory')}
+                  ariaLabel={t('onboarding.expenses.categoryLabel')}
+                  options={categories.map((cat) => {
+                    const iconKey = getCategoryIcon(cat);
+                    return {
+                      value: cat.id,
+                      label: translateCategoryName(cat.name),
+                      leading: (
+                        <span className="w-6 h-6 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+                          <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
+                        </span>
+                      ),
+                    };
+                  })}
+                />
               </div>
             </div>
             {expenses.length > 1 && (
               <button
                 type="button"
                 onClick={() => removeExpense(index)}
-                className="mt-7 p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                className="mt-7 p-2 text-ink-muted dark:text-ink-dark-muted hover:opacity-80 transition-colors"
+                style={{ '--hover-color': '#e05c6b' }}
                 aria-label={t('onboarding.expenses.remove')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +93,12 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
 
         {expenses.length < MAX_EXPENSES && (
           <Button variant="ghost" size="sm" onClick={addExpense} className="w-full">
-            + {t('onboarding.expenses.addAnother')}
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              {t('onboarding.expenses.addAnother')}
+            </span>
           </Button>
         )}
       </div>

@@ -20,16 +20,15 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
       ]);
       return { score: scoreData, history: historyData || [] };
     },
-    [selectedMonth, onReloadTrigger] // compact intentionally excluded: layout-only prop
+    [selectedMonth, onReloadTrigger]
   );
   const score = data?.score ?? null;
-  const history = data?.history ?? [];
 
   const getScoreColor = (value) => {
-    if (value >= 80) return { bg: 'bg-brand-500', text: 'text-brand-600 dark:text-brand-400', ring: 'ring-brand-500' };
-    if (value >= 60) return { bg: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400', ring: 'ring-blue-500' };
-    if (value >= 40) return { bg: 'bg-yellow-500', text: 'text-yellow-600 dark:text-yellow-400', ring: 'ring-yellow-500' };
-    return { bg: 'bg-red-500', text: 'text-red-600 dark:text-red-400', ring: 'ring-red-500' };
+    if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-600 dark:text-brand-400', label: 'text-brand-600 dark:text-brand-400' };
+    if (value >= 60) return { stroke: 'text-[#6A8FC4]', text: 'text-[#5B8DB8]', label: 'text-[#5B8DB8]' };
+    if (value >= 40) return { stroke: 'text-amber-500', text: 'text-amber-600 dark:text-amber-400', label: 'text-amber-600 dark:text-amber-400' };
+    return { stroke: 'text-[#e05c6b]', text: 'text-[#e05c6b]', label: 'text-[#e05c6b]' };
   };
 
   const getScoreLabel = (value) => {
@@ -42,489 +41,278 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   const getInsightText = (insight) => {
     switch (insight.type) {
       case 'income_expense':
-        if (insight.status === 'positive') {
-          return t('healthScore.insightSavingsPositive', { 
-            amount: insight.savings.toFixed(2), 
-            percent: insight.savingsPercent 
-          });
-        } else if (insight.status === 'negative') {
-          return t('healthScore.insightOverspent', { amount: insight.overspent.toFixed(2) });
-        } else if (insight.status === 'no_income') {
-          return t('healthScore.insightNoIncome');
-        } else {
-          return t('healthScore.insightNoData');
-        }
-      
+        if (insight.status === 'positive') return t('healthScore.insightSavingsPositive', { amount: insight.savings.toFixed(2), percent: insight.savingsPercent });
+        if (insight.status === 'negative') return t('healthScore.insightOverspent', { amount: insight.overspent.toFixed(2) });
+        if (insight.status === 'no_income') return t('healthScore.insightNoIncome');
+        return t('healthScore.insightNoData');
       case 'budget':
-        if (insight.status === 'all_good') {
-          return t('healthScore.insightBudgetGood', { count: insight.totalCategories });
-        } else if (insight.status === 'one_over') {
-          return t('healthScore.insightBudgetOneOver');
-        } else if (insight.status === 'multiple_over') {
-          return t('healthScore.insightBudgetMultipleOver', { count: insight.categoriesOver });
-        } else {
-          return t('healthScore.insightBudgetNoData');
-        }
-      
+        if (insight.status === 'all_good') return t('healthScore.insightBudgetGood', { count: insight.totalCategories });
+        if (insight.status === 'one_over') return t('healthScore.insightBudgetOneOver');
+        if (insight.status === 'multiple_over') return t('healthScore.insightBudgetMultipleOver', { count: insight.categoriesOver });
+        return t('healthScore.insightBudgetNoData');
       case 'savings':
-        if (insight.status === 'saving') {
-          return t('healthScore.insightSaving', { amount: insight.amount.toFixed(2) });
-        } else if (insight.status === 'overspending') {
-          return t('healthScore.insightLosing', { amount: insight.amount.toFixed(2) });
-        } else {
-          return t('healthScore.insightBreakEven');
-        }
-      
+        if (insight.status === 'saving') return t('healthScore.insightSaving', { amount: insight.amount.toFixed(2) });
+        if (insight.status === 'overspending') return t('healthScore.insightLosing', { amount: insight.amount.toFixed(2) });
+        return t('healthScore.insightBreakEven');
       default:
         return '';
     }
   };
 
   const getInsightIcon = (type) => {
-    switch (type) {
-      case 'income_expense':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-      case 'budget':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-        );
-      case 'savings':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-        );
-      default:
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-    }
-  };
-
-  const formatMonth = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+    const cls = 'w-4 h-4 flex-shrink-0';
+    if (type === 'income_expense') return (
+      <svg className={`${cls} text-[#6A8FC4]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+    );
+    if (type === 'budget') return (
+      <svg className={`${cls} text-[#9B7EB3]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+      </svg>
+    );
+    if (type === 'savings') return (
+      <svg className={`${cls} text-brand-500`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+    );
+    return (
+      <svg className={`${cls} text-ink-muted dark:text-ink-dark-muted`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+      </svg>
+    );
   };
 
   if (loading) {
     return (
       <Card className="mt-4 sm:mt-6">
-        <div className="p-6">
-          <div className="animate-pulse">
-            <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-1/3 mb-6"></div>
-            <div className="flex justify-center mb-6">
-              <div className="w-32 h-32 bg-gray-200 dark:bg-gray-600 rounded-full"></div>
-            </div>
-            <div className="space-y-3">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-full"></div>
-              ))}
-            </div>
+        <div className="p-6 animate-pulse space-y-4">
+          <div className="h-5 bg-surface-hairline dark:bg-surface-dark-hairline rounded w-1/3" />
+          <div className="flex justify-center">
+            <div className="w-32 h-32 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline" />
+          </div>
+          <div className="space-y-2">
+            {[1,2,3].map(i => <div key={i} className="h-4 bg-surface-hairline dark:bg-surface-dark-hairline rounded" />)}
           </div>
         </div>
       </Card>
     );
   }
 
-  if (error) {
+  if (error || !score) {
     return (
       <Card className="mt-4 sm:mt-6">
-        <div className="p-6 text-center">
-          <div className="text-red-500 dark:text-red-400 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div className="p-8 text-center">
+          <div className="w-12 h-12 rounded-full bg-surface-page dark:bg-surface-dark-page flex items-center justify-center mx-auto mb-3">
+            <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
             </svg>
           </div>
-        </div>
-      </Card>
-    );
-  }
-
-  if (!score) {
-    return (
-      <Card className="mt-4 sm:mt-6">
-        <div className="p-6 text-center">
-          <div className="text-gray-400 dark:text-gray-500 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            {t('healthScore.noData')}
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400">
-            {t('healthScore.noDataDesc')}
-          </p>
+          <p className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">{t('healthScore.noData')}</p>
+          <p className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('healthScore.noDataDesc')}</p>
         </div>
       </Card>
     );
   }
 
   const scoreColors = getScoreColor(score.totalScore);
-  // Use fixed radius for accurate calculation
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
-  // Cap at 100% to prevent overflow
   const displayScore = Math.min(score.totalScore, 100);
   const strokeDashoffset = circumference - (displayScore / 100) * circumference;
 
+  /* ── Compact variant ── */
   if (compact) {
-    const compactRadius = 42;
-    const compactCirc = 2 * Math.PI * compactRadius;
-    const compactOffset = compactCirc - (displayScore / 100) * compactCirc;
-
+    const r = 42;
+    const circ = 2 * Math.PI * r;
+    const offset = circ - (displayScore / 100) * circ;
     return (
       <Card>
-        <div className="p-4 sm:p-6 flex items-center gap-4">
+        <div className="p-4 sm:p-6 flex items-center gap-5">
           <div className="relative flex-shrink-0">
-            <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r={compactRadius} fill="none" stroke="currentColor" strokeWidth="7" className="text-gray-200 dark:text-gray-600" />
-              <circle cx="50" cy="50" r={compactRadius} fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" className={scoreColors.text} style={{ strokeDasharray: compactCirc, strokeDashoffset: compactOffset, transition: 'stroke-dashoffset 0.5s ease-in-out' }} />
+            <svg className="w-16 h-16 -rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r={r} fill="none" stroke="currentColor" strokeWidth="7" className="text-surface-hairline dark:text-surface-dark-hairline" />
+              <circle cx="50" cy="50" r={r} fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" className={scoreColors.stroke} style={{ strokeDasharray: circ, strokeDashoffset: offset, transition: 'stroke-dashoffset 0.5s ease-in-out' }} />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-lg font-bold ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
+              <span className={`text-lg font-bold tabular-nums font-display ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
             </div>
           </div>
           <div>
-            <p className={`text-xl font-bold ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{t('healthScore.title')}</p>
+            <p className={`text-xl font-semibold font-display tracking-tight ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
+            <p className="text-sm text-ink-muted dark:text-ink-dark-muted">{t('healthScore.title')}</p>
           </div>
         </div>
       </Card>
     );
   }
 
+  /* ── Score bar helper ── */
+  const barColors = ['bg-[#9B7EB3]', 'bg-[#6A8FC4]', 'bg-amber-400', 'bg-brand-500'];
+  const scoreValues = [
+    { label: t('healthScore.budgetAdherence'), value: score.budgetAdherenceScore, color: barColors[0] },
+    { label: t('healthScore.incomeRatio'),      value: score.incomeExpenseRatioScore, color: barColors[1] },
+    { label: t('healthScore.consistency'),      value: score.spendingVolatilityScore, color: barColors[2] },
+    { label: t('healthScore.savings'),          value: score.savingsConsistencyScore, color: barColors[3] },
+  ];
+
+  /* ── Full variant ── */
   return (
     <Card className="mt-4 sm:mt-6">
-      <div className="p-4 sm:p-6">
+      <div className="p-5 sm:p-7">
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">
+            <h2 className="text-lg font-semibold font-display text-ink-primary dark:text-ink-dark-primary tracking-tight">
               {t('healthScore.title')}
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-0.5">
               {t('healthScore.description')}
             </p>
           </div>
         </div>
 
-        {/* Score Display */}
-        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-          {/* Circular Score */}
+        {/* Score + bars */}
+        <div className="flex flex-col lg:flex-row items-center gap-8">
+          {/* Circular gauge */}
           <div className="relative flex-shrink-0">
-            <svg className="w-32 h-32 sm:w-40 sm:h-40 transform -rotate-90" viewBox="0 0 120 120">
-              {/* Background circle */}
-              <circle
-                cx="60"
-                cy="60"
-                r="54"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="8"
-                className="text-gray-200 dark:text-gray-600"
-              />
-              {/* Progress circle */}
-              <circle
-                cx="60"
-                cy="60"
-                r="54"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="8"
-                strokeLinecap="round"
-                className={scoreColors.text}
-                style={{
-                  strokeDasharray: circumference,
-                  strokeDashoffset: strokeDashoffset,
-                  transition: 'stroke-dashoffset 0.5s ease-in-out'
-                }}
-              />
+            <svg className="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" strokeWidth="8" className="text-surface-hairline dark:text-surface-dark-hairline" />
+              <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" className={scoreColors.stroke}
+                style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.6s ease-in-out' }} />
             </svg>
-            {/* Score text in center */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center transform rotate-0">
-              <span className={`text-3xl sm:text-4xl font-bold ${scoreColors.text}`}>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className={`text-4xl font-bold tabular-nums font-display tracking-tight-display leading-none ${scoreColors.text}`}>
                 {Math.round(score.totalScore)}
               </span>
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
+              <span className={`text-xs font-medium mt-1.5 ${scoreColors.label}`}>
                 {getScoreLabel(score.totalScore)}
               </span>
             </div>
           </div>
 
-          {/* Score Breakdown - locked for free users */}
-          {isPremium ? (
-            <div className="flex-1 w-full space-y-3">
-              {/* Budget Adherence */}
-              <div className="flex items-center gap-3">
-                <div className="w-24 sm:w-28 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                  {t('healthScore.budgetAdherence')}
+          {/* Score breakdown bars */}
+          <div className="flex-1 w-full space-y-3.5">
+            {isPremium ? scoreValues.map(({ label, value, color }) => (
+              <div key={label} className="flex items-center gap-3">
+                <span className="w-28 text-xs text-ink-muted dark:text-ink-dark-muted truncate">{label}</span>
+                <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+                  <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />
                 </div>
-                <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-purple-500 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(score.budgetAdherenceScore, 100)}%` }}
-                  />
-                </div>
-                <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
-                  {Math.round(score.budgetAdherenceScore)}
-                </span>
+                <span className="w-8 text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums text-right">{Math.round(value)}</span>
               </div>
-
-              {/* Income vs Expenses */}
-              <div className="flex items-center gap-3">
-                <div className="w-24 sm:w-28 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                  {t('healthScore.incomeRatio')}
+            )) : scoreValues.map(({ label }, i) => (
+              <div key={label} className="flex items-center gap-3">
+                <span className="w-28 text-xs text-ink-muted/60 dark:text-ink-dark-muted/60 truncate">{label}</span>
+                <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+                  <div className="h-full bg-surface-hairline dark:bg-surface-dark-elevated rounded-full" style={{ width: `${[65,40,75,55][i]}%` }} />
                 </div>
-                <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(score.incomeExpenseRatioScore, 100)}%` }}
-                  />
-                </div>
-                <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
-                  {Math.round(score.incomeExpenseRatioScore)}
-                </span>
+                <svg className="w-3.5 h-3.5 text-ink-muted/40 dark:text-ink-dark-muted/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7a4.5 4.5 0 1 0-9 0v3.5M6 10.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18v-6A1.5 1.5 0 0 1 6 10.5Z" />
+                </svg>
               </div>
-
-              {/* Spending Volatility */}
-              <div className="flex items-center gap-3">
-                <div className="w-24 sm:w-28 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                  {t('healthScore.consistency')}
-                </div>
-                <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-yellow-500 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(score.spendingVolatilityScore, 100)}%` }}
-                  />
-                </div>
-                <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
-                  {Math.round(score.spendingVolatilityScore)}
-                </span>
-              </div>
-
-              {/* Savings Consistency */}
-              <div className="flex items-center gap-3">
-                <div className="w-24 sm:w-28 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                  {t('healthScore.savings')}
-                </div>
-                <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-brand-500 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(score.savingsConsistencyScore, 100)}%` }}
-                  />
-                </div>
-                <span className="w-10 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-right">
-                  {Math.round(score.savingsConsistencyScore)}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex-1 w-full space-y-3">
-              {[t('healthScore.budgetAdherence'), t('healthScore.incomeRatio'), t('healthScore.consistency'), t('healthScore.savings')].map((label, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-24 sm:w-28 text-xs sm:text-sm text-gray-500 dark:text-gray-500">{label}</div>
-                  <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-gray-300 dark:bg-gray-600 rounded-full" style={{ width: `${[65, 40, 75, 55][i]}%` }} />
-                  </div>
-                  <span className="w-10 text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-500 text-right">
-                    <span className="w-10 flex justify-end items-center">
-                      <svg
-                        className="w-4 h-4 text-gray-400 dark:text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16.5 10.5V7a4.5 4.5 0 10-9 0v3.5M6 10.5h12a1.5 1.5 0 011.5 1.5v6A1.5 1.5 0 0118 19.5H6A1.5 1.5 0 014.5 18v-6A1.5 1.5 0 016 10.5z"
-                        />
-                      </svg>
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
         </div>
 
-        {/* Premium upsell banner for free users */}
+        {/* Premium upsell */}
         {!isPremium && (
           <div className="mt-6">
-            <Link
-              to="/pricing"
-              className="flex items-center justify-between px-4 py-3 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-700 hover:border-brand-300 dark:hover:border-brand-600 transition-all group"
-            >
+            <Link to="/pricing" className="flex items-center justify-between px-4 py-3 rounded-lg bg-brand-50 dark:bg-brand-950/30 border border-brand-200/60 dark:border-brand-800/30 hover:border-brand-400 dark:hover:border-brand-600 transition-all group">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <span className="w-8 h-8 rounded-md bg-brand-100 dark:bg-brand-950/50 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                </div>
+                </span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800 dark:text-white">{t('healthScore.unlockFull')}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{t('healthScore.unlockFullDesc')}</p>
+                  <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary">{t('healthScore.unlockFull')}</p>
+                  <p className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('healthScore.unlockFullDesc')}</p>
                 </div>
               </div>
-              <svg className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-brand-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+              <svg className="w-4 h-4 text-ink-muted/60 group-hover:text-brand-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </Link>
           </div>
         )}
 
-        {/* How It Works Explainer */}
-        <div className="mt-6">
-          <button
-            onClick={() => setShowExplainer(prev => !prev)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors group"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        {/* How it works toggle */}
+        <div className="mt-5">
+          <button onClick={() => setShowExplainer(p => !p)}
+            className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors">
+            <svg className="w-3.5 h-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
             </svg>
             {showExplainer ? t('healthScore.howItWorksHide') : t('healthScore.howItWorks')}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`h-4 w-4 transition-transform duration-200 ${showExplainer ? 'rotate-180' : ''}`}
-              fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <svg className={`w-3 h-3 transition-transform duration-200 ${showExplainer ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           {showExplainer && (
-            <div className="mt-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Budget Adherence */}
-                <div className="p-3 sm:p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-purple-800 dark:text-purple-300">{t('healthScore.budgetAdherence')}</h4>
-                      <span className="text-xs font-medium text-purple-600 dark:text-purple-400">{t('healthScore.pillarWeight', { weight: 40 })}</span>
-                    </div>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { color: 'bg-[#9B7EB3]/10 border-[#9B7EB3]/30 text-[#9B7EB3]', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
+                { color: 'bg-[#6A8FC4]/10 border-[#6A8FC4]/30 text-[#6A8FC4]',   label: t('healthScore.incomeRatio'),      weight: 30, desc: t('healthScore.pillarRatioDesc') },
+                { color: 'bg-amber-50 dark:bg-amber-950/20 border-amber-200/60 dark:border-amber-800/30 text-amber-600 dark:text-amber-400', label: t('healthScore.consistency'), weight: 20, desc: t('healthScore.pillarStabilityDesc') },
+                { color: 'bg-brand-50 dark:bg-brand-950/20 border-brand-200/60 dark:border-brand-800/30 text-brand-600 dark:text-brand-400', label: t('healthScore.savings'),      weight: 10, desc: t('healthScore.pillarSavingsDesc') },
+              ].map(({ color, label, weight, desc }) => (
+                <div key={label} className={`p-3.5 rounded-lg border ${color} bg-opacity-30`}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold">{label}</span>
+                    <span className="text-[10px] font-medium opacity-70">{t('healthScore.pillarWeight', { weight })}</span>
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarBudgetDesc')}</p>
+                  <p className="text-xs text-ink-muted dark:text-ink-dark-muted leading-relaxed">{desc}</p>
                 </div>
-
-                {/* Income vs Spending */}
-                <div className="p-3 sm:p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-300">{t('healthScore.incomeRatio')}</h4>
-                      <span className="text-xs font-medium text-blue-600 dark:text-blue-400">{t('healthScore.pillarWeight', { weight: 30 })}</span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarRatioDesc')}</p>
-                </div>
-
-                {/* Spending Stability */}
-                <div className="p-3 sm:p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/40 flex items-center justify-center flex-shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-300">{t('healthScore.consistency')}</h4>
-                      <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400">{t('healthScore.pillarWeight', { weight: 20 })}</span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarStabilityDesc')}</p>
-                </div>
-
-                {/* Saving Habits */}
-                <div className="p-3 sm:p-4 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/40 flex items-center justify-center flex-shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-brand-800 dark:text-brand-300">{t('healthScore.savings')}</h4>
-                      <span className="text-xs font-medium text-brand-600 dark:text-brand-400">{t('healthScore.pillarWeight', { weight: 10 })}</span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{t('healthScore.pillarSavingsDesc')}</p>
-                </div>
-              </div>
-
-              {/* Summary line */}
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center italic">
-                {t('healthScore.howItWorksSummary')}
-              </p>
+              ))}
+              <p className="col-span-full text-[10px] text-ink-muted/70 dark:text-ink-dark-muted/70 text-center">{t('healthScore.howItWorksSummary')}</p>
             </div>
           )}
         </div>
 
         {/* Insights */}
-        {score.insights && score.insights.length > 0 && isPremium && (
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-              {t('healthScore.insights')}
-            </h3>
-            <ul className="space-y-3">
-              {score.insights.map((insight, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    {getInsightIcon(insight.type)}
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {getInsightText(insight)}
-                  </p>
+        {score.insights?.length > 0 && isPremium && (
+          <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
+            <p className="eyebrow text-[10px] mb-3">{t('healthScore.insights')}</p>
+            <ul className="space-y-2.5">
+              {score.insights.map((insight, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <div className="mt-0.5">{getInsightIcon(insight.type)}</div>
+                  <p className="text-sm text-ink-muted dark:text-ink-dark-muted leading-relaxed">{getInsightText(insight)}</p>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Quick Stats */}
+        {/* Quick stats */}
         {isPremium && (
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+          <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('healthScore.income')}</p>
-                <p className="text-sm sm:text-base font-semibold text-brand-600 dark:text-brand-400">
+                <p className="eyebrow text-[10px] mb-1">{t('healthScore.income')}</p>
+                <p className="text-sm font-semibold tabular-nums text-brand-600 dark:text-brand-400">
                   €{score.totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('healthScore.expenses')}</p>
-                <p className="text-sm sm:text-base font-semibold text-red-600 dark:text-red-400">
+                <p className="eyebrow text-[10px] mb-1">{t('healthScore.expenses')}</p>
+                <p className="text-sm font-semibold tabular-nums text-[#e05c6b] dark:text-[#f08090]">
                   €{score.totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('healthScore.saved')}</p>
-                <p className={`text-sm sm:text-base font-semibold ${score.savingsAmount >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>
+                <p className="eyebrow text-[10px] mb-1">{t('healthScore.saved')}</p>
+                <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-[#e05c6b] dark:text-[#f08090]'}`}>
                   €{score.savingsAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </Card>
   );

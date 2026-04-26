@@ -5,7 +5,7 @@
   },  
   "app": {
     "name": "Gjurmues i Financave Personale",
-    "shortName": "Financat"
+    "shortName": "Financat e Mia"
   },
   "meta": {
     "title": "Gjurmues i Financave Personale",
@@ -42,11 +42,14 @@
     "processing": "Duke procesuar...",
     "loadingDashboard": "Duke ngarkuar tabelën tuaj...",
     "addTransaction": "Shto Transaksion",
-    "addTransactionHint": "Shto shpejt të ardhura ose shpenzime",
+    "addTransactionHint": "Regjistro të ardhurat ose shpenzimet e para",
     "budgetProgress": "Progresi i Buxhetit",
     "noBudgets": "Nuk ka buxhete për këtë muaj",
     "setupBudgets": "Krijo buxhete",
     "viewAllBudgets": "Shiko të gjitha",
+    "goodMorning": "Mirëmëngjes",
+    "goodAfternoon": "Mirëdita",
+    "goodEvening": "Mirëmbrëma",
     "range": {
       "3m": "3M",
       "6m": "6M",
@@ -214,6 +217,7 @@
     "invalidResetLink": "Lidhja e rivendosjes është e pavlefshme ose ka skaduar. Ju lutem kërkoni një lidhje të re.",
     "verifying": "Duke verifikuar...",
     "continueWithGoogle": "Vazhdo me Google",
+    "or": "ose",
     "rememberMe": "Më mbaj mend",
     "agreeToTerms": "Pranoj",
     "termsOfService": "Kushtet e Shërbimit",
@@ -272,6 +276,7 @@
     "income": "Të Ardhura",
     "expense": "Shpenzime",
     "byCategory": "Sipas Kategorisë",
+    "total": "Totali",
     "months": {
       "jan": "Jan",
       "feb": "Shk",
@@ -376,12 +381,43 @@
       },
       "healthscore": {
         "title": "Rezultat i Shëndetit Financiar",
-        "desc": "Marrni njohuri për mirëqenien tuaj financiare mujore"
+        "desc": "Merrni njohuri për mirëqenien tuaj financiare mujore"
       },
       "benchmarks": {
         "title": "Njohuri për Shpenzimet",
         "desc": "Shikoni se si shpenzimet tuaja aktuale krahasohen me modelet tuaja të zakonshme për çdo kategori"
+      },
+      "reports": {
+        "title": "Raporte Financiare",
+        "desc": "Gjeneroni raporte të detajuara të të ardhurave, shpenzimeve dhe kategorive me filtra fleksibël sipas datës"
+      },
+      "notifications": {
+        "title": "Sistem Njoftimesh",
+        "desc": "Qëndroni të informuar me alarme për kapërcimin e buxhetit, arritjet e qëllimeve dhe kujtime për transaksionet e përsëritura"
+      },
+      "networth": {
+        "title": "Ndjekja e Pasurisë Neto",
+        "desc": "Monitoroni aktivet, detyrimet dhe pasurinë tuaj neto në kohë me grafikë të trendit historik"
+      },
+      "cashflow": {
+        "title": "Parashikim i Rrjedhës së Parasë",
+        "desc": "Projektoni bilancin tuaj të ardhshëm bazuar në të ardhurat, shpenzimet dhe transaksionet e planifikuara"
       }
+    },
+    "viz": {
+      "goal": "Qëllimi",
+      "goalName": "Fondi i Emergjencës",
+      "ytdSavings": "Kursime Vjetore",
+      "scoreGood": "Mirë",
+      "thisMonth": "Këtë muaj",
+      "avg3Month": "Mesatarja 3-mujore",
+      "lowerThanAvg": "më pak se mesatarja",
+      "recurringThisMonth": "të përsëritura këtë muaj",
+      "nextDays": "30 ditët e ardhshme",
+      "reportTypes": "Të Ardhura · Shpenzime · Kategori",
+      "alertTransport": "Buxheti i transportit në 92%",
+      "alertGoal": "Fondi i Emergjencës arriti 73%",
+      "alertRent": "Qiraja u pagua sot"
     },
     "cta": {
       "title": "Gati të Merrni Kontrollin?",
@@ -823,15 +859,22 @@
   },
   "onboarding": {
     "wizard": {
-      "title": "Mirësevini! Le të konfigurojmë financat tuaja",
-      "subtitle": "Plotësoni këto hapa për të personalizuar përvojën tuaj",
+      "title": "Konfiguro financat tuaja",
+      "subtitle": "Merr 2 minuta. Do t'ju ndihmojmë të gjurmoni ato që kanë rëndësi.",
       "stepOf": "Hapi {{current}} nga {{total}}",
       "next": "Vazhdo",
-      "back": "Mbrapa",
-      "skip": "Kapërce",
-      "skipAndFinish": "Kapërce & Përfundo",
-      "finish": "Përfundo Konfigurimin",
-      "submitting": "Duke konfiguruar llogarinë tuaj..."
+      "back": "Kthehu",
+      "skip": "Kalo tani",
+      "skipAndFinish": "Kalo & përfundo",
+      "finish": "Fillo",
+      "submitting": "Duke konfiguruar...",
+      "successTitle": "Jeni gati!",
+      "successSubtitle": "Udhëtimi juaj financiar fillon tani."
+    },
+    "steps": {
+      "1": "Valuta",
+      "2": "Të ardhurat",
+      "3": "Shpenzimet"
     },
     "currency": {
       "title": "Zgjidhni monedhën tuaj",

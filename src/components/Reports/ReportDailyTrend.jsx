@@ -15,10 +15,10 @@ import { toISODate } from '../../utils/date';
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 rounded-lg shadow-lg">
-        <p className="font-semibold text-sm mb-1">{label}</p>
+      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
+        <p className="font-semibold text-sm text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
         {payload.map((entry) => (
-          <p key={entry.dataKey} className="text-sm" style={{ color: entry.color }}>
+          <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: €{Number(entry.value).toFixed(2)}
           </p>
         ))}
@@ -75,12 +75,12 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
             <AreaChart data={dailyData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
                 <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0d9488" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#168b78" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#168b78" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#e05c6b" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#e05c6b" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
@@ -103,7 +103,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 type="monotone"
                 dataKey="income"
                 name={t('reports.dailyIncome')}
-                stroke="#0d9488"
+                stroke="#168b78"
                 strokeWidth={2}
                 fill="url(#colorIncome)"
               />
@@ -111,7 +111,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 type="monotone"
                 dataKey="expenses"
                 name={t('reports.dailyExpenses')}
-                stroke="#ef4444"
+                stroke="#e05c6b"
                 strokeWidth={2}
                 fill="url(#colorExpenses)"
               />
@@ -121,11 +121,11 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
       {/* Legend */}
       <div className="flex items-center justify-center gap-6 mt-2">
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-[#0d9488]" />
+          <span className="w-3 h-0.5 rounded bg-[#168b78]" />
           <span className="text-xs text-gray-500 dark:text-gray-400">{t('reports.dailyIncome')}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-[#ef4444]" />
+          <span className="w-3 h-0.5 rounded bg-[#e05c6b]" />
           <span className="text-xs text-gray-500 dark:text-gray-400">{t('reports.dailyExpenses')}</span>
         </div>
       </div>

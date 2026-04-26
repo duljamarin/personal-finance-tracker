@@ -8,6 +8,16 @@ export default function PasswordInput({ value, onChange, className, placeholder,
   const visible = show !== undefined ? show : internalShow;
   const toggle = onToggle || (() => setInternalShow(v => !v));
 
+  // Default styling matches Input primitive (hairline + emerald focus ring).
+  // Caller can still fully override by passing className.
+  const defaultClass =
+    'w-full py-3 pl-3.5 pr-10 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary ' +
+    'placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 ' +
+    'border border-surface-hairline dark:border-surface-dark-hairline ' +
+    'hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 ' +
+    'rounded-md transition-colors duration-150 focus:outline-none ' +
+    'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500';
+
   return (
     <div className="relative">
       <input
@@ -15,14 +25,14 @@ export default function PasswordInput({ value, onChange, className, placeholder,
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={className}
+        className={className || defaultClass}
         {...props}
       />
       <button
         type="button"
         tabIndex={-1}
         onClick={toggle}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
         aria-label={visible ? t('auth.hidePassword') : t('auth.showPassword')}
       >
         {visible ? (

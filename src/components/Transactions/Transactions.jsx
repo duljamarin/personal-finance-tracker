@@ -7,13 +7,27 @@ import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import TransactionForm from '../Transaction/TransactionForm';
 import CSVImport from './CSVImport';
-import { translateCategoryName } from '../../utils/categoryTranslation';
+import { translateCategoryName, getCategoryIcon } from '../../utils/categoryTranslation';
+import { CategoryIconSvg } from '../UI/CategoryIconSvg';
+import CustomSelect from '../UI/CustomSelect';
 import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions, addTransactionWithSplits, updateTransactionWithSplits, fetchTransactionSplits } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
+
+// Category dot color — mirrors the CategoryCard hash-to-color function
+const CAT_PALETTE = [
+  '#22ad93', '#168b78', '#C9A87C', '#6A8FC4', '#C46A75',
+  '#D0A96A', '#8A8A85', '#43c5aa', '#7A756A', '#9B7EB3',
+];
+function colorFromName(name) {
+  if (!name) return CAT_PALETTE[0];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) | 0;
+  return CAT_PALETTE[Math.abs(hash) % CAT_PALETTE.length];
+}
 
 export default function Transactions() {
   const {
@@ -57,7 +71,6 @@ export default function Transactions() {
       if (result.generated > 0) {
         addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
         if (onReload) onReload();
-        // Refresh subscription to update transaction count
         refreshSubscription();
       }
     } catch (error) {
@@ -65,7 +78,6 @@ export default function Transactions() {
     }
   }, [addToast, t, onReload, refreshSubscription]);
 
-  // Fetch active recurring count for free-tier gating
   useEffect(() => {
     fetchRecurringTransactions().then(data => {
       setActiveRecurringCount(data.filter(r => r.is_active).length);
@@ -103,14 +115,13 @@ export default function Transactions() {
     return result;
   }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
 
-  const INITIAL_DISPLAY_COUNT = 6;
+  const INITIAL_DISPLAY_COUNT = 12;
   const visibleItems = useMemo(() => {
     if (showAll) return filtered;
     return filtered.slice(0, INITIAL_DISPLAY_COUNT);
   }, [filtered, showAll]);
   const hasMore = filtered.length > INITIAL_DISPLAY_COUNT;
 
-  // Reset showAll when filters change
   useEffect(() => {
     setShowAll(false);
   }, [yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
@@ -156,56 +167,69 @@ export default function Transactions() {
     }
   }, [txToDelete, onDelete]);
 
-  // Keyboard shortcuts: Alt+N → add transaction, Ctrl+K → focus search
   useKeyboardShortcuts([
     { key: 'n', alt: true, action: handleAdd },
     { key: 'k', ctrl: true, action: () => searchInputRef.current?.focus() },
   ]);
 
-  // Listen for openAddTransaction event (fired by OnboardingChecklist)
   useEffect(() => {
     function handleOpenAdd() { handleAdd(); }
     window.addEventListener('openAddTransaction', handleOpenAdd);
     return () => window.removeEventListener('openAddTransaction', handleOpenAdd);
   }, [handleAdd]);
 
+  const selectClass =
+    'px-3 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary ' +
+    'border border-surface-hairline dark:border-surface-dark-hairline rounded-md ' +
+    'hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 ' +
+    'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors';
 
   return (
-    <Card className="mt-4 sm:mt-6">
-      <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-tertiary rounded-t-xl p-4 sm:p-6 mb-4 shadow-md border-b border-gray-200 dark:border-zinc-800">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">{t('transactions.title')}</h2>
-        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-          <div className="flex gap-2 sm:gap-3 w-full sm:w-auto flex-wrap">
+    <div className="mt-4 sm:mt-6">
+      {/* Page header */}
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+          <div>
+            <span className="eyebrow">{t('transactions.title')}</span>
+            <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight-display text-ink-primary dark:text-ink-dark-primary mt-1.5">
+              {t('transactions.title')}
+            </h1>
+          </div>
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleAdd}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-3 rounded-xl shadow-sm transition-all font-semibold text-sm sm:text-base min-h-[48px]"
+              className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-md font-medium text-sm shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30 transition-all"
             >
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
               <span className="hidden sm:inline">{t('transactions.addNew')}</span>
               <span className="sm:hidden">{t('forms.add')}</span>
             </button>
             <CSVImport categories={categories} onImportComplete={() => { onReload(); reloadCategories(); }} />
-            <button onClick={exportCSV} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-3 rounded-xl shadow-sm transition-all font-semibold text-sm sm:text-base min-h-[48px]">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            <button
+              onClick={exportCSV}
+              className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary px-4 py-2.5 rounded-md font-medium text-sm transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span className="hidden sm:inline">{t('transactions.export')}</span>
               <span className="sm:hidden">CSV</span>
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="sm:hidden flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl shadow-sm hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all font-semibold text-sm min-h-[48px]"
+              className="sm:hidden inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary px-4 py-2.5 rounded-md font-medium text-sm"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               {t('transactions.filter')}
             </button>
           </div>
         </div>
-        {/* Search bar */}
-        <div className="mb-3 relative">
-          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+
+        {/* Search */}
+        <div className="relative mb-3">
+          <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-ink-muted dark:text-ink-dark-muted">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <input
@@ -214,67 +238,72 @@ export default function Transactions() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder={t('transactions.searchPlaceholder')}
-            className="w-full pl-9 pr-9 py-2.5 text-sm border border-gray-200 dark:border-zinc-700 rounded-xl bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-brand-400 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900 transition"
+            className="w-full pl-10 pr-10 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/60 dark:placeholder:text-ink-dark-muted/60 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              className="absolute inset-y-0 right-3 flex items-center text-ink-muted hover:text-ink-primary dark:text-ink-dark-muted dark:hover:text-ink-dark-primary"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           )}
         </div>
 
-        <div className={`flex flex-wrap items-center gap-2 ${showFilters ? 'block' : 'hidden sm:flex'}`}>
-          {/* Year filter */}
-          <select
-            value={yearFilter}
-            onChange={e => setYearFilter(e.target.value)}
-            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[100px] sm:min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
-          >
+        {/* Filters */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <select value={yearFilter} onChange={e => setYearFilter(e.target.value)} className={selectClass}>
             {years.map(y => (
               <option key={y} value={y}>{y === 'All' ? t('transactions.allYears') : y}</option>
             ))}
           </select>
-          {/* Category filter */}
-          <select
+          <CustomSelect
             value={categoryFilter}
-            onChange={e => setCategoryFilter(e.target.value)}
-            className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[120px] sm:min-w-[160px] font-medium transition shadow-sm min-h-[48px]"
-          >
-            <option value="All">{t('transactions.all')}</option>
-            {(Array.isArray(categories) ? categories : []).map(cat => (
-              <option key={cat.id} value={cat.id}>{translateCategoryName(cat.name)}</option>
-            ))}
-          </select>
-          {/* Type filter */}
-          <div className="flex gap-2 flex-wrap">
-            {['all', 'income', 'expense'].map(type => (
-              <button
-                key={type}
-                onClick={() => setTypeFilter(type)}
-                className={`px-4 py-3 text-sm sm:text-base rounded-lg font-semibold border-2 transition-all shadow-sm min-h-[48px] ${typeFilter === type
-                  ? (type === 'income'
-                      ? 'bg-brand-600 text-white border-brand-700 shadow-md scale-105'
-                      : type === 'expense'
-                        ? 'bg-red-600 text-white border-red-700 shadow-md scale-105'
-                        : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-md scale-105')
-                  : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 hover:border-gray-400 dark:hover:border-zinc-600'}`}
-              >
-                {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.incomes') : t('transactions.expenses')}
-              </button>
-            ))}
+            onChange={val => setCategoryFilter(val)}
+            ariaLabel={t('transactions.all')}
+            options={[
+              { value: 'All', label: t('transactions.all') },
+              ...(Array.isArray(categories) ? categories : []).map(cat => {
+                const iconKey = getCategoryIcon(cat);
+                return {
+                  value: cat.id,
+                  label: translateCategoryName(cat.name),
+                  leading: (
+                    <span className="w-5 h-5 rounded flex items-center justify-center bg-brand-50 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 flex-shrink-0">
+                      <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3 h-3" />
+                    </span>
+                  ),
+                };
+              }),
+            ]}
+          />
+
+          {/* Type segmented pill */}
+          <div className="inline-flex p-0.5 rounded-full bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline">
+            {['all', 'income', 'expense'].map(type => {
+              const active = typeFilter === type;
+              const activeClass =
+                type === 'income'
+                  ? 'bg-brand-600 text-white'
+                  : type === 'expense'
+                  ? 'bg-[#e05c6b] text-white'
+                  : 'bg-ink-primary dark:bg-ink-dark-primary text-white dark:text-ink-primary';
+              return (
+                <button
+                  key={type}
+                  onClick={() => setTypeFilter(type)}
+                  className={`px-3.5 py-1.5 text-xs font-display font-medium tracking-display rounded-full transition-colors ${active ? activeClass : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary'}`}
+                >
+                  {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.incomes') : t('transactions.expenses')}
+                </button>
+              );
+            })}
           </div>
-          {/* Recurring filter - only show for premium users who can have recurring transactions */}
+
           {isPremium && (
-            <select
-              value={recurringFilter}
-              onChange={e => setRecurringFilter(e.target.value)}
-              className="px-3 py-3 text-sm sm:text-base border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200 focus:border-brand-500 dark:focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800 min-w-[120px] font-medium transition shadow-sm min-h-[48px]"
-            >
+            <select value={recurringFilter} onChange={e => setRecurringFilter(e.target.value)} className={selectClass}>
               <option value="all">{t('recurring.filterAll')}</option>
               <option value="regular">{t('recurring.filterRegular')}</option>
               <option value="recurring">{t('recurring.filterRecurring')}</option>
@@ -283,120 +312,164 @@ export default function Transactions() {
         </div>
       </div>
 
+
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-6 shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+        <div className="border border-surface-hairline dark:border-surface-dark-hairline rounded-[10px] bg-white dark:bg-surface-dark-card">
+          <div className="flex flex-col items-center justify-center py-16 text-center px-4">
+            <div className="w-16 h-16 rounded-full bg-brand-50 dark:bg-brand-950/40 flex items-center justify-center mb-5">
+              <svg className="w-7 h-7 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+              </svg>
+            </div>
+            <h3 className="font-display text-xl font-semibold tracking-display text-ink-primary dark:text-ink-dark-primary mb-2">
+              {searchQuery.trim() ? t('transactions.noSearchResults') : t('transactions.noTransactions')}
+            </h3>
+            <p className="text-sm text-ink-muted dark:text-ink-dark-muted mb-6 max-w-sm">
+              {searchQuery.trim() ? `"${searchQuery}"` : t('transactions.noTransactionsDesc', { defaultValue: 'Add your first transaction to start tracking your finances.' })}
+            </p>
+            {items.length === 0 && !searchQuery && (
+              <button
+                onClick={handleAdd}
+                className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-md font-medium text-sm shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                {t('transactions.addNew')}
+              </button>
+            )}
           </div>
-          <h3 className="text-gray-700 dark:text-gray-300 text-lg sm:text-xl font-bold mb-2">
-            {searchQuery.trim() ? t('transactions.noSearchResults') : t('transactions.noTransactions')}
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-6 max-w-sm">
-            {searchQuery.trim() ? `"${searchQuery}"` : ''}
-          </p>
-          {items.length === 0 && !searchQuery && (
-            <button
-              onClick={handleAdd}
-              className="flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-sm hover:scale-105 transition-all font-semibold text-base sm:text-lg mx-auto mb-8"
-            >
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
-              {t('transactions.addNew')}
-            </button>
-          )}
         </div>
       ) : (
         <>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          {visibleItems.map(item => (
-            <div
-              key={item.id}
-              className="bg-white dark:bg-surface-dark-tertiary rounded-xl shadow-sm hover:shadow-lg p-5 sm:p-6 flex flex-col border border-gray-200 dark:border-zinc-800 hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 group backdrop-blur-sm"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex flex-col gap-1">
-                  <span className="font-bold text-lg sm:text-xl text-gray-800 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{item.title}</span>
-                  {/* Recurring/Scheduled Badges */}
-                  <div className="flex gap-1.5 flex-wrap">
-                    {item.source_recurring_id && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 dark:border dark:border-purple-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        {t('recurring.badge')}
-                      </span>
-                    )}
-
-                  </div>
-                </div>
-                <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm ${item.type === 'income' ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400 dark:border dark:border-brand-600' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 dark:border dark:border-red-600'}`}>{item.type === 'income' ? t('transactions.income') : t('transactions.expense')}</span>
-              </div>
-              {
-              <div className="text-gray-500 dark:text-gray-400 text-sm mb-3 flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                {item.date}
-              </div>
-              }
-          
-              {Array.isArray(item.tags) && item.tags.length > 0 && (
-                <div className="flex gap-2 flex-wrap mb-3">
-                  {item.tags.map(tag => (
-                    <span key={tag} className="bg-gray-100 dark:bg-zinc-800 dark:border dark:border-zinc-700 rounded-md px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-300">#{tag}</span>
-                  ))}
-                </div>
-              )}
-              <div className="font-bold text-2xl sm:text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
-                {CURRENCY_SYMBOLS[item.currency_code || item.currencyCode || 'EUR'] || ''}
-                {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-              </div>
-              {item.category?.name && (
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-1.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
-                  {translateCategoryName(item.category.name)}
-                </div>
-              )}
-              <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-zinc-700">
-                <button
-                  className="flex-1 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-semibold shadow-sm transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
-                  onClick={() => handleEdit(item)}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                  {t('transactions.edit')}
-                </button>
-                <button
-                  className="flex-1 bg-red-500/10 dark:bg-red-500/20 hover:bg-red-500/20 dark:hover:bg-red-500/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg font-semibold shadow-sm transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px]"
-                  onClick={() => setTxToDelete(item)}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                  {t('transactions.deleteBtn')}
-                </button>
-              </div>
+          <div className="border border-surface-hairline dark:border-surface-dark-hairline rounded-[10px] bg-white dark:bg-surface-dark-card overflow-hidden">
+            {/* Column headers — eyebrow */}
+            <div className="hidden sm:grid grid-cols-[1fr_140px_160px_100px] gap-4 px-5 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline bg-surface-page/60 dark:bg-surface-dark-page/60">
+              <span className="eyebrow">{t('transactions.titleLabel')}</span>
+              <span className="eyebrow">{t('transactions.date')}</span>
+              <span className="eyebrow text-right">{t('transactions.amount')}</span>
+              <span className="eyebrow text-right">{t('transactions.actions', { defaultValue: 'Actions' })}</span>
             </div>
-          ))}
-        </div>
-        {hasMore && (
-          <div className="flex justify-center mt-6 sm:mt-8">
-            <button
-              onClick={() => setShowAll(prev => !prev)}
-              className="group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm hover:scale-105 transition-all duration-300 font-semibold text-sm sm:text-base"
-            >
-              {showAll ? (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                  </svg>
-                  {t('transactions.showLess')}
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                  {t('transactions.showAll', { count: filtered.length })}
-                </>
-              )}
-            </button>
+
+            {/* Rows */}
+            <ul className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
+              {visibleItems.map(item => {
+                const catName = item.category?.name || '';
+                const dotColor = colorFromName(catName || item.title || 'x');
+                const currencySym = CURRENCY_SYMBOLS[item.currency_code || item.currencyCode || 'EUR'] || '';
+                const amountStr = Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+                return (
+                  <li
+                    key={item.id}
+                    className="group grid grid-cols-1 sm:grid-cols-[1fr_140px_160px_100px] gap-3 sm:gap-4 items-center px-5 py-4 hover:bg-ink-primary/[0.03] dark:hover:bg-ink-dark-primary/[0.04] transition-colors"
+                  >
+                    {/* Title + category */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: dotColor }}
+                        aria-hidden="true"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-medium text-sm text-ink-primary dark:text-ink-dark-primary truncate">
+                            {item.title}
+                          </span>
+                          {item.source_recurring_id && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-display tracking-wider uppercase font-medium bg-surface-page dark:bg-surface-dark-page text-ink-muted dark:text-ink-dark-muted border border-surface-hairline dark:border-surface-dark-hairline">
+                              <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                              {t('recurring.badge')}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {catName && (
+                            <span className="text-xs text-ink-muted dark:text-ink-dark-muted truncate">
+                              {translateCategoryName(catName)}
+                            </span>
+                          )}
+                          {Array.isArray(item.tags) && item.tags.length > 0 && (
+                            <span className="text-xs text-ink-muted dark:text-ink-dark-muted truncate">
+                              · {item.tags.slice(0, 2).map(tag => `#${tag}`).join(' ')}
+                              {item.tags.length > 2 && ` +${item.tags.length - 2}`}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Date */}
+                    <div className="flex sm:flex-col sm:items-start items-center gap-2 sm:gap-0">
+                      <span className="eyebrow sm:hidden">{t('transactions.date')}</span>
+                      <span className="font-display text-sm tabular-nums text-ink-primary dark:text-ink-dark-primary">
+                        {item.date}
+                      </span>
+                    </div>
+
+                    {/* Amount */}
+                    <div className="flex sm:justify-end items-baseline gap-2">
+                      <span className="eyebrow sm:hidden">{t('transactions.amount')}</span>
+                      <span
+                        className={`font-display text-base sm:text-lg font-semibold tabular-nums ${item.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-ink-dark-primary'}`}
+                      >
+                        {item.type === 'income' ? '+' : '−'}{currencySym}{amountStr}
+                      </span>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex sm:justify-end gap-1">
+                      <button
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-ink-primary dark:text-ink-dark-muted dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+                        onClick={() => handleEdit(item)}
+                        title={t('transactions.edit')}
+                        aria-label={t('transactions.edit')}
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.932Z" />
+                        </svg>
+                      </button>
+                      <button
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-red-600 dark:text-ink-dark-muted dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                        onClick={() => setTxToDelete(item)}
+                        title={t('transactions.deleteBtn')}
+                        aria-label={t('transactions.deleteBtn')}
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        )}
+
+          {hasMore && (
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => setShowAll(prev => !prev)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary rounded-md font-medium text-sm transition-colors"
+              >
+                {showAll ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                    </svg>
+                    {t('transactions.showLess')}
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    {t('transactions.showAll', { count: filtered.length })}
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </>
       )}
 
@@ -419,8 +492,6 @@ export default function Transactions() {
             initial={editTx || prefillData}
             onSubmit={async data => {
               if (editTx) {
-                // Update only the transaction instance, not the recurring template
-                // Template should be modified from Recurring Transactions page
                 if (data.has_splits && data.splits?.length > 0) {
                   try {
                     await updateTransactionWithSplits(editTx.id, data, data.splits);
@@ -437,16 +508,13 @@ export default function Transactions() {
                 setEditTx(null);
                 setPrefillData(null);
               } else if (data.isRecurring) {
-                // Create recurring transaction
                 try {
                   await addRecurringTransaction(data);
                   addToast(t('recurring.created'), 'success');
-                  // Generate the first instance, then reload
                   await processRecurringTransactions();
                   if (onReload) {
                     await onReload();
                   }
-                  // Refresh subscription and recurring count
                   await refreshSubscription();
                   setActiveRecurringCount(c => c + 1);
                   setShowModal(false);
@@ -471,7 +539,6 @@ export default function Transactions() {
                 setPrefillData(null);
               } else if (onAdd) {
                 await onAdd(data);
-                // refreshSubscription is called inside onAdd (TransactionContext)
                 setShowModal(false);
                 setEditTx(null);
                 setPrefillData(null);
@@ -483,6 +550,6 @@ export default function Transactions() {
           />
         </Modal>
       )}
-    </Card>
+    </div>
   );
 }

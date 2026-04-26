@@ -5,7 +5,7 @@
   },
   "app": {
     "name": "Personal Finance Tracker",
-    "shortName": "Finances"
+    "shortName": "My Finances"
   },
   "meta": {
     "title": "Personal Finance Tracker",
@@ -42,11 +42,14 @@
     "processing": "Processing...",
     "loadingDashboard": "Loading your dashboard...",
     "addTransaction": "Add Transaction",
-    "addTransactionHint": "Quick add income or expense",
+    "addTransactionHint": "Record your first income or expense",
     "budgetProgress": "Budget Progress",
     "noBudgets": "No budgets set for this month",
     "setupBudgets": "Set up budgets",
     "viewAllBudgets": "View all",
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
     "range": {
       "3m": "3M",
       "6m": "6M",
@@ -214,6 +217,7 @@
     "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
     "verifying": "Verifying...",
     "continueWithGoogle": "Continue with Google",
+    "or": "or",
     "rememberMe": "Remember me",
     "agreeToTerms": "I agree to the",
     "termsOfService": "Terms of Service",
@@ -272,6 +276,7 @@
     "income": "Income",
     "expense": "Expense",
     "byCategory": "By Category",
+    "total": "Total",
     "months": {
       "jan": "Jan",
       "feb": "Feb",
@@ -381,7 +386,38 @@
       "benchmarks": {
         "title": "Spending Benchmarks",
         "desc": "See how your current spending compares to your usual patterns for each category"
+      },
+      "reports": {
+        "title": "Financial Reports",
+        "desc": "Generate detailed income, expense, and category reports with flexible date-range filters"
+      },
+      "notifications": {
+        "title": "Notification System",
+        "desc": "Stay informed with alerts for budget overruns, goal milestones, and recurring transaction reminders"
+      },
+      "networth": {
+        "title": "Net Worth Tracking",
+        "desc": "Monitor your total assets, liabilities, and net worth over time with historical trend charts"
+      },
+      "cashflow": {
+        "title": "Cash Flow Forecast",
+        "desc": "Project your future balance based on recurring income, expenses, and scheduled transactions"
       }
+    },
+    "viz": {
+      "goal": "Goal",
+      "goalName": "Emergency Fund",
+      "ytdSavings": "YTD Savings",
+      "scoreGood": "Good",
+      "thisMonth": "This month",
+      "avg3Month": "3-month average",
+      "lowerThanAvg": "lower than average",
+      "recurringThisMonth": "recurring this month",
+      "nextDays": "Next 30 days",
+      "reportTypes": "Income · Expenses · Categories",
+      "alertTransport": "Transport budget at 92%",
+      "alertGoal": "Emergency Fund reached 73%",
+      "alertRent": "Rent charged today"
     },
     "cta": {
       "title": "Ready to Take Control?",
@@ -823,15 +859,22 @@
   },
   "onboarding": {
     "wizard": {
-      "title": "Welcome! Let's set up your finances",
-      "subtitle": "Complete these steps to personalize your experience",
+      "title": "Set up your finances",
+      "subtitle": "It takes 2 minutes. We'll help you track what matters.",
       "stepOf": "Step {{current}} of {{total}}",
       "next": "Continue",
       "back": "Back",
-      "skip": "Skip",
-      "skipAndFinish": "Skip & Finish",
-      "finish": "Finish Setup",
-      "submitting": "Setting up your account..."
+      "skip": "Skip for now",
+      "skipAndFinish": "Skip & finish",
+      "finish": "Get started",
+      "submitting": "Setting up...",
+      "successTitle": "You're all set!",
+      "successSubtitle": "Your financial journey starts now."
+    },
+    "steps": {
+      "1": "Currency",
+      "2": "Income",
+      "3": "Expenses"
     },
     "currency": {
       "title": "Select your currency",

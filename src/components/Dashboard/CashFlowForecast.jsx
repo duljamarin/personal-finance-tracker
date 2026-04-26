@@ -111,13 +111,13 @@ function ForecastTooltip({ active, payload, label }) {
   const change = payload[0]?.payload?.change ?? 0;
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
-      <p className="font-semibold mb-1">{label}</p>
-      <p className={balance >= 0 ? 'text-emerald-400' : 'text-red-400'}>
+    <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md text-sm">
+      <p className="font-semibold text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
+      <p className="tabular-nums" style={{ color: balance >= 0 ? '#168b78' : '#e05c6b' }}>
         {t('cashFlow.balance')}: {formatCurrency(balance)}
       </p>
       {change !== 0 && (
-        <p className={`mt-1 ${change > 0 ? 'text-emerald-300' : 'text-red-300'}`}>
+        <p className="tabular-nums mt-0.5" style={{ color: change > 0 ? '#43c5aa' : '#e05c6b' }}>
           {change > 0 ? '+' : ''}{formatCurrency(change)}
         </p>
       )}
@@ -167,8 +167,8 @@ export default function CashFlowForecast() {
 
   const axisColor = dark ? '#9ca3af' : '#6b7280';
   const gridColor = dark ? '#27272a' : '#e5e7eb';
-  const areaColor = endBalance >= 0 ? '#10b981' : '#ef4444';
-  const areaFill = endBalance >= 0 ? '#10b98133' : '#ef444433';
+  const areaColor = endBalance >= 0 ? '#168b78' : '#e05c6b';
+  const areaFill = endBalance >= 0 ? '#168b7833' : '#e05c6b33';
 
   return (
     <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800 mb-6">

@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 import PasswordInput from '../UI/PasswordInput';
+import Input from '../UI/Input';
 
 export default function RegisterForm() {
   const { register, loading, accessToken, clearError } = useAuth();
@@ -96,7 +97,6 @@ export default function RegisterForm() {
       }
 
       let errorKey = 'auth.registrationError';
-
       if (errorMsg.toLowerCase().includes('already') || errorMsg.toLowerCase().includes('exists')) {
         errorKey = 'auth.registrationError';
       } else if (errorMsg.toLowerCase().includes('weak') || errorMsg.toLowerCase().includes('password')) {
@@ -108,30 +108,32 @@ export default function RegisterForm() {
     }
   }
 
-  const inputClass = (hasError) =>
-    `w-full border rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-colors ${hasError ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-zinc-700'}`;
-
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
-      <div className="w-full max-w-sm lg:max-w-md xl:max-w-lg">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+      <div aria-hidden="true" className="absolute top-6 left-6 sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
+      <div aria-hidden="true" className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
+
+      <div className="relative w-full max-w-md">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 17 L10 11 L14 14 L20 6" />
+              <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{t('auth.registerTitle')}</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth.joinDescription')}</p>
+          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+            {t('auth.registerTitle')}
+          </h1>
+          <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
+            {t('auth.joinDescription')}
+          </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
-          {/* Google OAuth */}
+        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-surface-dark-tertiary text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"
+            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 text-ink-primary dark:text-ink-dark-primary px-4 py-3 rounded-md font-medium text-sm transition-colors"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -142,44 +144,37 @@ export default function RegisterForm() {
             {t('auth.continueWithGoogle')}
           </button>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700"></div>
-            <span className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase">or</span>
-            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700"></div>
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
+            <span className="text-[11px] text-ink-muted dark:text-ink-dark-muted font-medium uppercase tracking-[0.14em]">{t('auth.or')}</span>
+            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.email')}</label>
-              <input
-                type="text"
-                value={email}
-                onChange={e => { setEmail(e.target.value); if (emailError) setEmailError(''); }}
-                placeholder={t('auth.emailPlaceholder')}
-                className={inputClass(emailError)}
-              />
-              {emailError && <span className="text-red-500 text-xs mt-1.5 block">{t(emailError)}</span>}
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <Input
+              label={t('auth.email')}
+              type="text"
+              value={email}
+              onChange={e => { setEmail(e.target.value); if (emailError) setEmailError(''); }}
+              placeholder={t('auth.emailPlaceholder')}
+              error={emailError ? t(emailError) : ''}
+            />
+
+            <Input
+              label={t('auth.username')}
+              type="text"
+              value={username}
+              onChange={e => { setUsername(e.target.value); if (usernameError) setUsernameError(''); }}
+              placeholder={t('auth.usernamePlaceholder')}
+              error={usernameError ? t(usernameError) : ''}
+            />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.username')}</label>
-              <input
-                type="text"
-                value={username}
-                onChange={e => { setUsername(e.target.value); if (usernameError) setUsernameError(''); }}
-                placeholder={t('auth.usernamePlaceholder')}
-                className={inputClass(usernameError)}
-              />
-              {usernameError && <span className="text-red-500 text-xs mt-1.5 block">{t(usernameError)}</span>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.preferredLanguage')}</label>
+              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">{t('auth.preferredLanguage')}</label>
               <select
                 value={language}
                 onChange={e => setLanguage(e.target.value)}
-                className={inputClass(false)}
+                className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary transition-colors"
               >
                 <option value="en">{t('languages.english', 'English')}</option>
                 <option value="sq">{t('languages.albanian', 'Shqip (Albanian)')}</option>
@@ -187,7 +182,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.password')}</label>
+              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">{t('auth.password')}</label>
               <PasswordInput
                 name="password"
                 id="password"
@@ -195,44 +190,56 @@ export default function RegisterForm() {
                 value={password}
                 onChange={e => { setPassword(e.target.value); if (passwordError) setPasswordError(''); }}
                 placeholder={t('auth.passwordPlaceholder')}
-                className={`${inputClass(passwordError)} pr-10`}
+                className={`w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 rounded-md transition-colors ${passwordError ? 'border-red-400' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`}
               />
-              {passwordError && <span className="text-red-500 text-xs mt-1.5 block">{t(passwordError)}</span>}
+              {passwordError && (
+                <p className="mt-2 text-xs text-red-500 dark:text-red-400 flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                  </svg>
+                  {t(passwordError)}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="flex items-start gap-2 cursor-pointer select-none">
+              <label className="flex items-start gap-2.5 cursor-pointer select-none group">
                 <input
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={e => { setAgreeTerms(e.target.checked); if (termsError) setTermsError(''); }}
-                  className="w-4 h-4 mt-0.5 rounded border-gray-300 dark:border-zinc-600 text-brand-600 focus:ring-brand-500 dark:bg-surface-dark-elevated cursor-pointer flex-shrink-0"
+                  className="peer sr-only"
                 />
-                <span className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                <span className="mt-0.5 w-[18px] h-[18px] rounded-[5px] border-[1.5px] border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card flex items-center justify-center transition-colors group-hover:border-brand-500/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/30 flex-shrink-0">
+                  <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: agreeTerms ? 1 : 0 }}>
+                    <path d="M4.5 12.75 10.5 18 20 6" />
+                  </svg>
+                </span>
+                <span className="text-sm text-ink-primary dark:text-ink-dark-primary leading-relaxed">
                   {t('auth.agreeToTerms')}{' '}
                   <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.termsOfService')}</Link>
                   {' '}{t('auth.andThe')}{' '}
                   <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.privacyPolicy')}</Link>
                 </span>
               </label>
-              {termsError && <span className="text-red-500 text-xs mt-1.5 block">{t(termsError)}</span>}
+              {termsError && <span className="text-red-500 text-xs mt-2 block">{t(termsError)}</span>}
             </div>
 
             {formError && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-center text-sm p-3 rounded-lg">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-center text-sm p-3 rounded-md">
                 {t(formError)}
               </div>
             )}
 
             {successMessage && (
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 text-center text-sm p-3 rounded-lg animate-fade-out">
+              <div className="bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-center text-sm p-3 rounded-md animate-fade-out">
                 {t(successMessage)}
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
               disabled={loading}
             >
               {t('auth.createAccount')}
@@ -240,8 +247,7 @@ export default function RegisterForm() {
           </form>
         </div>
 
-        {/* Footer link */}
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+        <p className="text-center text-sm text-ink-muted dark:text-ink-dark-muted mt-8">
           {t('auth.hasAccount')}{' '}
           <Link to="/login" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.signIn')}</Link>
         </p>

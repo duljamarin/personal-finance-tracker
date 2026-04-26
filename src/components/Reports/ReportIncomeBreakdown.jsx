@@ -8,18 +8,19 @@ import {
 } from 'recharts';
 import Card from '../UI/Card';
 
-const COLORS = [
-  '#0d9488', '#3b82f6', '#8b5cf6', '#f59e0b', '#ec4899',
-  '#14b8a6', '#6366f1', '#84cc16', '#f97316', '#ef4444',
+const CHART_PALETTE = [
+  '#168b78', '#6A8FC4', '#C9A87C', '#9B7EB3', '#C46A75',
+  '#43c5aa', '#D0A96A', '#7A9E7E', '#7A756A', '#5B8DB8',
 ];
+const COLORS = CHART_PALETTE;
 
 function CustomTooltip({ active, payload }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 rounded-lg shadow-lg">
-        <p className="font-semibold text-sm">{payload[0].name}</p>
-        <p className="text-sm">€{payload[0].value.toFixed(2)}</p>
-        <p className="text-xs text-gray-300">{payload[0].payload.pct}%</p>
+      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
+        <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary">{payload[0].name}</p>
+        <p className="text-sm text-ink-primary dark:text-ink-dark-primary tabular-nums mt-0.5">€{payload[0].value.toFixed(2)}</p>
+        <p className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums">{payload[0].payload.pct}%</p>
       </div>
     );
   }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
 import { fetchCategories, addCategory } from '../../utils/api'
-import { translateCategoryName, getCategoryEmoji, EMOJI_PALETTE } from '../../utils/categoryTranslation'
+import { translateCategoryName, ICON_PALETTE, CATEGORY_ICONS, getCategoryIcon } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 import { validateRecurringEndDate } from '../../utils/recurringValidation'
 import { getInputClassName } from '../../utils/classNames'
@@ -13,6 +13,8 @@ import { useSubscription } from '../../context/SubscriptionContext'
 import { useAuth } from '../../context/AuthContext'
 import TransactionSplitForm from './TransactionSplitForm'
 import TransactionRecurringSection from './TransactionRecurringSection'
+import { CategoryIconSvg } from '../UI/CategoryIconSvg'
+import CustomSelect from '../UI/CustomSelect'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t } = useTranslation()
@@ -30,7 +32,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [errors, setErrors] = useState({})
 	const [showProposalInput, setShowProposalInput] = useState(false)
 	const [proposedCategoryName, setProposedCategoryName] = useState('')
-	const [proposedCategoryEmoji, setProposedCategoryEmoji] = useState('📂')
+	const [proposedCategoryEmoji, setProposedCategoryEmoji] = useState('Shopping')
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
 	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || user?.user_metadata?.preferred_currency || APP_CONFIG.BASE_CURRENCY)
 	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE)
@@ -185,8 +187,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		}))
 	}
 
-	function handleCategoryChange(e) {
-		const value = e.target.value
+	function handleCategoryChange(eOrValue) {
+		const value = typeof eOrValue === 'string' ? eOrValue : eOrValue?.target?.value
 		setCategoryId(value)
 		if (value === 'other') {
 			setShowProposalInput(true)
@@ -320,14 +322,42 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
 							{t('transactions.type')}
 						</label>
-						<select
-							value={type}
-							onChange={e => setType(e.target.value)}
-							className={getInputClassName(errors.type)}
-						>
-							<option value="expense">{t('transactions.expense')} 💸</option>
-							<option value="income">{t('transactions.income')} 💰</option>
-						</select>
+						<div className="flex gap-2">
+							{[
+								{
+									value: 'expense',
+									label: t('transactions.expense'),
+									icon: (
+										<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+											<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
+										</svg>
+									),
+									activeClass: 'bg-[#fef0f1] dark:bg-rose-950/30 border-[#e05c6b] text-[#e05c6b] dark:text-[#f08090]',
+									inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-[#e05c6b]/50',
+								},
+								{
+									value: 'income',
+									label: t('transactions.income'),
+									icon: (
+										<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+											<path d="M3 17 L9 11 L13 14 L21 6" /><path d="M14 6 L21 6 L21 13" />
+										</svg>
+									),
+									activeClass: 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-600 dark:text-brand-400',
+									inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-brand-300',
+								},
+							].map(opt => (
+								<button
+									key={opt.value}
+									type="button"
+									onClick={() => setType(opt.value)}
+									className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-md border font-medium text-sm transition-colors ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
+								>
+									{opt.icon}
+									{opt.label}
+								</button>
+							))}
+						</div>
 						{errors.type && (
 							<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
 						)}
@@ -394,9 +424,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
 				<div className="flex flex-col gap-1 sm:gap-2">
 					<div className="flex items-center justify-between">
-						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-							{isSplit ? t('split.title') : t('transactions.categoryLabel')}
-						</label>
 						{!isRecurring && !initial?.source_recurring_id && (
 							canSplitTransaction ? (
 								<button
@@ -429,66 +456,105 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						/>
 					) : (
 					<>
-					<select
-						value={categoryId}
-						onChange={handleCategoryChange}
-						className={getInputClassName(errors.categoryId)}
-					>
-						<option value="">{t('transactions.selectCategory')}</option>
-						{categories.map(cat => (
-							<option key={cat.id} value={cat.id}>{translateCategoryName(cat.name)} {getCategoryEmoji(cat)}</option>
-						))}
-						<option value="other">{t('categoryProposal.other')} ➕</option>
-					</select>
+					<div className="flex items-center gap-2">
+						<div className="flex-1 min-w-0">
+							<CustomSelect
+								value={categoryId}
+								onChange={handleCategoryChange}
+								error={!!errors.categoryId}
+								placeholder={t('transactions.selectCategory')}
+								ariaLabel={t('transactions.selectCategory')}
+								options={categories.map(cat => {
+									const iconKey = getCategoryIcon(cat)
+									return {
+										value: cat.id,
+										label: translateCategoryName(cat.name),
+										leading: (
+											<span className="w-6 h-6 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+												<CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
+											</span>
+										),
+									}
+								})}
+							/>
+						</div>
+						<button
+							type="button"
+							onClick={() => { setShowProposalInput(v => !v); setCategoryProposalSuccess(false); }}
+							title={t('categoryProposal.other')}
+							className={`flex-shrink-0 w-8 h-8 rounded-md border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
+								showProposalInput
+									? 'bg-brand-600 border-brand-600 text-white'
+									: 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-muted dark:text-ink-dark-muted hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400'
+							}`}
+						>
+							<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+								<path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+							</svg>
+						</button>
+					</div>
 					{errors.categoryId && (
-						<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.categoryId)}</span>
+						<span className="text-xs text-[#e05c6b] dark:text-[#f08090] font-medium">{t(errors.categoryId)}</span>
 					)}
 
 					{showProposalInput && (
-						<div className="mt-2 sm:mt-3 p-2 sm:p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-							<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2 block">
+						<div className="mt-2 sm:mt-3 p-3 sm:p-4 bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-lg">
+							<label className="text-xs sm:text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2 block">
 								{t('categoryProposal.proposedName')}
 							</label>
 							<div className="flex flex-col sm:flex-row gap-2 sm:items-center">
 								<div className="flex items-center gap-2 flex-1 min-w-0">
-									<span className="text-2xl leading-none select-none flex-shrink-0">{proposedCategoryEmoji}</span>
+									<span className="w-9 h-9 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+										{CATEGORY_ICONS[proposedCategoryEmoji] && (
+											<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+												<path d={CATEGORY_ICONS[proposedCategoryEmoji]} />
+											</svg>
+										)}
+									</span>
 									<Input
 										placeholder={t('categoryProposal.proposedNamePlaceholder')}
 										value={proposedCategoryName}
 										onChange={e => setProposedCategoryName(e.target.value)}
-										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 border-gray-300 dark:border-zinc-700 min-w-0"
+										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 border-surface-hairline dark:border-surface-dark-hairline min-w-0"
 									/>
 								</div>
 								<Button
 									type="button"
 									onClick={handleSubmitProposal}
-									className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs sm:text-sm whitespace-nowrap w-full sm:w-auto"
+									className="px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md text-xs sm:text-sm whitespace-nowrap w-full sm:w-auto"
 								>
 									{t('categoryProposal.submit')}
 								</Button>
 							</div>
-							{/* Emoji picker */}
+							{/* Icon picker */}
 							<div className="mt-2 sm:mt-3">
-								<label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">
+								<label className="eyebrow mb-1.5 block">
 									{t('categories.emojiLabel')}
 								</label>
-								<div className="grid grid-cols-8 sm:grid-cols-10 gap-1 max-h-28 overflow-y-auto p-1 bg-white dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-zinc-800">
-									{EMOJI_PALETTE.map(em => (
+								<div className="grid grid-cols-8 sm:grid-cols-12 gap-1 max-h-32 overflow-y-auto scrollbar-hide p-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md border border-surface-hairline dark:border-surface-dark-hairline">
+									{ICON_PALETTE.map(key => (
 										<button
-											key={em}
+											key={key}
 											type="button"
-											onClick={() => setProposedCategoryEmoji(em)}
-											className={`text-lg sm:text-xl p-1 rounded-lg transition hover:bg-blue-100 dark:hover:bg-blue-900 ${
-												proposedCategoryEmoji === em ? 'bg-blue-200 dark:bg-blue-800 ring-2 ring-blue-500' : ''
+											title={key}
+											onClick={() => setProposedCategoryEmoji(key)}
+											className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
+												proposedCategoryEmoji === key
+													? 'bg-brand-600 text-white'
+													: 'text-ink-muted dark:text-ink-dark-muted hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
 											}`}
 										>
-											{em}
+											{CATEGORY_ICONS[key] && (
+												<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+													<path d={CATEGORY_ICONS[key]} />
+												</svg>
+											)}
 										</button>
 									))}
 								</div>
 							</div>
 							{categoryProposalSuccess && (
-								<p className="text-xs text-green-600 dark:text-green-400 mt-2">
+								<p className="text-xs text-brand-600 dark:text-brand-400 mt-2">
 									{t('categoryProposal.submittedDesc')}
 								</p>
 							)}

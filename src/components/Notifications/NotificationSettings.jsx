@@ -4,6 +4,12 @@ import Button from '../UI/Button';
 import { useToast } from '../../context/ToastContext';
 import { fetchNotificationSettings, updateNotificationSettings } from '../../utils/api';
 
+const numberInputClass =
+  'ml-2 w-20 px-2 py-1 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+
+const toggleClass =
+  'w-5 h-5 rounded accent-brand-600 focus:ring-2 focus:ring-brand-500/20 disabled:opacity-50';
+
 export default function NotificationSettings() {
   const { t } = useTranslation();
   const { addToast } = useToast();
@@ -12,9 +18,9 @@ export default function NotificationSettings() {
     recurring_due_enabled: true,
     goal_milestone_enabled: true,
     trial_expiring_enabled: true,
-    budget_threshold: 90, // Percentage
-    recurring_advance_days: 1, // Days before due
-    goal_milestone_percentage: 25 // Every 25% progress
+    budget_threshold: 90,
+    recurring_advance_days: 1,
+    goal_milestone_percentage: 25
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -59,31 +65,31 @@ export default function NotificationSettings() {
   };
 
   if (loading) {
-    return <div className="text-gray-500 dark:text-gray-400">{t('messages.loading')}</div>;
+    return <div className="text-ink-muted dark:text-ink-dark-muted">{t('messages.loading')}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 className="font-display font-semibold tracking-tight text-lg text-ink-primary dark:text-ink-dark-primary mb-4">
           {t('notifications.notificationTypes')}
         </h3>
 
         {/* Individual Notification Types */}
         <div className="space-y-3">
           {/* Budget Overrun */}
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-red-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline px-4 py-3 border-l-4" style={{ borderLeftColor: '#e05c6b' }}>
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-gray-900 dark:text-white">
+                <div className="font-medium text-ink-primary dark:text-ink-dark-primary">
                   {t('notifications.types.budgetOverrun')}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1">
                   {t('notifications.types.budgetOverrunDesc')}
                 </div>
                 {settings.budget_overrun_enabled && (
                   <div className="mt-2">
-                    <label className="text-xs text-gray-600 dark:text-gray-400">
+                    <label className="text-xs text-ink-muted dark:text-ink-dark-muted">
                       {t('notifications.budgetThreshold')}:
                     </label>
                     <input
@@ -93,10 +99,10 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.budget_threshold}
                       onChange={(e) => handleChange('budget_threshold', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
+                      className={numberInputClass}
                       disabled={!settings.email_enabled}
                     />
-                    <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">%</span>
+                    <span className="ml-1 text-xs text-ink-muted dark:text-ink-dark-muted">%</span>
                   </div>
                 )}
               </div>
@@ -105,24 +111,24 @@ export default function NotificationSettings() {
                 checked={settings.budget_overrun_enabled}
                 onChange={() => handleToggle('budget_overrun_enabled')}
                 disabled={!settings.email_enabled}
-                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500 disabled:opacity-50"
+                className={toggleClass}
               />
             </label>
           </div>
 
           {/* Recurring Due */}
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-blue-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-brand-500 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-gray-900 dark:text-white">
+                <div className="font-medium text-ink-primary dark:text-ink-dark-primary">
                   {t('notifications.types.recurringDue')}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1">
                   {t('notifications.types.recurringDueDesc')}
                 </div>
                 {settings.recurring_due_enabled && (
                   <div className="mt-2">
-                    <label className="text-xs text-gray-600 dark:text-gray-400">
+                    <label className="text-xs text-ink-muted dark:text-ink-dark-muted">
                       {t('notifications.advanceDays')}:
                     </label>
                     <input
@@ -131,9 +137,9 @@ export default function NotificationSettings() {
                       max="7"
                       value={settings.recurring_advance_days}
                       onChange={(e) => handleChange('recurring_advance_days', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
+                      className={numberInputClass}
                     />
-                    <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">
+                    <span className="ml-1 text-xs text-ink-muted dark:text-ink-dark-muted">
                       {t('notifications.daysLabel')}
                     </span>
                   </div>
@@ -143,24 +149,24 @@ export default function NotificationSettings() {
                 type="checkbox"
                 checked={settings.recurring_due_enabled}
                 onChange={() => handleToggle('recurring_due_enabled')}
-                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500"
+                className={toggleClass}
               />
             </label>
           </div>
 
           {/* Goal Milestone */}
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-emerald-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-emerald-500 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-gray-900 dark:text-white">
+                <div className="font-medium text-ink-primary dark:text-ink-dark-primary">
                   {t('notifications.types.goalMilestone')}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1">
                   {t('notifications.types.goalMilestoneDesc')}
                 </div>
                 {settings.goal_milestone_enabled && (
                   <div className="mt-2">
-                    <label className="text-xs text-gray-600 dark:text-gray-400">
+                    <label className="text-xs text-ink-muted dark:text-ink-dark-muted">
                       {t('notifications.milestoneInterval')}:
                     </label>
                     <input
@@ -170,9 +176,9 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.goal_milestone_percentage}
                       onChange={(e) => handleChange('goal_milestone_percentage', Number(e.target.value))}
-                      className="ml-2 w-20 px-2 py-1 text-sm rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
+                      className={numberInputClass}
                     />
-                    <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">%</span>
+                    <span className="ml-1 text-xs text-ink-muted dark:text-ink-dark-muted">%</span>
                   </div>
                 )}
               </div>
@@ -180,19 +186,19 @@ export default function NotificationSettings() {
                 type="checkbox"
                 checked={settings.goal_milestone_enabled}
                 onChange={() => handleToggle('goal_milestone_enabled')}
-                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500"
+                className={toggleClass}
               />
             </label>
           </div>
 
           {/* Trial Expiring */}
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm border-l-4 border-l-amber-400 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-amber-500 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-gray-900 dark:text-white">
+                <div className="font-medium text-ink-primary dark:text-ink-dark-primary">
                   {t('notifications.types.trialExpiring')}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1">
                   {t('notifications.types.trialExpiringDesc')}
                 </div>
               </div>
@@ -200,7 +206,7 @@ export default function NotificationSettings() {
                 type="checkbox"
                 checked={settings.trial_expiring_enabled}
                 onChange={() => handleToggle('trial_expiring_enabled')}
-                className="w-5 h-5 text-brand-600 rounded focus:ring-brand-500"
+                className={toggleClass}
               />
             </label>
           </div>
@@ -208,7 +214,7 @@ export default function NotificationSettings() {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end pt-4 border-t dark:border-zinc-800">
+      <div className="flex justify-end pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
         <Button onClick={handleSave} disabled={saving}>
           {saving ? t('account.saving') : t('forms.save')}
         </Button>

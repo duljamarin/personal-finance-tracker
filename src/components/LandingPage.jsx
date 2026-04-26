@@ -3,78 +3,88 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import showcaseImg from '../assets/showcase-finance.jpg';
 
-/* ─── Mini dashboard mockup for the hero ─── */
+/* ─── Flagship hero illustration with brand accent ─── */
+function FlagshipArt() {
+  return (
+    <svg viewBox="0 0 240 140" className="w-full h-auto" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="8" y1="128" x2="232" y2="128" className="stroke-ink-primary/25 dark:stroke-ink-dark-primary/25" />
+      <line x1="8" y1="96"  x2="232" y2="96"  className="stroke-ink-primary/15 dark:stroke-ink-dark-primary/15" strokeDasharray="2 3" />
+      <line x1="8" y1="64"  x2="232" y2="64"  className="stroke-ink-primary/15 dark:stroke-ink-dark-primary/15" strokeDasharray="2 3" />
+      <line x1="8" y1="32"  x2="232" y2="32"  className="stroke-ink-primary/15 dark:stroke-ink-dark-primary/15" strokeDasharray="2 3" />
+      <path d="M8 104 L40 96 L72 100 L104 84 L136 78 L168 62 L200 68 L232 40"
+            className="stroke-ink-primary/40 dark:stroke-ink-dark-primary/40" />
+      <path d="M8 112 L40 98 L72 108 L104 80 L136 88 L168 50 L200 58 L232 22"
+            stroke="#22ad93" strokeWidth="2" />
+      <circle cx="40"  cy="98" r="2.2" fill="#22ad93" />
+      <circle cx="104" cy="80" r="2.2" fill="#22ad93" />
+      <circle cx="168" cy="50" r="2.2" fill="#22ad93" />
+      <circle cx="232" cy="22" r="3"   fill="#22ad93" />
+    </svg>
+  );
+}
+
+/* ─── Hero dashboard mockup ─── */
 function DashboardPreview({ t }) {
   return (
     <div className="relative">
-      <div className="absolute -inset-4 bg-brand-400/10 dark:bg-brand-500/5 rounded-3xl blur-2xl pointer-events-none" />
-      <div className="relative bg-white dark:bg-surface-dark-elevated rounded-2xl border border-gray-200/80 dark:border-zinc-800 shadow-xl overflow-hidden">
-        {/* Window chrome */}
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100 dark:border-zinc-800/80">
+      <div className="relative bg-white dark:bg-surface-dark-elevated rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline shadow-lg overflow-hidden">
+        <div className="flex items-center gap-2 px-5 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline">
           <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+            <span className="w-2 h-2 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline" />
+            <span className="w-2 h-2 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline" />
+            <span className="w-2 h-2 rounded-full bg-brand-300 dark:bg-brand-700" />
           </div>
-          <span className="text-[11px] text-gray-400 dark:text-gray-500 ml-2 font-medium tracking-wide">
+          <span className="text-[11px] text-ink-muted dark:text-ink-dark-muted ml-2 font-medium tracking-wide">
             {t('landing.mockup.dashboard')}
           </span>
         </div>
 
-        {/* Summary row */}
         <div className="grid grid-cols-3 gap-4 px-5 pt-5 pb-4">
           <div>
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">{t('landing.mockup.balance')}</p>
-            <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">€1,353</p>
+            <p className="eyebrow text-[10px] mb-1">{t('landing.mockup.balance')}</p>
+            <p className="text-lg font-bold text-ink-primary dark:text-ink-dark-primary tabular-nums">€1,353</p>
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">{t('landing.mockup.income')}</p>
+            <p className="eyebrow text-[10px] mb-1">{t('landing.mockup.income')}</p>
             <p className="text-lg font-bold text-brand-600 dark:text-brand-400 tabular-nums">+€3,200</p>
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">{t('landing.mockup.expenses')}</p>
-            <p className="text-lg font-bold text-red-500 dark:text-red-400 tabular-nums">-€1,847</p>
+            <p className="eyebrow text-[10px] mb-1">{t('landing.mockup.expenses')}</p>
+            <p className="text-lg font-bold text-[#e05c6b] dark:text-[#f08090] tabular-nums">-€1,847</p>
           </div>
         </div>
 
-        {/* Mini bar chart */}
         <div className="px-5 pb-4">
           <div className="flex items-end gap-[5px] h-14">
             {[35, 58, 42, 72, 50, 64, 85, 55, 68, 78, 46, 90].map((h, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-[3px] bg-brand-500/70 dark:bg-brand-400/60"
-                style={{ height: `${h}%` }}
-              />
+              <div key={i} className="flex-1 rounded-[3px] bg-brand-500/70 dark:bg-brand-400/60" style={{ height: `${h}%` }} />
             ))}
           </div>
         </div>
 
-        {/* Budget bar */}
         <div className="px-5 pb-4">
           <div className="flex items-center justify-between text-[11px] mb-1.5">
-            <span className="text-gray-500 dark:text-gray-400 font-medium">{t('landing.mockup.budget')}</span>
-            <span className="text-gray-400 dark:text-gray-500 tabular-nums">60%</span>
+            <span className="text-ink-muted dark:text-ink-dark-muted font-medium">{t('landing.mockup.budget')}</span>
+            <span className="text-ink-muted dark:text-ink-dark-muted tabular-nums">60%</span>
           </div>
-          <div className="h-1.5 bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
             <div className="h-full bg-brand-500 rounded-full" style={{ width: '60%' }} />
           </div>
         </div>
 
-        {/* Recent transactions */}
-        <div className="border-t border-gray-100 dark:border-zinc-800/80 px-5 py-3">
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">{t('landing.mockup.recent')}</p>
+        <div className="border-t border-surface-hairline dark:border-surface-dark-hairline px-5 py-3">
+          <p className="eyebrow text-[10px] mb-2">{t('landing.mockup.recent')}</p>
           {[
-            { emoji: '☕', label: t('landing.mockup.coffee'), amount: '-€4.50', positive: false },
-            { emoji: '💰', label: t('landing.mockup.salary'), amount: '+€3,200', positive: true },
-            { emoji: '🏠', label: t('landing.mockup.rent'), amount: '-€850.00', positive: false },
+            { color: '#e05c6b', label: t('landing.mockup.coffee'), amount: '-€4.50', positive: false },
+            { color: '#168b78', label: t('landing.mockup.salary'), amount: '+€3,200', positive: true },
+            { color: '#6A8FC4', label: t('landing.mockup.rent'), amount: '-€850.00', positive: false },
           ].map((tx, i) => (
             <div key={i} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-sm">{tx.emoji}</span>
-                <span className="text-xs text-gray-600 dark:text-gray-300">{tx.label}</span>
+                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: tx.color }} />
+                <span className="text-xs text-ink-primary dark:text-ink-dark-primary">{tx.label}</span>
               </div>
-              <span className={`text-xs font-semibold tabular-nums ${tx.positive ? 'text-brand-600 dark:text-brand-400' : 'text-gray-600 dark:text-gray-300'}`}>
+              <span className={`text-xs font-semibold tabular-nums ${tx.positive ? 'text-brand-600 dark:text-brand-400' : 'text-[#e05c6b] dark:text-[#f08090]'}`}>
                 {tx.amount}
               </span>
             </div>
@@ -85,40 +95,270 @@ function DashboardPreview({ t }) {
   );
 }
 
-/* ─── Feature icons (Heroicons outline 24×24) ─── */
-const featureIcons = {
-  tracking: (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
-    </svg>
-  ),
-  charts: (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-    </svg>
-  ),
-  budgets: (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-    </svg>
-  ),
-  goals: (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
-    </svg>
-  ),
-  recurring: (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
-    </svg>
-  ),
-  multicurrency: (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-    </svg>
-  ),
+/* ═══ Per-feature in-card micro visualizations ═══ */
+
+const MV_Charts = ({ t }) => {
+  const rows = [
+    { label: t('landing.categories.food'),          pct: 72, amt: '€820' },
+    { label: t('landing.categories.transport'),     pct: 48, amt: '€340' },
+    { label: t('landing.categories.entertainment'), pct: 31, amt: '€210' },
+  ];
+  return (
+    <div className="space-y-3">
+      {rows.map((r, i) => (
+        <div key={i}>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs text-ink-muted dark:text-ink-dark-muted">{r.label}</span>
+            <span className="text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums">{r.amt}</span>
+          </div>
+          <div className="h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+            <div className="h-full bg-brand-500 rounded-full" style={{ width: `${r.pct}%` }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
+
+const MV_Budgets = ({ t }) => {
+  const rows = [
+    { label: t('landing.categories.food'),       pct: 78, tone: 'brand' },
+    { label: t('landing.categories.utilities'),  pct: 45, tone: 'brand' },
+    { label: t('landing.categories.transport'),  pct: 92, tone: 'warn'  },
+  ];
+  return (
+    <div className="space-y-3">
+      {rows.map((r, i) => (
+        <div key={i}>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs text-ink-muted dark:text-ink-dark-muted">{r.label}</span>
+            <span className={`text-xs font-semibold tabular-nums ${r.tone === 'warn' ? 'text-amber-500' : 'text-ink-primary dark:text-ink-dark-primary'}`}>{r.pct}%</span>
+          </div>
+          <div className="h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+            <div className={`h-full rounded-full ${r.tone === 'warn' ? 'bg-amber-500' : 'bg-brand-500'}`} style={{ width: `${r.pct}%` }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const MV_Healthscore = ({ t }) => (
+  <div className="flex items-center gap-5">
+    <svg viewBox="0 0 100 60" className="w-28 h-16">
+      <path d="M 10 52 A 40 40 0 0 1 90 52" fill="none" stroke="#EDEDE8" strokeWidth="6" className="dark:stroke-surface-dark-hairline" />
+      <path d="M 10 52 A 40 40 0 0 1 82 28" fill="none" stroke="#22ad93" strokeWidth="6" strokeLinecap="round" />
+    </svg>
+    <div>
+      <p className="text-4xl font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums tracking-tight-display leading-none">85</p>
+      <p className="eyebrow text-[10px] text-brand-600 dark:text-brand-400 mt-1.5">{t('landing.viz.scoreGood')}</p>
+    </div>
+  </div>
+);
+
+const MV_Goals = ({ t }) => (
+  <div>
+    <div className="flex items-baseline justify-between mb-3">
+      <p className="text-4xl font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums tracking-tight-display leading-none">73%</p>
+      <span className="eyebrow text-[10px]">{t('landing.viz.goalName')}</span>
+    </div>
+    <div className="h-2 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden mb-2">
+      <div className="h-full bg-brand-500 rounded-full" style={{ width: '73%' }} />
+    </div>
+    <p className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums">€3,650 / €5,000</p>
+  </div>
+);
+
+const MV_Networth = () => (
+  <div>
+    <div className="flex items-baseline gap-3 mb-2">
+      <p className="text-3xl font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums tracking-tight-display leading-none">€24,580</p>
+      <span className="text-xs font-semibold text-brand-600 dark:text-brand-400 tabular-nums">+12%</span>
+    </div>
+    <svg viewBox="0 0 160 40" className="w-full h-10" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M0 32 L20 28 L40 24 L60 22 L80 16 L100 14 L120 10 L140 8 L160 4 L160 40 L0 40 Z" fill="#22ad93" fillOpacity="0.15" />
+      <path d="M0 32 L20 28 L40 24 L60 22 L80 16 L100 14 L120 10 L140 8 L160 4" stroke="#22ad93" strokeWidth="1.5" />
+    </svg>
+  </div>
+);
+
+const MV_Cashflow = ({ t }) => (
+  <div>
+    <div className="flex items-baseline gap-3 mb-2">
+      <p className="text-3xl font-semibold text-brand-600 dark:text-brand-400 tabular-nums tracking-tight-display leading-none">+€1,247</p>
+      <span className="eyebrow text-[10px]">{t('landing.viz.nextDays')}</span>
+    </div>
+    <svg viewBox="0 0 160 40" className="w-full h-10" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+      <line x1="80" y1="0" x2="80" y2="40" className="stroke-ink-primary/15 dark:stroke-ink-dark-primary/15" strokeDasharray="2 3" />
+      <path d="M0 30 L16 28 L32 24 L48 26 L64 20 L80 22" stroke="#22ad93" />
+      <path d="M80 22 L96 18 L112 20 L128 14 L144 12 L160 8" stroke="#22ad93" strokeDasharray="3 3" />
+      <circle cx="80" cy="22" r="2.5" fill="#22ad93" />
+    </svg>
+  </div>
+);
+
+const MV_Recurring = ({ t }) => {
+  const dots = new Set([1, 3, 8, 15, 22, 25]);
+  return (
+    <div>
+      <div className="grid grid-cols-7 gap-1.5 mb-3">
+        {Array.from({ length: 28 }).map((_, i) => (
+          <div
+            key={i}
+            className={`aspect-square rounded-[3px] flex items-center justify-center text-[9px] tabular-nums ${
+              dots.has(i)
+                ? 'bg-brand-500 text-white'
+                : 'bg-surface-hairline/60 dark:bg-surface-dark-hairline/60 text-ink-muted/60 dark:text-ink-dark-muted/60'
+            }`}
+          >
+            {i + 1}
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-ink-muted dark:text-ink-dark-muted"><span className="font-semibold text-ink-primary dark:text-ink-dark-primary">6</span> {t('landing.viz.recurringThisMonth')}</p>
+    </div>
+  );
+};
+
+const MV_Benchmarks = ({ t }) => (
+  <div className="space-y-4">
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs text-ink-primary dark:text-ink-dark-primary font-medium">{t('landing.viz.thisMonth')}</span>
+        <span className="text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums">€1,847</span>
+      </div>
+      <div className="h-2.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+        <div className="h-full bg-brand-500 rounded-full" style={{ width: '72%' }} />
+      </div>
+    </div>
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('landing.viz.avg3Month')}</span>
+        <span className="text-xs font-semibold text-ink-muted dark:text-ink-dark-muted tabular-nums">€2,120</span>
+      </div>
+      <div className="h-2.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+        <div className="h-full bg-ink-muted/40 dark:bg-ink-dark-muted/40 rounded-full" style={{ width: '88%' }} />
+      </div>
+    </div>
+    <p className="text-xs"><span className="font-semibold text-brand-600 dark:text-brand-400">-13%</span> <span className="text-ink-muted dark:text-ink-dark-muted">{t('landing.viz.lowerThanAvg')}</span></p>
+  </div>
+);
+
+const MV_Multicurrency = () => (
+  <div className="flex items-center gap-4 flex-wrap">
+    <div>
+      <p className="eyebrow text-[10px] mb-1">EUR</p>
+      <p className="text-2xl font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums tracking-tight-display leading-none">€1,000<span className="text-ink-muted">.00</span></p>
+    </div>
+    <svg viewBox="0 0 24 24" className="w-6 h-6 text-brand-600 dark:text-brand-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+    <div>
+      <p className="eyebrow text-[10px] mb-1">USD · 1.087</p>
+      <p className="text-2xl font-semibold text-brand-600 dark:text-brand-400 tabular-nums tracking-tight-display leading-none">$1,087<span className="text-brand-600/70 dark:text-brand-400/70">.42</span></p>
+    </div>
+  </div>
+);
+
+const MV_Reports = ({ t }) => (
+  <div className="flex items-center gap-4">
+    <svg viewBox="0 0 48 48" className="w-14 h-14 flex-shrink-0" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="8" y="6" width="32" height="36" rx="2" className="stroke-ink-primary dark:stroke-ink-dark-primary" strokeWidth="1.5" />
+      <path d="M32 6 v6 h6" className="stroke-ink-primary dark:stroke-ink-dark-primary" strokeWidth="1.5" />
+      <line x1="14" y1="18" x2="26" y2="18" className="stroke-ink-primary/60 dark:stroke-ink-dark-primary/60" strokeWidth="1.2" />
+      <rect x="14" y="30" width="4" height="6" fill="#22ad93" />
+      <rect x="21" y="26" width="4" height="10" fill="#22ad93" />
+      <rect x="28" y="22" width="4" height="14" fill="#22ad93" />
+    </svg>
+    <div>
+      <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary mb-1">2026 · Q1</p>
+      <p className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('landing.viz.reportTypes')}</p>
+    </div>
+  </div>
+);
+
+const MV_Notifications = ({ t }) => {
+  const alerts = [
+    { text: t('landing.viz.alertTransport'), tone: 'warn' },
+    { text: t('landing.viz.alertGoal'),      tone: 'brand' },
+    { text: t('landing.viz.alertRent'),      tone: 'muted' },
+  ];
+  return (
+    <div className="flex items-start gap-5">
+      <div className="relative flex-shrink-0">
+        <svg viewBox="0 0 40 40" className="w-10 h-10 text-ink-primary dark:text-ink-dark-primary" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 8 C14 8 13 12 13 18 L13 24 L10 28 L30 28 L27 24 L27 18 C27 12 26 8 20 8 Z" />
+          <path d="M17 30 C18 32 22 32 23 30" />
+        </svg>
+        <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-semibold flex items-center justify-center tabular-nums">3</span>
+      </div>
+      <div className="flex-1 space-y-2">
+        {alerts.map((a, i) => (
+          <div key={i} className="flex items-center gap-2 text-xs">
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${a.tone === 'warn' ? 'bg-amber-500' : a.tone === 'brand' ? 'bg-brand-500' : 'bg-ink-muted/50 dark:bg-ink-dark-muted/50'}`} />
+            <span className="text-ink-primary dark:text-ink-dark-primary">{a.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const MV_Categories = ({ t }) => {
+  const pills = [
+    { label: t('landing.categories.food'),          color: '#22ad93' },
+    { label: t('landing.categories.transport'),     color: '#D0A96A' },
+    { label: t('landing.categories.entertainment'), color: '#C46A75' },
+    { label: t('landing.categories.utilities'),     color: '#6A8FC4' },
+    { label: t('landing.mockup.rent'),              color: '#8A8A85' },
+    { label: t('landing.mockup.coffee'),            color: '#C99060' },
+  ];
+  return (
+    <div className="flex flex-wrap gap-2">
+      {pills.map((p, i) => (
+        <span
+          key={i}
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline rounded-full text-xs text-ink-primary dark:text-ink-dark-primary"
+        >
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.color }} />
+          {p.label}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+const MV_Tracking = ({ t }) => (
+  <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline p-5 sm:p-6 rounded-[10px] text-ink-primary dark:text-ink-dark-primary">
+    <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
+      <div>
+        <p className="eyebrow text-[10px] mb-1">{t('landing.viz.ytdSavings')}</p>
+        <p className="text-3xl sm:text-4xl font-semibold text-brand-600 dark:text-brand-400 tabular-nums tracking-tight-display leading-none">+€4,800</p>
+      </div>
+      <div className="flex gap-1">
+        <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 rounded">1Y</span>
+        <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ink-muted dark:text-ink-dark-muted rounded">6M</span>
+        <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ink-muted dark:text-ink-dark-muted rounded">3M</span>
+      </div>
+    </div>
+    <FlagshipArt />
+  </div>
+);
+
+/* ═══ Bento card shell ═══ */
+function Bento({ className = '', title, desc, children}) {
+  return (
+    <div className={`p-7 sm:p-8 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card rounded-[10px] flex flex-col ${className}`}>
+      {children && <div className="mb-6">{children}</div>}
+      <h3 className="text-2xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display leading-tight mb-3">
+        {title}
+      </h3>
+      <p className="text-base text-ink-muted dark:text-ink-dark-muted leading-relaxed">
+        {desc}
+      </p>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -129,21 +369,18 @@ export default function LandingPage() {
     return () => clearTimeout(id);
   }, []);
 
-  const features = ['tracking', 'charts', 'budgets', 'goals', 'recurring', 'multicurrency'];
-
   const steps = [
-    { num: '1', key: 'step1' },
-    { num: '2', key: 'step2' },
-    { num: '3', key: 'step3' },
+    { num: 1, key: 'step1' },
+    { num: 2, key: 'step2' },
+    { num: 3, key: 'step3' },
   ];
 
   return (
     <div className="min-h-screen">
       {/* ── Hero ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-16 sm:pb-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-24 sm:pb-32">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Copy */}
-          <div className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className={`transition-opacity duration-700 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-medium mb-6 border border-brand-200/60 dark:border-brand-800/30">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75" />
@@ -152,19 +389,19 @@ export default function LandingPage() {
               {t('landing.hero.badge')}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-gray-900 dark:text-white tracking-display leading-[1.1] mb-5">
+            <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.02] mb-7">
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-400">{t('landing.hero.titleAccent')}</span>
             </h1>
 
-            <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-8 max-w-lg">
+            <p className="text-2xl text-ink-muted dark:text-ink-dark-muted leading-relaxed mb-10 max-w-xl">
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
               <Link
                 to="/register"
-                className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg shadow-sm transition-all active:scale-[0.98] text-sm"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.getStarted')}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-0.5">
@@ -173,96 +410,210 @@ export default function LandingPage() {
               </Link>
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center px-6 py-3 bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg shadow-xs transition-all text-sm"
+                className="inline-flex items-center justify-center px-8 py-4 border border-ink-primary/25 hover:border-ink-primary/60 dark:border-ink-dark-primary/25 dark:hover:border-ink-dark-primary/60 text-ink-primary dark:text-ink-dark-primary font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.signIn')}
               </Link>
             </div>
 
-            <p className="text-xs text-gray-400 dark:text-gray-500">
+            <p className="text-base text-ink-muted dark:text-ink-dark-muted">
               {t('landing.hero.trustNote')}
             </p>
           </div>
 
-          {/* Dashboard Mockup */}
-          <div className={`transition-all duration-700 delay-150 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Dashboard mockup with floating overlays */}
+          <div className={`relative transition-opacity duration-700 delay-150 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
             <DashboardPreview t={t} />
+            {/* Emerald accent corner */}
+            <div aria-hidden="true" className="hidden lg:block absolute -top-3 -right-3 w-24 h-24 border-t-2 border-r-2 border-brand-500/40 rounded-tr-2xl pointer-events-none" />
           </div>
         </div>
       </section>
 
       {/* ── Product Stats ── */}
-      <section className="border-y border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div className="grid grid-cols-2 md:grid-cols-4">
             {[
-              { value: '30', label: t('landing.stats.freeTransactions') },
-              { value: '10+', label: t('landing.stats.features') },
+              { value: '30',   label: t('landing.stats.freeTransactions') },
+              { value: '10+',  label: t('landing.stats.features') },
               { value: '24/7', label: t('landing.stats.cloudSync') },
               { value: '100%', label: t('landing.stats.free') },
             ].map((stat, i) => (
-              <div key={i}>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.label}</p>
+              <div
+                key={i}
+                className={`px-5 ${i > 0 ? 'border-l border-surface-hairline dark:border-surface-dark-hairline' : ''}`}
+              >
+                <p className="text-5xl sm:text-6xl font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums tracking-tight-display">
+                  {stat.value}
+                </p>
+                <p className="eyebrow mt-4 text-base">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section className="py-20 sm:py-24">
+      {/* ── Features Bento Grid ── */}
+      <section className="py-20 sm:py-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
+          <div className="mb-16 max-w-3xl">
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-5">
               {t('landing.features.title')}
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+            <p className="text-xl text-ink-muted dark:text-ink-dark-muted leading-relaxed">
               {t('landing.cta.subtitle')}
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((key) => (
-              <div
-                key={key}
-                className="group p-6 rounded-xl border border-gray-200/80 dark:border-zinc-800 bg-white dark:bg-surface-dark-tertiary hover:border-brand-300 dark:hover:border-brand-800/60 hover:shadow-md transition-all duration-200"
-              >
-                <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4 group-hover:scale-110 transition-transform">
-                  {featureIcons[key]}
-                </div>
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1.5">
-                  {t(`landing.features.${key}.title`)}
+
+          {/* Flagship — full-width tracking with embedded chart preview */}
+          <div className="mb-5 p-8 sm:p-10 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card rounded-[10px]">
+            <div className="grid lg:grid-cols-[1fr_1fr] gap-10 items-center">
+              <div className="order-2 lg:order-1">
+                <h3 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display leading-tight mb-5">
+                  {t('landing.features.tracking.title')}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                  {t(`landing.features.${key}.desc`)}
+                <p className="text-xl text-ink-muted dark:text-ink-dark-muted leading-relaxed max-w-md">
+                  {t('landing.features.tracking.desc')}
                 </p>
               </div>
-            ))}
+              <div className="order-1 lg:order-2">
+                <MV_Tracking t={t} />
+              </div>
+            </div>
+          </div>
+
+          {/* Bento tier — 12-col grid, varied widths */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.healthscore.title')}
+              desc={t('landing.features.healthscore.desc')}
+              t={t}
+            >
+              <MV_Healthscore t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.goals.title')}
+              desc={t('landing.features.goals.desc')}
+            >
+              <MV_Goals t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.networth.title')}
+              desc={t('landing.features.networth.desc')}
+            >
+              <MV_Networth/>
+            </Bento>
+
+            <Bento
+              className="lg:col-span-6"
+              title={t('landing.features.budgets.title')}
+              desc={t('landing.features.budgets.desc')}
+            >
+              <MV_Budgets t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-6"
+              title={t('landing.features.charts.title')}
+              desc={t('landing.features.charts.desc')}
+            >
+              <MV_Charts t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.cashflow.title')}
+              desc={t('landing.features.cashflow.desc')}
+            >
+              <MV_Cashflow t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.recurring.title')}
+              desc={t('landing.features.recurring.desc')}
+            >
+              <MV_Recurring t={t}/>
+            </Bento>
+
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.multicurrency.title')}
+              desc={t('landing.features.multicurrency.desc')}
+            >
+              <MV_Multicurrency t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-6"
+              title={t('landing.features.benchmarks.title')}
+              desc={t('landing.features.benchmarks.desc')}
+            >
+              <MV_Benchmarks t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-6"
+              title={t('landing.features.notifications.title')}
+              desc={t('landing.features.notifications.desc')}
+            >
+              <MV_Notifications t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-8"
+              title={t('landing.features.categories.title')}
+              desc={t('landing.features.categories.desc')}
+            >
+              <MV_Categories t={t} />
+            </Bento>
+
+            <Bento
+              className="lg:col-span-4"
+              title={t('landing.features.reports.title')}
+              desc={t('landing.features.reports.desc')}
+            >
+              <MV_Reports t={t} />
+            </Bento>
           </div>
         </div>
       </section>
 
       {/* ── How It Works ── */}
-      <section className="border-y border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary py-20 sm:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
-              {t('landing.howItWorks.title')}
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              {t('landing.howItWorks.subtitle')}
-            </p>
+      <section className="relative border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card py-20 sm:py-28 overflow-hidden">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-16 max-w-3xl flex gap-5">
+            <div aria-hidden="true" className="w-1 bg-brand-500 rounded-full flex-shrink-0 my-2" />
+            <div>
+              <h2 className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-5">
+                {t('landing.howItWorks.title')}
+              </h2>
+              <p className="text-xl text-ink-muted dark:text-ink-dark-muted">
+                {t('landing.howItWorks.subtitle')}
+              </p>
+            </div>
           </div>
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-12 relative">
+            {/* Connecting dotted line between step circles */}
+            <div aria-hidden="true" className="hidden md:block absolute top-6 left-[8%] right-[8%] h-px border-t border-dashed border-brand-500/30 pointer-events-none" />
             {steps.map((step) => (
-              <div key={step.key} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-5">
-                  {step.num}
+              <div key={step.key} className="relative">
+                <div className="mb-6 relative bg-white dark:bg-surface-dark-card inline-block">
+                  <span className="w-12 h-12 rounded-full bg-brand-500 text-white flex items-center justify-center text-base font-semibold tabular-nums tracking-tight shadow-[0_0_0_6px_rgba(34,173,147,0.12)]">
+                    {step.num}
+                  </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+
+                <h3 className="text-2xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display leading-tight mb-3">
                   {t(`landing.howItWorks.${step.key}.title`)}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
+                <p className="text-lg text-ink-muted dark:text-ink-dark-muted leading-relaxed">
                   {t(`landing.howItWorks.${step.key}.desc`)}
                 </p>
               </div>
@@ -271,59 +622,76 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Showcase (Image + text) ── */}
-      <section className="py-20 sm:py-24">
+      {/* ── Showcase ── */}
+      <section className="py-20 sm:py-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
-                {t('landing.showcase.title')}
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
-                {t('landing.showcase.desc')}
-              </p>
-              <ul className="space-y-3">
-                {['showcase1', 'showcase2', 'showcase3'].map((key) => (
-                  <li key={key} className="flex items-start gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-brand-500 mt-0.5 flex-shrink-0">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
-                    <span className="text-sm text-gray-600 dark:text-gray-300">{t(`landing.showcase.${key}`)}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="flex gap-5">
+              <div aria-hidden="true" className="w-1 bg-brand-500 rounded-full flex-shrink-0 my-2" />
+              <div className="flex-1">
+                <h2 className="text-5xl sm:text-6xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-5">
+                  {t('landing.showcase.title')}
+                </h2>
+                <p className="text-xl text-ink-muted dark:text-ink-dark-muted leading-relaxed mb-8">
+                  {t('landing.showcase.desc')}
+                </p>
+                <ul className="space-y-4">
+                  {['showcase1', 'showcase2', 'showcase3'].map((key) => (
+                    <li key={key} className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-3.5 h-3.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                      </span>
+                      <span className="text-lg text-ink-primary dark:text-ink-dark-primary">{t(`landing.showcase.${key}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-200/80 dark:border-zinc-800">
-              <img
-                src={showcaseImg}
-                alt={t('landing.showcase.imageAlt')}
-                className="w-full h-auto object-cover"
-                loading="lazy"
-              />
+            <div className="relative">
+              {/* Emerald bracket corner accent */}
+              <div aria-hidden="true" className="absolute -top-3 -left-3 w-20 h-20 border-t-2 border-l-2 border-brand-500 rounded-tl-xl pointer-events-none" />
+              <div aria-hidden="true" className="absolute -bottom-3 -right-3 w-20 h-20 border-b-2 border-r-2 border-brand-500 rounded-br-xl pointer-events-none" />
+              <div className="relative rounded-xl overflow-hidden border border-surface-hairline dark:border-surface-dark-hairline shadow-lg">
+                <img
+                  src={showcaseImg}
+                  alt={t('landing.showcase.imageAlt')}
+                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="border-t border-gray-200/60 dark:border-zinc-800 bg-white dark:bg-surface-dark-secondary py-20 sm:py-24">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+      <section className="relative border-t border-surface-hairline dark:border-surface-dark-hairline bg-gradient-to-br from-white via-brand-50/40 to-white dark:from-surface-dark-card dark:via-brand-950/20 dark:to-surface-dark-card py-24 sm:py-32 overflow-hidden">
+        {/* Corner bracket accents */}
+        <div aria-hidden="true" className="absolute top-8 left-8 w-16 h-16 border-t border-l border-brand-500/30 rounded-tl-2xl pointer-events-none" />
+        <div aria-hidden="true" className="absolute bottom-8 right-8 w-16 h-16 border-b border-r border-brand-500/30 rounded-br-2xl pointer-events-none" />
+        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-700 dark:text-brand-300 text-xs font-semibold uppercase tracking-[0.14em] mb-6 border border-brand-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+            {t('landing.hero.badge').split('·')[0].trim()}
+          </div>
+          <h2 className="text-5xl sm:text-6xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-5">
             {t('landing.cta.title')}
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+          <p className="text-xl text-ink-muted dark:text-ink-dark-muted leading-relaxed max-w-lg mx-auto">
             {t('landing.cta.subtitle')}
           </p>
           <Link
             to="/register"
-            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg shadow-sm transition-all active:scale-[0.98] text-sm"
+            className="group inline-flex items-center gap-2 mt-10 px-9 py-4 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-all text-base shadow-lg shadow-brand-500/20 hover:shadow-xl hover:shadow-brand-500/30"
           >
             {t('landing.cta.button')}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-1">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
           </Link>
-          <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+          <p className="mt-6 text-sm text-ink-muted dark:text-ink-dark-muted">
             {t('landing.hero.trustNote')}
           </p>
         </div>

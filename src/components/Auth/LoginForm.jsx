@@ -1,17 +1,17 @@
-
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 import PasswordInput from '../UI/PasswordInput';
+import Input from '../UI/Input';
+
 export default function LoginForm() {
   const { login, loading, accessToken } = useAuth();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
 
-  // Redirect to dashboard if already logged in
   useEffect(() => {
     if (accessToken) {
       navigate('/', { replace: true });
@@ -24,13 +24,11 @@ export default function LoginForm() {
   const [formError, setFormError] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Re-render when language changes to update translated validation messages
   useEffect(() => {
-    // This effect will run whenever language changes
+    // re-render on language change
   }, [i18n.language]);
 
   async function handleGoogleLogin() {
-    // OAuth is an explicit trusted sign-in - always treat as "remembered"
     localStorage.setItem('rememberMe', 'true');
     await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -43,7 +41,6 @@ export default function LoginForm() {
     setEmailError('');
     setPasswordError('');
 
-    // Trim email and validate with stricter regex matching Supabase requirements
     const trimmedEmail = email.trim();
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
@@ -57,21 +54,17 @@ export default function LoginForm() {
     }
     return valid;
   }
-          // ...existing code...
+
   async function handleSubmit(e) {
     e.preventDefault();
     setFormError('');
     if (!validate()) return;
     try {
-      // Trim email before sending to Supabase
       await login(email.trim(), password, rememberMe);
       navigate('/');
     } catch (err) {
-      // Map common Supabase errors to translation keys
-      // Map common Supabase errors to translation keys (store key, not translated message)
       let errorKey = 'auth.loginError';
       const errorMsg = err?.message || '';
-
       if (errorMsg.toLowerCase().includes('invalid') || errorMsg.toLowerCase().includes('credentials')) {
         errorKey = 'auth.invalidCredentials';
       } else if (errorMsg.toLowerCase().includes('not found')) {
@@ -84,26 +77,35 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
-      <div className="w-full max-w-sm lg:max-w-md xl:max-w-lg">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+      {/* Brand backdrop — emerald glow + corner accents */}
+      <div aria-hidden="true" className="absolute top-6 left-6 sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
+      <div aria-hidden="true" className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
+
+      <div className="relative w-full max-w-md">
+        {/* Logomark + titles */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+            <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 17 L10 11 L14 14 L20 6" />
+              <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{t('auth.loginTitle')}</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth.signInDescription')}</p>
+          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+            {t('auth.loginTitle')}
+          </h1>
+          <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
+            {t('auth.signInDescription')}
+          </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
+        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
           {/* Google OAuth */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-surface-dark-tertiary text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"
+            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 text-ink-primary dark:text-ink-dark-primary px-4 py-3 rounded-md font-medium text-sm transition-colors"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -115,30 +117,32 @@ export default function LoginForm() {
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700"></div>
-            <span className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase">or</span>
-            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700"></div>
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
+            <span className="text-[11px] text-ink-muted dark:text-ink-dark-muted font-medium uppercase tracking-[0.14em]">{t('auth.or')}</span>
+            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.email')}</label>
-              <input
-                type="text"
-                value={email}
-                onChange={e => {
-                  setEmail(e.target.value);
-                  if (emailError) setEmailError('');
-                }}
-                placeholder={t('auth.emailPlaceholder')}
-                className={`w-full border rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-colors ${emailError ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-zinc-700'}`}
-              />
-              {emailError && <span className="text-red-500 text-xs mt-1.5 block">{t(emailError)}</span>}
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <Input
+              label={t('auth.email')}
+              type="text"
+              value={email}
+              onChange={e => {
+                setEmail(e.target.value);
+                if (emailError) setEmailError('');
+              }}
+              placeholder={t('auth.emailPlaceholder')}
+              error={emailError ? t(emailError) : ''}
+              leadingIcon={
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+              }
+            />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{t('auth.password')}</label>
+              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">{t('auth.password')}</label>
               <PasswordInput
                 value={password}
                 onChange={e => {
@@ -146,35 +150,47 @@ export default function LoginForm() {
                   if (passwordError) setPasswordError('');
                 }}
                 placeholder={t('auth.passwordPlaceholder')}
-                className={`w-full border rounded-lg px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-colors ${passwordError ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-zinc-700'}`}
+                className={`w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 rounded-md transition-colors ${passwordError ? 'border-red-400' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`}
               />
-              {passwordError && <span className="text-red-500 text-xs mt-1.5 block">{t(passwordError)}</span>}
+              {passwordError && (
+                <p className="mt-2 text-xs text-red-500 dark:text-red-400 flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                  </svg>
+                  {t(passwordError)}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
+              <label className="flex items-center gap-2.5 cursor-pointer select-none group">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={e => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-zinc-600 text-brand-600 focus:ring-brand-500 dark:bg-surface-dark-elevated cursor-pointer"
+                  className="peer sr-only"
                 />
-                <span className="text-xs text-gray-500 dark:text-gray-400">{t('auth.rememberMe')}</span>
+                <span className="w-[18px] h-[18px] rounded-[5px] border-[1.5px] border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card flex items-center justify-center transition-colors group-hover:border-brand-500/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/30">
+                  <svg className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: rememberMe ? 1 : 0 }}>
+                    <path d="M4.5 12.75 10.5 18 20 6" />
+                  </svg>
+                </span>
+                <span className="text-sm text-ink-primary dark:text-ink-dark-primary">{t('auth.rememberMe')}</span>
               </label>
-              <Link to="/forgot-password" className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
+              <Link to="/forgot-password" className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
                 {t('auth.forgotPassword')}
               </Link>
             </div>
 
             {formError && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-center text-sm p-3 rounded-lg">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-center text-sm p-3 rounded-md">
                 {t(formError)}
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
               disabled={loading}
             >
               {t('auth.signIn')}
@@ -182,8 +198,7 @@ export default function LoginForm() {
           </form>
         </div>
 
-        {/* Footer link */}
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+        <p className="text-center text-sm text-ink-muted dark:text-ink-dark-muted mt-8">
           {t('auth.noAccount')}{' '}
           <Link to="/register" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.createAccount')}</Link>
         </p>

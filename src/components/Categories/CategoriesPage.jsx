@@ -7,21 +7,21 @@ import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { useToast } from '../../context/ToastContext';
 
 import { useTransactions } from '../../context/TransactionContext';
-import { translateCategoryName, getCategoryEmoji, EMOJI_PALETTE } from '../../utils/categoryTranslation';
+import { translateCategoryName, getCategoryIcon, ICON_PALETTE, CATEGORY_ICONS } from '../../utils/categoryTranslation';
 import CategoryCard from './CategoryCard';
+import { CategoryIconSvg } from '../UI/CategoryIconSvg.jsx';  
 
 export default function CategoriesPage() {
   const { categories, catError, reloadCategories, reloadTransactions: reloadExpenses } = useTransactions();
   const { addToast } = useToast();
-
   const { t } = useTranslation();
 
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState('');
-  const [editEmoji, setEditEmoji] = useState('📂');
+  const [editIconKey, setEditIconKey] = useState('Shopping');
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState('add'); // 'add' | 'edit'
+  const [modalMode, setModalMode] = useState('add');
   const [error, setError] = useState(null);
   const [modalError, setModalError] = useState(null);
   const [modal, setModal] = useState({ open: false, categoryId: null });
@@ -29,7 +29,7 @@ export default function CategoriesPage() {
   function openAddModal() {
     setModalMode('add');
     setEditName('');
-    setEditEmoji('📂');
+    setEditIconKey('Shopping');
     setModalError(null);
     setShowModal(true);
   }
@@ -38,7 +38,7 @@ export default function CategoriesPage() {
     setModalMode('edit');
     setEditing(cat.id);
     setEditName(translateCategoryName(cat.name));
-    setEditEmoji(getCategoryEmoji(cat));
+    setEditIconKey(getCategoryIcon(cat));
     setModalError(null);
     setShowModal(true);
   }
@@ -47,7 +47,7 @@ export default function CategoriesPage() {
     setShowModal(false);
     setEditing(null);
     setEditName('');
-    setEditEmoji('📂');
+    setEditIconKey('Shopping');
     setModalError(null);
   }
 
@@ -60,7 +60,7 @@ export default function CategoriesPage() {
 
     if (modalMode === 'add') {
       try {
-        await addCategory({ name: editName.trim(), emoji: editEmoji });
+        await addCategory({ name: editName.trim(), emoji: editIconKey });
         reloadCategories?.();
         reloadExpenses?.();
         closeModal();
@@ -75,7 +75,7 @@ export default function CategoriesPage() {
       }
     } else if (modalMode === 'edit' && editing) {
       try {
-        await updateCategory(editing, { name: editName.trim(), emoji: editEmoji });
+        await updateCategory(editing, { name: editName.trim(), emoji: editIconKey });
         reloadCategories?.();
         reloadExpenses?.();
         closeModal();
@@ -117,36 +117,34 @@ export default function CategoriesPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+      <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-6">
         {t('categories.title')}
       </h2>
 
-      {error && <div className="text-red-600 mb-2">{error}</div>}
-      {catError && <div className="text-red-600 mb-2">{catError}</div>}
+      {error && <div className="text-[#e05c6b] mb-2 text-sm">{error}</div>}
+      {catError && <div className="text-[#e05c6b] mb-2 text-sm">{catError}</div>}
 
-      {/* Search + Add */}
       <div className="mb-8 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
           placeholder={t('categories.name')}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border border-gray-300 dark:border-zinc-800 bg-white dark:bg-surface-dark-tertiary text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 p-3 rounded-lg w-full text-base focus:ring-2 focus:ring-brand-500 transition"
+          className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"
         />
         <Button
           onClick={openAddModal}
-          className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-xl shadow-sm hover:bg-brand-700 transition font-semibold text-base whitespace-nowrap"
+          className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-md shadow-sm hover:bg-brand-700 transition font-medium text-base whitespace-nowrap"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           {t('categories.addNew')}
         </Button>
       </div>
 
-      {/* Category Grid */}
       {filtered.length === 0 ? (
-        <p className="text-center text-gray-500 dark:text-gray-400 mt-16 text-lg">
+        <p className="text-center text-ink-muted dark:text-ink-dark-muted mt-16 text-base">
           {t('categories.noCategories')}
         </p>
       ) : (
@@ -164,34 +162,38 @@ export default function CategoriesPage() {
         </div>
       )}
 
-      {/* Add / Edit Modal */}
       {showModal && (
         <Modal onClose={closeModal}>
           <form onSubmit={e => { e.preventDefault(); handleModalSave(); }} className="flex flex-col gap-5">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+            <h3 className="font-display text-xl font-semibold text-ink-primary dark:text-ink-dark-primary">
               {modalMode === 'add' ? t('categories.addNew') : t('categories.edit')}
             </h3>
 
-            {/* Emoji picker */}
+            {/* Icon picker */}
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="eyebrow">
                 {t('categories.emojiLabel')}
               </label>
               <div className="flex items-center gap-3 mb-1">
-                <span className="text-4xl leading-none">{editEmoji}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">{t('categories.emoji')}</span>
+                <span className="w-10 h-10 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <CategoryIconSvg iconKey={editIconKey} className="w-5 h-5" />
+                </span>
+                <span className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('categories.emoji')}</span>
               </div>
-              <div className="grid grid-cols-10 gap-1 max-h-36 overflow-y-auto p-1 bg-gray-50 dark:bg-surface-dark-tertiary rounded-xl border border-gray-200 dark:border-zinc-800">
-                {EMOJI_PALETTE.map(em => (
+              <div className="grid grid-cols-8 gap-1 max-h-40 overflow-y-auto scrollbar-hide p-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md border border-surface-hairline dark:border-surface-dark-hairline">
+                {ICON_PALETTE.map(key => (
                   <button
-                    key={em}
+                    key={key}
                     type="button"
-                    onClick={() => setEditEmoji(em)}
-                    className={`text-xl p-1 rounded-lg transition hover:bg-emerald-100 dark:hover:bg-emerald-900 ${
-                      editEmoji === em ? 'bg-emerald-200 dark:bg-emerald-800 ring-2 ring-emerald-500' : ''
+                    title={key}
+                    onClick={() => setEditIconKey(key)}
+                    className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
+                      editIconKey === key
+                        ? 'bg-brand-600 text-white shadow-sm'
+                        : 'text-ink-muted dark:text-ink-dark-muted hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
                     }`}
                   >
-                    {em}
+                    <CategoryIconSvg iconKey={key} className="w-4.5 h-4.5" />
                   </button>
                 ))}
               </div>
@@ -199,22 +201,22 @@ export default function CategoriesPage() {
 
             {/* Name field */}
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary">
                 {t('categories.name')}
               </label>
               <input
                 type="text"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
-                className={`border p-3 text-base rounded-lg w-full bg-white dark:bg-surface-dark-tertiary dark:text-white border-gray-300 dark:border-zinc-700 focus:ring-2 focus:ring-brand-500 transition ${
-                  modalError ? 'border-red-500' : ''
+                className={`border p-3 text-base rounded-md w-full bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ${
+                  modalError ? 'border-[#e05c6b]' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
                 }`}
                 autoFocus
               />
-              {modalError && <span className="text-xs text-red-600">{modalError}</span>}
+              {modalError && <span className="text-xs text-[#e05c6b]">{modalError}</span>}
             </div>
 
-            <div className="flex gap-4 justify-end">
+            <div className="flex gap-3 justify-end">
               <Button type="button" onClick={closeModal} variant="secondary">
                 {t('forms.cancel')}
               </Button>
@@ -226,7 +228,6 @@ export default function CategoriesPage() {
         </Modal>
       )}
 
-      {/* Delete confirmation */}
       {modal.open && (
         <ConfirmDeleteModal
           title={t('categories.delete')}

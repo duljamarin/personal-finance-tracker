@@ -4,6 +4,29 @@ import Modal from '../UI/Modal';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
 
+const GOAL_TYPE_ICONS = {
+  savings: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93V18h-2v1.93A8.001 8.001 0 0 1 4.07 13H6v-2H4.07A8.001 8.001 0 0 1 11 4.07V6h2V4.07A8.001 8.001 0 0 1 19.93 11H18v2h1.93A8.001 8.001 0 0 1 13 19.93zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+    </svg>
+  ),
+  debt_payoff: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" />
+    </svg>
+  ),
+  investment: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 17 L9 11 L13 14 L21 6" /><path d="M14 6 L21 6 L21 13" />
+    </svg>
+  ),
+  purchase: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
+    </svg>
+  ),
+};
+
 export default function GoalForm({ goal, onSave, onClose }) {
   const { t } = useTranslation();
   const isEditing = !!goal;
@@ -15,7 +38,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
     targetDate: '',
     goalType: 'savings',
     priority: 2,
-    color: '#3B82F6'
+    color: '#168b78'
   });
 
   const [errors, setErrors] = useState({});
@@ -29,7 +52,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         targetDate: goal.target_date || '',
         goalType: goal.goal_type || 'savings',
         priority: goal.priority || 2,
-        color: goal.color || '#3B82F6'
+        color: goal.color || '#168b78'
       });
     }
   }, [goal]);
@@ -70,13 +93,13 @@ export default function GoalForm({ goal, onSave, onClose }) {
   ];
 
   const colors = [
-    '#3B82F6', '#10B981', '#F59E0B', '#EF4444', 
-    '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'
+    '#168b78', '#0ea5a3', '#d97706', '#e05c6b',
+    '#7c4ddc', '#c2519c', '#0891b2', '#65a30d'
   ];
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+      <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary mb-6">
         {isEditing ? t('goals.editGoal') : t('goals.addGoal')}
       </h2>
 
@@ -92,7 +115,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
             {t('goals.form.description')}
           </label>
           <textarea
@@ -100,7 +123,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder={t('goals.form.descriptionPlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary"
           />
         </div>
 
@@ -125,30 +148,38 @@ export default function GoalForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-2">
             {t('goals.form.goalType')}
           </label>
-          <select
-            value={formData.goalType}
-            onChange={(e) => setFormData({ ...formData, goalType: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-500 dark:bg-gray-700 dark:text-white"
-          >
+          <div className="grid grid-cols-2 gap-2">
             {goalTypes.map(type => (
-              <option key={type} value={type}>
+              <button
+                key={type}
+                type="button"
+                onClick={() => setFormData({ ...formData, goalType: type })}
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border font-medium text-sm transition-colors ${
+                  formData.goalType === type
+                    ? 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-700 dark:text-brand-300'
+                    : 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-secondary dark:text-ink-dark-secondary hover:border-brand-300 dark:hover:border-brand-700'
+                }`}
+              >
+                <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted dark:text-ink-dark-muted'}`}>
+                  {GOAL_TYPE_ICONS[type]}
+                </span>
                 {t(`goals.types.${type}`)}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
             {t('goals.form.priority')}
           </label>
           <select
             value={formData.priority}
             onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md appearance-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary"
           >
             {priorities.map(p => (
               <option key={p.value} value={p.value}>
@@ -159,7 +190,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-2">
             {t('goals.form.color')}
           </label>
           <div className="flex gap-2 flex-wrap">

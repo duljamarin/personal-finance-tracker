@@ -8,12 +8,12 @@ import { useToast } from '../../context/ToastContext';
 import { fetchNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
+const EXPENSE_COLOR = '#e05c6b';
+
 export default function NotificationsPage() {
   const { t } = useTranslation();
   const { addToast } = useToast();
 
-  // Resolve i18n keys stored in metadata (set by DB functions), fallback to stored text
-  // Translates category name params so default categories show in the active language
   const getNotificationText = (notification) => {
     const meta = notification.metadata || {};
 
@@ -56,7 +56,7 @@ export default function NotificationsPage() {
   const handleMarkAsRead = async (id) => {
     try {
       await markNotificationAsRead(id);
-      setNotifications(prev => 
+      setNotifications(prev =>
         prev.map(n => n.id === id ? { ...n, is_read: true } : n)
       );
       window.dispatchEvent(new Event('notifications:changed'));
@@ -90,23 +90,23 @@ export default function NotificationsPage() {
     switch (type) {
       case 'budget_overrun':
         return (
-          <div className="w-10 h-10 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
-            <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(224, 92, 107, 0.12)' }}>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: EXPENSE_COLOR }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
         );
       case 'recurring_due':
         return (
-          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 bg-brand-50 dark:bg-brand-900/30 rounded-full flex items-center justify-center">
+            <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         );
       case 'goal_milestone':
         return (
-          <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
             <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -114,7 +114,7 @@ export default function NotificationsPage() {
         );
       case 'trial_expiring':
         return (
-          <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
             <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -122,8 +122,8 @@ export default function NotificationsPage() {
         );
       default:
         return (
-          <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-            <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 bg-surface-subtle dark:bg-surface-dark-subtle rounded-full flex items-center justify-center">
+            <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
           </div>
@@ -139,14 +139,14 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
           {t('notifications.title')}
         </h1>
         <div className="flex items-center gap-2">
           {notifications.some(n => !n.is_read) && (
             <button
               onClick={handleMarkAllAsRead}
-              className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium px-3 py-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
+              className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium px-3 py-1.5 rounded-md hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
             >
               {t('notifications.markAllAsRead')}
             </button>
@@ -172,10 +172,10 @@ export default function NotificationsPage() {
       <div className="space-y-3">
         {notifications.length === 0 ? (
           <Card className="p-8 text-center">
-            <svg className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-16 h-16 mx-auto text-ink-muted dark:text-ink-dark-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <p className="text-gray-500 dark:text-gray-400">{t('notifications.noNotifications')}</p>
+            <p className="text-ink-muted dark:text-ink-dark-muted">{t('notifications.noNotifications')}</p>
           </Card>
         ) : (
           notifications.map(notification => {
@@ -187,26 +187,26 @@ export default function NotificationsPage() {
             >
               <div className="flex items-start gap-4">
                 {getNotificationIcon(notification.notification_type)}
-                
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className={`font-semibold ${!notification.is_read ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                    <h3 className={`font-semibold ${!notification.is_read ? 'text-ink-primary dark:text-ink-dark-primary' : 'text-ink-muted dark:text-ink-dark-muted'}`}>
                       {notifTitle}
                     </h3>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                      {new Date(notification.created_at).toLocaleDateString(undefined, { 
-                        month: 'short', 
+                    <span className="text-xs text-ink-muted dark:text-ink-dark-muted whitespace-nowrap">
+                      {new Date(notification.created_at).toLocaleDateString(undefined, {
+                        month: 'short',
                         day: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
                       })}
                     </span>
                   </div>
-                  
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+
+                  <p className="mt-1 text-sm text-ink-muted dark:text-ink-dark-muted">
                     {notifMessage}
                   </p>
-                  
+
                   <div className="mt-3 flex items-center gap-3">
                     {!notification.is_read && (
                       <button
@@ -218,7 +218,7 @@ export default function NotificationsPage() {
                     )}
                     <button
                       onClick={() => handleDelete(notification.id)}
-                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                      className="text-xs text-ink-muted dark:text-ink-dark-muted hover:opacity-80"
                     >
                       {t('notifications.delete')}
                     </button>

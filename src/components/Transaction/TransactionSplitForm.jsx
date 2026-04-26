@@ -96,7 +96,7 @@ export default function TransactionSplitForm({
         {splits.map((split, index) => (
           <div key={index} className="flex items-start gap-2">
             {/* Category */}
-            <div className="flex-1">
+            <div className="flex-2">
               <select
                 value={split.category_id}
                 onChange={(e) => handleSplitChange(index, 'category_id', e.target.value)}

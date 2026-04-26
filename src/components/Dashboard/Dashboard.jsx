@@ -9,10 +9,18 @@ import BudgetSummaryBar from './BudgetSummaryBar';
 import ChartWithTimeRange from './ChartWithTimeRange';
 import AddTransactionCTA from './AddTransactionCTA';
 import CashFlowForecast from './CashFlowForecast';
+import FirstRunGuide from './FirstRunGuide';
 
 const Transactions = lazy(() => import('../Transactions/Transactions'));
 const CategoryPieChart = lazy(() => import('../Transactions/CategoryPieChart'));
 const CategoryBenchmark = lazy(() => import('../Benchmark/CategoryBenchmark'));
+
+function getTimeGreeting(t) {
+  const hour = new Date().getHours();
+  if (hour < 12) return t('dashboard.goodMorning');
+  if (hour < 17) return t('dashboard.goodAfternoon');
+  return t('dashboard.goodEvening');
+}
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -48,8 +56,8 @@ export default function Dashboard() {
     <>
       {/* Welcome greeting toast */}
       {showGreeting && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium animate-fade-in-out max-w-sm text-center border border-gray-200 dark:border-zinc-700">
-          {t('dashboard.welcomeBack')}, {username}!
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-brand-600 text-white px-5 py-3 rounded-xl shadow-lg shadow-brand-500/30 text-sm font-medium animate-fade-in-out max-w-sm text-center">
+          {t('dashboard.welcomeBack')},{username}!
         </div>
       )}
 
@@ -58,10 +66,10 @@ export default function Dashboard() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t('dashboard.title')}
+          <h1 className="text-2xl font-bold text-ink-primary dark:text-ink-dark-primary tracking-tight font-display">
+            {username ? `${getTimeGreeting(t)}, ${username}` : t('dashboard.title')}
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-0.5">
             {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
@@ -85,18 +93,24 @@ export default function Dashboard() {
         loading={loading}
       />
 
-      {/* Two-column layout: health + add transaction */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-        <HealthScore compact onReloadTrigger={mutationCount} />
-        <AddTransactionCTA onClick={handleAddTransaction} />
-      </div>
+      {!loading && transactions.length === 0 ? (
+        <FirstRunGuide onAddTransaction={handleAddTransaction} />
+      ) : (
+        <>
+          {/* Two-column layout: health + add transaction */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <HealthScore compact onReloadTrigger={mutationCount} />
+            <AddTransactionCTA onClick={handleAddTransaction} />
+          </div>
 
-      {/* Budget + Chart section */}
-      <div className="mt-8 space-y-6">
-        <BudgetSummaryBar reloadTrigger={totalExpense} />
-        <ChartWithTimeRange transactions={transactions} />
-        <CashFlowForecast />
-      </div>
+          {/* Budget + Chart section */}
+          <div className="mt-8 space-y-6">
+            <BudgetSummaryBar reloadTrigger={totalExpense} />
+            <ChartWithTimeRange transactions={transactions} />
+            <CashFlowForecast />
+          </div>
+        </>
+      )}
 
       {/* Transactions + category breakdowns */}
       <div className="mt-8">
@@ -117,19 +131,27 @@ export default function Dashboard() {
           )}
 
           {/* Category breakdowns side by side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 mb-6">
-            <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800">
-              <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-white flex items-center gap-2">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                {t('transactions.incomes')} {t('chart.byCategory')}
-              </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6 mb-6">
+            <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display">
+                  {t('transactions.incomes')} {t('chart.byCategory')}
+                </h3>
+                <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 rounded">
+                  {t('transactions.incomes')}
+                </span>
+              </div>
               <CategoryPieChart transactions={transactions} type="income" />
             </div>
-            <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800">
-              <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-white flex items-center gap-2">
-                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                {t('transactions.expenses')} {t('chart.byCategory')}
-              </h3>
+            <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display">
+                  {t('transactions.expenses')} {t('chart.byCategory')}
+                </h3>
+                <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-surface-hairline dark:bg-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted rounded">
+                  {t('transactions.expenses')}
+                </span>
+              </div>
               <CategoryPieChart transactions={transactions} type="expense" />
             </div>
           </div>
