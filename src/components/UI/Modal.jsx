@@ -22,8 +22,8 @@ export default function Modal({ children, onClose, className = '', drawer = fals
         className={`
           bg-white dark:bg-surface-dark-card shadow-xl relative w-full border border-surface-hairline dark:border-surface-dark-hairline
           ${isMobileDrawer
-            ? 'md:rounded-xl md:max-w-lg rounded-t-xl sm:rounded-xl mb-0 sm:mb-0 md:relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto animate-slide-up md:animate-scale-in'
-            : 'rounded-xl max-w-lg max-h-[90vh] overflow-y-auto animate-scale-in'
+            ? 'md:rounded-xl md:max-w-lg rounded-t-xl sm:rounded-xl mb-0 sm:mb-0 md:relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto scrollbar-thin animate-slide-up md:animate-scale-in'
+            : 'rounded-xl max-w-lg max-h-[90vh] overflow-y-auto scrollbar-thin animate-scale-in'
           }
           ${className}
         `}

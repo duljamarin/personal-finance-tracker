@@ -6,7 +6,6 @@ import { fetchCategories, addCategory } from '../../utils/api'
 import { translateCategoryName, ICON_PALETTE, CATEGORY_ICONS, getCategoryIcon } from '../../utils/categoryTranslation'
 import { useToast } from '../../context/ToastContext'
 import { validateRecurringEndDate } from '../../utils/recurringValidation'
-import { getInputClassName } from '../../utils/classNames'
 import { RECURRING_FREQUENCIES } from '../../utils/constants'
 import { APP_CONFIG } from '../../config/app'
 import { useSubscription } from '../../context/SubscriptionContext'
@@ -275,7 +274,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 	return (
 		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto">
-			<h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2 flex-shrink-0">
+			<h2 className="font-display text-lg sm:text-2xl font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
@@ -301,25 +300,22 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				)}
 				
 				{/* Title */}
-				<div className="flex flex-col gap-1 sm:gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+				<div className="flex flex-col gap-1.5">
+					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 						{t('transactions.titleLabel')}
 					</label>
 					<Input
 						placeholder={t('transactions.titlePlaceholder')}
 						value={title}
 						onChange={handleTitleChange}
-						className={getInputClassName(errors.title)}
+						error={errors.title ? t(errors.title) : undefined}
 					/>
-					{errors.title && (
-						<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.title)}</span>
-					)}
 				</div>
 
 				{/* Type & Amount */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
-					<div className="flex flex-col gap-1 sm:gap-2">
-						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+					<div className="flex flex-col gap-1.5">
+						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('transactions.type')}
 						</label>
 						<div className="flex gap-2">
@@ -351,7 +347,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 									key={opt.value}
 									type="button"
 									onClick={() => setType(opt.value)}
-									className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-md border font-medium text-sm transition-colors ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
+									className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-md border font-medium text-sm transition-colors ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
 								>
 									{opt.icon}
 									{opt.label}
@@ -362,8 +358,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
 						)}
 					</div>
-					<div className="flex flex-col gap-1 sm:gap-2">
-						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+					<div className="flex flex-col gap-1.5">
+						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('transactions.amountLabel')}
 						</label>
 						<Input
@@ -371,24 +367,21 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							placeholder={t('transactions.amountPlaceholder')}
 							value={amount}
 							onChange={handleAmountChange}
-							className={getInputClassName(errors.amount)}
+							error={errors.amount ? t(errors.amount) : undefined}
 						/>
-						{errors.amount && (
-							<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.amount)}</span>
-						)}
 					</div>
 				</div>
 
 				{/* Currency Fields */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-					<div className="flex flex-col gap-1 sm:gap-2">
-						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+					<div className="flex flex-col gap-1.5">
+						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.code')}
 						</label>
 						<select
 							value={currencyCode}
 							onChange={e => setCurrencyCode(e.target.value)}
-							className={getInputClassName(false)}
+							className="w-full py-3 px-3.5 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
 						>
 							<option value="USD">{t('currency.USD')} 🇺🇸</option>
 							<option value="EUR">{t('currency.EUR')} 🇪🇺</option>
@@ -400,10 +393,10 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							<option value="AUD">{t('currency.AUD')} 🇦🇺</option>
 						</select>
 					</div>
-					<div className="flex flex-col gap-1 sm:gap-2">
-						<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+					<div className="flex flex-col gap-1.5">
+						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.exchangeRate')}
-							<span className="text-xs text-gray-500 dark:text-gray-400 font-normal ml-1">
+							<span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal ml-1">
 								{t('currency.exchangeRateOptional')}
 							</span>
 						</label>
@@ -413,9 +406,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							placeholder="1.0"
 							value={exchangeRate}
 							onChange={e => setExchangeRate(e.target.value)}
-							className={getInputClassName(false)}
 						/>
-						<p className="text-xs text-gray-500 dark:text-gray-400">
+						<p className="text-xs text-ink-muted dark:text-ink-dark-muted">
 							{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
 						</p>
 					</div>
@@ -566,10 +558,10 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Tags */}
-				<div className="flex flex-col gap-1 sm:gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+				<div className="flex flex-col gap-1.5">
+					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 						{t('transactions.tagsLabel')}
-						<span className="text-xs text-gray-500 dark:text-gray-400 font-normal ml-1">
+						<span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal ml-1">
 							{t('transactions.tagsOptional')}
 						</span>
 					</label>
@@ -577,7 +569,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						placeholder={t('transactions.tagsPlaceholder')}
 						value={tags}
 						onChange={e => setTags(e.target.value)}
-						className={getInputClassName(false)}
 					/>
 				</div>
 
@@ -602,36 +593,33 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				)}
 
 				{/* Date */}
-				<div className="flex flex-col gap-1 sm:gap-2">
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+				<div className="flex flex-col gap-1.5">
+					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 						{t('transactions.dateLabel')}
 					</label>
 					<Input
 						type="date"
 						value={date}
 						onChange={handleDateChange}
-						className={getInputClassName(errors.date) + ' [color-scheme:light] dark:[color-scheme:dark]'}
-						placeholder="mm/dd/yyyy"
+						error={errors.date ? t(errors.date) : undefined}
+						className="[color-scheme:light] dark:[color-scheme:dark]"
 					/>
-					{errors.date && (
-						<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.date)}</span>
-					)}
 				</div>
 			</div>
 
 			{/* Buttons */}
-			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 dark:border-zinc-800 flex-col sm:flex-row flex-shrink-0">
+			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline flex-col sm:flex-row flex-shrink-0">
 				<Button
 					type="button"
 					variant="secondary"
-					className="flex-1 border-2 border-gray-300 dark:border-zinc-700 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-700 font-semibold py-2 sm:py-3 rounded-xl transition-all text-sm sm:text-base"
+					className="flex-1"
 					onClick={onCancel}
 				>
 					{t('forms.cancel')}
 				</Button>
 				<Button
 					type="submit"
-					className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2 sm:py-3 rounded-xl shadow-sm transition-all text-sm sm:text-base"
+					className="flex-1"
 				>
 					{t('transactions.saveTransaction')}
 				</Button>

@@ -1,25 +1,31 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function PasswordInput({ value, onChange, className, placeholder, show, onToggle, ...props }) {
+export default function PasswordInput({ value, onChange, className, placeholder, show, onToggle, leadingIcon, error, ...props }) {
   const [internalShow, setInternalShow] = useState(false);
   const { t } = useTranslation();
 
   const visible = show !== undefined ? show : internalShow;
   const toggle = onToggle || (() => setInternalShow(v => !v));
 
-  // Default styling matches Input primitive (hairline + emerald focus ring).
-  // Caller can still fully override by passing className.
+  const borderState = error
+    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+    : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40';
+
   const defaultClass =
-    'w-full py-3 pl-3.5 pr-10 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary ' +
+    `w-full py-3 ${leadingIcon ? 'pl-11' : 'pl-3.5'} pr-10 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary ` +
     'placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 ' +
-    'border border-surface-hairline dark:border-surface-dark-hairline ' +
-    'hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 ' +
+    `border ${borderState} ` +
     'rounded-md transition-colors duration-150 focus:outline-none ' +
     'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500';
 
   return (
     <div className="relative">
+      {leadingIcon && (
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted dark:text-ink-dark-muted flex items-center pointer-events-none">
+          {leadingIcon}
+        </span>
+      )}
       <input
         type={visible ? 'text' : 'password'}
         value={value}
