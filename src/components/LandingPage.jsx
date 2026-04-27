@@ -99,7 +99,7 @@ function DashboardPreview({ t }) {
 
 const MV_Charts = ({ t }) => {
   const rows = [
-    { label: t('landing.categories.food'),          pct: 72, amt: '€820' },
+    { label: t('landing.categories.food'),          pct: 75, amt: '€840' },
     { label: t('landing.categories.transport'),     pct: 48, amt: '€340' },
     { label: t('landing.categories.entertainment'), pct: 31, amt: '€210' },
   ];
