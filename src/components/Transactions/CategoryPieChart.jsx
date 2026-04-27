@@ -73,7 +73,7 @@ export default function CategoryPieChart({ transactions, type }) {
     <div className="grid sm:grid-cols-[auto_1fr] gap-6 items-center">
       {/* Donut with total in center */}
       <div className="relative w-[180px] h-[180px] mx-auto sm:mx-0 shrink-0">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width={180} height={180}>
           <PieChart>
             <Pie
               data={data}
