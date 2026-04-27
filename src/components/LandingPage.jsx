@@ -124,7 +124,7 @@ const MV_Budgets = ({ t }) => {
   const rows = [
     { label: t('landing.categories.food'),       pct: 78, tone: 'brand' },
     { label: t('landing.categories.utilities'),  pct: 45, tone: 'brand' },
-    { label: t('landing.categories.transport'),  pct: 92, tone: 'warn'  },
+    { label: t('landing.categories.transport'),  pct: 94, tone: 'warn'  },
   ];
   return (
     <div className="space-y-3">
