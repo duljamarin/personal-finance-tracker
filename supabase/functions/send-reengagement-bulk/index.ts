@@ -4,9 +4,9 @@ import { Resend } from 'npm:resend@3';
 /**
  * RE-ENGAGEMENT EMAIL - BULK VERSION
  * Sends personalized re-engagement emails to all confirmed users
- * 
+ *
  * Usage: POST to this endpoint (no parameters needed)
- * 
+ *
  * Features:
  * - Auto-detects user language from user_metadata.language
  * - Personalizes with username from user_metadata.username
@@ -22,21 +22,21 @@ interface EmailContent {
 
 function buildEmailContent(language: 'en' | 'sq', username: string | null): EmailContent {
   const isEnglish = language === 'en';
-  const greeting = username 
+  const greeting = username
     ? (isEnglish ? `Hi ${username}` : `Përshëndetje ${username}`)
     : (isEnglish ? 'Hi there' : 'Përshëndetje');
-  
+
   const loginUrl = 'https://personal-finances.app';
   const termsUrl = 'https://personal-finances.app/terms';
   const privacyUrl = 'https://personal-finances.app/privacy';
 
   const content = {
     en: {
-      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting - log back in`,
+      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting — log back in`,
       previewText: 'Track spending, hit goals, and take control - it only takes a minute.',
       headline: 'We Miss You!',
       openingStrong: "It's been a while...",
-      openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you - and we've added some powerful new features to help you take control.",
+      openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you — and we've added some powerful new features to help you take control.",
       featureTitle: "What's Waiting for You:",
       features: [
         { emoji: '📊', title: 'Dashboard & Charts', desc: 'Visualize your income, expenses, and trends at a glance' },
@@ -46,7 +46,8 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
         { emoji: '📅', title: 'Monthly Budgets', desc: 'Set spending limits per category and get alerted before you overspend' },
         { emoji: '❤️', title: 'Financial Health Score', desc: 'Get a monthly score with insights on how to improve your finances' },
         { emoji: '📈', title: 'Spending Benchmarks', desc: 'See how your spending compares to similar households' },
-        { emoji: '🔔', title: 'Smart Notifications', desc: 'Stay on top of budget limits, goal milestones, and upcoming bills' }
+        { emoji: '🔔', title: 'Smart Notifications', desc: 'Stay on top of budget limits, goal milestones, and upcoming bills' },
+        { emoji: '📋', title: 'Financial Reports', desc: 'Export detailed income and expense reports by category, date range, or tags' }
       ],
       ctaText: 'Log In Now →',
       trustLine: 'Your data is safe, secure, and waiting for you.',
@@ -56,11 +57,11 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       footerPrivacy: 'Privacy Policy'
     },
     sq: {
-      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin - hyni sërish`,
-      previewText: 'Gjurmoni shpenzimet, arrini qëllimet - vetëm një minutë mjafton.',
+      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin — hyni sërish`,
+      previewText: 'Gjurmoni shpenzimet, arrini qëllimet — vetëm një minutë mjafton.',
       headline: 'Na Mungoni!',
       openingStrong: 'Ka kaluar kohë...',
-      openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme - dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
+      openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme — dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
       featureTitle: 'Çfarë ju Pret:',
       features: [
         { emoji: '📊', title: 'Dashboard & Grafikë', desc: 'Shikoni të ardhurat, shpenzimet dhe tendencat tuaja në një vështrim' },
@@ -70,7 +71,8 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
         { emoji: '📅', title: 'Buxhete Mujore', desc: 'Vendosni kufij shpenzimesh për çdo kategori dhe merrni sinjalizime para tejkalimit' },
         { emoji: '❤️', title: 'Shëndeti Financiar', desc: 'Merrni një rezultat mujor me sugjerime për të përmirësuar financat tuaja' },
         { emoji: '📈', title: 'Krahasime Shpenzimesh', desc: 'Shikoni si krahasohen shpenzimet tuaja me familje të ngjashme' },
-        { emoji: '🔔', title: 'Njoftimet Inteligjente', desc: 'Qëndroni të informuar për kufijtë e buxhetit, arritjet e qëllimeve dhe faturat e ardhshme' }
+        { emoji: '🔔', title: 'Njoftimet Inteligjente', desc: 'Qëndroni të informuar për kufijtë e buxhetit, arritjet e qëllimeve dhe faturat e ardhshme' },
+        { emoji: '📋', title: 'Raporte Financiare', desc: 'Eksportoni raporte të detajuara të të ardhurave dhe shpenzimeve sipas kategorisë, periudhës ose etiketave' }
       ],
       ctaText: 'Hyni në Llogari →',
       trustLine: 'Të dhënat tuaja janë të sigurta dhe po ju presin.',
@@ -123,10 +125,15 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       text-align: center;
       color: #ffffff;
     }
-    .header-emoji {
-      font-size: 48px;
-      margin-bottom: 16px;
-      display: block;
+    .header-icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      margin-bottom: 20px;
     }
     .header-title {
       margin: 0;
@@ -269,7 +276,12 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
   <div class="email-wrapper">
     <div class="email-container">
       <div class="header">
-        <span class="header-emoji">💰</span>
+        <div class="header-icon-wrap">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17 L10 11 L14 14 L20 6" />
+            <path d="M15 6 L20 6 L20 11" />
+          </svg>
+        </div>
         <h1 class="header-title">${c.headline}</h1>
       </div>
       <div class="content">
@@ -291,8 +303,8 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
         </div>
 
         <div class="cta-section">
-          <a href="${loginUrl}" class="cta-button" style="color: #ffffff !important; text-decoration: none !important;">${c.ctaText}</a>
-          <p class="trust-line">🔒 ${c.trustLine}</p>
+           <a href="${loginUrl}" class="cta-button" style="color: #ffffff !important; text-decoration: none !important;">${c.ctaText}</a>
+          <p class="trust-line"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg> ${c.trustLine}</p>
         </div>
 
         <p class="closing-note">${c.closingNote}</p>
@@ -300,7 +312,7 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       <div class="footer">
         <p class="footer-copyright">${c.footerCopyright}</p>
         <p class="footer-links">
-          <a href="${termsUrl}">${c.footerTerms}</a> • 
+          <a href="${termsUrl}">${c.footerTerms}</a> •
           <a href="${privacyUrl}">${c.footerPrivacy}</a>
         </p>
       </div>
@@ -334,12 +346,27 @@ Deno.serve(async (req) => {
 
   if (req.method !== 'POST') {
     return new Response(
-      JSON.stringify({ error: 'Method not allowed' }), 
+      JSON.stringify({ error: 'Method not allowed' }),
       { status: 405, headers: corsHeaders }
     );
   }
 
   try {
+    // Parse optional body params
+    let body: { exclude_emails?: string[]; dry_run?: boolean } = {};
+    try {
+      const contentType = req.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        body = await req.json();
+      }
+    } catch { body = {}; }
+
+    const excludeEmails = new Set((body.exclude_emails || []).map((e: string) => e.toLowerCase()));
+    const dryRun = body.dry_run === true;
+
+    if (dryRun) console.log('🔍 DRY RUN — no emails will be sent');
+    if (excludeEmails.size > 0) console.log(`⏭️  Excluding ${excludeEmails.size} already-contacted emails`);
+
     // Initialize Supabase client with service role
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -356,22 +383,33 @@ Deno.serve(async (req) => {
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
     console.log('📧 Fetching all registered users...');
-    
-    // Fetch all users from Supabase Auth
-    const { data: { users }, error } = await supabase.auth.admin.listUsers();
-    
-    if (error) {
-      console.error('❌ Error fetching users:', error);
-      return new Response(
-        JSON.stringify({ error: 'Failed to fetch users', details: error }), 
-        { status: 500, headers: corsHeaders }
-      );
+
+    // Fetch all users with pagination (listUsers defaults to page size 50)
+    const users = [];
+    let page = 1;
+    const perPage = 1000;
+    while (true) {
+      const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
+      if (error) {
+        console.error('❌ Error fetching users:', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to fetch users', details: error }),
+          { status: 500, headers: corsHeaders }
+        );
+      }
+      users.push(...data.users);
+      if (data.users.length < perPage) break;
+      page++;
     }
 
     console.log(`📋 Found ${users.length} total users`);
 
-    // Filter users with confirmed emails
-    const confirmedUsers = users.filter(user => user.email && user.email_confirmed_at);
+    // Filter users with confirmed emails, excluding already-contacted ones
+    const confirmedUsers = users.filter(user =>
+      user.email &&
+      user.email_confirmed_at &&
+      !excludeEmails.has(user.email.toLowerCase())
+    );
     console.log(`✅ Confirmed users to contact: ${confirmedUsers.length}`);
 
     // Send emails ONE AT A TIME to respect rate limits
@@ -382,42 +420,46 @@ Deno.serve(async (req) => {
     const languageStats = { en: 0, sq: 0, default: 0 };
 
     console.log('📤 Starting bulk re-engagement email send...');
-    
+
     for (let i = 0; i < confirmedUsers.length; i++) {
       const user = confirmedUsers[i];
-      
+
       // Extract language and username from user metadata
       const userLanguage = user.user_metadata?.language || 'sq';
       const username = user.user_metadata?.username || null;
       const language = (userLanguage === 'en' ? 'en' : 'sq') as 'en' | 'sq';
-      
-      languageStats[language]++;
-      
-      console.log(`📨 Sending ${i + 1}/${confirmedUsers.length} to ${user.email} (${language}${username ? `, ${username}` : ''})`);
-      
-      try {
-        const { subject, previewText, html } = buildEmailContent(language, username);
-        
-        const { data, error } = await resend.emails.send({
-          from: 'Personal Finance Tracker <noreply@personal-finances.app>',
-          to: user.email!,
-          subject: subject,
-          html: html,
-          text: previewText, // Fallback plain text
-        });
 
-        if (error) {
-          console.error(`❌ Failed to send to ${user.email}:`, error);
+      languageStats[language]++;
+
+      console.log(`${dryRun ? '🔍' : '📨'} ${dryRun ? 'Would send' : `Sending ${i + 1}/${confirmedUsers.length}`} to ${user.email} (${language}${username ? `, ${username}` : ''})`);
+
+      if (!dryRun) {
+        try {
+          const { subject, previewText, html } = buildEmailContent(language, username);
+
+          const { data, error } = await resend.emails.send({
+            from: 'Personal Finance Tracker <noreply@personal-finances.app>',
+            to: user.email!,
+            subject: subject,
+            html: html,
+            text: previewText,
+          });
+
+          if (error) {
+            console.error(`❌ Failed to send to ${user.email}:`, error);
+            errorCount++;
+            errors.push(`${user.email}: ${error.message || 'Unknown error'}`);
+          } else {
+            console.log(`✅ Sent to ${user.email} (ID: ${data?.id})`);
+            successCount++;
+          }
+        } catch (err) {
+          console.error(`💥 Error sending to ${user.email}:`, err);
           errorCount++;
-          errors.push(`${user.email}: ${error.message || 'Unknown error'}`);
-        } else {
-          console.log(`✅ Sent to ${user.email} (ID: ${data?.id})`);
-          successCount++;
+          errors.push(`${user.email}: ${err instanceof Error ? err.message : 'Unknown error'}`);
         }
-      } catch (err) {
-        console.error(`💥 Error sending to ${user.email}:`, err);
-        errorCount++;
-        errors.push(`${user.email}: ${err.message || 'Unknown error'}`);
+      } else {
+        successCount++;
       }
 
       // Wait 600ms between each email (allows ~1.67 emails/sec, under the 2/sec limit)
@@ -454,9 +496,9 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('💥 Fatal error:', error);
     return new Response(
-      JSON.stringify({ 
-        error: 'Internal server error', 
-        details: error.message 
+      JSON.stringify({
+        error: 'Internal server error',
+        details: error.message
       }),
       { status: 500, headers: corsHeaders }
     );

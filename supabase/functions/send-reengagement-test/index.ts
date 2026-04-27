@@ -3,14 +3,15 @@ import { Resend } from 'npm:resend@3';
 /**
  * RE-ENGAGEMENT EMAIL - TEST VERSION
  * Sends a single test email to preview the re-engagement campaign
- * 
+ *
  * Usage:
- * - POST ?test_email=you@example.com&lang=en
- * - POST JSON body: {"test_email":"you@example.com","lang":"en"}
- * 
+ * - POST ?test_email=you@example.com&lang=en&username=John
+ * - POST JSON body: {"test_email":"you@example.com","lang":"en","username":"John"}
+ *
  * Query Parameters:
  *   - test_email: Required. Email address to send the test to
- *   - lang: Optional. Language code 'en' or 'sq' (default: 'en')
+ *   - lang:       Optional. 'en' or 'sq' (default: 'en')
+ *   - username:   Optional. Personalise greeting with a name
  */
 
 interface EmailContent {
@@ -19,27 +20,34 @@ interface EmailContent {
   html: string;
 }
 
-function buildEmailContent(language: 'en' | 'sq'): EmailContent {
+function buildEmailContent(language: 'en' | 'sq', username: string | null): EmailContent {
   const isEnglish = language === 'en';
-  const greeting = isEnglish ? 'Hi there' : 'Përshëndetje';
-  
+  const greeting = username
+    ? (isEnglish ? `Hi ${username}` : `Përshëndetje ${username}`)
+    : (isEnglish ? 'Hi there' : 'Përshëndetje');
+
   const loginUrl = 'https://personal-finances.app';
   const termsUrl = 'https://personal-finances.app/terms';
   const privacyUrl = 'https://personal-finances.app/privacy';
 
   const content = {
     en: {
-      subject: `💰 Your finances are waiting - log back in`,
-      previewText: 'Track spending, hit goals, and take control - it only takes a minute.',
+      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting — log back in`,
+      previewText: 'Track spending, hit goals, and take control — it only takes a minute.',
       headline: 'We Miss You!',
       openingStrong: "It's been a while...",
-      openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you - and we've added some powerful new features to help you take control.",
+      openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you — and we've added some powerful new features to help you take control.",
       featureTitle: "What's Waiting for You:",
       features: [
         { emoji: '📊', title: 'Dashboard & Charts', desc: 'Visualize your income, expenses, and trends at a glance' },
         { emoji: '🎯', title: 'Financial Goals', desc: 'Set savings targets, track debt payoff, and celebrate milestones' },
         { emoji: '🔁', title: 'Recurring Transactions', desc: 'Automate bills, subscriptions, and regular income' },
-        { emoji: '🏦', title: 'Net Worth Tracking', desc: 'Monitor your assets and liabilities over time' }
+        { emoji: '🏦', title: 'Net Worth', desc: 'Monitor your assets and liabilities over time' },
+        { emoji: '📅', title: 'Monthly Budgets', desc: 'Set spending limits per category and get alerted before you overspend' },
+        { emoji: '❤️', title: 'Financial Health Score', desc: 'Get a monthly score with insights on how to improve your finances' },
+        { emoji: '📈', title: 'Spending Benchmarks', desc: 'See how your spending compares to similar households' },
+        { emoji: '🔔', title: 'Smart Notifications', desc: 'Stay on top of budget limits, goal milestones, and upcoming bills' },
+        { emoji: '📋', title: 'Financial Reports', desc: 'Export detailed income and expense reports by category, date range, or tags' }
       ],
       ctaText: 'Log In Now →',
       trustLine: 'Your data is safe, secure, and waiting for you.',
@@ -49,17 +57,22 @@ function buildEmailContent(language: 'en' | 'sq'): EmailContent {
       footerPrivacy: 'Privacy Policy'
     },
     sq: {
-      subject: `💰 Financat tuaja po ju presin - hyni sërish`,
-      previewText: 'Gjurmoni shpenzimet, arrini qëllimet - vetëm një minutë mjafton.',
+      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin — hyni sërish`,
+      previewText: 'Gjurmoni shpenzimet, arrini qëllimet — vetëm një minutë mjafton.',
       headline: 'Na Mungoni!',
       openingStrong: 'Ka kaluar kohë...',
-      openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme - dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
+      openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme — dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
       featureTitle: 'Çfarë ju Pret:',
       features: [
-        { emoji: '📊', title: 'Dashboard & Grafiqe', desc: 'Shikoni të ardhurat, shpenzimet dhe tendencat tuaja në një vështrim' },
+        { emoji: '📊', title: 'Dashboard & Grafikë', desc: 'Shikoni të ardhurat, shpenzimet dhe tendencat tuaja në një vështrim' },
         { emoji: '🎯', title: 'Qëllime Financiare', desc: 'Vendosni objektiva kursimi, gjurmoni shlyerjen e borxheve dhe festoni arritjet' },
         { emoji: '🔁', title: 'Transaksione Periodike', desc: 'Automatizoni faturat, abonimet dhe të ardhurat e rregullta' },
-        { emoji: '🏦', title: 'Gjurmim Pasurie Neto', desc: 'Monitoroni aktivet dhe detyrimet tuaja me kalimin e kohës' }
+        { emoji: '🏦', title: 'Pasuria Neto', desc: 'Monitoroni aktivet dhe detyrimet tuaja me kalimin e kohës' },
+        { emoji: '📅', title: 'Buxhete Mujore', desc: 'Vendosni kufij shpenzimesh për çdo kategori dhe merrni sinjalizime para tejkalimit' },
+        { emoji: '❤️', title: 'Shëndeti Financiar', desc: 'Merrni një rezultat mujor me sugjerime për të përmirësuar financat tuaja' },
+        { emoji: '📈', title: 'Krahasime Shpenzimesh', desc: 'Shikoni si krahasohen shpenzimet tuaja me familje të ngjashme' },
+        { emoji: '🔔', title: 'Njoftimet Inteligjente', desc: 'Qëndroni të informuar për kufijtë e buxhetit, arritjet e qëllimeve dhe faturat e ardhshme' },
+        { emoji: '📋', title: 'Raporte Financiare', desc: 'Eksportoni raporte të detajuara të të ardhurave dhe shpenzimeve sipas kategorisë, periudhës ose etiketave' }
       ],
       ctaText: 'Hyni në Llogari →',
       trustLine: 'Të dhënat tuaja janë të sigurta dhe po ju presin.',
@@ -122,10 +135,15 @@ function buildEmailContent(language: 'en' | 'sq'): EmailContent {
       text-align: center;
       color: #ffffff;
     }
-    .header-emoji {
-      font-size: 48px;
-      margin-bottom: 16px;
-      display: block;
+    .header-icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      margin-bottom: 20px;
     }
     .header-title {
       margin: 0;
@@ -200,8 +218,8 @@ function buildEmailContent(language: 'en' | 'sq'): EmailContent {
       display: inline-block;
       padding: 16px 40px;
       background: linear-gradient(135deg, #4f8a4c 0%, #2f6b35 100%);
-      color: #ffffff;
-      text-decoration: none;
+      color: #ffffff !important;
+      text-decoration: none !important;
       border-radius: 10px;
       font-weight: 700;
       font-size: 18px;
@@ -268,10 +286,15 @@ function buildEmailContent(language: 'en' | 'sq'): EmailContent {
   <div class="email-wrapper">
     <div class="email-container">
       <div class="test-banner">
-        🧪 TEST EMAIL - This is a preview. The actual email won't have this notice.
+        🧪 TEST EMAIL — This is a preview. The actual email won't have this notice.
       </div>
       <div class="header">
-        <span class="header-emoji">💰</span>
+        <div class="header-icon-wrap">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17 L10 11 L14 14 L20 6" />
+            <path d="M15 6 L20 6 L20 11" />
+          </svg>
+        </div>
         <h1 class="header-title">${c.headline}</h1>
       </div>
       <div class="content">
@@ -293,8 +316,8 @@ function buildEmailContent(language: 'en' | 'sq'): EmailContent {
         </div>
 
         <div class="cta-section">
-          <a href="${loginUrl}" class="cta-button">${c.ctaText}</a>
-          <p class="trust-line">🔒 ${c.trustLine}</p>
+          <a href="${loginUrl}" class="cta-button" style="color: #ffffff !important; text-decoration: none !important;">${c.ctaText}</a>
+          <p class="trust-line"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg> ${c.trustLine}</p>
         </div>
 
         <p class="closing-note">${c.closingNote}</p>
@@ -302,7 +325,7 @@ function buildEmailContent(language: 'en' | 'sq'): EmailContent {
       <div class="footer">
         <p class="footer-copyright">${c.footerCopyright}</p>
         <p class="footer-links">
-          <a href="${termsUrl}">${c.footerTerms}</a> • 
+          <a href="${termsUrl}">${c.footerTerms}</a> •
           <a href="${privacyUrl}">${c.footerPrivacy}</a>
         </p>
       </div>
@@ -340,9 +363,8 @@ Deno.serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    let body: { test_email?: string; lang?: 'en' | 'sq' } = {};
+    let body: { test_email?: string; lang?: 'en' | 'sq'; username?: string } = {};
 
-    // Dashboard test tool often sends JSON body instead of query params.
     try {
       const contentType = req.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
@@ -364,13 +386,18 @@ Deno.serve(async (req) => {
 
     const lang: 'en' | 'sq' = rawLang === 'sq' ? 'sq' : 'en';
 
+    const username: string | null =
+      url.searchParams.get('username') ||
+      body.username ||
+      null;
+
     if (!testEmail) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: 'Missing test email',
-          usageQuery: '?test_email=you@example.com&lang=en',
-          usageBody: '{"test_email":"you@example.com","lang":"en"}'
-        }), 
+          usageQuery: '?test_email=you@example.com&lang=en&username=John',
+          usageBody: '{"test_email":"you@example.com","lang":"en","username":"John"}'
+        }),
         { status: 400, headers: corsHeaders }
       );
     }
@@ -385,37 +412,38 @@ Deno.serve(async (req) => {
 
     const resend = new Resend(resendApiKey);
 
-    console.log(`📧 Sending test re-engagement email to: ${testEmail} (lang: ${lang})`);
+    console.log(`📧 Sending test re-engagement email to: ${testEmail} (lang: ${lang}${username ? `, username: ${username}` : ''})`);
 
-    const { subject, previewText, html } = buildEmailContent(lang);
+    const { subject, previewText, html } = buildEmailContent(lang, username);
 
     const { data, error } = await resend.emails.send({
       from: 'Personal Finance Tracker <noreply@personal-finances.app>',
       to: testEmail,
       subject: '[TEST] ' + subject,
       html: html,
-      text: previewText, // Fallback plain text
+      text: previewText,
     });
 
     if (error) {
       console.error('❌ Failed to send test email:', error);
       return new Response(
-        JSON.stringify({ 
-          error: 'Failed to send test email', 
-          details: error 
+        JSON.stringify({
+          error: 'Failed to send test email',
+          details: error
         }),
         { status: 500, headers: corsHeaders }
       );
     }
 
-    console.log('✅ Test email sent successfully:', { to: testEmail, lang, emailId: data?.id });
+    console.log('✅ Test email sent successfully:', { to: testEmail, lang, username, emailId: data?.id });
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         success: true,
         message: `Test email sent to ${testEmail}`,
         language: lang,
-        emailId: data?.id 
+        username,
+        emailId: data?.id
       }),
       { status: 200, headers: corsHeaders }
     );
@@ -423,9 +451,9 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('💥 Fatal error:', error);
     return new Response(
-      JSON.stringify({ 
-        error: 'Internal server error', 
-        details: error.message 
+      JSON.stringify({
+        error: 'Internal server error',
+        details: error.message
       }),
       { status: 500, headers: corsHeaders }
     );
