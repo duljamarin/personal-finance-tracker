@@ -6,7 +6,9 @@ import { supabase } from '../supabaseClient';
  * Throws if the user is not authenticated.
  */
 export async function withAuth(fn) {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  const user = data?.user;
+  if (error && !user) throw error;
   if (!user) throw new Error('Please log in to perform this action');
   return fn(user);
 }
@@ -16,7 +18,9 @@ export async function withAuth(fn) {
  * Used for fetch operations that should silently fail when logged out.
  */
 export async function withAuthOrEmpty(fn) {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  const user = data?.user;
+  if (error && !user) return [];
   if (!user) return [];
   return fn(user);
 }
