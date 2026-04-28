@@ -14,7 +14,8 @@ export function toCSV(items, t) {
     t('currency.baseAmount'),
     t('transactions.date'),
     t('transactions.category'),
-    t('transactions.tagsLabel')
+    t('transactions.tagsLabel'),
+    t('nav.recurring')
   ]
   
   const rows = items.map((e, i) => {
@@ -45,9 +46,10 @@ export function toCSV(items, t) {
     const categoryTranslated = translateCategoryName(categoryName, i18n.language)
     const category = String(categoryTranslated).replace(/"/g, '""')
     
-    const tags = Array.isArray(e.tags) ? e.tags.join(', ').replace(/"/g, '""') : '' 
-    
-    return `${id},"${title}","${typeTranslated}",${amount},"${currencyCode}",${exchangeRate},${baseAmount},"${dateStr}","${category}","${tags}"`
+    const tags = Array.isArray(e.tags) ? e.tags.join(', ').replace(/"/g, '""') : ''
+    const isRecurring = e.source_recurring_id ? t('common.yes', 'Yes') : t('common.no', 'No')
+
+    return `${id},"${title}","${typeTranslated}",${amount},"${currencyCode}",${exchangeRate},${baseAmount},"${dateStr}","${category}","${tags}","${isRecurring}"`
   })
   
   return [headers.join(','), ...rows].join('\r\n')

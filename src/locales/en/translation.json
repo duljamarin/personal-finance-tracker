@@ -28,7 +28,9 @@
     "more": "More"
   },
   "common": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No"
   },
   "dashboard": {
     "title": "Financial Overview",

@@ -28,7 +28,9 @@
     "more": "Më shumë"
   },
   "common": {
-    "cancel": "Anulo"
+    "cancel": "Anulo",
+    "yes": "Po",
+    "no": "Jo"
   },
   "dashboard": {
     "title": "Përmbledhje Financiare",
