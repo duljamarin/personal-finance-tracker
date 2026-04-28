@@ -30,7 +30,8 @@
   "common": {
     "cancel": "Cancel",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "recurring": "Recurring"
   },
   "dashboard": {
     "title": "Financial Overview",

@@ -15,7 +15,7 @@ export function toCSV(items, t) {
     t('transactions.date'),
     t('transactions.category'),
     t('transactions.tagsLabel'),
-    t('nav.recurring')
+    t('common.recurring')
   ]
   
   const rows = items.map((e, i) => {

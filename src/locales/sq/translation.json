@@ -30,7 +30,8 @@
   "common": {
     "cancel": "Anulo",
     "yes": "Po",
-    "no": "Jo"
+    "no": "Jo",
+    "recurring": "Përsëritës"
   },
   "dashboard": {
     "title": "Përmbledhje Financiare",
