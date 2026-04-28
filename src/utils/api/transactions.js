@@ -7,6 +7,7 @@ export async function fetchTransactions({ type } = {}) {
       .from('transactions')
       .select(`
         *,
+        source_recurring_id,
         category:categories(id, name),
         recurring:source_recurring_id(start_date, last_run_at)
       `)
