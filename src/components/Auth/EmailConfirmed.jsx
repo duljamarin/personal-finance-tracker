@@ -29,7 +29,6 @@ export default function EmailConfirmed() {
         console.error('Email verification failed', error);
         setStatus('error');
       } else {
-        console.log('Email verified successfully');
         setStatus('success');
         // Redirect to dashboard after a short delay on success
         setTimeout(() => {

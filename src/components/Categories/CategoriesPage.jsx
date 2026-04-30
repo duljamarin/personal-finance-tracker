@@ -25,6 +25,7 @@ export default function CategoriesPage() {
   const [error, setError] = useState(null);
   const [modalError, setModalError] = useState(null);
   const [modal, setModal] = useState({ open: false, categoryId: null });
+  const [deleting, setDeleting] = useState(false);
 
   function openAddModal() {
     setModalMode('add');
@@ -95,19 +96,22 @@ export default function CategoriesPage() {
     setModal({ open: true, categoryId: id });
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
+    if (deleting) return;
     const id = modal.categoryId;
+    setDeleting(true);
     setModal({ open: false, categoryId: null });
-    deleteCategory(id)
-      .then(() => {
-        reloadCategories?.();
-        reloadExpenses?.();
-        addToast(t('messages.categoryDeleted'), 'info');
-      })
-      .catch(() => {
-        setError(t('messages.error'));
-        addToast(t('messages.error'), 'error');
-      });
+    try {
+      await deleteCategory(id);
+      reloadCategories?.();
+      reloadExpenses?.();
+      addToast(t('messages.categoryDeleted'), 'info');
+    } catch {
+      setError(t('messages.error'));
+      addToast(t('messages.error'), 'error');
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const filtered = (categories || []).filter(c =>
@@ -236,6 +240,7 @@ export default function CategoriesPage() {
           onCancel={() => setModal({ open: false, categoryId: null })}
           confirmLabel={t('forms.submit')}
           cancelLabel={t('forms.cancel')}
+          deleting={deleting}
         />
       )}
     </div>
