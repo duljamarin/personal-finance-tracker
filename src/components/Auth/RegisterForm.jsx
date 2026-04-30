@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
@@ -18,6 +18,12 @@ export default function RegisterForm() {
       navigate('/', { replace: true });
     }
   }, [accessToken, navigate]);
+
+  const redirectTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => clearTimeout(redirectTimerRef.current);
+  }, []);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -87,7 +93,7 @@ export default function RegisterForm() {
         navigate('/');
       } else {
         setSuccessMessage('auth.confirmEmail');
-        setTimeout(() => navigate('/login'), 2500);
+        redirectTimerRef.current = setTimeout(() => navigate('/login'), 2500);
       }
     } catch (err) {
       console.error('Signup error from Supabase:', err?.message);
@@ -95,7 +101,7 @@ export default function RegisterForm() {
       if (errorMsg.toLowerCase().includes('check your email') || errorMsg.toLowerCase().includes('confirm')) {
         clearError();
         setSuccessMessage('auth.confirmEmail');
-        setTimeout(() => navigate('/login'), 2500);
+        redirectTimerRef.current = setTimeout(() => navigate('/login'), 2500);
         return;
       }
 

@@ -117,12 +117,14 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
             )}
           </div>
 
-          <button
-            onClick={() => onAddContribution(goal)}
-            className="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-md font-medium transition text-sm"
-          >
-            + {t('goals.card.addContribution')}
-          </button>
+          {!goal.is_completed && (
+            <button
+              onClick={() => onAddContribution(goal)}
+              className="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-md font-medium transition text-sm"
+            >
+              + {t('goals.card.addContribution')}
+            </button>
+          )}
         </div>
       </div>
     </Card>
