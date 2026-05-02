@@ -7,7 +7,7 @@ import CustomSelect from '../../UI/CustomSelect';
 
 const MAX_EXPENSES = 3;
 
-export default function ExpensesStep({ expenses, onChange, categories, currency, errors = [] }) {
+export default function ExpensesStep({ expenses, onChange, categories, currency }) {
   const { t } = useTranslation();
 
   function updateExpense(index, field, value) {
@@ -74,11 +74,6 @@ export default function ExpensesStep({ expenses, onChange, categories, currency,
                     };
                   })}
                 />
-                {errors[index] && (
-                  <p className="mt-1 text-sm text-red-500 dark:text-red-400">
-                    {t('onboarding.expenses.categoryRequired')}
-                  </p>
-                )}
               </div>
             </div>
             {expenses.length > 1 && (
