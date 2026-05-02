@@ -72,7 +72,6 @@ export default function OnboardingWizard() {
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [expenseErrors, setExpenseErrors] = useState([]);
 
   const [wizardData, setWizardData] = useState({
     currency: 'EUR',
@@ -108,17 +107,7 @@ export default function OnboardingWizard() {
     }
   }
 
-  function validateExpenses() {
-    const { expenses } = wizardData;
-    const errors = expenses.map((e) =>
-      e.amount && Number(e.amount) > 0 && !e.categoryId ? true : false
-    );
-    setExpenseErrors(errors);
-    return !errors.some(Boolean);
-  }
-
   async function handleFinish() {
-    if (!validateExpenses()) return;
     setSubmitting(true);
     try {
       const { currency, exchangeRate, monthlyIncome, expenses } = wizardData;
@@ -145,16 +134,32 @@ export default function OnboardingWizard() {
       }
 
       const validExpenses = expenses.filter(
-        (e) => e.amount && Number(e.amount) > 0 && e.categoryId
+        (e) => e.amount && Number(e.amount) > 0
       );
+
+      const needsUncategorized = validExpenses.some((e) => !e.categoryId);
+      let uncategorizedCategory = null;
+
+      if (needsUncategorized) {
+        uncategorizedCategory = categories.find(
+          (c) => c.name.toLowerCase() === 'uncategorized'
+        );
+        if (!uncategorizedCategory) {
+          uncategorizedCategory = await addCategory({ name: 'Uncategorized' });
+          const updated = await fetchCategories();
+          setCategories(updated);
+        }
+      }
+
       await Promise.all(
         validExpenses.map((expense) => {
-          const cat = categories.find((c) => c.id === expense.categoryId);
+          const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
+          const cat = categories.find((c) => c.id === resolvedCategoryId);
           return addTransaction({
             title: cat?.name || 'Expense',
             amount: Number(expense.amount),
             type: 'expense',
-            categoryId: expense.categoryId,
+            categoryId: resolvedCategoryId,
             date: todayStr,
             currencyCode: currency,
             exchangeRate: rate,
@@ -265,10 +270,9 @@ export default function OnboardingWizard() {
               {currentStep === 3 && (
                 <ExpensesStep
                   expenses={wizardData.expenses}
-                  onChange={(val) => { updateData('expenses', val); setExpenseErrors([]); }}
+                  onChange={(val) => updateData('expenses', val)}
                   categories={categories}
                   currency={wizardData.currency}
-                  errors={expenseErrors}
                 />
               )}
             </div>
@@ -286,9 +290,11 @@ export default function OnboardingWizard() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={handleSkip} disabled={submitting}>
-              {isLastStep ? t('onboarding.wizard.skipAndFinish') : t('onboarding.wizard.skip')}
-            </Button>
+            {!isLastStep && (
+              <Button variant="ghost" onClick={handleSkip} disabled={submitting}>
+                {t('onboarding.wizard.skip')}
+              </Button>
+            )}
 
             {isLastStep ? (
               <Button
