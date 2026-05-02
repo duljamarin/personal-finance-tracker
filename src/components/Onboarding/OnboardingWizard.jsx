@@ -72,6 +72,7 @@ export default function OnboardingWizard() {
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [expenseErrors, setExpenseErrors] = useState([]);
 
   const [wizardData, setWizardData] = useState({
     currency: 'EUR',
@@ -107,7 +108,17 @@ export default function OnboardingWizard() {
     }
   }
 
+  function validateExpenses() {
+    const { expenses } = wizardData;
+    const errors = expenses.map((e) =>
+      e.amount && Number(e.amount) > 0 && !e.categoryId ? true : false
+    );
+    setExpenseErrors(errors);
+    return !errors.some(Boolean);
+  }
+
   async function handleFinish() {
+    if (!validateExpenses()) return;
     setSubmitting(true);
     try {
       const { currency, exchangeRate, monthlyIncome, expenses } = wizardData;
@@ -254,9 +265,10 @@ export default function OnboardingWizard() {
               {currentStep === 3 && (
                 <ExpensesStep
                   expenses={wizardData.expenses}
-                  onChange={(val) => updateData('expenses', val)}
+                  onChange={(val) => { updateData('expenses', val); setExpenseErrors([]); }}
                   categories={categories}
                   currency={wizardData.currency}
+                  errors={expenseErrors}
                 />
               )}
             </div>

@@ -58,6 +58,18 @@
       "6m": "6M",
       "12m": "1Y",
       "all": "All"
+    },
+    "firstRun": {
+      "title": "Welcome to your dashboard",
+      "subtitle": "Start tracking your finances by adding your first transaction. It only takes a few seconds.",
+      "cta": "Add your first transaction",
+      "hint": "Or import a CSV file to get started faster",
+      "step1Title": "Add transactions",
+      "step1Desc": "Record your income and expenses to stay on top of your finances.",
+      "step2Title": "Track your progress",
+      "step2Desc": "Visualize your spending patterns with charts and summaries.",
+      "step3Title": "Reach your goals",
+      "step3Desc": "Set budgets and monitor your financial health over time."
     }
   },
   "cashFlow": {
@@ -901,7 +913,8 @@
       "selectCategory": "Select a category",
       "addAnother": "Add another expense",
       "remove": "Remove",
-      "amountPlaceholder": "e.g., 50"
+      "amountPlaceholder": "e.g., 50",
+      "categoryRequired": "Please select a category for this expense"
     }
   },
   "shortcuts": {

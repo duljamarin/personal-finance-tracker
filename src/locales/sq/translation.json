@@ -58,6 +58,18 @@
       "6m": "6M",
       "12m": "1V",
       "all": "Të gjitha"
+    },
+    "firstRun": {
+      "title": "Mirë se vini në tabelën tuaj",
+      "subtitle": "Filloni të gjurmoni financat tuaja duke shtuar transaksionin e parë. Merr vetëm disa sekonda.",
+      "cta": "Shtoni transaksionin e parë",
+      "hint": "Ose importoni një skedar CSV për të filluar më shpejt",
+      "step1Title": "Shtoni transaksione",
+      "step1Desc": "Regjistroni të ardhurat dhe shpenzimet tuaja për të mbajtur nën kontroll financat.",
+      "step2Title": "Gjurmoni progresin",
+      "step2Desc": "Vizualizoni modelet e shpenzimeve me grafikë dhe përmbledhje.",
+      "step3Title": "Arrini qëllimet tuaja",
+      "step3Desc": "Vendosni buxhete dhe monitoroni shëndetin tuaj financiar me kalimin e kohës."
     }
   },
   "cashFlow": {
@@ -901,7 +913,8 @@
       "selectCategory": "Zgjidhni një kategori",
       "addAnother": "Shto shpenzim tjetër",
       "remove": "Hiq",
-      "amountPlaceholder": "p.sh., 50"
+      "amountPlaceholder": "p.sh., 50",
+      "categoryRequired": "Ju lutemi zgjidhni një kategori për këtë shpenzim"
     }
   },
   "shortcuts": {
