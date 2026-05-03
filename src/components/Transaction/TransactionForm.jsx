@@ -312,52 +312,50 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					/>
 				</div>
 
-				{/* Type & Amount */}
-				<div className="grid grid-cols-2 gap-3 sm:gap-4">
-					<div className="flex flex-col gap-1.5">
-						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
-							{t('transactions.type')}
-						</label>
-						<div className="flex gap-2">
-							{[
-								{
-									value: 'expense',
-									label: t('transactions.expense'),
-									icon: (
-										<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-											<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
-										</svg>
-									),
-									activeClass: 'bg-[#fef0f1] dark:bg-rose-950/30 border-[#e05c6b] text-[#e05c6b] dark:text-[#f08090]',
-									inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-[#e05c6b]/50',
-								},
-								{
-									value: 'income',
-									label: t('transactions.income'),
-									icon: (
-										<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-											<path d="M3 17 L9 11 L13 14 L21 6" /><path d="M14 6 L21 6 L21 13" />
-										</svg>
-									),
-									activeClass: 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-600 dark:text-brand-400',
-									inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-brand-300',
-								},
-							].map(opt => (
-								<button
-									key={opt.value}
-									type="button"
-									onClick={() => setType(opt.value)}
-									className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-md border font-medium text-sm transition-colors whitespace-nowrap ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
-								>
-									{opt.icon}
-									{opt.label}
-								</button>
-							))}
-						</div>
-						{errors.type && (
-							<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
-						)}
+				{/* Type & Amount — type toggle full width, amount + label inline */}
+				<div className="flex flex-col gap-3">
+					{/* Type toggle */}
+					<div className="flex gap-2">
+						{[
+							{
+								value: 'expense',
+								label: t('transactions.expense'),
+								icon: (
+									<svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+										<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
+									</svg>
+								),
+								activeClass: 'bg-[#fef0f1] dark:bg-rose-950/30 border-[#e05c6b] text-[#e05c6b] dark:text-[#f08090]',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-[#e05c6b]/50',
+							},
+							{
+								value: 'income',
+								label: t('transactions.income'),
+								icon: (
+									<svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+										<path d="M3 17 L9 11 L13 14 L21 6" /><path d="M14 6 L21 6 L21 13" />
+									</svg>
+								),
+								activeClass: 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-600 dark:text-brand-400',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-brand-300',
+							},
+						].map(opt => (
+							<button
+								key={opt.value}
+								type="button"
+								onClick={() => setType(opt.value)}
+								className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md border font-medium text-sm transition-colors ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
+							>
+								{opt.icon}
+								{opt.label}
+							</button>
+						))}
 					</div>
+					{errors.type && (
+						<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
+					)}
+
+					{/* Amount */}
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('transactions.amountLabel')}
@@ -373,7 +371,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Currency Fields */}
-				<div className="grid grid-cols-2 gap-3 sm:gap-4 items-start">
+				<div className="grid grid-cols-[1fr_1fr] gap-3 items-end">
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.code')}
@@ -381,7 +379,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						<select
 							value={currencyCode}
 							onChange={e => setCurrencyCode(e.target.value)}
-							className="w-full py-3 px-3.5 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
+							className="w-full py-3 px-3.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
 						>
 							<option value="USD">{t('currency.USD')} 🇺🇸</option>
 							<option value="EUR">{t('currency.EUR')} 🇪🇺</option>
@@ -394,12 +392,14 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						</select>
 					</div>
 					<div className="flex flex-col gap-1.5">
-						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
-							{t('currency.exchangeRate')}
-						</label>
-						<p className="text-xs text-ink-muted dark:text-ink-dark-muted -mt-1">
-							{t('currency.exchangeRateOptional')}
-						</p>
+						<div className="flex items-baseline gap-1.5">
+							<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary whitespace-nowrap">
+								{t('currency.exchangeRate')}
+							</label>
+							<span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal whitespace-nowrap">
+								{t('currency.exchangeRateOptional')}
+							</span>
+						</div>
 						<Input
 							type="number"
 							step="0.000001"
@@ -407,11 +407,13 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							value={exchangeRate}
 							onChange={e => setExchangeRate(e.target.value)}
 						/>
-						<p className="text-xs text-ink-muted dark:text-ink-dark-muted">
-							{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
-						</p>
 					</div>
 				</div>
+				{currencyCode !== 'EUR' && (
+					<p className="text-xs text-ink-muted dark:text-ink-dark-muted -mt-2">
+						{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
+					</p>
+				)}
 
 				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
 				<div className="flex flex-col gap-1 sm:gap-2">
