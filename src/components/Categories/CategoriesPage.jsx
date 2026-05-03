@@ -12,7 +12,7 @@ import CategoryCard from './CategoryCard';
 import { CategoryIconSvg } from '../UI/CategoryIconSvg.jsx';  
 
 export default function CategoriesPage() {
-  const { categories, catError, reloadCategories, reloadTransactions: reloadExpenses } = useTransactions();
+  const { categories, catError, reloadCategories, reloadTransactions } = useTransactions();
   const { addToast } = useToast();
   const { t } = useTranslation();
 
@@ -62,8 +62,7 @@ export default function CategoriesPage() {
     if (modalMode === 'add') {
       try {
         await addCategory({ name: editName.trim(), emoji: editIconKey });
-        reloadCategories?.();
-        reloadExpenses?.();
+        await Promise.all([reloadCategories?.(), reloadTransactions?.()]);
         closeModal();
         addToast(t('messages.categoryAdded'), 'success');
       } catch (err) {
@@ -77,8 +76,7 @@ export default function CategoriesPage() {
     } else if (modalMode === 'edit' && editing) {
       try {
         await updateCategory(editing, { name: editName.trim(), emoji: editIconKey });
-        reloadCategories?.();
-        reloadExpenses?.();
+        await Promise.all([reloadCategories?.(), reloadTransactions?.()]);
         closeModal();
         addToast(t('messages.categoryUpdated'), 'success');
       } catch (err) {
@@ -103,8 +101,7 @@ export default function CategoriesPage() {
     setModal({ open: false, categoryId: null });
     try {
       await deleteCategory(id);
-      reloadCategories?.();
-      reloadExpenses?.();
+      await Promise.all([reloadCategories?.(), reloadTransactions?.()]);
       addToast(t('messages.categoryDeleted'), 'info');
     } catch {
       setError(t('messages.error'));

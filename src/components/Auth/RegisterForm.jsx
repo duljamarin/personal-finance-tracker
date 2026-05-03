@@ -10,6 +10,7 @@ export default function RegisterForm() {
   const { register, loading, accessToken, clearError } = useAuth();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const redirectTimerRef = useRef(null);
   const [email, setEmail] = useState('');
   const [language, setLanguage] = useState(i18n.language || 'en');
 
@@ -18,8 +19,6 @@ export default function RegisterForm() {
       navigate('/', { replace: true });
     }
   }, [accessToken, navigate]);
-
-  const redirectTimerRef = useRef(null);
 
   useEffect(() => {
     return () => clearTimeout(redirectTimerRef.current);
@@ -81,6 +80,11 @@ export default function RegisterForm() {
     return valid;
   }
 
+  function scheduleLoginRedirect() {
+    setSuccessMessage('auth.confirmEmail');
+    redirectTimerRef.current = setTimeout(() => navigate('/login'), 2500);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setFormError('');
@@ -92,16 +96,14 @@ export default function RegisterForm() {
       if (result.session) {
         navigate('/');
       } else {
-        setSuccessMessage('auth.confirmEmail');
-        redirectTimerRef.current = setTimeout(() => navigate('/login'), 2500);
+        scheduleLoginRedirect();
       }
     } catch (err) {
       console.error('Signup error from Supabase:', err?.message);
       const errorMsg = err?.message || '';
       if (errorMsg.toLowerCase().includes('check your email') || errorMsg.toLowerCase().includes('confirm')) {
         clearError();
-        setSuccessMessage('auth.confirmEmail');
-        redirectTimerRef.current = setTimeout(() => navigate('/login'), 2500);
+        scheduleLoginRedirect();
         return;
       }
 

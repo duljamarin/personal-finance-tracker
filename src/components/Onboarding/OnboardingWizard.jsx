@@ -114,12 +114,14 @@ export default function OnboardingWizard() {
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
 
+      let localCategories = categories;
+
       if (monthlyIncome && Number(monthlyIncome) > 0) {
-        let salaryCategory = categories.find((c) => c.name.toLowerCase() === 'salary');
+        let salaryCategory = localCategories.find((c) => c.name.toLowerCase() === 'salary');
         if (!salaryCategory) {
           salaryCategory = await addCategory({ name: 'Salary' });
-          const updated = await fetchCategories();
-          setCategories(updated);
+          localCategories = [...localCategories, salaryCategory];
+          setCategories(localCategories);
         }
 
         await addTransaction({
@@ -141,20 +143,22 @@ export default function OnboardingWizard() {
       let uncategorizedCategory = null;
 
       if (needsUncategorized) {
-        uncategorizedCategory = categories.find(
+        uncategorizedCategory = localCategories.find(
           (c) => c.name.toLowerCase() === 'uncategorized'
         );
         if (!uncategorizedCategory) {
           uncategorizedCategory = await addCategory({ name: 'Uncategorized' });
-          const updated = await fetchCategories();
-          setCategories(updated);
+          localCategories = [...localCategories, uncategorizedCategory];
+          setCategories(localCategories);
         }
       }
+
+      const categoryById = new Map(localCategories.map((c) => [c.id, c]));
 
       await Promise.all(
         validExpenses.map((expense) => {
           const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
-          const cat = categories.find((c) => c.id === resolvedCategoryId);
+          const cat = categoryById.get(resolvedCategoryId);
           return addTransaction({
             title: cat?.name || 'Expense',
             amount: Number(expense.amount),

@@ -194,23 +194,21 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
 
           {/* Score breakdown bars */}
           <div className="flex-1 w-full space-y-3.5">
-            {isPremium ? scoreValues.map(({ label, value, color }) => (
+            {scoreValues.map(({ label, value, color }, i) => (
               <div key={label} className="flex items-center gap-3">
-                <span className="w-36 text-xs text-ink-muted dark:text-ink-dark-muted shrink-0">{label}</span>
+                <span className={`w-36 text-xs shrink-0 ${isPremium ? 'text-ink-muted dark:text-ink-dark-muted' : 'text-ink-muted/60 dark:text-ink-dark-muted/60'}`}>{label}</span>
                 <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
-                  <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />
+                  {isPremium
+                    ? <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />
+                    : <div className="h-full bg-surface-hairline dark:bg-surface-dark-elevated rounded-full" style={{ width: `${[65,40,75,55][i]}%` }} />
+                  }
                 </div>
-                <span className="w-8 text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums text-right">{Math.round(value)}</span>
-              </div>
-            )) : scoreValues.map(({ label }, i) => (
-              <div key={label} className="flex items-center gap-3">
-                <span className="w-36 text-xs text-ink-muted/60 dark:text-ink-dark-muted/60 shrink-0">{label}</span>
-                <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
-                  <div className="h-full bg-surface-hairline dark:bg-surface-dark-elevated rounded-full" style={{ width: `${[65,40,75,55][i]}%` }} />
-                </div>
-                <svg className="w-3.5 h-3.5 text-ink-muted/40 dark:text-ink-dark-muted/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7a4.5 4.5 0 1 0-9 0v3.5M6 10.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18v-6A1.5 1.5 0 0 1 6 10.5Z" />
-                </svg>
+                {isPremium
+                  ? <span className="w-8 text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums text-right">{Math.round(value)}</span>
+                  : <svg className="w-3.5 h-3.5 text-ink-muted/40 dark:text-ink-dark-muted/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7a4.5 4.5 0 1 0-9 0v3.5M6 10.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18v-6A1.5 1.5 0 0 1 6 10.5Z" />
+                    </svg>
+                }
               </div>
             ))}
           </div>
