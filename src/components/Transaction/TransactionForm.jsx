@@ -273,12 +273,12 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	}
 
 	return (
-		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto">
+		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-5 w-full">
 			<h2 className="font-display text-lg sm:text-2xl font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
-			<div className="flex flex-col gap-3 sm:gap-6 pr-2 sm:pr-3">
+			<div className="flex flex-col gap-3 sm:gap-5">
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
 					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-2 sm:p-4">
@@ -313,7 +313,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Type & Amount */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+				<div className="grid grid-cols-2 gap-3 sm:gap-4">
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('transactions.type')}
@@ -347,7 +347,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 									key={opt.value}
 									type="button"
 									onClick={() => setType(opt.value)}
-									className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-md border font-medium text-sm transition-colors ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
+									className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-md border font-medium text-sm transition-colors whitespace-nowrap ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
 								>
 									{opt.icon}
 									{opt.label}
@@ -373,7 +373,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Currency Fields */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start">
+				<div className="grid grid-cols-2 gap-3 sm:gap-4 items-start">
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.code')}
@@ -396,10 +396,10 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.exchangeRate')}
-							<span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal ml-1">
-								{t('currency.exchangeRateOptional')}
-							</span>
 						</label>
+						<p className="text-xs text-ink-muted dark:text-ink-dark-muted -mt-1">
+							{t('currency.exchangeRateOptional')}
+						</p>
 						<Input
 							type="number"
 							step="0.000001"
