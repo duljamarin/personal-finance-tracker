@@ -456,7 +456,7 @@
     "label": "Valuta",
     "code": "Kodi i Valutës",
     "exchangeRate": "Kursi i Këmbimit në EUR",
-    "exchangeRateOptional": "(opsionale, parazgjedhja është 1.0)",
+    "exchangeRateOptional": "(opsionale)",
     "baseAmount": "Shuma Bazë (EUR)",
     "baseCurrency": "Të gjitha totalet në EUR",
     "mixedCurrencies": "Valuta të përziera - totalet e normalizuara në EUR",

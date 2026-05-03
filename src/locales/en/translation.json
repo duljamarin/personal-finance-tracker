@@ -456,7 +456,7 @@
     "label": "Currency",
     "code": "Currency Code",
     "exchangeRate": "Exchange Rate to EUR",
-    "exchangeRateOptional": "(optional, defaults to 1.0)",
+    "exchangeRateOptional": "(optional)",
     "baseAmount": "Base Amount (EUR)",
     "baseCurrency": "All totals in EUR",
     "mixedCurrencies": "Mixed currencies - showing normalized totals in EUR",
