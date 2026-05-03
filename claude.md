@@ -1,8 +1,8 @@
-# Personal Finance Tracker - AI Assistant Guide
+# Personal Finance Tracker — AI Assistant Guide
 
 ## Project Overview
 
-A personal finance tracking application built with React and Supabase. Users can manage transactions, categories, recurring transactions, financial goals, and view spending benchmarks and health scores.
+A personal finance tracking app built with React + Supabase. Features: transactions, categories, recurring transactions, financial goals, net worth, monthly budgets, spending benchmarks, financial health scores, financial reports, notifications, and Paddle subscription billing.
 
 ## Tech Stack
 
@@ -10,183 +10,216 @@ A personal finance tracking application built with React and Supabase. Users can
 |-------|------------|
 | Frontend | React 19.2, React Router 7.10, Recharts 3.5 |
 | Build | Vite 7.2 |
-| Styling | Tailwind CSS 3.4 (dark mode via class strategy) |
-| Backend | Supabase (PostgreSQL + Auth) |
-| i18n | i18next (English & Albanian) |
+| Styling | Tailwind CSS 3.4 (dark mode via `class` strategy) |
+| Backend | Supabase (PostgreSQL + Auth + Edge Functions) |
+| Email | Resend v3 (via Deno Edge Functions) |
+| Payments | Paddle Billing (webhooks + overlay checkout) |
+| i18n | i18next — Albanian (`sq`) default, English (`en`) |
 | CSV | PapaParse |
+| Deployment | Netlify (auto-deploy on push to `main`) |
 
 ## Directory Structure
 
 ```
 src/
 ├── components/
-│   ├── Auth/           # LoginForm, RegisterForm, ForgotPassword, ResetPassword
-│   ├── Transactions/   # Transaction list, charts (CombinedMonthChart, CategoryPieChart)
-│   ├── Transaction/    # TransactionForm (reusable for add/edit)
-│   ├── Categories/     # CategoriesPage
+│   ├── Auth/           # LoginForm, RegisterForm, ForgotPassword, ResetPassword, EmailConfirmed
+│   ├── Transactions/   # Transactions, CombinedMonthChart, CategoryPieChart
+│   ├── Transaction/    # TransactionForm (add/edit, recurring support)
+│   ├── Categories/     # CategoriesPage, CategoryCard
 │   ├── Recurring/      # RecurringPage, RecurringForm
 │   ├── Goals/          # GoalsPage, GoalForm, GoalCard, ContributionForm
 │   ├── Benchmark/      # CategoryBenchmark
 │   ├── HealthScore/    # HealthScore
-│   ├── UI/             # Button, Card, Input, Modal (reusable primitives)
-│   ├── Header.jsx, Footer.jsx, ThemeToggle.jsx, LanguageSwitcher.jsx
-│   └── LandingPage.jsx
+│   ├── NetWorth/       # NetWorthPage, AssetForm, NetWorthChart
+│   ├── Reports/        # ReportsPage, ReportSummaryCards, ReportCategoryBreakdown,
+│   │                   # ReportIncomeBreakdown, ReportDailyTrend, ReportPeriodComparison,
+│   │                   # ReportTopTransactions
+│   ├── Budgets/        # BudgetsPage, BudgetForm, BudgetCard
+│   ├── Dashboard/      # Dashboard, SummaryCards, CashFlowForecast, ChartWithTimeRange,
+│   │                   # BudgetSummaryBar, AddTransactionCTA, FirstRunGuide
+│   ├── Onboarding/     # OnboardingWizard, ProgressBar, steps/
+│   ├── Subscription/   # PremiumFeatureLock, UpgradeBanner
+│   ├── Pricing/        # PricingPage
+│   ├── UI/             # Button, Card, Input, Modal, PasswordInput, CustomSelect,
+│   │                   # CategoryIconSvg, ConfirmDeleteModal, EmptyState, Icon,
+│   │                   # LoadingSpinner, Skeleton
+│   └── Header, Footer, Sidebar, LandingPage, ThemeToggle, LanguageSwitcher,
+│       ErrorBoundary, CatchAllRedirect
 ├── context/
-│   ├── AuthContext.jsx   # User auth state, login/logout/register
-│   └── ToastContext.jsx  # Toast notifications
+│   ├── AuthContext.jsx         # useAuth() — user, session, login, logout, register, refreshUser
+│   ├── ToastContext.jsx        # useToast() — addToast(message, type)
+│   ├── ThemeContext.jsx        # useTheme() — isDark, toggleDark
+│   ├── SubscriptionContext.jsx # useSubscription() — isPremium, isTrialing, limits, canCreate*
+│   └── TransactionContext.jsx  # useTransactions() — transactions, categories, mutationCount, CRUD
 ├── hooks/
-│   └── useDarkMode.js    # Dark mode persistence
+│   ├── useAsyncAction.js       # async op with loading/error state
+│   ├── useAsyncData.js         # data fetching with deps
+│   ├── useDarkMode.js          # dark mode persistence (localStorage)
+│   ├── useFormModal.js         # form modal state
+│   ├── useKeyboardShortcuts.js # keyboard shortcut registration
+│   └── usePaddle.js            # Paddle.js overlay checkout
 ├── utils/
-│   ├── api.js            # All Supabase API calls
-│   ├── supabaseClient.js # Supabase initialization
-│   ├── csv.js            # CSV export utilities
-│   ├── categoryTranslation.js
-│   └── recurringValidation.js
-├── locales/              # i18n translation JSON files (en/, sq/)
-├── i18n.js               # i18next config
-├── App.jsx               # Main app with routing
-└── main.jsx              # Entry point
+│   ├── api/                    # Modular API layer
+│   │   ├── index.js            # re-exports everything
+│   │   ├── _auth.js            # withAuth / withAuthOrEmpty wrappers
+│   │   ├── transactions.js, categories.js, goals.js, budgets.js
+│   │   ├── recurring.js, health.js, notifications.js, subscriptions.js, networth.js
+│   ├── supabaseClient.js       # Supabase client init
+│   ├── csv.js                  # CSV export (toCSV, downloadCSV)
+│   ├── importCSV.js            # CSV import
+│   ├── categoryTranslation.js  # translateCategoryName, getCategoryIcon, CATEGORY_ICONS
+│   └── recurringValidation.js  # recurring form validation
+├── locales/en/ and sq/         # i18n JSON (must stay in parity)
+├── i18n.js                     # i18next config
+├── App.jsx                     # Routes + PrivateRoute
+└── main.jsx
 
-supabase_migrations/      # SQL migration files for database schema
+supabase/
+├── functions/                  # Deno Edge Functions
+│   ├── paddle-webhook/         # Paddle billing events
+│   ├── get-customer-portal/    # Customer portal redirect
+│   ├── delete-user/            # Account deletion
+│   ├── send-confirmation-email/
+│   ├── send-reengagement-bulk/ # Bulk campaign (paginates listUsers)
+│   ├── send-reengagement-test/ # Single test send
+│   ├── send-bulk-notification/
+│   └── send-bulk-notification-test/
+└── config.toml
+
+supabase_migrations/            # 35 SQL migration files
 ```
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `src/utils/api.js` | All API calls to Supabase (CRUD for transactions, categories, goals, etc.) |
-| `src/context/AuthContext.jsx` | Auth state management, provides `useAuth()` hook |
-| `src/App.jsx` | Route definitions, main state (transactions, categories), theme toggle |
-| `src/components/Transaction/TransactionForm.jsx` | Reusable form for add/edit transactions with recurring support |
-| `src/utils/supabaseClient.js` | Supabase client initialization |
+| `src/utils/api/index.js` | Re-exports all API functions |
+| `src/utils/api/_auth.js` | `withAuth` / `withAuthOrEmpty` — all API calls go through these |
+| `src/context/TransactionContext.jsx` | Shared transaction + category state across the app |
+| `src/context/SubscriptionContext.jsx` | Premium/trial gating logic |
+| `src/components/Transaction/TransactionForm.jsx` | Reusable add/edit form |
+| `src/utils/categoryTranslation.js` | `getCategoryIcon()`, `translateCategoryName()`, `CATEGORY_ICONS` |
+| `src/components/UI/CustomSelect.jsx` | Dropdown with icon support (use instead of native `<select>`) |
 
-## Database Schema
+## Database Schema (Key Tables)
 
-### Core Tables
+**transactions** — `id, user_id, title, amount, type (income|expense), category_id, date, tags[], currency_code, exchange_rate, base_amount, source_recurring_id`
+- `base_amount = amount × exchange_rate` (normalized to EUR)
+- `source_recurring_id` join alias drops scalar — select both explicitly
 
-**transactions**
-- `id`, `user_id`, `title`, `amount`, `type` ('income'|'expense'), `category_id`, `date`, `tags[]`
-- Multi-currency: `currency_code`, `exchange_rate`, `base_amount` (amount × exchange_rate)
-- Recurring link: `source_recurring_id`, `is_scheduled`
+**categories** — `id, user_id, name (unique), emoji (icon key)`
 
-**categories**
-- `id`, `user_id`, `name` (unique per user)
+**recurring_transactions** — `frequency (daily|weekly|monthly|yearly), interval_count, start_date, end_date, next_run_at, is_active`
 
-**recurring_transactions**
-- `id`, `user_id`, `title`, `amount`, `type`, `category_id`, `tags[]`
-- Schedule: `frequency` (daily|weekly|monthly|yearly), `interval_count`, `start_date`, `end_date`, `occurrences_limit`
-- State: `next_run_at`, `last_run_at`, `occurrences_created`, `is_active`
+**goals** — `target_amount, current_amount (trigger-managed), is_completed, completed_at`
+- `is_completed` set by `update_goal_current_amount()` trigger on `goal_contributions`
 
-**goals**
-- `id`, `user_id`, `name`, `target_amount`, `current_amount` (auto-updated by trigger)
-- `goal_type` (savings|debt_payoff|investment|purchase), `priority`, `is_active`, `is_completed`
+**monthly_budgets** — `category_id, amount, month (YYYY-MM), spent (trigger-managed)`
 
-**goal_contributions** / **goal_milestones**
-- Linked to goals, contributions update `current_amount` via DB trigger
+**net_worth_snapshots** — `snapshot_date, total_assets, total_liabilities` (upserted on every asset change)
 
-**financial_health_scores**
-- Monthly snapshots with component scores and insights
+**subscriptions** — `subscription_status, is_trialing, trial_end, had_trial, last_event_id`
 
 ### Row Level Security
-All tables have RLS enabled: `auth.uid() = user_id`
+All tables: RLS enabled, policy `auth.uid() = user_id`
 
-## API Patterns
+## Critical Patterns
 
-All API functions in `src/utils/api.js`:
-
+### API Auth Wrapper
 ```javascript
-// Naming convention: verb + Entity
-fetchTransactions(), addTransaction(), updateTransaction(), deleteTransaction()
-fetchCategories(), addCategory(), updateCategory(), deleteCategory()
-fetchGoals(), createGoal(), updateGoal(), deleteGoal()
-fetchRecurringTransactions(), addRecurringTransaction(), processRecurringTransactions()
-fetchHealthScore(), fetchCategoryBenchmarks()
+// withAuth — for mutations; withAuthOrEmpty — for reads (returns [] if not authed)
+const { data, error } = await supabase.auth.getUser();
+const user = data?.user;  // safe destructure — never data: { user }
+if (error && !user) throw error;
 ```
 
-**Important patterns:**
-- Returns `data || []` as safe fallback
-- Throws on auth errors
-- Uses Supabase RPC for complex calculations (health score, benchmarks)
-- Field naming: API uses snake_case, components often convert to camelCase
+### Supabase Join Alias Gotcha
+```javascript
+// This drops source_recurring_id scalar — select it explicitly too:
+.select('*, source_recurring_id, recurring:source_recurring_id(start_date)')
+```
 
-## State Management
+### Input Error State
+```jsx
+// CORRECT — Input manages its own border via error prop
+<Input error={errors.field ? t(errors.field) : undefined} />
+// WRONG — className border classes conflict with Input's internal state
+<Input className="border-red-500" />
+```
 
-**No Redux** - Uses React Context + local component state
+### Subscription Gating
+```jsx
+const { isPremium, isTrialing } = useSubscription();
+if (!isPremium && !isTrialing) return <PremiumFeatureLock />;
+```
 
-**AuthContext** provides:
-- `user`, `session`, `loading`, `error`
-- `login()`, `register()`, `logout()`, `clearError()`
+### i18n — Always Both Files
+```javascript
+// src/locales/en/translation.json → "key": "English"
+// src/locales/sq/translation.json → "key": "Albanian"
+```
 
-**ToastContext** provides:
-- `addToast(message, type)` - types: success, error, info, warning
+### setTimeout Cleanup
+```javascript
+const timerRef = useRef(null);
+useEffect(() => () => clearTimeout(timerRef.current), []);
+timerRef.current = setTimeout(() => navigate('/'), 2500);
+```
 
-## Common Patterns
-
-### Multi-Currency
-Transactions store `amount`, `currency_code`, `exchange_rate`, `base_amount`. Aggregations use `base_amount` (normalized to EUR).
-
-### Recurring Transactions
-Generated on-demand via `processRecurringTransactions()` called on Transactions.jsx mount. Not server-side cron.
-
-### i18n
-Default language: Albanian. Uses `useTranslation()` hook. Translation keys like `transactions.titleError`.
-
-### Dark Mode
-Tailwind dark mode via class. Persisted in localStorage via `useDarkMode` hook.
-
-### Form Validation
-Client-side in components. Error keys map to i18n translation keys.
-
-### Route Protection
-`PrivateRoute` component checks `accessToken` from AuthContext, redirects to /login if missing.
+### Recharts Sizing
+```jsx
+// CORRECT — explicit px height avoids width(-1)/height(-1) warning
+<ResponsiveContainer width="100%" height={300}>
+// For fixed-size: use explicit numbers
+<ResponsiveContainer width={180} height={180}>
+```
 
 ## Development Commands
 
 ```bash
-npm run dev      # Start Vite dev server
-npm run build    # Production build
+npm run dev      # Vite dev server
+npm run build    # Production build → dist/
 npm run preview  # Preview production build
 ```
 
 ## Environment Variables
 
-Required in `.env`:
-```
+```env
+# .env (never commit — only .env.example)
 VITE_SUPABASE_URL=https://[project].supabase.co
 VITE_SUPABASE_ANON_KEY=[anon-key]
+VITE_PADDLE_MONTHLY_PRICE_ID=pri_xxx
+VITE_PADDLE_YEARLY_PRICE_ID=pri_xxx
+VITE_PADDLE_CLIENT_TOKEN=live_xxx
+VITE_PADDLE_ENVIRONMENT=sandbox|production
 ```
+
+Edge Function secrets: set via `supabase secrets set` (never in code):
+`SUPABASE_SERVICE_ROLE_KEY`, `PADDLE_API_KEY`, `PADDLE_WEBHOOK_SECRET`, `RESEND_API_KEY`
 
 ## Notes for AI Assistants
 
-1. **Always check api.js** before creating new API functions - patterns are established
-2. **Use existing UI components** from `src/components/UI/` (Button, Card, Input, Modal)
-3. **Follow i18n patterns** - add translation keys to both `en/` and `sq/` locale files
-4. **Database changes** require SQL migrations in `supabase_migrations/` with RLS policies
-5. **State changes** - components manage their own state, lift to App.jsx only if shared
-6. **Styling** - use Tailwind classes, support dark mode with `dark:` prefix
-7. **Context management** - When conversation context exceeds ~50%, suggest starting a new conversation or delegate independent tasks to subagents (`backend-developer`, `frontend-developer`, `qa-developer`, `devops`) to preserve context space. Prefer subagents for file-heavy or exploratory work that would bloat the main conversation.
+1. **API layer is modular** — check `src/utils/api/` (not a single api.js) before adding functions
+2. **Use existing UI primitives** — `Button, Card, Input, Modal, CustomSelect, CategoryIconSvg, PasswordInput`
+3. **i18n both files** — every new string goes in `en/` AND `sq/` simultaneously
+4. **Database changes** — new migration in `supabase_migrations/YYYYMMDDHHMMSS_desc.sql` with RLS
+5. **Subscription gating** — check `isPremium || isTrialing`, not just `isPremium`
+6. **Context management** — when context exceeds ~50%, delegate to subagents or start fresh conversation
+7. **Deployment** — frontend auto-deploys on push to `main`; migrations and Edge Functions need manual CLI deploy
+8. **mutationCount** — increments on every mutation (add/update/delete); it's a change signal, not a record count
 
 ## Specialized Sub-Agents
 
-Four sub-agents are defined in `.claude/agents/`. They can run in parallel for large tasks.
+Four agents in `.claude/agents/` — run in parallel for large tasks.
 
-| Agent | File | Trigger |
-|-------|------|---------|
-| `backend-developer` | `.claude/agents/backend-developer.md` | api.js, migrations, Edge Functions, RLS, Paddle webhooks |
-| `frontend-developer` | `.claude/agents/frontend-developer.md` | React components, Tailwind, i18n, hooks, charts |
-| `qa-developer` | `.claude/agents/qa-developer.md` | Tests, bug review, security audit, locale completeness |
-| `devops` | `.claude/agents/devops.md` | Build, deployment, CI/CD, env vars, Supabase CLI |
+| Agent | Trigger |
+|-------|---------|
+| `backend-developer` | api/, migrations, Edge Functions, RLS, Paddle webhooks |
+| `frontend-developer` | React components, Tailwind, i18n, hooks, charts |
+| `qa-developer` | Bug review, security audit, i18n parity, subscription gating |
+| `devops` | Build, Netlify, Supabase CLI, env vars, Edge Function deploy |
 
-### Changing the Model
-
-Each agent file has a `model:` line at the top. Edit it to switch models:
-
-```markdown
----
-model: claude-opus-4-5-20251101   # Most capable - use for complex reasoning
-# model: claude-sonnet-4-6        # Balanced speed/quality (default)
-# model: claude-haiku-4-5         # Fastest - use for simple, repetitive tasks
----
-```
-
-To change all agents to the same model at once, update the `model:` field in each of the four `.md` files in `.claude/agents/`.
+### Models
+All agents default to `claude-sonnet-4-6`. Edit the `model:` line in each `.claude/agents/*.md` to change.
+Available: `claude-opus-4-7` (most capable), `claude-sonnet-4-6` (balanced), `claude-haiku-4-5-20251001` (fastest)
