@@ -313,7 +313,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Type & Amount */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('transactions.type')}
@@ -373,7 +373,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Currency Fields */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start">
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.code')}
@@ -415,7 +415,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
 				<div className="flex flex-col gap-1 sm:gap-2">
-					<div className="flex items-center justify-between">
+					<div className="flex items-center justify-between min-h-[1.25rem]">
 						{!isRecurring && !initial?.source_recurring_id && (
 							canSplitTransaction ? (
 								<button
@@ -475,7 +475,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							type="button"
 							onClick={() => { setShowProposalInput(v => !v); setCategoryProposalSuccess(false); }}
 							title={t('categoryProposal.other')}
-							className={`flex-shrink-0 w-8 h-8 rounded-md border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
+							className={`flex-shrink-0 w-9 self-stretch rounded-md border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
 								showProposalInput
 									? 'bg-brand-600 border-brand-600 text-white'
 									: 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-muted dark:text-ink-dark-muted hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400'
