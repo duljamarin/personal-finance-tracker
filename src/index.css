@@ -33,6 +33,9 @@
   .eyebrow {
     @apply uppercase tracking-[0.12em] text-[11px] font-medium text-ink-muted dark:text-ink-dark-muted;
   }
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
 }
 
 @layer base {
