@@ -196,7 +196,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           <div className="flex-1 w-full space-y-3.5">
             {isPremium ? scoreValues.map(({ label, value, color }) => (
               <div key={label} className="flex items-center gap-3">
-                <span className="w-28 text-xs text-ink-muted dark:text-ink-dark-muted truncate">{label}</span>
+                <span className="w-36 text-xs text-ink-muted dark:text-ink-dark-muted shrink-0">{label}</span>
                 <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
                   <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />
                 </div>
@@ -204,7 +204,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               </div>
             )) : scoreValues.map(({ label }, i) => (
               <div key={label} className="flex items-center gap-3">
-                <span className="w-28 text-xs text-ink-muted/60 dark:text-ink-dark-muted/60 truncate">{label}</span>
+                <span className="w-36 text-xs text-ink-muted/60 dark:text-ink-dark-muted/60 shrink-0">{label}</span>
                 <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
                   <div className="h-full bg-surface-hairline dark:bg-surface-dark-elevated rounded-full" style={{ width: `${[65,40,75,55][i]}%` }} />
                 </div>
