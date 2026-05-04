@@ -14,6 +14,7 @@ import TransactionSplitForm from './TransactionSplitForm'
 import TransactionRecurringSection from './TransactionRecurringSection'
 import { CategoryIconSvg } from '../UI/CategoryIconSvg'
 import CustomSelect from '../UI/CustomSelect'
+import { fetchExchangeRate } from '../../utils/exchangeRate'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t } = useTranslation()
@@ -35,6 +36,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
 	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || user?.user_metadata?.preferred_currency || APP_CONFIG.BASE_CURRENCY)
 	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE)
+	const [isFetchingRate, setIsFetchingRate] = useState(false)
 	
 	// If editing a transaction from a recurring rule
 	const isFromRecurring = initial?.source_recurring_id
@@ -59,6 +61,23 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			}
 		}).catch(() => setCategories([]))
 	}, [])
+
+	const initialCurrency = currencyCode
+	useEffect(() => {
+		if (currencyCode === 'EUR') {
+			setExchangeRate(1.0)
+			return
+		}
+		// Don't auto-fetch on mount when editing an existing transaction that already has a rate
+		if (currencyCode === initialCurrency && initial?.id) return
+		let cancelled = false
+		setIsFetchingRate(true)
+		fetchExchangeRate(currencyCode).then(rate => {
+			if (!cancelled && rate !== null) setExchangeRate(rate)
+			if (!cancelled) setIsFetchingRate(false)
+		})
+		return () => { cancelled = true }
+	}, [currencyCode])
 
 	function validate() {
 		const newErrors = {}
@@ -396,9 +415,10 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary whitespace-nowrap">
 								{t('currency.exchangeRate')}
 							</label>
-							<span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal whitespace-nowrap">
-								{t('currency.exchangeRateOptional')}
-							</span>
+							{isFetchingRate
+								? <span className="text-xs text-brand-500 dark:text-brand-400 font-normal animate-pulse">...</span>
+								: <span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal whitespace-nowrap">{t('currency.exchangeRateOptional')}</span>
+							}
 						</div>
 						<Input
 							type="number"
@@ -406,6 +426,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							placeholder="1.0"
 							value={exchangeRate}
 							onChange={e => setExchangeRate(e.target.value)}
+							disabled={isFetchingRate}
 						/>
 					</div>
 				</div>

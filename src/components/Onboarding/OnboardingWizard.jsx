@@ -6,6 +6,7 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { supabase } from '../../utils/supabaseClient';
 import { fetchCategories, addCategory, addTransaction } from '../../utils/api';
+import { fetchExchangeRate } from '../../utils/exchangeRate';
 import Button from '../UI/Button';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ProgressBar from './ProgressBar';
@@ -72,6 +73,7 @@ export default function OnboardingWizard() {
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isFetchingRate, setIsFetchingRate] = useState(false);
 
   const [wizardData, setWizardData] = useState({
     currency: 'EUR',
@@ -86,6 +88,21 @@ export default function OnboardingWizard() {
       .catch(() => {})
       .finally(() => setLoadingCategories(false));
   }, []);
+
+  useEffect(() => {
+    const currency = wizardData.currency;
+    if (currency === 'EUR') {
+      updateData('exchangeRate', 1.0);
+      return;
+    }
+    let cancelled = false;
+    setIsFetchingRate(true);
+    fetchExchangeRate(currency).then((rate) => {
+      if (!cancelled && rate !== null) updateData('exchangeRate', rate);
+      if (!cancelled) setIsFetchingRate(false);
+    });
+    return () => { cancelled = true; };
+  }, [wizardData.currency]);
 
   function updateData(field, value) {
     setWizardData((prev) => ({ ...prev, [field]: value }));
@@ -257,10 +274,8 @@ export default function OnboardingWizard() {
                 <CurrencyStep
                   currency={wizardData.currency}
                   exchangeRate={wizardData.exchangeRate}
-                  onCurrencyChange={(val) => {
-                    updateData('currency', val);
-                    if (val === 'EUR') updateData('exchangeRate', 1.0);
-                  }}
+                  isFetchingRate={isFetchingRate}
+                  onCurrencyChange={(val) => updateData('currency', val)}
                   onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val))}
                 />
               )}

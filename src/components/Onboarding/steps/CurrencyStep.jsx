@@ -7,7 +7,7 @@ const FLAGS = { EUR: '\u{1F1EA}\u{1F1FA}', USD: '\u{1F1FA}\u{1F1F8}', GBP: '\u{1
 const selectClass =
   'appearance-none w-full px-3 py-2.5 pr-10 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
 
-export default function CurrencyStep({ currency, exchangeRate, onCurrencyChange, onExchangeRateChange }) {
+export default function CurrencyStep({ currency, exchangeRate, isFetchingRate, onCurrencyChange, onExchangeRateChange }) {
   const { t } = useTranslation();
 
   return (
@@ -50,16 +50,30 @@ export default function CurrencyStep({ currency, exchangeRate, onCurrencyChange,
         </div>
 
         {currency !== 'EUR' && (
-          <Input
-            label={t('onboarding.currency.exchangeRateLabel', { currency, base: 'EUR' })}
-            type="number"
-            min="0.000001"
-            step="0.000001"
-            placeholder={t('onboarding.currency.exchangeRatePlaceholder')}
-            value={exchangeRate}
-            onChange={(e) => onExchangeRateChange(e.target.value)}
-            helperText={t('onboarding.currency.exchangeRateHint', { amount: 1, currency, result: (1 * (Number(exchangeRate) || 0)).toFixed(2) })}
-          />
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-baseline gap-1.5">
+              <label className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary">
+                {t('onboarding.currency.exchangeRateLabel', { currency, base: 'EUR' })}
+              </label>
+              {isFetchingRate && (
+                <span className="text-xs text-brand-500 dark:text-brand-400 animate-pulse">...</span>
+              )}
+            </div>
+            <Input
+              type="number"
+              min="0.000001"
+              step="0.000001"
+              placeholder={t('onboarding.currency.exchangeRatePlaceholder')}
+              value={exchangeRate}
+              onChange={(e) => onExchangeRateChange(e.target.value)}
+              disabled={isFetchingRate}
+            />
+            {!isFetchingRate && Number(exchangeRate) > 0 && (
+              <p className="text-xs text-ink-muted dark:text-ink-dark-muted">
+                {t('onboarding.currency.exchangeRateHint', { amount: 1, currency, result: (1 * Number(exchangeRate)).toFixed(4) })}
+              </p>
+            )}
+          </div>
         )}
       </div>
     </div>
