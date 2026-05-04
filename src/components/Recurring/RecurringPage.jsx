@@ -6,6 +6,7 @@ import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction, processRecurringTransactions } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { CURRENCY_SYMBOLS } from '../../utils/constants';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useFormModal } from '../../hooks/useFormModal';
@@ -63,17 +64,6 @@ export default function RecurringPage() {
       addToast(t('recurring.toggleError'), 'error');
     }
   }
-
-  const currencySymbols = {
-    EUR: '€',
-    USD: '$',
-    GBP: '£',
-    ALL: 'L',
-    CHF: 'CHF',
-    JPY: '¥',
-    CAD: 'C$',
-    AUD: 'A$'
-  };
 
   const getFrequencyText = (frequency, intervalCount) => {
     const count = intervalCount || 1;
@@ -173,7 +163,7 @@ export default function RecurringPage() {
                     }`}
                     style={recurring.type === 'expense' ? { color: '#e05c6b' } : undefined}
                   >
-                    {currencySymbols[recurring.currency_code || 'EUR']}
+                    {CURRENCY_SYMBOLS[recurring.currency_code || 'EUR']}
                     {Number(recurring.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </div>
                   <span

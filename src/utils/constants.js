@@ -3,7 +3,7 @@ export const CURRENCY_SYMBOLS = {
   EUR: '€',
   USD: '$',
   GBP: '£',
-  ALL: 'ALL',
+  ALL: 'L',
   CHF: 'CHF',
   JPY: '¥',
   CAD: 'C$',
