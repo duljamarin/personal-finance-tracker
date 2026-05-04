@@ -5,6 +5,7 @@ import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 export default function IncomeStep({ monthlyIncome, onChange, currency }) {
   const { t } = useTranslation();
   const symbol = CURRENCY_SYMBOLS[currency] || currency;
+  const placeholder = currency === 'ALL' ? '80000' : currency === 'JPY' ? '300000' : '3000';
 
   return (
     <div className="space-y-6">
@@ -23,7 +24,7 @@ export default function IncomeStep({ monthlyIncome, onChange, currency }) {
           type="number"
           min="0"
           step="0.01"
-          placeholder={t('onboarding.income.placeholder')}
+          placeholder={placeholder}
           value={monthlyIncome}
           onChange={(e) => onChange(e.target.value)}
           leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-ink-dark-muted">{symbol}</span>}
