@@ -128,7 +128,7 @@ export default function CategoriesPage() {
       <div className="mb-8 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
-          placeholder={t('categories.name')}
+          placeholder={t('categories.searchPlaceholder')}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"

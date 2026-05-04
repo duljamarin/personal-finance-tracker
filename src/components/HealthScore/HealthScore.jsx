@@ -8,7 +8,8 @@ import Card from '../UI/Card';
 
 export default function HealthScore({ onReloadTrigger, compact = false }) {
   const { t } = useTranslation();
-  const { isPremium } = useSubscription();
+  const { isPremium, isTrialing } = useSubscription();
+  const isPaid = isPremium || isTrialing;
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [showExplainer, setShowExplainer] = useState(false);
 
@@ -196,14 +197,14 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           <div className="flex-1 w-full space-y-3.5">
             {scoreValues.map(({ label, value, color }, i) => (
               <div key={label} className="flex items-center gap-3">
-                <span className={`w-36 text-xs shrink-0 ${isPremium ? 'text-ink-muted dark:text-ink-dark-muted' : 'text-ink-muted/60 dark:text-ink-dark-muted/60'}`}>{label}</span>
+                <span className={`w-36 text-xs shrink-0 ${isPaid ? 'text-ink-muted dark:text-ink-dark-muted' : 'text-ink-muted/60 dark:text-ink-dark-muted/60'}`}>{label}</span>
                 <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
-                  {isPremium
+                  {isPaid
                     ? <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />
                     : <div className="h-full bg-surface-hairline dark:bg-surface-dark-elevated rounded-full" style={{ width: `${[65,40,75,55][i]}%` }} />
                   }
                 </div>
-                {isPremium
+                {isPaid
                   ? <span className="w-8 text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums text-right">{Math.round(value)}</span>
                   : <svg className="w-3.5 h-3.5 text-ink-muted/40 dark:text-ink-dark-muted/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7a4.5 4.5 0 1 0-9 0v3.5M6 10.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18v-6A1.5 1.5 0 0 1 6 10.5Z" />
@@ -215,7 +216,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         </div>
 
         {/* Premium upsell */}
-        {!isPremium && (
+        {!isPaid && (
           <div className="mt-6">
             <Link to="/pricing" className="flex items-center justify-between px-4 py-3 rounded-lg bg-brand-50 dark:bg-brand-950/30 border border-brand-200/60 dark:border-brand-800/30 hover:border-brand-400 dark:hover:border-brand-600 transition-all group">
               <div className="flex items-center gap-3">
@@ -271,7 +272,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         </div>
 
         {/* Insights */}
-        {score.insights?.length > 0 && isPremium && (
+        {score.insights?.length > 0 && isPaid && (
           <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
             <p className="eyebrow text-[10px] mb-3">{t('healthScore.insights')}</p>
             <ul className="space-y-2.5">
@@ -286,7 +287,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         )}
 
         {/* Quick stats */}
-        {isPremium && (
+        {isPaid && (
           <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>

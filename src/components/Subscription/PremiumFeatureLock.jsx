@@ -4,9 +4,9 @@ import { useSubscription } from '../../context/SubscriptionContext';
 
 export default function PremiumFeatureLock({ children, featureName }) {
   const { t } = useTranslation();
-  const { isPremium } = useSubscription();
+  const { isPremium, isTrialing } = useSubscription();
 
-  if (isPremium) return children;
+  if (isPremium || isTrialing) return children;
 
   return (
     <div className="relative rounded-xl overflow-hidden border border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle">

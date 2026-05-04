@@ -57,7 +57,7 @@ export default function Dashboard() {
       {/* Welcome greeting toast */}
       {showGreeting && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-brand-600 text-white px-5 py-3 rounded-xl shadow-lg shadow-brand-500/30 text-sm font-medium animate-fade-in-out max-w-sm text-center">
-          {t('dashboard.welcomeBack')},{username}!
+          {t('dashboard.welcomeBack')}, {username}!
         </div>
       )}
 
@@ -97,9 +97,7 @@ export default function Dashboard() {
         <FirstRunGuide onAddTransaction={handleAddTransaction} />
       ) : (
         <>
-          {/* Two-column layout: health + add transaction */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-            <HealthScore compact onReloadTrigger={mutationCount} />
+          <div className="mt-6">
             <AddTransactionCTA onClick={handleAddTransaction} />
           </div>
 

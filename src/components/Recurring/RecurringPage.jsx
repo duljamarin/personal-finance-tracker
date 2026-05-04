@@ -11,6 +11,7 @@ import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useFormModal } from '../../hooks/useFormModal';
 import RecurringForm from './RecurringForm';
+import LoadingSpinner from '../UI/LoadingSpinner';
 
 export default function RecurringPage() {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ export default function RecurringPage() {
   const { isPremium, recurringLimit } = useSubscription();
   const [recurrings, setRecurrings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isOpen: showModal, editingItem: editRecurring, openEdit: handleEdit, close: closeFormModal } = useFormModal();
+  const { isOpen: showModal, editingItem: editRecurring, openAdd: handleAdd, openEdit: handleEdit, close: closeFormModal } = useFormModal();
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
@@ -74,22 +75,29 @@ export default function RecurringPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner size="md" className="min-h-[60vh]" />;
   }
 
   return (
     <Card className="mt-4 sm:mt-6">
-      <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-card rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 border-b border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-display font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-ink-dark-primary">
-          {t('recurring.manageTitle')}
-        </h2>
-        <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-2">
-          {t('recurring.manageDescription')}
-        </p>
+      <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-card rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 border-b border-surface-hairline dark:border-surface-dark-hairline flex items-center justify-between gap-4">
+        <div>
+          <h2 className="font-display font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-ink-dark-primary">
+            {t('recurring.manageTitle')}
+          </h2>
+          <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-2">
+            {t('recurring.manageDescription')}
+          </p>
+        </div>
+        <button
+          onClick={handleAdd}
+          className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors shrink-0"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          {t('recurring.addBtn')}
+        </button>
       </div>
 
       {/* Free tier limit banner */}
@@ -117,6 +125,15 @@ export default function RecurringPage() {
           <p className="text-ink-muted dark:text-ink-dark-muted text-sm sm:text-base max-w-sm">
             {t('recurring.noRecurringDesc')}
           </p>
+          <button
+            onClick={handleAdd}
+            className="mt-6 inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-md font-medium text-sm transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            {t('recurring.addFirst')}
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:gap-6 px-4 sm:px-6 pb-4 sm:pb-6">
@@ -206,7 +223,7 @@ export default function RecurringPage() {
               <div className="bg-brand-50 dark:bg-brand-900/20 rounded-lg p-3 mb-4 border border-brand-200 dark:border-brand-800">
                 <div className="eyebrow mb-1 text-brand-700 dark:text-brand-300">{t('recurring.endsLabel')}</div>
                 <div className="font-semibold text-brand-700 dark:text-brand-300">
-                  {recurring.end_date || (recurring.occurrences_limit ? t('recurring.afterCount') : t('recurring.endNever'))}
+                  {recurring.end_date || (recurring.occurrences_limit ? t('recurring.afterCount', { count: recurring.occurrences_limit }) : t('recurring.endNever'))}
                 </div>
               </div>
 

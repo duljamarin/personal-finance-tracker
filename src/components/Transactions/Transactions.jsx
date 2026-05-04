@@ -325,7 +325,7 @@ export default function Transactions() {
               {searchQuery.trim() ? t('transactions.noSearchResults') : t('transactions.noTransactions')}
             </h3>
             <p className="text-sm text-ink-muted dark:text-ink-dark-muted mb-6 max-w-sm">
-              {searchQuery.trim() ? `"${searchQuery}"` : t('transactions.noTransactionsDesc', { defaultValue: 'Add your first transaction to start tracking your finances.' })}
+              {searchQuery.trim() ? `"${searchQuery}"` : t('transactions.noTransactionsDesc')}
             </p>
             {items.length === 0 && !searchQuery && (
               <button
@@ -334,6 +334,19 @@ export default function Transactions() {
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
                 {t('transactions.addNew')}
+              </button>
+            )}
+            {items.length > 0 && !searchQuery && (
+              <button
+                onClick={() => {
+                  setYearFilter('All');
+                  setCategoryFilter('All');
+                  setTypeFilter('all');
+                  setRecurringFilter(RECURRING_FILTERS.ALL);
+                }}
+                className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary px-5 py-2.5 rounded-md font-medium text-sm transition-colors hover:border-ink-muted/40"
+              >
+                {t('transactions.clearFilters')}
               </button>
             )}
           </div>

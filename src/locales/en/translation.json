@@ -89,7 +89,9 @@
     },
     "noRecurring": "No active recurring transactions",
     "noRecurringHint": "Add recurring income or expenses to see your cash flow forecast",
-    "premiumOnly": "Available on paid plan"
+    "premiumOnly": "Available on paid plan",
+    "trackedBalance": "Tracked net balance",
+    "trackedBalanceNote": "Based on all recorded transactions"
   },
   "transactions": {
     "title": "Transactions",
@@ -144,7 +146,9 @@
     "quickStartDesc": "Tap a template to create your first transaction",
     "templateCoffee": "Morning Coffee",
     "templateGroceries": "Weekly Groceries",
-    "templateSalary": "Monthly Salary"
+    "templateSalary": "Monthly Salary",
+    "noTransactionsDesc": "Add your first transaction to start tracking your finances.",
+    "clearFilters": "Clear all filters"
   },
   "categories": {
     "title": "Categories",
@@ -156,7 +160,8 @@
     "delete": "Delete",
     "noCategories": "No categories found",
     "exists": "Category already exists",
-    "deleteConfirm": "Deleting this category will delete all associated transactions. Are you sure?"
+    "deleteConfirm": "Deleting this category will delete all associated transactions. Are you sure?",
+    "searchPlaceholder": "Search categories..."
   },
   "forms": {
     "save": "Save",
@@ -567,7 +572,9 @@
     "lastRun": "Last Run",
     "nextRun": "Next Run",
     "endsLabel": "Ends",
-    "afterCount": "After count",
+    "afterCount": "After {{count}} occurrences",
+    "addBtn": "Add Recurring",
+    "addFirst": "Add Your First Recurring Transaction",
     "editTitle": "Edit Recurring Transaction",
     "updated": "Recurring transaction updated",
     "updateError": "Failed to update recurring transaction",

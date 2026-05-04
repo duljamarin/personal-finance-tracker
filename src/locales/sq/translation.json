@@ -89,7 +89,9 @@
     },
     "noRecurring": "Nuk ka transaksione periodike aktive",
     "noRecurringHint": "Shtoni të ardhura ose shpenzime periodike për të parë parashikimin e fluksit të parasë",
-    "premiumOnly": "E disponueshme vetëm në planin me pagesë"
+    "premiumOnly": "E disponueshme vetëm në planin me pagesë",
+    "trackedBalance": "Bilanci neto i gjurmuar",
+    "trackedBalanceNote": "Bazuar në të gjitha transaksionet e regjistruara"
   },
   "transactions": {
     "title": "Transaksionet",
@@ -144,7 +146,9 @@
     "quickStartDesc": "Kliko një shabllon për të krijuar transaksionin e parë",
     "templateCoffee": "Kafja e Mëngjesit",
     "templateGroceries": "Blerjet Javore",
-    "templateSalary": "Rroga Mujore"
+    "templateSalary": "Rroga Mujore",
+    "noTransactionsDesc": "Shtoni transaksionin e parë për të filluar gjurmimin e financave tuaja.",
+    "clearFilters": "Pastro të gjitha filtrat"
   },
   "categories": {
     "title": "Kategoritë",
@@ -156,7 +160,8 @@
     "delete": "Fshi",
     "noCategories": "Nuk u gjetën kategori",
     "exists": "Kategoria ekziston tashmë",
-    "deleteConfirm": "Fshirja e kësaj kategorie do të fshijë të gjitha transaksionet e lidhura. Jeni i sigurt?"
+    "deleteConfirm": "Fshirja e kësaj kategorie do të fshijë të gjitha transaksionet e lidhura. Jeni i sigurt?",
+    "searchPlaceholder": "Kërko kategoritë..."
   },
   "forms": {
     "save": "Ruaj",
@@ -567,7 +572,9 @@
     "lastRun": "Ekzekutimi i Fundit",
     "nextRun": "Ekzekutimi i Ardhshëm",
     "endsLabel": "Përfundon",
-    "afterCount": "Pas numërimit",
+    "afterCount": "Pas {{count}} përsëritjeve",
+    "addBtn": "Shto Transaksion Përsëritës",
+    "addFirst": "Shto Transaksionin e Parë Përsëritës",
     "editTitle": "Ndrysho Transaksionin e Përsëritur",
     "updated": "Transaksioni i përsëritur u përditësua",
     "updateError": "Dështoi përditësimi i transaksionit të përsëritur",

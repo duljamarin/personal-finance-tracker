@@ -35,6 +35,7 @@ export default function BudgetsPage() {
   const [loading, setLoading] = useState(true);
   const { isOpen: showBudgetForm, editingItem: editingBudget, openAdd: openBudgetForm, openEdit: openBudgetEdit, close: closeBudgetForm } = useFormModal();
   const [budgetToDelete, setBudgetToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Derived values
   const isCurrentMonth = selectedYear === today.getFullYear() && selectedMonth === today.getMonth() + 1;
@@ -153,6 +154,7 @@ export default function BudgetsPage() {
   };
 
   const confirmDelete = async () => {
+    setDeleting(true);
     try {
       await deleteBudget(budgetToDelete.id);
       addToast(t('budgets.toast.deleted'), 'success');
@@ -162,6 +164,8 @@ export default function BudgetsPage() {
     } catch (error) {
       console.error('Error deleting budget:', error);
       addToast(t('budgets.toast.error'), 'error');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -374,6 +378,7 @@ export default function BudgetsPage() {
           onCancel={() => setBudgetToDelete(null)}
           confirmLabel={t('budgets.delete.confirm')}
           cancelLabel={t('budgets.delete.cancel')}
+          deleting={deleting}
         />
       )}
     </div>

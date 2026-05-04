@@ -213,10 +213,11 @@ export default function CashFlowForecast() {
       {/* Summary pill */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 bg-gray-50 dark:bg-zinc-800/60 rounded-lg px-3 py-2">
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t('cashFlow.currentBalance')}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{t('cashFlow.trackedBalance')}</p>
           <p className={`text-sm font-bold ${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {formatCurrency(net)}
           </p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
         </div>
         <div className="text-gray-400 dark:text-gray-600 text-lg font-light">→</div>
         <div className="flex-1 bg-gray-50 dark:bg-zinc-800/60 rounded-lg px-3 py-2">

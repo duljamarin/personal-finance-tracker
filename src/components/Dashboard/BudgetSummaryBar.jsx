@@ -7,6 +7,8 @@ import Card from '../UI/Card';
 
 export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   const { t } = useTranslation();
+  const now = new Date();
+  const monthLabel = now.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
   const { data, loading } = useAsyncData(
     async () => {
@@ -55,7 +57,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
               <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              {t('dashboard.budgetProgress')}
+              {t('dashboard.budgetProgress')} — {monthLabel}
             </h3>
             <Link to="/budgets" className="text-sm text-brand-600 dark:text-brand-500 hover:underline font-medium">
               {t('dashboard.setupBudgets')}
@@ -77,7 +79,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
             <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            {t('dashboard.budgetProgress')}
+            {t('dashboard.budgetProgress')} — {monthLabel}
           </h3>
           <Link to="/budgets" className="text-sm text-brand-600 dark:text-brand-500 hover:underline font-medium">
             {t('dashboard.viewAllBudgets')}

@@ -33,6 +33,7 @@ export default function NetWorthPage() {
   }, [transactions]);
   const { isOpen: showModal, editingItem: editAsset, openAdd: handleAdd, openEdit: handleEdit, close: closeAssetModal } = useFormModal();
   const [assetToDelete, setAssetToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -77,6 +78,7 @@ export default function NetWorthPage() {
   };
 
   const confirmDelete = async () => {
+    setDeleting(true);
     try {
       await deleteAsset(assetToDelete);
       addToast(t('networth.assetDeleted'), 'success');
@@ -85,6 +87,8 @@ export default function NetWorthPage() {
     } catch (error) {
       console.error('Error deleting asset:', error);
       addToast(t('networth.deleteError'), 'error');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -338,6 +342,7 @@ export default function NetWorthPage() {
           onCancel={() => setAssetToDelete(null)}
           confirmLabel={t('forms.submit')}
           cancelLabel={t('forms.cancel')}
+          deleting={deleting}
         />
       )}
     </div>
