@@ -215,9 +215,11 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                       <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary truncate">
                         {translateCategoryName(benchmark.category_name)}
                       </h3>
-                      <p className="text-xs text-ink-muted dark:text-ink-dark-muted mt-0.5">
-                        {t('benchmark.basedOn', { months: benchmark.months_with_data })}
-                      </p>
+                      {benchmark.months_with_data > 0 && (
+                        <p className="text-xs text-ink-muted dark:text-ink-dark-muted mt-0.5">
+                          {t('benchmark.basedOn', { months: benchmark.months_with_data })}
+                        </p>
+                      )}
                     </div>
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${config.pillClass}`}>
                       {config.icon}
