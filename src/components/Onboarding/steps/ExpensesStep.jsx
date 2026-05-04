@@ -4,11 +4,13 @@ import Button from '../../UI/Button';
 import { translateCategoryName, getCategoryIcon } from '../../../utils/categoryTranslation';
 import { CategoryIconSvg } from '../../UI/CategoryIconSvg';
 import CustomSelect from '../../UI/CustomSelect';
+import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
 const MAX_EXPENSES = 3;
 
 export default function ExpensesStep({ expenses, onChange, categories, currency }) {
   const { t } = useTranslation();
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
 
   function updateExpense(index, field, value) {
     const updated = expenses.map((exp, i) =>
@@ -43,13 +45,14 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
           <div key={expense.id} className="flex items-start gap-3">
             <div className="flex-1 space-y-3">
               <Input
-                label={`${t('onboarding.expenses.amountLabel')} (${currency})`}
+                label={t('onboarding.expenses.amountLabel')}
                 type="number"
                 min="0"
                 step="0.01"
                 placeholder={t('onboarding.expenses.amountPlaceholder')}
                 value={expense.amount}
                 onChange={(e) => updateExpense(index, 'amount', e.target.value)}
+                leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-ink-dark-muted">{symbol}</span>}
               />
               <div>
                 <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1.5">

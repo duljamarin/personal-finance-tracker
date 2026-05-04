@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import Input from '../../UI/Input';
+import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
 export default function IncomeStep({ monthlyIncome, onChange, currency }) {
   const { t } = useTranslation();
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
 
   return (
     <div className="space-y-6">
@@ -17,13 +19,14 @@ export default function IncomeStep({ monthlyIncome, onChange, currency }) {
 
       <div className="max-w-xs mx-auto">
         <Input
-          label={`${t('onboarding.income.label')} (${currency})`}
+          label={t('onboarding.income.label')}
           type="number"
           min="0"
           step="0.01"
           placeholder={t('onboarding.income.placeholder')}
           value={monthlyIncome}
           onChange={(e) => onChange(e.target.value)}
+          leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-ink-dark-muted">{symbol}</span>}
         />
       </div>
     </div>
