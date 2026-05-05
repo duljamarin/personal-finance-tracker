@@ -210,7 +210,7 @@ export default function RecurringPage() {
               <div className="flex gap-2 pt-3 border-t border-surface-hairline dark:border-surface-dark-hairline">
                 <button
                   onClick={() => handleEdit(recurring)}
-                  className="flex-1 bg-surface-subtle hover:bg-brand-50 dark:bg-surface-dark-subtle dark:hover:bg-brand-950/30 text-ink-primary hover:text-brand-600 dark:text-ink-dark-primary dark:hover:text-brand-400 px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
