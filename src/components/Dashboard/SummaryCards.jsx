@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const TrendUp = (
   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -77,7 +78,7 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
               <div className="h-9 bg-surface-hairline dark:bg-surface-dark-hairline rounded-md w-2/3 animate-pulse" />
             ) : (
               <p className={`text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight-display leading-none ${valueTone(card.tone)}`}>
-                &euro;{Math.abs(card.value).toFixed(2)}
+                {formatCurrency(card.value)}
               </p>
             )}
             <p className="text-xs mt-3 text-ink-muted dark:text-ink-dark-muted">{t('currency.baseCurrency')}</p>

@@ -62,7 +62,7 @@ export default function CurrencyStep({ currency, exchangeRate, isFetchingRate, o
             <Input
               type="number"
               min="0.000001"
-              step="0.000001"
+              step="0.001"
               placeholder={t('onboarding.currency.exchangeRatePlaceholder')}
               value={exchangeRate}
               onChange={(e) => onExchangeRateChange(e.target.value)}
@@ -70,7 +70,7 @@ export default function CurrencyStep({ currency, exchangeRate, isFetchingRate, o
             />
             {!isFetchingRate && Number(exchangeRate) > 0 && (
               <p className="text-xs text-ink-muted dark:text-ink-dark-muted">
-                {t('onboarding.currency.exchangeRateHint', { amount: 1, currency, result: (1 * Number(exchangeRate)).toFixed(4) })}
+                {t('onboarding.currency.exchangeRateHint', { amount: 1, currency, result: (1 * Number(exchangeRate)).toFixed(3) })}
               </p>
             )}
           </div>

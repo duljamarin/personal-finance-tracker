@@ -35,7 +35,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [proposedCategoryEmoji, setProposedCategoryEmoji] = useState('Shopping')
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
 	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || user?.user_metadata?.preferred_currency || APP_CONFIG.BASE_CURRENCY)
-	const [exchangeRate, setExchangeRate] = useState(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE)
+	const [exchangeRate, setExchangeRate] = useState(parseFloat(Number(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE).toFixed(3)))
 	const [isFetchingRate, setIsFetchingRate] = useState(false)
 	
 	// If editing a transaction from a recurring rule
@@ -73,7 +73,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		let cancelled = false
 		setIsFetchingRate(true)
 		fetchExchangeRate(currencyCode).then(rate => {
-			if (!cancelled && rate !== null) setExchangeRate(rate)
+			if (!cancelled && rate !== null) setExchangeRate(parseFloat(rate.toFixed(3)))
 			if (!cancelled) setIsFetchingRate(false)
 		})
 		return () => { cancelled = true }
@@ -422,7 +422,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						</div>
 						<Input
 							type="number"
-							step="0.000001"
+							step="0.001"
 							placeholder="1.0"
 							value={exchangeRate}
 							onChange={e => setExchangeRate(e.target.value)}
