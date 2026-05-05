@@ -607,7 +607,7 @@
     "legendInfo": "Typical range is calculated based on your personal spending history (average ± variation)",
     "unlockPeriods": "Unlock multi-period trends",
     "buildingBaseline": "Building Your Baseline",
-    "buildingBaselineDesc": "Great start! You're tracking this month's spending. Once {{month}} ends, your personalized benchmarks will unlock — showing you exactly where you spend more or less than usual.",
+    "buildingBaselineDesc": "Great start! Add expenses from previous months too, or keep tracking and your personalized benchmarks will unlock once you have data from at least one completed month.",
     "buildingBaselineProgress": "Month 1 of 2 complete",
     "currentMonthOnly": "Current month only"
   },

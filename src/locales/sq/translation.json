@@ -607,7 +607,7 @@
     "legendInfo": "Diapazoni tipik llogaritet bazuar në historinë tuaj personale të shpenzimeve (mesatarja ± variancioni)",
     "unlockPeriods": "Zhbllokoni trendet shumë-periodike",
     "buildingBaseline": "Duke Ndërtuar Bazën Tuaj",
-    "buildingBaselineDesc": "Fillim i shkëlqyer! Po gjurmoni shpenzimet e këtij muaji. Sapo {{month}} të mbarojë, njohuritë tuaja personale do të zhbllokohen - duke treguar saktësisht ku shpenzoni më shumë ose më pak se zakonisht.",
+    "buildingBaselineDesc": "Fillim i shkëlqyer! Shtoni gjithashtu shpenzime nga muajt e kaluar, ose vazhdoni të gjurmoni — njohuritë tuaja personale do të zhbllokohen kur të keni të dhëna nga të paktën një muaj i plotë.",
     "buildingBaselineProgress": "Muaji 1 nga 2 i plotësuar",
     "currentMonthOnly": "Vetëm muaji aktual"
   },

@@ -182,8 +182,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
 
         {/* Benchmarks list */}
         {(() => {
-          const currentMonthOnly = benchmarks.length > 0 && benchmarks.every(b => b.months_with_data === 0);
-          const currentMonthName = new Date().toLocaleDateString(undefined, { month: 'long' });
+          const benchmarksWithHistory = benchmarks.filter(b => b.months_with_data > 0);
+          const currentMonthOnly = benchmarks.length > 0 && benchmarksWithHistory.length === 0;
 
           if (benchmarks.length === 0) {
             return (
@@ -203,40 +203,43 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
             );
           }
 
-          return (
-            <>
-              {currentMonthOnly && (
-                <div className="mb-5 rounded-xl border border-brand-200 dark:border-brand-800/50 bg-brand-50 dark:bg-brand-950/20 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-brand-700 dark:text-brand-300 mb-0.5">
-                        {t('benchmark.buildingBaseline')}
-                      </p>
-                      <p className="text-xs text-brand-600/80 dark:text-brand-400/80 leading-relaxed">
-                        {t('benchmark.buildingBaselineDesc', { month: currentMonthName })}
-                      </p>
-                      <div className="mt-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium text-brand-600 dark:text-brand-400">
-                            {t('benchmark.buildingBaselineProgress')}
-                          </span>
-                          <span className="text-xs text-brand-500 dark:text-brand-500">50%</span>
-                        </div>
-                        <div className="h-1.5 bg-brand-100 dark:bg-brand-900/40 rounded-full overflow-hidden">
-                          <div className="h-full w-1/2 bg-brand-500 dark:bg-brand-400 rounded-full" />
-                        </div>
+          if (currentMonthOnly) {
+            return (
+              <div className="rounded-xl border border-brand-200 dark:border-brand-800/50 bg-brand-50 dark:bg-brand-950/20 p-5">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-brand-700 dark:text-brand-300 mb-1">
+                      {t('benchmark.buildingBaseline')}
+                    </p>
+                    <p className="text-sm text-brand-600/80 dark:text-brand-400/80 leading-relaxed">
+                      {t('benchmark.buildingBaselineDesc')}
+                    </p>
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-medium text-brand-600 dark:text-brand-400">
+                          {t('benchmark.buildingBaselineProgress')}
+                        </span>
+                        <span className="text-xs text-brand-500">50%</span>
+                      </div>
+                      <div className="h-2 bg-brand-100 dark:bg-brand-900/40 rounded-full overflow-hidden">
+                        <div className="h-full w-1/2 bg-brand-500 dark:bg-brand-400 rounded-full" />
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+            );
+          }
+
+          return (
+            <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {benchmarks.map((benchmark) => {
+                {benchmarksWithHistory.map((benchmark) => {
                   const config = getStatusConfig(benchmark.status);
                   const progress = calculateProgress(
                     benchmark.current_month_spending,
@@ -331,7 +334,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         })()}
 
         {/* Legend */}
-        {benchmarks.length > 0 && (
+        {benchmarks.some(b => b.months_with_data > 0) && (
           <div className="mt-6 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
             <p className="text-xs text-ink-muted dark:text-ink-dark-muted text-center">
               {t('benchmark.legendInfo')}
