@@ -390,25 +390,26 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				</div>
 
 				{/* Currency Fields */}
-				<div className="grid grid-cols-[1fr_1fr] gap-3 items-end">
+				<div className="grid grid-cols-[1fr_1fr] gap-3 items-start">
 					<div className="flex flex-col gap-1.5">
 						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
 							{t('currency.code')}
 						</label>
-						<select
+						<CustomSelect
 							value={currencyCode}
-							onChange={e => setCurrencyCode(e.target.value)}
-							className="w-full py-3 px-3.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
-						>
-							<option value="USD">{t('currency.USD')} 🇺🇸</option>
-							<option value="EUR">{t('currency.EUR')} 🇪🇺</option>
-							<option value="GBP">{t('currency.GBP')} 🇬🇧</option>
-							<option value="ALL">{t('currency.ALL')} 🇦🇱</option>
-							<option value="CHF">{t('currency.CHF')} 🇨🇭</option>
-							<option value="JPY">{t('currency.JPY')} 🇯🇵</option>
-							<option value="CAD">{t('currency.CAD')} 🇨🇦</option>
-							<option value="AUD">{t('currency.AUD')} 🇦🇺</option>
-						</select>
+							onChange={setCurrencyCode}
+							ariaLabel={t('currency.code')}
+							options={[
+								{ value: 'USD', label: t('currency.USD'), leading: <span>🇺🇸</span> },
+								{ value: 'EUR', label: t('currency.EUR'), leading: <span>🇪🇺</span> },
+								{ value: 'GBP', label: t('currency.GBP'), leading: <span>🇬🇧</span> },
+								{ value: 'ALL', label: t('currency.ALL'), leading: <span>🇦🇱</span> },
+								{ value: 'CHF', label: t('currency.CHF'), leading: <span>🇨🇭</span> },
+								{ value: 'JPY', label: t('currency.JPY'), leading: <span>🇯🇵</span> },
+								{ value: 'CAD', label: t('currency.CAD'), leading: <span>🇨🇦</span> },
+								{ value: 'AUD', label: t('currency.AUD'), leading: <span>🇦🇺</span> },
+							]}
+						/>
 					</div>
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-baseline gap-1.5">

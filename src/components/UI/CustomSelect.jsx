@@ -51,7 +51,7 @@ export default function CustomSelect({
   const selected = options.find(o => String(o.value) === String(value));
 
   const baseTrigger =
-    'w-full px-3 py-2 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition flex items-center justify-between gap-2';
+    'w-full px-3.5 py-3 text-base rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition flex items-center justify-between gap-2';
   const borderClass = error
     ? 'border-[#e05c6b]'
     : 'border-surface-hairline dark:border-surface-dark-hairline';
