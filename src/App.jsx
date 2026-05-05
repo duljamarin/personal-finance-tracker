@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
@@ -69,12 +69,21 @@ function PremiumRoute({ children }) {
 }
 
 function AuthGlobalUI() {
-  const { error: authError, loading: authLoading } = useAuth();
+  const { error: authError, loading: authLoading, clearError } = useAuth();
   const { t, i18n } = useTranslation();
+  const dismissTimer = useRef(null);
 
   useEffect(() => {
     document.title = t('meta.title');
   }, [i18n.language, t]);
+
+  useEffect(() => {
+    if (authError) {
+      clearTimeout(dismissTimer.current);
+      dismissTimer.current = setTimeout(() => clearError(), 5000);
+    }
+    return () => clearTimeout(dismissTimer.current);
+  }, [authError, clearError]);
 
   const getErrorMessage = (error) => {
     if (!error) return '';
@@ -107,9 +116,18 @@ function AuthGlobalUI() {
   return (
     <>
       {authError && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-50 dark:bg-red-900/90 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-6 py-3 rounded-xl shadow-xl text-sm font-medium animate-fade-in max-w-md text-center backdrop-blur-sm">
-          <span className="inline-block mr-2">⚠️</span>
-          {getErrorMessage(authError)}
+        <div className="fixed top-[4.5rem] sm:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-red-50 dark:bg-red-900/90 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 pl-5 pr-3 py-3 rounded-xl shadow-xl text-sm font-medium animate-fade-in max-w-md backdrop-blur-sm">
+          <span className="flex-shrink-0">⚠️</span>
+          <span className="flex-1 text-center">{getErrorMessage(authError)}</span>
+          <button
+            onClick={clearError}
+            aria-label="Dismiss"
+            className="flex-shrink-0 ml-1 p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-800/60 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       )}
       {authLoading && (
