@@ -1,4 +1,5 @@
 import { useEffect, useRef, lazy, Suspense } from 'react';
+import { useMetaTags } from './hooks/useMetaTags';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
@@ -73,9 +74,10 @@ function AuthGlobalUI() {
   const { t, i18n } = useTranslation();
   const dismissTimer = useRef(null);
 
-  useEffect(() => {
-    document.title = t('meta.title');
-  }, [i18n.language, t]);
+  useMetaTags({
+    title: t('meta.title'),
+    description: t('meta.description'),
+  });
 
   useEffect(() => {
     if (authError) {

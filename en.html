@@ -1,26 +1,72 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50%25' x='50%25' dominant-baseline='middle' text-anchor='middle' font-size='40'%3E💰%3C/text%3E%3C/svg%3E">
-    <title>Personal Finance Tracker</title>
-    
-    <!-- Open Graph / Social Media Meta Tags (English) -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Personal Finance Tracker" />
-    <meta property="og:description" content="Take Control of Your Personal Finances - Track expenses, visualize spending patterns, and reach your financial goals with our intuitive tracker" />
-    <meta property="og:image" content="https://personal-finances.app/social-card-en.png" />
-    <meta property="og:url" content="https://personal-finances.app/en" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111113'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' text-anchor='middle' dominant-baseline='middle' font-family='Space Grotesk, Arial, sans-serif' font-size='42' font-weight='700' fill='%2322ad93'%3E%24%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="canonical" href="https://personal-finances.app" />
+    <link rel="alternate" hreflang="en" href="https://personal-finances.app" />
+    <link rel="alternate" hreflang="sq" href="https://personal-finances.app" />
+    <link rel="alternate" hreflang="x-default" href="https://personal-finances.app" />
 
-    <!-- Twitter Card Meta Tags (English) -->
+    <title>Personal Finance Tracker - Track Income, Expenses & Goals</title>
+    <meta name="description" content="Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#22ad93" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Personal Finance Tracker - Track Income, Expenses & Goals" />
+    <meta property="og:description" content="Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start." />
+    <meta property="og:image" content="https://personal-finances.app/social-card-en.png" />
+    <meta property="og:image:alt" content="Personal Finance Tracker dashboard showing income, expenses, and budget overview" />
+    <meta property="og:url" content="https://personal-finances.app" />
+    <meta property="og:site_name" content="Personal Finance Tracker" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="sq_AL" />
+
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Personal Finance Tracker" />
-    <meta name="twitter:description" content="Take Control of Your Personal Finances - Track expenses, visualize spending patterns, and reach your financial goals with our intuitive tracker" />
+    <meta name="twitter:title" content="Personal Finance Tracker - Track Income, Expenses & Goals" />
+    <meta name="twitter:description" content="Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start." />
     <meta name="twitter:image" content="https://personal-finances.app/social-card-en.png" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Personal Finance Tracker",
+      "url": "https://personal-finances.app",
+      "description": "Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "en",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "featureList": [
+        "Income and expense tracking",
+        "Monthly budget management",
+        "Financial goals",
+        "Recurring transactions",
+        "Cash flow forecasting",
+        "Multi-currency support",
+        "Financial health score"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>Personal Finance Tracker - Take Control of Your Finances</h1>
+      <p>Track your income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow. Free to start - no credit card required.</p>
+      <p>Features: expense tracking, budget management, recurring transactions, financial goals, multi-currency support, cash flow forecasting, financial health score.</p>
+      <a href="/register">Get started for free</a> or <a href="/login">sign in</a>.
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

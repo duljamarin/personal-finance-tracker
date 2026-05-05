@@ -32,9 +32,8 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
 
   const content = {
     en: {
-      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting — log back in`,
+      subject: `💰 ${username || 'Your finances'} ${username ? ', your finances are' : 'are'} waiting - log back in`,
       previewText: 'Track spending, hit goals, and take control - it only takes a minute.',
-      headline: 'We Miss You!',
       openingStrong: "It's been a while...",
       openingBody: "We noticed you haven't logged into your <strong>Personal Finance Tracker</strong> account recently. Your financial data is safe and ready for you — and we've added some powerful new features to help you take control.",
       featureTitle: "What's Waiting for You:",
@@ -57,9 +56,8 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       footerPrivacy: 'Privacy Policy'
     },
     sq: {
-      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin — hyni sërish`,
+      subject: `💰 ${username ? username + ', financat tuaja' : 'Financat tuaja'} po ju presin - hyni sërish`,
       previewText: 'Gjurmoni shpenzimet, arrini qëllimet — vetëm një minutë mjafton.',
-      headline: 'Na Mungoni!',
       openingStrong: 'Ka kaluar kohë...',
       openingBody: 'Kemi vënë re se nuk keni hyrë në llogarinë tuaj të <strong>Personal Finance Tracker</strong> kohët e fundit. Të dhënat tuaja financiare janë të sigurta dhe të gatshme — dhe kemi shtuar veçori të reja për t\'ju ndihmuar të merrni kontrollin.',
       featureTitle: 'Çfarë ju Pret:',
@@ -118,28 +116,6 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-    .header {
-      background: linear-gradient(135deg, #2f7c31 0%, #1e4620 100%);
-      padding: 40px 30px;
-      text-align: center;
-      color: #ffffff;
-    }
-    .header-icon-wrap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 64px;
-      height: 64px;
-      background-color: rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      margin-bottom: 20px;
-    }
-    .header-title {
-      margin: 0;
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
     }
     .content {
       padding: 40px 30px;
@@ -282,7 +258,6 @@ function buildEmailContent(language: 'en' | 'sq', username: string | null): Emai
             <path d="M15 6 L20 6 L20 11" />
           </svg>
         </div>
-        <h1 class="header-title">${c.headline}</h1>
       </div>
       <div class="content">
         <p class="greeting">${greeting},</p>

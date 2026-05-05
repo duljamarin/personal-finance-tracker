@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import showcaseImg from '../assets/showcase-finance.jpg';
+import { useMetaTags } from '../hooks/useMetaTags';
 
 /* ─── Flagship hero illustration with brand accent ─── */
 function FlagshipArt() {
@@ -363,6 +364,12 @@ function Bento({ className = '', title, desc, children}) {
 export default function LandingPage() {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+
+  useMetaTags({
+    title: 'Personal Finance Tracker - Track Income, Expenses & Goals',
+    description: 'Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start.',
+    canonical: 'https://personal-finances.app',
+  });
 
   useEffect(() => {
     const id = setTimeout(() => setVisible(true), 50);
