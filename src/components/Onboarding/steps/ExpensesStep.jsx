@@ -60,7 +60,6 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
                   {t('onboarding.expenses.categoryLabel')}
                 </label>
                 <CustomSelect
-                 className="!w-full"
                   value={expense.categoryId}
                   onChange={(val) => updateExpense(index, 'categoryId', val)}
                   placeholder={t('onboarding.expenses.selectCategory')}

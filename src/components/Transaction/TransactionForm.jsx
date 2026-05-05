@@ -474,7 +474,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					<div className="flex items-center gap-2">
 						<div className="flex-1 min-w-0">
 							<CustomSelect
-							    className="!w-full"
 								value={categoryId}
 								onChange={handleCategoryChange}
 								error={!!errors.categoryId}
