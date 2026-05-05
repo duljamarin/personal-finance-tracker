@@ -181,113 +181,154 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         </div>
 
         {/* Benchmarks list */}
-        {benchmarks.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-20 h-20 bg-brand-50 dark:bg-brand-950/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-brand-500 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-2">
-              {t('benchmark.noData')}
-            </h3>
-            <p className="text-ink-muted dark:text-ink-dark-muted text-sm max-w-sm mx-auto">
-              {t('benchmark.noDataDesc')}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {benchmarks.map((benchmark) => {
-              const config = getStatusConfig(benchmark.status);
-              const progress = calculateProgress(
-                benchmark.current_month_spending,
-                benchmark.upper_threshold
-              );
+        {(() => {
+          const currentMonthOnly = benchmarks.length > 0 && benchmarks.every(b => b.months_with_data === 0);
+          const currentMonthName = new Date().toLocaleDateString(undefined, { month: 'long' });
 
-              return (
-                <div
-                  key={benchmark.category_id}
-                  className={`rounded-xl border ${config.borderClass} ${config.cardBgClass} p-4 transition-all hover:shadow-md`}
-                >
-                  {/* Category header */}
-                  <div className="flex items-start justify-between mb-3 gap-3">
-                    <div className="min-w-0">
-                      <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary truncate">
-                        {translateCategoryName(benchmark.category_name)}
-                      </h3>
-                      {benchmark.months_with_data > 0 && (
-                        <p className="text-xs text-ink-muted dark:text-ink-dark-muted mt-0.5">
-                          {t('benchmark.basedOn', { months: benchmark.months_with_data })}
-                        </p>
-                      )}
-                    </div>
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${config.pillClass}`}>
-                      {config.icon}
-                      {config.label}
-                    </span>
-                  </div>
+          if (benchmarks.length === 0) {
+            return (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-brand-50 dark:bg-brand-950/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-brand-500 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-2">
+                  {t('benchmark.noData')}
+                </h3>
+                <p className="text-ink-muted dark:text-ink-dark-muted text-sm max-w-sm mx-auto">
+                  {t('benchmark.noDataDesc')}
+                </p>
+              </div>
+            );
+          }
 
-                  {/* Current spending */}
-                  <div className="mb-3">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="eyebrow">{t('benchmark.thisMonth')}</span>
+          return (
+            <>
+              {currentMonthOnly && (
+                <div className="mb-5 rounded-xl border border-brand-200 dark:border-brand-800/50 bg-brand-50 dark:bg-brand-950/20 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mt-0.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
                     </div>
-                    <div className="flex items-baseline gap-2 mt-1">
-                      <span className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
-                        €{Number(benchmark.current_month_spending).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Progress bar & Thresholds - locked for free users */}
-                  {isPremium ? (
-                    <>
-                      <div className="mb-3">
-                        <div className="h-2 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
-                          <div
-                            className="h-full transition-all duration-500 rounded-full"
-                            style={{
-                              width: `${Math.min(progress, 100)}%`,
-                              backgroundColor: config.progressColor,
-                            }}
-                          />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-brand-700 dark:text-brand-300 mb-0.5">
+                        {t('benchmark.buildingBaseline')}
+                      </p>
+                      <p className="text-xs text-brand-600/80 dark:text-brand-400/80 leading-relaxed">
+                        {t('benchmark.buildingBaselineDesc', { month: currentMonthName })}
+                      </p>
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-brand-600 dark:text-brand-400">
+                            {t('benchmark.buildingBaselineProgress')}
+                          </span>
+                          <span className="text-xs text-brand-500 dark:text-brand-500">50%</span>
+                        </div>
+                        <div className="h-1.5 bg-brand-100 dark:bg-brand-900/40 rounded-full overflow-hidden">
+                          <div className="h-full w-1/2 bg-brand-500 dark:bg-brand-400 rounded-full" />
                         </div>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-ink-muted dark:text-ink-dark-muted gap-3">
-                        <div>
-                          <span className="eyebrow block mb-0.5">{t('benchmark.typical')}</span>
-                          <span className="font-display font-semibold tracking-tight text-ink-secondary dark:text-ink-dark-primary">
-                            €{Number(benchmark.lower_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} - €{Number(benchmark.upper_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                          </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {benchmarks.map((benchmark) => {
+                  const config = getStatusConfig(benchmark.status);
+                  const progress = calculateProgress(
+                    benchmark.current_month_spending,
+                    benchmark.upper_threshold
+                  );
+
+                  return (
+                    <div
+                      key={benchmark.category_id}
+                      className={`rounded-xl border ${config.borderClass} ${config.cardBgClass} p-4 transition-all hover:shadow-md`}
+                    >
+                      {/* Category header */}
+                      <div className="flex items-start justify-between mb-3 gap-3">
+                        <div className="min-w-0">
+                          <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary truncate">
+                            {translateCategoryName(benchmark.category_name)}
+                          </h3>
+                          {benchmark.months_with_data > 0 && (
+                            <p className="text-xs text-ink-muted dark:text-ink-dark-muted mt-0.5">
+                              {t('benchmark.basedOn', { months: benchmark.months_with_data })}
+                            </p>
+                          )}
                         </div>
-                        <div className="text-right">
-                          <span className="eyebrow block mb-0.5">{t('benchmark.average')}</span>
-                          <span className="font-display font-semibold tracking-tight text-ink-secondary dark:text-ink-dark-primary">
-                            €{Number(benchmark.avg_monthly_spending).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}/{t('benchmark.month')}
-                          </span>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="mt-2 rounded-lg border border-dashed border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle px-3 py-3 flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2 text-ink-muted dark:text-ink-dark-muted">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        <span className="text-xs">
-                          {t('benchmark.typical')} &middot; {t('benchmark.average')}
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${config.pillClass}`}>
+                          {config.icon}
+                          {config.label}
                         </span>
                       </div>
-                      <a href="/pricing" className="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline whitespace-nowrap">
-                        {t('upgrade.upgradeCta')}
-                      </a>
+
+                      {/* Current spending */}
+                      <div className="mb-3">
+                        <div className="flex items-baseline gap-2 flex-wrap">
+                          <span className="eyebrow">{t('benchmark.thisMonth')}</span>
+                        </div>
+                        <div className="flex items-baseline gap-2 mt-1">
+                          <span className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
+                            €{Number(benchmark.current_month_spending).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Progress bar & Thresholds - locked for free users */}
+                      {isPremium ? (
+                        <>
+                          <div className="mb-3">
+                            <div className="h-2 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+                              <div
+                                className="h-full transition-all duration-500 rounded-full"
+                                style={{
+                                  width: `${Math.min(progress, 100)}%`,
+                                  backgroundColor: config.progressColor,
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-ink-muted dark:text-ink-dark-muted gap-3">
+                            <div>
+                              <span className="eyebrow block mb-0.5">{t('benchmark.typical')}</span>
+                              <span className="font-display font-semibold tracking-tight text-ink-secondary dark:text-ink-dark-primary">
+                                €{Number(benchmark.lower_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} - €{Number(benchmark.upper_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <span className="eyebrow block mb-0.5">{t('benchmark.average')}</span>
+                              <span className="font-display font-semibold tracking-tight text-ink-secondary dark:text-ink-dark-primary">
+                                €{Number(benchmark.avg_monthly_spending).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}/{t('benchmark.month')}
+                              </span>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="mt-2 rounded-lg border border-dashed border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle px-3 py-3 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 text-ink-muted dark:text-ink-dark-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <span className="text-xs">
+                              {t('benchmark.typical')} &middot; {t('benchmark.average')}
+                            </span>
+                          </div>
+                          <a href="/pricing" className="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline whitespace-nowrap">
+                            {t('upgrade.upgradeCta')}
+                          </a>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                  );
+                })}
+              </div>
+            </>
+          );
+        })()}
 
         {/* Legend */}
         {benchmarks.length > 0 && (
