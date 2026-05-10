@@ -73,9 +73,9 @@ export default function ReportCategoryBreakdown({ transactions }) {
         {t('reports.categoryBreakdown')}
       </h3>
 
-      {/* Donut + vertical category list — same layout as Dashboard CategoryPieChart */}
-      <div className="grid sm:grid-cols-[auto_1fr] gap-6 items-center mb-6">
-        <div className="relative w-[180px] h-[180px] mx-auto sm:mx-0 shrink-0">
+      {/* Donut + vertical category list */}
+      <div className="flex flex-wrap gap-6 items-center mb-6">
+        <div className="relative w-[180px] h-[180px] shrink-0">
           <ResponsiveContainer width={180} height={180}>
             <PieChart>
               <Pie
@@ -97,17 +97,17 @@ export default function ReportCategoryBreakdown({ transactions }) {
           </ResponsiveContainer>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-2.5 min-w-0">
           {categoryData.slice(0, 6).map((entry, index) => (
-            <div key={entry.name} className="flex items-center gap-3">
+            <div key={entry.name} className="flex items-center gap-2.5">
               <span
                 aria-hidden="true"
                 className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
-              <span className="text-sm text-ink-primary dark:text-ink-dark-primary flex-1 truncate">{entry.name}</span>
-              <span className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums">€{entry.value.toFixed(0)}</span>
-              <span className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums w-12 text-right">{entry.pct}%</span>
+              <span className="text-sm text-ink-primary dark:text-ink-dark-primary truncate max-w-[160px]">{entry.name}</span>
+              <span className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums ml-2">€{entry.value.toFixed(0)}</span>
+              <span className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums">{entry.pct}%</span>
             </div>
           ))}
           {categoryData.length > 6 && (
