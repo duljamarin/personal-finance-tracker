@@ -871,7 +871,7 @@
     "freeTransactionsInfo": "Start with 30 free transactions/month • Upgrade anytime for unlimited transactions and premium features",
     "trialStarted": "Your 7-day free trial has started! Enjoy all premium features.",
     "trialAlreadyUsed": "You have already used your free trial.",
-    "pastDueNotice": "Payment failed — please update your payment method",
+    "pastDueNotice": "Payment failed - please update your payment method",
     "trialEnded": "Your free trial has ended",
     "trialEndedDesc": "Upgrade to keep using all premium features with no limits."
   },

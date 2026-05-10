@@ -871,7 +871,7 @@
     "freeTransactionsInfo": "Filloni me 30 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numër të pakufizuar transaksionesh dhe funksione premium",
     "trialStarted": "Prova juaj falas 7-ditore ka filluar! Shijoni të gjitha funksionet premium.",
     "trialAlreadyUsed": "Ju e keni përdorur tashmë provën tuaj falas.",
-    "pastDueNotice": "Pagesa dështoi — ju lutem përditësoni metodën e pagesës",
+    "pastDueNotice": "Pagesa dështoi - ju lutem përditësoni metodën e pagesës",
     "trialEnded": "Prova juaj falas ka përfunduar",
     "trialEndedDesc": "Kaloni në premium për të vazhduar me të gjitha funksionet pa kufizime."
   },
@@ -976,7 +976,7 @@
       },
       "section5": {
         "title": "5. Anulimi dhe Rimbursimi",
-        "p1": "Mund ta anuloni abonimin në çdo kohë përmes portalit të menaxhimit. Anulimi ndal rinovimin e ardhshëm — aksesi mbetet aktiv deri në fund të periudhës aktuale të faturimit. Nuk ofrohen rimbursime për kohën e mbetur brenda periudhës aktive.",
+        "p1": "Mund ta anuloni abonimin në çdo kohë përmes portalit të menaxhimit. Anulimi ndal rinovimin e ardhshëm - aksesi mbetet aktiv deri në fund të periudhës aktuale të faturimit. Nuk ofrohen rimbursime për kohën e mbetur brenda periudhës aktive.",
         "p2": "Ofrojmë garanci 14-ditore për kthim parash vetëm për blerjen e parë. Nëse nuk jeni të kënaqur, mund të kërkoni rimbursim të plotë brenda 14 ditëve nga pagesa fillestare duke na kontaktuar. Kjo garanci nuk zbatohet për rinovimet. Rimbursimet përpunohen nga Paddle."
       },
       "section6": {
