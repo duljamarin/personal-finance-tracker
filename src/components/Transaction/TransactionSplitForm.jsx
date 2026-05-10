@@ -114,18 +114,30 @@ export default function TransactionSplitForm({
               )}
             </div>
 
-            {/* Amount — error border only, no message to avoid layout jump */}
+            {/* Amount — use inline border class for error, not Input's error prop (avoids ! icon) */}
             <div className="w-24 shrink-0">
-              <Input
+              <input
                 type="number"
                 step="0.01"
                 min="0"
                 value={split.amount}
                 onChange={(e) => handleSplitChange(index, 'amount', e.target.value)}
                 placeholder="0.00"
-                error={errors[`split_${index}_amount`] ? ' ' : undefined}
-                className="text-sm"
+                className={
+                  'w-full py-3 px-3.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card ' +
+                  'text-ink-primary dark:text-ink-dark-primary ' +
+                  'placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 ' +
+                  'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ' +
+                  (errors[`split_${index}_amount`]
+                    ? 'border-red-400'
+                    : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40')
+                }
               />
+              {errors[`split_${index}_amount`] && (
+                <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                  {t(errors[`split_${index}_amount`])}
+                </p>
+              )}
             </div>
 
             {/* Percentage — suffix outside Input to avoid padding clash */}
