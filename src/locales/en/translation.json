@@ -819,7 +819,7 @@
     "free": "Free",
     "premium": "Premium",
     "trustSecure": "Secure payment",
-    "trustCancel": "Cancel anytime",
+    "trustCancel": "Cancel anytime, keep access till period ends",
     "trustPaddle": "Billed by Paddle",
     "freeFeatures": {
       "transactions": "30 transactions/month",
@@ -976,8 +976,8 @@
       },
       "section5": {
         "title": "5. Cancellation and Refunds",
-        "p1": "You may cancel your subscription at any time through your account settings or by contacting Paddle support. Upon cancellation, you will continue to have access until the end of your current billing period.",
-        "p2": "We offer a 14-day money-back guarantee. If you are not satisfied with your purchase, you can request a full refund within 14 days of your initial purchase. Refunds are processed through Paddle, our payment processor."
+        "p1": "You may cancel your subscription at any time through your account settings or the subscription management portal. Cancellation stops future renewals - you keep full access until the end of your current billing period. No partial refunds are issued for unused time within an active period.",
+        "p2": "We offer a 14-day money-back guarantee on your first purchase only. If you are not satisfied, you may request a full refund within 14 days of your initial payment by contacting us. This guarantee does not apply to renewal payments. Refunds are processed through Paddle, our payment processor."
       },
       "section6": {
         "title": "6. Data and Privacy",

@@ -819,7 +819,7 @@
     "free": "Falas",
     "premium": "Premium",
     "trustSecure": "Pagesë e sigurt",
-    "trustCancel": "Anulim në çdo kohë",
+    "trustCancel": "Anulim në çdo kohë, akses deri në fund të periudhës",
     "trustPaddle": "Faturuar nga Paddle",
     "freeFeatures": {
       "transactions": "30 transaksione/muaj",
@@ -950,117 +950,117 @@
       "title": "Kushtet e Shërbimit",
       "section1": {
         "title": "1. Pranimi i Kushteve",
-        "content": "Duke hyrë dhe përdorur këtë aplikacion për ndjekjen e financave personale (\"Shërbimi\"), ju pranoni dhe bini dakord të detyroheni nga kushtet dhe dispozitat e këtij marrëveshjeje."
+        "content": "Duke hyrë në dhe përdorur këtë aplikacion për gjurmimin e financave personale (\"Shërbimi\"), ju pranoni të detyroheni nga kushtet e kësaj marrëveshjeje."
       },
       "section2": {
-        "title": "2. Licensa e Përdorimit",
-        "intro": "Ju jepet leje për të përdorur përkohësisht Shërbimin vetëm për shikimin personal, jo-komercial. Kjo është dhënie licence, jo transferim pronësie, dhe sipas kësaj licence ju nuk mund të:",
+        "title": "2. Licenca e Përdorimit",
+        "intro": "Ju lejohet të përdorni Shërbimin përkohësisht vetëm për qëllime personale dhe jo-komerciale. Kjo është dhënie licence, jo transferim pronësie. Sipas kësaj licence, ju nuk mund të:",
         "item1": "Modifikoni ose kopjoni materialet",
-        "item2": "Përdorni materialet për ndonjë qëllim komercial",
-        "item3": "Përpiqeni të dekompiloni ose kryeni inxhinieri të kundërt të çdo softueri të përfshirë në Shërbim",
-        "item4": "Hiqni çdo të drejtë autori ose shënime të tjera pronësore nga materialet",
-        "item5": "Transferoni materialet tek një person tjetër ose \"pasqyroni\" materialet në ndonjë server tjetër"
+        "item2": "Përdorni materialet për qëllime komerciale",
+        "item3": "Përpiqeni të dekompiloni ose analizoni me inxhinieri të kundërt çdo softuer të Shërbimit",
+        "item4": "Hiqni shënimet e të drejtave të autorit ose pronësisë nga materialet",
+        "item5": "Transferoni materialet te persona të tjerë ose i pasqyroni ato në serverë të tjerë"
       },
       "section3": {
         "title": "3. Kushtet e Llogarisë",
-        "p1": "Ju duhet të jeni 18 vjeç ose më të moshuar për të përdorur këtë Shërbim. Duke pranuar këto kushte, ju deklaroni dhe garantoni se jeni të paktën 18 vjeç dhe keni aftësinë ligjore për të lidhur këtë marrëveshje. Ky Shërbim operohet nga Marin Dulja.",
-        "p2": "Ju jeni përgjegjës për ruajtjen e sigurisë së llogarisë dhe fjalëkalimit tuaj. Ne nuk mund dhe nuk do të jemi përgjegjës për ndonjë humbje ose dëm nga dështimi juaj për të përmbushur këtë detyrim sigurie.",
-        "p3": "Ju jeni përgjegjës për të gjithë përmbajtjen e postuar dhe aktivitetin që ndodh nën llogarinë tuaj."
+        "p1": "Për të përdorur këtë Shërbim duhet të jeni të paktën 18 vjeç dhe të keni aftësi ligjore për të lidhur këtë marrëveshje. Shërbimi operohet nga Marin Dulja.",
+        "p2": "Ju jeni plotësisht përgjegjës për ruajtjen e sigurisë së llogarisë dhe fjalëkalimit tuaj. Ne nuk mbajmë përgjegjësi për humbje ose dëme që rrjedhin nga dështimi në përmbushjen e këtij detyrimi.",
+        "p3": "Ju mbani përgjegjësi për të gjithë aktivitetin që ndodh nën llogarinë tuaj."
       },
       "section4": {
-        "title": "4. Kushtet e Pagesës dhe Abonimit",
-        "p1": "Shërbimi ofron si plane abonimenti falas ashtu edhe me pagesë. Planet me pagesë kërkojnë informacion të vlefshëm pagese dhe do të tarifihen automatikisht në bazë periodike.",
-        "p2": "Kërkohet një metodë pagese e vlefshme për të përpunuar pagesat për abonimet me pagesë. Ju do të na jepni neve ose procesorit tonë të palës së tretë të pagesave (Paddle) me informacione të sakta dhe të plota të faturimit duke përfshirë emrin ligjor, adresën dhe informacionin e metodës së vlefshme të pagesës.",
-        "p3": "Abonimet rinovohen automatikisht përveç nëse anulohen para datës së rinovimit. Ju mund të anuloni abonimin tuaj në çdo kohë përmes cilësimeve të llogarisë ose portalit të menaxhimit të abonimit.",
-        "p4": "Periudha provuese falas mund të ofrohen për plane të caktuara abonimesh. Nëse nuk anuloni përpara se të mbarojë periudha provuese, do t'ju tarifohet automatikisht për abonimin."
+        "title": "4. Pagesa dhe Abonimi",
+        "p1": "Shërbimi ofron një plan falas dhe një plan me pagesë vjetore. Plani me pagesë kërkon informacion të vlefshëm pagese dhe rinovohet automatikisht çdo vit.",
+        "p2": "Për përpunimin e pagesave, ju duhet të jepni informacion të saktë faturimi te procesori ynë i pagesave (Paddle), duke përfshirë emrin, adresën dhe metodën e pagesës.",
+        "p3": "Abonimi rinovohet automatikisht përveç nëse anulohet para datës së rinovimit. Mund ta anuloni në çdo kohë përmes portalit të menaxhimit të abonimit.",
+        "p4": "Ofrohet një periudhë prove falas 7-ditore pa kartë krediti. Pas skadimit të provës, ju duhet të abonoheni manualisht - nuk tarifohet asgjë automatikisht pas provës."
       },
       "section5": {
         "title": "5. Anulimi dhe Rimbursimi",
-        "p1": "Ju mund të anuloni abonimin tuaj në çdo kohë përmes cilësimeve të llogarisë ose duke kontaktuar mbështetjen e Paddle. Pas anulimit, do të vazhdoni të keni akses deri në fund të periudhës aktuale të faturimit.",
-        "p2": "Ne ofrojmë një garanci 14-ditore për kthimin e parave. Nëse nuk jeni të kënaqur me blerjen tuaj, mund të kërkoni një rimbursim të plotë brenda 14 ditëve nga blerja juaj fillestare. Rimbursimet përpunohen përmes Paddle, procesorit tonë të pagesave."
+        "p1": "Mund ta anuloni abonimin në çdo kohë përmes portalit të menaxhimit. Anulimi ndal rinovimin e ardhshëm — aksesi mbetet aktiv deri në fund të periudhës aktuale të faturimit. Nuk ofrohen rimbursime për kohën e mbetur brenda periudhës aktive.",
+        "p2": "Ofrojmë garanci 14-ditore për kthim parash vetëm për blerjen e parë. Nëse nuk jeni të kënaqur, mund të kërkoni rimbursim të plotë brenda 14 ditëve nga pagesa fillestare duke na kontaktuar. Kjo garanci nuk zbatohet për rinovimet. Rimbursimet përpunohen nga Paddle."
       },
       "section6": {
         "title": "6. Të Dhënat dhe Privatësia",
-        "content": "Përdorimi juaj i Shërbimit rregullohet gjithashtu nga Politika jonë e Privatësisë. Ju lutemi shqyrtoni Politikën tonë të Privatësisë, e cila gjithashtu rregullon Shërbimin dhe informon përdoruesit për praktikat tona të mbledhjes së të dhënave."
+        "content": "Përdorimi i Shërbimit rregullohet gjithashtu nga Politika jonë e Privatësisë, e cila përshkruan se si mbledhim, përdorim dhe mbrojmë të dhënat tuaja."
       },
       "section7": {
-        "title": "7. Mohimi i Përgjegjësisë",
-        "p1": "Materialet në Shërbim ofrohen në bazë 'siç janë'. Ne nuk japim garanci, të shprehura ose të nënkuptuara, dhe me këtë mohojmë dhe heqim dorë nga të gjitha garancitë e tjera duke përfshirë, pa kufizim, garancitë e nënkuptuara ose kushtet e tregtueshmërisë, përshtatshmërisë për një qëllim të veçantë ose mosshkeljes së pronësisë intelektuale ose shkeljes së të drejtave të tjera.",
-        "p2": "Ky Shërbim nuk synon të ofrojë këshilla financiare, ligjore ose tatimore. Ju duhet të konsultoheni me profesionistë të përshtatshëm përpara se të merrni vendime financiare."
+        "title": "7. Mohimi i Garancive",
+        "p1": "Materialet dhe funksionalitetet e Shërbimit ofrohen \"siç janë\", pa garanci të shprehura apo të nënkuptuara, duke përfshirë garancitë e tregtueshmërisë ose përshtatshmërisë për një qëllim të caktuar.",
+        "p2": "Ky Shërbim nuk ofron këshilla financiare, ligjore ose tatimore. Konsultohuni me profesionistë të kualifikuar përpara çdo vendimi financiar."
       },
       "section8": {
-        "title": "8. Kufizimet",
-        "content": "Në asnjë rast ne ose furnizuesit tanë nuk do të jemi përgjegjës për ndonjë dëm (duke përfshirë, pa kufizim, dëme për humbjen e të dhënave ose fitimeve, ose për shkak të ndërprerjes së biznesit) që rrjedhin nga përdorimi ose pamundësia për të përdorur Shërbimin."
+        "title": "8. Kufizimi i Përgjegjësisë",
+        "content": "Në asnjë rast ne ose partnerët tanë nuk do të mbajmë përgjegjësi për dëme të drejtpërdrejta ose të tërthorta - duke përfshirë humbjen e të dhënave, fitimeve ose ndërprerjen e biznesit që rrjedhin nga përdorimi ose pamundësia për të përdorur Shërbimin."
       },
       "section9": {
-        "title": "9. Ndryshimet në Kushtet",
-        "content": "Ne rezervojmë të drejtën për të modifikuar këto kushte në çdo kohë. Do t'i njoftojmë përdoruesit për çdo ndryshim material duke postuar Kushtet e reja të Shërbimit në këtë faqe. Përdorimi i vazhduar i Shërbimit pas çdo ndryshimi përbën pranimin e Kushteve të reja të Shërbimit."
+        "title": "9. Ndryshimet në Kushte",
+        "content": "Rezervojmë të drejtën të ndryshojmë këto kushte në çdo kohë. Ndryshimet materiale do t'ju njoftohen duke publikuar kushtet e reja në këtë faqe. Vazhdimi i përdorimit të Shërbimit pas ndryshimeve përbën pranimin e tyre."
       },
       "section10": {
-        "title": "10. Informacioni i Kontaktit",
-        "content": "Nëse keni ndonjë pyetje rreth këtyre Kushteve, ju lutemi na kontaktoni përmes kanaleve tona të mbështetjes."
+        "title": "10. Kontakti",
+        "content": "Për çdo pyetje rreth këtyre kushteve, na kontaktoni përmes kanaleve tona të mbështetjes."
       }
     },
     "privacy": {
       "title": "Politika e Privatësisë",
       "section1": {
         "title": "1. Informacioni që Mbledhim",
-        "intro": "Ne mbledhim informacion që ju jepni drejtpërdrejt kur krijoni një llogari, përdorni Shërbimin tonë ose komunikoni me ne. Kjo përfshin:",
+        "intro": "Mbledhim informacionin që na jepni drejtpërdrejt gjatë krijimit të llogarisë, përdorimit të Shërbimit ose komunikimit me ne. Ky informacion përfshin:",
         "item1": "Adresën e emailit dhe fjalëkalimin",
         "item2": "Të dhënat e transaksioneve financiare (shumat, kategoritë, datat, përshkrimet)",
-        "item3": "Informacionin e buxhetit dhe qëllimeve",
-        "item4": "Informacionin e pagesës (përpunohet vetëm nga procesori ynë i pagesave, Paddle - ne nuk i ruajmë apo aksesojmë detajet tuaja të pagesës)"
+        "item3": "Informacionin e buxheteve dhe qëllimeve financiare",
+        "item4": "Informacionin e pagesës - i cili përpunohet ekskluzivisht nga Paddle; ne nuk ruajmë dhe nuk aksesojmë detajet e kartës suaj"
       },
       "section2": {
         "title": "2. Si e Përdorim Informacionin Tuaj",
-        "intro": "Ne e përdorim informacionin që mbledhim për të:",
-        "item1": "Ofruar, mirëmbajtur dhe përmirësuar Shërbimin tonë",
-        "item2": "Përpunuar transaksionet dhe dërguar informacionin përkatës",
-        "item3": "Dërguar njoftimet teknike, përditësimet dhe mesazhet e mbështetjes",
-        "item4": "Iu përgjigjur komenteve dhe pyetjeve tuaja",
+        "intro": "Informacionin e mbledhur e përdorim për të:",
+        "item1": "Ofruar, mirëmbajtur dhe përmirësuar Shërbimin",
+        "item2": "Përpunuar transaksionet dhe dërguar konfirmimet përkatëse",
+        "item3": "Dërguar njoftime teknike, përditësime dhe mesazhe mbështetjeje",
+        "item4": "Ju përgjigjur pyetjeve dhe kërkesave tuaja",
         "item5": "Analizuar modelet e përdorimit për të përmirësuar përvojën e përdoruesit"
       },
       "section3": {
         "title": "3. Ruajtja dhe Siguria e të Dhënave",
-        "p1": "Të dhënat tuaja ruhen në mënyrë të sigurt duke përdorur Supabase, një bazë të dhënash PostgreSQL me siguri të nivelit të ndërmarrjes. Ne zbatojmë masa të përshtatshme teknike dhe organizative për të mbrojtur informacionin tuaj personal kundër aksesit të paautorizuar, ndryshimit, zbulimit ose shkatërrimit.",
-        "p2": "Megjithatë, asnjë metodë transmetimi përmes internetit ose ruajtje elektronike nuk është 100% e sigurt. Ndërsa përpiqemi të përdorim mjete të pranueshme komerciale për të mbrojtur informacionin tuaj personal, ne nuk mund të garantojmë sigurinë e saj absolute."
+        "p1": "Të dhënat tuaja ruhen në mënyrë të sigurt nëpërmjet Supabase, një platformë PostgreSQL me standarde sigurie të nivelit enterprise. Zbatojmë masa teknike dhe organizative të përshtatshme për të mbrojtur informacionin tuaj nga aksesi i paautorizuar, ndryshimi ose shkatërrimi.",
+        "p2": "Megjithatë, asnjë metodë transmetimi përmes internetit nuk është plotësisht e sigurt. Ndërsa bëjmë çmos për të mbrojtur të dhënat tuaja, nuk mund të garantojmë siguri absolute."
       },
       "section4": {
         "title": "4. Përpunimi i Pagesave",
-        "content": "Informacioni i pagesës mblidhet dhe përpunohet vetëm nga Paddle, procesori ynë i palës së tretë të pagesave. Ne nuk marrim, ruajmë apo kemi akses në detajet tuaja të kartës së kreditit ose pagesës. Politika e privatësisë së Paddle rregullon mbledhjen dhe përpunimin e informacionit tuaj të pagesës."
+        "content": "Të gjitha pagesat mblidhen dhe përpunohen ekskluzivisht nga Paddle, procesori ynë i besuar i pagesave. Ne nuk ruajmë dhe nuk aksesojmë detajet e kartës suaj të kreditit. Mbledhja dhe përpunimi i informacionit të pagesës rregullohen nga Politika e Privatësisë së Paddle."
       },
       "section5": {
         "title": "5. Ruajtja e të Dhënave",
-        "content": "Ne e ruajmë informacionin tuaj për aq kohë sa llogaria juaj është aktive ose sipas nevojës për t'ju ofruar shërbime. Nëse dëshironi të fshini llogarinë tuaj, ju lutemi na kontaktoni. Pas fshirjes së llogarisë, ne mund të ruajmë informacione të caktuara siç kërkohet nga ligji ose për qëllime të ligjshme biznesi."
+        "content": "E ruajmë informacionin tuaj për aq kohë sa llogaria juaj është aktive ose sa nevojitet për t'ju ofruar shërbimet. Nëse dëshironi ta fshini llogarinë, na kontaktoni. Pas fshirjes, mund të ruajmë disa të dhëna sipas kërkesave ligjore ose për qëllime të ligjshme biznesi."
       },
       "section6": {
         "title": "6. Ndarja e të Dhënave",
-        "intro": "Ne nuk shesim, shkëmbejmë ose japim me qira informacionin tuaj personal palëve të treta. Ne mund të ndajmë informacionin tuaj vetëm në rrethanat e mëposhtme:",
-        "item1": "Me ofruesit e shërbimeve që ndihmojnë në operacionet tona (p.sh., Paddle për përpunimin e pagesave)",
-        "item2": "Për të përmbushur detyrimet ligjore ose për t'iu përgjigjur kërkesave ligjore",
-        "item3": "Për të mbrojtur të drejtat, privatësinë, sigurinë ose pronën tonë",
-        "item4": "Me pëlqimin tuaj ose sipas udhëzimeve tuaja"
+        "intro": "Nuk shesim, shkëmbejmë dhe nuk japim me qira informacionin tuaj personal. E ndajmë atë vetëm në rrethanat e mëposhtme:",
+        "item1": "Me ofruesit e shërbimeve që na mbështesin operacionalisht (p.sh., Paddle për pagesat)",
+        "item2": "Për të përmbushur detyrime ligjore ose për t'iu përgjigjur kërkesave zyrtare",
+        "item3": "Për të mbrojtur të drejtat, sigurinë ose pronën tonë",
+        "item4": "Me pëlqimin tuaj të shprehur"
       },
       "section7": {
-        "title": "7. Të Drejtat Tuaja mbi të Dhënat",
-        "intro": "Ju keni të drejtën për të:",
-        "item1": "Aksesuar, përditësuar ose fshirë informacionin tuaj personal",
-        "item2": "Kundërshtuar përpunimin e informacionit tuaj",
-        "item3": "Kërkuar kufizimin e përpunimit të informacionit tuaj",
-        "item4": "Kërkuar transferimin e informacionit tuaj",
-        "item5": "Tërhequr pëlqimin në çdo kohë"
+        "title": "7. Të Drejtat Tuaja",
+        "intro": "Keni të drejtë të:",
+        "item1": "Aksesoni, përditësoni ose fshini informacionin tuaj personal",
+        "item2": "Kundërshtoni përpunimin e të dhënave tuaja",
+        "item3": "Kërkoni kufizimin e përpunimit",
+        "item4": "Kërkoni transferimin e të dhënave tuaja",
+        "item5": "Tërhiqni pëlqimin në çdo kohë"
       },
       "section8": {
         "title": "8. Privatësia e Fëmijëve",
-        "content": "Shërbimi ynë nuk është i destinuar për fëmijë nën 18 vjeç. Ne nuk mbledhim me dijeni informacion personal nga fëmijët nën 18 vjeç. Nëse vini në dijeni se një fëmijë na ka dhënë informacion personal, ju lutemi na kontaktoni."
+        "content": "Shërbimi nuk është i destinuar për persona nën 18 vjeç dhe nuk mbledhim me qëllim të dhëna nga fëmijët. Nëse jeni në dijeni se një fëmijë na ka dhënë informacion personal, ju lutemi na kontaktoni menjëherë."
       },
       "section9": {
-        "title": "9. Ndryshimet në këtë Politikë Privatësie",
-        "content": "Ne mund të përditësojmë Politikën tonë të Privatësisë herë pas here. Do t'ju njoftojmë për çdo ndryshim duke postuar Politikën e re të Privatësisë në këtë faqe dhe duke përditësuar datën \"Përditësuar më\"."
+        "title": "9. Ndryshimet në Politikën e Privatësisë",
+        "content": "Mund ta përditësojmë këtë politikë herë pas here. Çdo ndryshim material do të publikohet në këtë faqe me datën e përditësuar. Vazhdimi i përdorimit të Shërbimit pas ndryshimeve përbën pranimin e tyre."
       },
       "section10": {
         "title": "10. Na Kontaktoni",
-        "content": "Nëse keni ndonjë pyetje rreth kësaj Politike Privatësie, ju lutemi na kontaktoni përmes kanaleve tona të mbështetjes."
+        "content": "Për çdo pyetje rreth kësaj Politike Privatësie, na kontaktoni përmes kanaleve tona të mbështetjes."
       }
     }
   },
