@@ -122,8 +122,13 @@ export default function PricingPage() {
     }
   };
 
+  const isCancelScheduled = !!subscription?.subscription_cancel_at;
+
+  // True for any status where user has/had a yearly Paddle subscription —
+  // covers active, past_due (grace period), cancelled (still within period_end), paused.
+  // Trial is DB-only and never has plan='yearly', so no overlap.
   const isYearlyPlan = subscription?.subscription_plan === 'yearly'
-    && (subscription?.subscription_status === 'active' || subscription?.subscription_status === 'trialing');
+    && ['active', 'past_due', 'cancelled', 'paused'].includes(subscription?.subscription_status);
 
   const freeFeatures = [
     t('pricing.freeFeatures.transactions'),
@@ -295,15 +300,60 @@ export default function PricingPage() {
             <div className="mt-8">
               {isYearlyPlan ? (
                 <>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      {isTrialing ? trialTimeLabel : t('pricing.currentPlan')}
-                    </span>
-                  </div>
-                  <Button variant="success" className="w-full" onClick={handleManageSubscription}>
-                    {t('pricing.managePlan')}
-                  </Button>
+                  {(() => {
+                    const status = subscription?.subscription_status;
+                    const isPastDue = status === 'past_due';
+                    const isPaused  = status === 'paused';
+                    const isCancelled = status === 'cancelled';
+
+                    let dotColor = 'bg-emerald-500';
+                    let textColor = 'text-emerald-600 dark:text-emerald-400';
+                    let label = t('pricing.currentPlan');
+                    let btnLabel = t('pricing.managePlan');
+                    let btnVariant = 'success';
+
+                    if (isCancelScheduled) {
+                      // Active but cancel scheduled at period end → reactivate via portal
+                      dotColor = 'bg-amber-500';
+                      textColor = 'text-amber-600 dark:text-amber-400';
+                      label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
+                      btnLabel = t('pricing.reactivate');
+                      btnVariant = 'primary';
+                    } else if (isPastDue) {
+                      // Payment failed, grace period active → update payment method
+                      dotColor = 'bg-red-500';
+                      textColor = 'text-red-600 dark:text-red-400';
+                      label = t('subscription.pastDueNotice');
+                      btnLabel = t('pricing.updatePayment');
+                      btnVariant = 'danger';
+                    } else if (isPaused) {
+                      // Subscription paused → resume via portal
+                      dotColor = 'bg-amber-500';
+                      textColor = 'text-amber-600 dark:text-amber-400';
+                      label = t('subscription.paused');
+                      btnLabel = t('pricing.resumePlan');
+                      btnVariant = 'primary';
+                    } else if (isCancelled) {
+                      // Fully cancelled but still within period_end (grace) → resubscribe
+                      dotColor = 'bg-amber-500';
+                      textColor = 'text-amber-600 dark:text-amber-400';
+                      label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
+                      btnLabel = t('pricing.reactivate');
+                      btnVariant = 'primary';
+                    }
+
+                    return (
+                      <>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className={`inline-block w-2 h-2 rounded-full animate-pulse ${dotColor}`} />
+                          <span className={`text-sm font-medium ${textColor}`}>{label}</span>
+                        </div>
+                        <Button variant={btnVariant} className="w-full" onClick={handleManageSubscription}>
+                          {btnLabel}
+                        </Button>
+                      </>
+                    );
+                  })()}
                 </>
               ) : !hasHadTrial ? (
                 <>

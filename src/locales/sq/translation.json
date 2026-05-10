@@ -845,7 +845,10 @@
       "netWorth": "Gjurmimi i vlerës neto",
       "reports": "Raportet financiare"
     },
-    "bestValue": "Vlera Më e Mirë"
+    "bestValue": "Vlera Më e Mirë",
+    "reactivate": "Riaktivizo Abonimin",
+    "updatePayment": "Përditëso Metodën e Pagesës",
+    "resumePlan": "Rifillo Abonimin"
   },
   "subscription": {
     "active": "Aktiv",
@@ -868,6 +871,7 @@
     "freeTransactionsInfo": "Filloni me 30 transaksione falas/muaj • Abonohuni në çdo kohë për të pasur numër të pakufizuar transaksionesh dhe funksione premium",
     "trialStarted": "Prova juaj falas 7-ditore ka filluar! Shijoni të gjitha funksionet premium.",
     "trialAlreadyUsed": "Ju e keni përdorur tashmë provën tuaj falas.",
+    "pastDueNotice": "Pagesa dështoi — ju lutem përditësoni metodën e pagesës",
     "trialEnded": "Prova juaj falas ka përfunduar",
     "trialEndedDesc": "Kaloni në premium për të vazhduar me të gjitha funksionet pa kufizime."
   },
