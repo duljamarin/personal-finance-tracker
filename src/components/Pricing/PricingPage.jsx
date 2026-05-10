@@ -271,11 +271,10 @@ export default function PricingPage() {
               </span>
               <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perYear')}</span>
             </div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="mb-1">
               <span className="text-base font-semibold text-emerald-600 dark:text-emerald-400">
                 {t('pricing.yearlyPerMonth')}
               </span>
-              <span className="text-sm text-ink-muted dark:text-ink-dark-muted line-through">€60/year</span>
             </div>
             <p className="text-sm text-emerald-700 dark:text-emerald-300 font-medium mb-5">
               {t('pricing.saveYearly')}
