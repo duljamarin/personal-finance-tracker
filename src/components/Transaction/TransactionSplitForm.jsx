@@ -108,13 +108,13 @@ export default function TransactionSplitForm({
                 }))}
               />
               {errors[`split_${index}_category`] && (
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                <p className="text-xs text-red-500 dark:text-red-400 mt-1">
                   {t(errors[`split_${index}_category`])}
                 </p>
               )}
             </div>
 
-            {/* Amount */}
+            {/* Amount — error border only, no message to avoid layout jump */}
             <div className="w-24 shrink-0">
               <Input
                 type="number"
@@ -123,7 +123,7 @@ export default function TransactionSplitForm({
                 value={split.amount}
                 onChange={(e) => handleSplitChange(index, 'amount', e.target.value)}
                 placeholder="0.00"
-                error={errors[`split_${index}_amount`] && t(errors[`split_${index}_amount`])}
+                error={errors[`split_${index}_amount`] ? ' ' : undefined}
                 className="text-sm"
               />
             </div>
