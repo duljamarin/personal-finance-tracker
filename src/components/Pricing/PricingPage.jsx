@@ -8,7 +8,6 @@ import { useToast } from '../../context/ToastContext';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
 
-const MONTHLY_PRICE_ID = import.meta.env.VITE_PADDLE_MONTHLY_PRICE_ID;
 const YEARLY_PRICE_ID = import.meta.env.VITE_PADDLE_YEARLY_PRICE_ID;
 
 export default function PricingPage() {
@@ -60,7 +59,7 @@ export default function PricingPage() {
     }
   };
 
-  const handleSubscribe = (priceId) => {
+  const handleSubscribe = () => {
     if (!accessToken) {
       navigate('/register');
       return;
@@ -74,7 +73,7 @@ export default function PricingPage() {
     checkoutInitiatedRef.current = true;
 
     paddle.Checkout.open({
-      items: [{ priceId, quantity: 1 }],
+      items: [{ priceId: YEARLY_PRICE_ID, quantity: 1 }],
       customData: { user_id: user.id },
       customer: { email: user.email },
       settings: {
@@ -105,7 +104,6 @@ export default function PricingPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error getting management URLs:', errorData);
         throw new Error(errorData.error || 'Failed to get management URLs');
       }
 
@@ -124,12 +122,8 @@ export default function PricingPage() {
     }
   };
 
-  const isCurrentPlan = (plan) => {
-    if (!subscription) return false;
-    const subPlan = subscription.subscription_plan;
-    const status = subscription.subscription_status;
-    return subPlan === plan && (status === 'active' || status === 'trialing');
-  };
+  const isYearlyPlan = subscription?.subscription_plan === 'yearly'
+    && (subscription?.subscription_status === 'active' || subscription?.subscription_status === 'trialing');
 
   const freeFeatures = [
     t('pricing.freeFeatures.transactions'),
@@ -158,13 +152,13 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4">
+    <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="font-display font-semibold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-ink-dark-primary mb-4">
+      <div className="text-center mb-10">
+        <h1 className="font-display font-semibold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-ink-dark-primary mb-3">
           {t('pricing.title')}
         </h1>
-        <p className="text-lg text-ink-muted dark:text-ink-dark-muted max-w-2xl mx-auto">
+        <p className="text-lg text-ink-muted dark:text-ink-dark-muted max-w-xl mx-auto">
           {t('pricing.subtitle')}
         </p>
       </div>
@@ -209,8 +203,21 @@ export default function PricingPage() {
         </div>
       )}
 
-      {/* Plan Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      {/* Savings callout banner */}
+      {!isPremium && (
+        <div className="mb-8 flex items-center justify-center gap-2">
+          <span className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-700">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            {t('pricing.savingsCallout')}
+          </span>
+        </div>
+      )}
+
+      {/* Plan Cards — 2 column */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-start">
+
         {/* Free Plan */}
         <Card className="relative border border-surface-hairline dark:border-surface-dark-hairline h-full">
           <div className="p-6 flex flex-col h-full">
@@ -219,11 +226,11 @@ export default function PricingPage() {
             </h3>
             <div className="mb-6">
               <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">€0</span>
-              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perMonth')}</span>
+              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.forever')}</span>
             </div>
             <ul className="space-y-3 flex-1">
               {freeFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-ink-dark-secondary">
                   <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -231,8 +238,7 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <p className="text-sm font-medium min-h-[1.25rem] mt-4" />
-            <div className="mt-4">
+            <div className="mt-6">
               {!accessToken ? (
                 <Link to="/register">
                   <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
@@ -246,129 +252,60 @@ export default function PricingPage() {
           </div>
         </Card>
 
-        {/* Monthly Plan */}
-        <Card className="relative ring-2 ring-brand-500 dark:ring-brand-400 border border-transparent h-full">
+        {/* Yearly Plan — hero card */}
+        <Card className="relative ring-2 ring-emerald-500 dark:ring-emerald-400 border border-transparent h-full shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-              {t('pricing.popular')}
-            </span>
-          </div>
-          <div className="p-6 pt-8 flex flex-col h-full">
-            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
-              {t('pricing.monthly')}
-            </h3>
-            <div className="mb-2">
-              <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">{t('pricing.monthlyPrice')}</span>
-              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perMonth')}</span>
-            </div>
-            <p className="text-sm font-medium mb-4 min-h-[1.25rem] text-brand-600 dark:text-brand-400">
-              {!hasHadTrial ? t('pricing.freeTrial') : ''}
-            </p>
-            <ul className="space-y-3 flex-1">
-              {premiumFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
-                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8">
-              {isCurrentPlan('monthly') ? (
-                <>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-                    <span className="text-sm font-medium text-brand-600 dark:text-brand-400">
-                      {isTrialing
-                        ? trialTimeLabel
-                        : t('pricing.currentPlan')}
-                    </span>
-                  </div>
-                  <Button variant="primary" className="w-full" onClick={handleManageSubscription}>
-                    {t('pricing.managePlan')}
-                  </Button>
-                </>
-              ) : isPremium && !isCurrentPlan('monthly') ? (
-                <Button variant="secondary" className="w-full" onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}>
-                  {t('pricing.switchToMonthly')}
-                </Button>
-              ) : !hasHadTrial ? (
-                <>
-                  <Button
-                    variant="primary"
-                    className="w-full mb-2"
-                    onClick={handleStartTrial}
-                    disabled={trialLoading}
-                  >
-                    {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
-                  </Button>
-                  <p className="text-xs text-center text-ink-muted dark:text-ink-dark-muted">
-                    {t('pricing.noCardRequired')}
-                  </p>
-                </>
-              ) : (
-                <Button variant="primary" className="w-full" onClick={() => handleSubscribe(MONTHLY_PRICE_ID)}>
-                  {t('pricing.subscribe')}
-                </Button>
-              )}
-            </div>
-          </div>
-        </Card>
-
-        {/* Yearly Plan */}
-        <Card className="relative border border-emerald-500 dark:border-emerald-400 h-full">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+            <span className="bg-emerald-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
               {t('pricing.bestValue')}
             </span>
           </div>
           <div className="p-6 pt-8 flex flex-col h-full">
             <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
-              {t('pricing.yearly')}
+              {t('pricing.premium')}
             </h3>
+
+            {/* Price block */}
             <div className="mb-1">
-              <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">{t('pricing.yearlyPrice')}</span>
+              <span className="font-display font-semibold tracking-tight text-5xl text-ink-primary dark:text-ink-dark-primary">
+                {t('pricing.yearlyPrice')}
+              </span>
               <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perYear')}</span>
             </div>
-            <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
-              {t('pricing.yearlyPerMonth')}
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-base font-semibold text-emerald-600 dark:text-emerald-400">
+                {t('pricing.yearlyPerMonth')}
+              </span>
+              <span className="text-sm text-ink-muted dark:text-ink-dark-muted line-through">€60/year</span>
+            </div>
+            <p className="text-sm text-emerald-700 dark:text-emerald-300 font-medium mb-5">
+              {t('pricing.saveYearly')}
+              {!hasHadTrial && <span> · {t('pricing.freeTrial')}</span>}
             </p>
-            <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-4 min-h-[1.25rem]">
-              {!hasHadTrial
-                ? `${t('pricing.saveYearly')} · ${t('pricing.freeTrial')}`
-                : t('pricing.saveYearly')}
-            </p>
+
             <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
-                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
                 </li>
               ))}
             </ul>
-            <p className="text-sm font-medium min-h-[1.25rem] mt-4" />
-            <div className="mt-4">
-              {isCurrentPlan('yearly') ? (
+
+            <div className="mt-8">
+              {isYearlyPlan ? (
                 <>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      {isTrialing
-                        ? trialTimeLabel
-                        : t('pricing.currentPlan')}
+                      {isTrialing ? trialTimeLabel : t('pricing.currentPlan')}
                     </span>
                   </div>
                   <Button variant="success" className="w-full" onClick={handleManageSubscription}>
                     {t('pricing.managePlan')}
                   </Button>
                 </>
-              ) : isPremium && !isCurrentPlan('yearly') ? (
-                <Button variant="secondary" className="w-full" onClick={() => handleSubscribe(YEARLY_PRICE_ID)}>
-                  {t('pricing.switchToYearly')}
-                </Button>
               ) : !hasHadTrial ? (
                 <>
                   <Button
@@ -380,17 +317,39 @@ export default function PricingPage() {
                     {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
                   </Button>
                   <p className="text-xs text-center text-ink-muted dark:text-ink-dark-muted">
-                    {t('pricing.noCardRequired')}
+                    {t('pricing.noCardRequired')} · {t('pricing.thenYearly')}
                   </p>
                 </>
               ) : (
-                <Button variant="success" className="w-full" onClick={() => handleSubscribe(YEARLY_PRICE_ID)}>
+                <Button variant="success" className="w-full" onClick={handleSubscribe}>
                   {t('pricing.subscribe')}
                 </Button>
               )}
             </div>
           </div>
         </Card>
+      </div>
+
+      {/* Trust strip */}
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-ink-muted dark:text-ink-dark-muted mb-8">
+        <span className="flex items-center gap-1">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          {t('pricing.trustSecure')}
+        </span>
+        <span className="flex items-center gap-1">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          {t('pricing.trustCancel')}
+        </span>
+        <span className="flex items-center gap-1">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+          {t('pricing.trustPaddle')}
+        </span>
       </div>
 
       {/* Back to dashboard */}

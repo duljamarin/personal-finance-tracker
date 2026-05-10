@@ -7,59 +7,20 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const PADDLE_WEBHOOK_SECRET = Deno.env.get("PADDLE_WEBHOOK_SECRET");
-const PADDLE_MONTHLY_PRICE_ID = Deno.env.get("PADDLE_MONTHLY_PRICE_ID") || "";
 const PADDLE_YEARLY_PRICE_ID = Deno.env.get("PADDLE_YEARLY_PRICE_ID") || "";
-const PADDLE_API_KEY = Deno.env.get("PADDLE_API_KEY") || "";
-const PADDLE_API_BASE = "https://api.paddle.com";
 
 // UUID v4 format validation
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-function derivePlan(priceId: string): "monthly" | "yearly" | null {
-  if (priceId === PADDLE_MONTHLY_PRICE_ID) return "monthly";
+function derivePlan(priceId: string): "yearly" | null {
   if (priceId === PADDLE_YEARLY_PRICE_ID) return "yearly";
   return null;
 }
 
-function derivePlanFromAmount(amount: number): "monthly" | "yearly" | null {
-  // Fallback: detect plan based on transaction amount
-  // Only used when priceId-based detection fails
-  if (amount >= 30 && amount <= 50) return "yearly";
-  if (amount >= 4 && amount <= 10) return "monthly";
+function derivePlanFromAmount(amount: number): "yearly" | null {
+  // Fallback: detect plan based on transaction amount (only yearly plan offered)
+  if (amount >= 25 && amount <= 35) return "yearly";
   return null;
-}
-
-/**
- * Tell Paddle to skip the trial and bill immediately.
- * Called when we detect a returning customer who should not receive a second trial.
- * If PADDLE_API_KEY is not configured the function logs a warning and returns - our DB
- * will still be correct (status=active), but Paddle will bill at its own trial end date.
- */
-async function skipPaddleTrial(paddleSubscriptionId: string): Promise<void> {
-  if (!PADDLE_API_KEY) {
-    console.warn("PADDLE_API_KEY not set - cannot skip trial on Paddle side for", paddleSubscriptionId);
-    return;
-  }
-
-  try {
-    const res = await fetch(`${PADDLE_API_BASE}/subscriptions/${paddleSubscriptionId}`, {
-      method: "PATCH",
-      headers: {
-        "Authorization": `Bearer ${PADDLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ next_billed_at: "immediately" }),
-    });
-
-    if (!res.ok) {
-      const body = await res.text();
-      console.error(`Failed to skip Paddle trial for ${paddleSubscriptionId}: ${res.status} ${body}`);
-    } else {
-      console.log(`Paddle trial skipped for subscription ${paddleSubscriptionId}`);
-    }
-  } catch (err) {
-    console.error(`Error calling Paddle API to skip trial for ${paddleSubscriptionId}:`, err);
-  }
 }
 
 /** Constant-time string comparison to prevent timing attacks */
@@ -231,30 +192,6 @@ serve(async (req: Request) => {
         let plan = derivePlan(priceId);
         let status = data.status || "active";
 
-        // --- Trial guard ---
-        // Fetch the existing subscription row to check had_trial.
-        // A user is only entitled to one trial - their very first subscription.
-        const { data: existingSub } = await supabase
-          .from("subscriptions")
-          .select("had_trial")
-          .eq("user_id", userId)
-          .single();
-
-        const hadTrialBefore: boolean = existingSub?.had_trial === true;
-        const isRequestingTrial: boolean = status === "trialing";
-        const isFirstTrial: boolean = isRequestingTrial && !hadTrialBefore;
-        const isIllegalSecondTrial: boolean = isRequestingTrial && hadTrialBefore;
-
-        if (isIllegalSecondTrial) {
-          // Override: treat this re-subscribe as a regular active subscription.
-          console.warn(`User ${userId} attempted a second trial - overriding status to active.`);
-          status = "active";
-          // Ask Paddle to skip the trial period and bill immediately.
-          // Fire-and-forget; failure is logged inside skipPaddleTrial but does not
-          // block the DB update - our feature gating is driven by our DB status.
-          skipPaddleTrial(data.id);
-        }
-
         const upsertData: Record<string, any> = {
           user_id: userId,
           paddle_subscription_id: data.id,
@@ -270,22 +207,6 @@ serve(async (req: Request) => {
         };
 
         if (eventId) upsertData.last_event_id = eventId;
-
-        // Handle trial dates
-        if (status === "trialing" && data.current_billing_period) {
-          // First legitimate trial
-          upsertData.trial_start = data.current_billing_period.starts_at;
-          upsertData.trial_end = data.current_billing_period.ends_at;
-          upsertData.had_trial = true;       // mark trial as consumed
-        } else {
-          // Not a trial (new subscription, re-subscribe, or overridden second trial).
-          // Clear any stale trial dates left over from the previous subscription.
-          upsertData.trial_start = null;
-          upsertData.trial_end = null;
-          // had_trial is never reset - preserve whatever the DB already has.
-          // If this IS the first subscription and it's active (no trial), keep had_trial=false.
-          // Only force it to true when a real trial fires.
-        }
 
         // Capture initial pricing info if available
         if (data.items?.[0]?.price) {
@@ -313,7 +234,7 @@ serve(async (req: Request) => {
           .upsert(upsertData, { onConflict: "user_id" });
 
         if (error) throw error;
-        console.log(`Subscription created for user ${userId}: status=${status}, plan=${plan}, hadTrial=${hadTrialBefore}, firstTrial=${isFirstTrial}`);
+        console.log(`Subscription created for user ${userId}: status=${status}, plan=${plan}`);
         break;
       }
 
@@ -321,7 +242,7 @@ serve(async (req: Request) => {
         // Verify this event is for the current subscription
         const { data: currentSub } = await supabase
           .from("subscriptions")
-          .select("paddle_subscription_id, had_trial")
+          .select("paddle_subscription_id")
           .eq("user_id", userId)
           .single();
 
@@ -333,13 +254,7 @@ serve(async (req: Request) => {
         const priceId = data.items?.[0]?.price?.id || "";
         let plan = derivePlan(priceId);
 
-        // Trial guard: if Paddle sends trialing for a returning customer, override to active.
-        let updatedStatus: string = data.status;
-        if (updatedStatus === "trialing" && currentSub?.had_trial === true) {
-          console.warn(`User ${userId} subscription.updated with trialing but had_trial=true - overriding to active.`);
-          updatedStatus = "active";
-          skipPaddleTrial(data.id);
-        }
+        const updatedStatus: string = data.status;
 
         const updateData: Record<string, any> = {
           paddle_subscription_id: data.id,
@@ -537,34 +452,9 @@ serve(async (req: Request) => {
           };
 
           if (eventId) updateData.last_event_id = eventId;
-
           if (amount !== null) {
             updateData.last_transaction_amount = amount;
             updateData.last_transaction_currency = currency;
-
-            // Only use amount-based plan correction if priceId detection is not available
-            const priceId = data.items?.[0]?.price?.id || "";
-            const planFromPriceId = derivePlan(priceId);
-
-            if (planFromPriceId) {
-              // We have a reliable priceId - use it to correct plan if needed
-              const { data: currentSub } = await supabase
-                .from("subscriptions")
-                .select("plan")
-                .eq("paddle_subscription_id", subscriptionId)
-                .single();
-
-              if (currentSub && currentSub.plan !== planFromPriceId) {
-                console.warn(`Correcting plan from ${currentSub.plan} to ${planFromPriceId} based on priceId`);
-                updateData.plan = planFromPriceId;
-              }
-            } else {
-              // No priceId match - log amount for debugging but don't override plan
-              const planFromAmount = derivePlanFromAmount(amount);
-              if (planFromAmount) {
-                console.log(`Amount ${amount} suggests plan ${planFromAmount} (no priceId match - not overriding)`);
-              }
-            }
           }
 
           const { error } = await supabase

@@ -192,7 +192,7 @@ export default function UpgradeBanner() {
           </div>
           <Link to="/pricing">
             <button className="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-md font-medium transition-colors">
-              {hasHadTrial ? t('upgrade.upgradeCta') : t('pricing.subscribe')}
+              {t('upgrade.upgradeCta')}
             </button>
           </Link>
         </>
