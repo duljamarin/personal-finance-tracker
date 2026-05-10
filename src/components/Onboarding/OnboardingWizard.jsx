@@ -7,6 +7,7 @@ import { useTransactions } from '../../context/TransactionContext';
 import { supabase } from '../../utils/supabaseClient';
 import { fetchCategories, addCategory, addTransaction } from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
+import { translateCategoryName } from '../../utils/categoryTranslation';
 import Button from '../UI/Button';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ProgressBar from './ProgressBar';
@@ -142,7 +143,7 @@ export default function OnboardingWizard() {
         }
 
         await addTransaction({
-          title: 'Salary',
+          title: translateCategoryName('Salary'),
           amount: Number(monthlyIncome),
           type: 'income',
           categoryId: salaryCategory.id,
@@ -177,7 +178,7 @@ export default function OnboardingWizard() {
           const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
           const cat = categoryById.get(resolvedCategoryId);
           return addTransaction({
-            title: cat?.name || 'Expense',
+            title: cat?.name ? translateCategoryName(cat.name) : t('transactions.expense'),
             amount: Number(expense.amount),
             type: 'expense',
             categoryId: resolvedCategoryId,
