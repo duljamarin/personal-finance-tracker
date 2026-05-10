@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '../UI/Button';
 import Input from '../UI/Input';
+import CustomSelect from '../UI/CustomSelect';
 import { translateCategoryName } from '../../utils/categoryTranslation';
-import { getInputClassName } from '../../utils/classNames';
 
 export default function TransactionSplitForm({ 
   totalAmount, 
@@ -97,18 +97,16 @@ export default function TransactionSplitForm({
           <div key={index} className={`flex items-center gap-2${index > 0 ? ' pt-2 border-t border-gray-200 dark:border-zinc-700' : ''}`}>
             {/* Category */}
             <div className="flex-1 min-w-0">
-              <select
+              <CustomSelect
                 value={split.category_id}
-                onChange={(e) => handleSplitChange(index, 'category_id', e.target.value)}
-                className={getInputClassName(errors[`split_${index}_category`])}
-              >
-                <option value="">{t('transactions.selectCategory')}</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {translateCategoryName(cat.name, i18n.language)}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => handleSplitChange(index, 'category_id', val)}
+                placeholder={t('transactions.selectCategory')}
+                error={!!errors[`split_${index}_category`]}
+                options={categories.map(cat => ({
+                  value: cat.id,
+                  label: translateCategoryName(cat.name, i18n.language),
+                }))}
+              />
               {errors[`split_${index}_category`] && (
                 <p className="text-xs text-red-600 dark:text-red-400 mt-1">
                   {t(errors[`split_${index}_category`])}
@@ -130,24 +128,19 @@ export default function TransactionSplitForm({
               />
             </div>
 
-            {/* Percentage */}
-            <div className="w-20 shrink-0">
-              <div className="relative">
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="100"
-                  value={split.percentage}
-                  onChange={(e) => handleSplitChange(index, 'percentage', e.target.value)}
-                  placeholder="0"
-                  className="text-sm"
-                  style={{ paddingRight: '1.75rem' }}
-                />
-                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-gray-500 select-none">
-                  %
-                </span>
-              </div>
+            {/* Percentage — suffix outside Input to avoid padding clash */}
+            <div className="w-20 shrink-0 flex items-center gap-1">
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                max="100"
+                value={split.percentage}
+                onChange={(e) => handleSplitChange(index, 'percentage', e.target.value)}
+                placeholder="0"
+                className="text-sm"
+              />
+              <span className="text-xs text-gray-400 dark:text-gray-500 select-none shrink-0">%</span>
             </div>
 
             {/* Remove Button */}
