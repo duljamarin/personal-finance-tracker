@@ -228,7 +228,7 @@ export default function CSVImport({ categories, onImportComplete }) {
             </Card>
             <Card className="flex-1 p-4">
               <div className="text-sm text-ink-secondary dark:text-white">{t('import.invalidRows')}</div>
-              <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              <div className="text-2xl font-bold text-[#e8394d]">
                 {validationErrors.length}
               </div>
             </Card>
@@ -254,12 +254,12 @@ export default function CSVImport({ categories, onImportComplete }) {
           {/* Validation Errors */}
           {validationErrors.length > 0 && (
             <div className="max-h-40 overflow-y-auto">
-              <h3 className="text-sm font-semibold text-red-700 dark:text-red-400 mb-2">
+              <h3 className="text-sm font-semibold text-[#e8394d] mb-2">
                 {t('import.errors')}
               </h3>
               <div className="space-y-1 text-xs">
                 {validationErrors.map((err, i) => (
-                  <div key={i} className="text-red-600 dark:text-red-400">
+                  <div key={i} className="text-[#e8394d]">
                     {t('import.lineError', { line: err.line })}: {err.errors.join(', ')}
                   </div>
                 ))}
@@ -291,7 +291,7 @@ export default function CSVImport({ categories, onImportComplete }) {
                         <span className={`inline-block px-1.5 py-0.5 rounded text-xs ${
                           row.type === 'income' 
                             ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
-                            : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                            : 'bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] text-[#e8394d]'
                         }`}>
                           {row.type === 'income' ? t('transactions.income') : t('transactions.expense')}
                         </span>

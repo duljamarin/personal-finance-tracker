@@ -371,7 +371,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						))}
 					</div>
 					{errors.type && (
-						<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.type)}</span>
+						<span className="text-xs text-[#e8394d] font-medium">{t(errors.type)}</span>
 					)}
 
 					{/* Amount */}

@@ -9,7 +9,7 @@ export default function PasswordInput({ value, onChange, className, placeholder,
   const toggle = onToggle || (() => setInternalShow(v => !v));
 
   const borderState = error
-    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
+    ? 'border-[#e8394d] focus:border-[#e8394d] focus:ring-[#e8394d]/20'
     : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20';
 
   const defaultClass =

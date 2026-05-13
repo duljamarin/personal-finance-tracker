@@ -209,7 +209,7 @@ export default function CashFlowForecast() {
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
           <p className="text-xs text-ink-muted dark:text-white">{t('cashFlow.trackedBalance')}</p>
-          <p className={`text-sm font-bold ${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+          <p className={`text-sm font-bold ${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#e8394d]'}`}>
             {fmtCurrency(net, 'EUR', { compact: true })}
           </p>
           <p className="text-[10px] text-ink-muted/60 dark:text-white mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
@@ -217,7 +217,7 @@ export default function CashFlowForecast() {
         <div className="text-ink-muted/50 dark:text-white/50 text-lg font-light">→</div>
         <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
           <p className="text-xs text-ink-muted dark:text-white">{t(`cashFlow.projectedIn.${horizon}`)}</p>
-          <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+          <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#e8394d]'}`}>
             {fmtCurrency(endBalance, 'EUR', { compact: true })}
           </p>
         </div>
@@ -225,7 +225,7 @@ export default function CashFlowForecast() {
           <div className={`text-xs font-medium px-2 py-1 rounded-full ${
             delta >= 0
               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-              : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+              : 'bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] text-[#e8394d]'
           }`}>
             {delta > 0 ? '+' : ''}{fmtCurrency(delta, 'EUR', { compact: true })}
           </div>

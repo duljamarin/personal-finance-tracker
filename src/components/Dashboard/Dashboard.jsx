@@ -113,7 +113,7 @@ export default function Dashboard() {
       {/* Transactions + category breakdowns */}
       <div className="mt-8">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 font-medium text-sm">
+          <div className="mb-6 p-4 bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] border border-[#e8394d]/30 rounded-xl text-[#e8394d] font-medium text-sm">
             {error}
           </div>
         )}

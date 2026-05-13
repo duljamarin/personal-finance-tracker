@@ -108,7 +108,7 @@ export default function TransactionSplitForm({
                 }))}
               />
               {errors[`split_${index}_category`] && (
-                <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                <p className="text-xs text-[#e8394d] mt-1">
                   {t(errors[`split_${index}_category`])}
                 </p>
               )}
@@ -129,12 +129,12 @@ export default function TransactionSplitForm({
                   'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
                   'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ' +
                   (errors[`split_${index}_amount`]
-                    ? 'border-red-400'
+                    ? 'border-[#e8394d]'
                     : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40')
                 }
               />
               {errors[`split_${index}_amount`] && (
-                <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                <p className="text-xs text-[#e8394d] mt-1">
                   {t(errors[`split_${index}_amount`])}
                 </p>
               )}
@@ -180,14 +180,14 @@ export default function TransactionSplitForm({
         </div>
         <div className="flex justify-between">
           <span className="text-ink-secondary dark:text-white">{t('split.splitTotal')}:</span>
-          <span className={`font-medium ${hasValidSplit ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+          <span className={`font-medium ${hasValidSplit ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#e8394d]'}`}>
             €{totalSplitAmount.toFixed(2)} ({totalPercentage.toFixed(2)}%)
           </span>
         </div>
         {!hasValidSplit && (
           <div className="flex justify-between">
             <span className="text-ink-secondary dark:text-white">{t('split.difference')}:</span>
-            <span className="font-medium text-red-600 dark:text-red-400">
+            <span className="font-medium text-[#e8394d]">
               €{Math.abs(splitDifference).toFixed(2)}
             </span>
           </div>
@@ -195,7 +195,7 @@ export default function TransactionSplitForm({
       </div>
 
       {!hasValidSplit && (
-        <p className="text-xs text-red-600 dark:text-red-400">
+        <p className="text-xs text-[#e8394d]">
           {t('split.mustEqualTotal')}
         </p>
       )}

@@ -26,7 +26,7 @@ function PctChange({ current, previous, positiveIsGood }) {
   const isGood = positiveIsGood ? isUp : !isUp;
 
   return (
-    <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isGood ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'}`}>
+    <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isGood ? 'text-brand-600 dark:text-brand-400' : 'text-[#e8394d]'}`}>
       {isUp ? (
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />

@@ -85,7 +85,7 @@ export default function TransactionRecurringSection({
 								</span>
 							</div>
 							{errors.intervalCount && (
-								<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.intervalCount)}</span>
+								<span className="text-xs text-[#e8394d] font-medium">{t(errors.intervalCount)}</span>
 							)}
 						</div>
 					</div>
@@ -127,7 +127,7 @@ export default function TransactionRecurringSection({
 								className={`${getInputClassName(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
 							/>
 							{errors.endDate && (
-								<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.endDate)}</span>
+								<span className="text-xs text-[#e8394d] font-medium">{t(errors.endDate)}</span>
 							)}
 						</div>
 					)}
@@ -147,7 +147,7 @@ export default function TransactionRecurringSection({
 								className={getInputClassName(errors.occurrencesLimit)}
 							/>
 							{errors.occurrencesLimit && (
-								<span className="text-xs text-red-600 dark:text-red-400 font-medium">{t(errors.occurrencesLimit)}</span>
+								<span className="text-xs text-[#e8394d] font-medium">{t(errors.occurrencesLimit)}</span>
 							)}
 						</div>
 					)}

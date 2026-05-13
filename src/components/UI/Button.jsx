@@ -8,7 +8,7 @@ export default function Button({ children, className = '', variant = 'primary', 
     success:
       'bg-emerald-800 hover:bg-emerald-700 text-white border border-transparent',
     danger:
-      'bg-transparent border border-red-500/50 hover:border-red-500 hover:bg-red-500/5 text-red-600 dark:text-red-400',
+      'bg-transparent border border-[#e8394d]/50 hover:border-[#e8394d] hover:bg-[#e8394d]/5 text-[#e8394d]',
     ghost:
       'bg-transparent hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary border border-transparent',
   };
