@@ -23,11 +23,11 @@ const StepArt = {
     <svg viewBox="0 0 200 160" className="w-full h-auto" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="100" cy="80" r="48" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30 animate-pulse opacity-40" />
       <circle cx="100" cy="80" r="32" stroke="#22ad93" strokeWidth="2" />
-      <text x="100" y="92" textAnchor="middle" className="fill-brand-600 dark:fill-brand-400" style={{ fontFamily: 'Space Grotesk', fontSize: '28px', fontWeight: 600 }}>€</text>
-      <text x="40" y="40" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'Space Grotesk', fontSize: '14px', fontWeight: 500 }}>$</text>
-      <text x="160" y="48" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'Space Grotesk', fontSize: '14px', fontWeight: 500 }}>£</text>
-      <text x="40" y="130" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'Space Grotesk', fontSize: '14px', fontWeight: 500 }}>¥</text>
-      <text x="160" y="124" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'Space Grotesk', fontSize: '14px', fontWeight: 500 }}>₣</text>
+      <text x="100" y="92" textAnchor="middle" className="fill-brand-600 dark:fill-brand-400" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '28px', fontWeight: 600 }}>€</text>
+      <text x="40" y="40" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>$</text>
+      <text x="160" y="48" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>£</text>
+      <text x="40" y="130" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>¥</text>
+      <text x="160" y="124" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>₣</text>
     </svg>
   ),
   2: (
@@ -41,7 +41,7 @@ const StepArt = {
       <circle cx="140" cy="60" r="3" fill="#22ad93" />
       <circle cx="180" cy="30" r="4" fill="#22ad93" />
       <rect x="160" y="14" width="32" height="22" rx="3" fill="#22ad93" />
-      <text x="176" y="30" textAnchor="middle" fill="white" style={{ fontFamily: 'Space Grotesk', fontSize: '12px', fontWeight: 600 }}>+</text>
+      <text x="176" y="30" textAnchor="middle" fill="white" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '12px', fontWeight: 600 }}>+</text>
     </svg>
   ),
   3: (
@@ -221,17 +221,17 @@ export default function OnboardingWizard() {
       (typeof window !== 'undefined' && localStorage.getItem('username')) || '';
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-surface-page dark:bg-surface-dark-page px-4">
-        <div className="animate-celebrate inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-brand-600 rounded-full shadow-lg shadow-brand-500/30 mb-6">
+        <div className="animate-celebrate inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-brand-600 rounded-md shadow-lg shadow-brand-500/30 mb-6">
           <svg viewBox="0 0 24 24" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] text-center mb-3">
+        <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] text-center mb-3">
           {username
             ? `${t('onboarding.wizard.successTitle').replace(/!$/, '')}, ${username}!`
             : t('onboarding.wizard.successTitle')}
         </h1>
-        <p className="text-base text-ink-muted dark:text-ink-dark-muted text-center max-w-md">
+        <p className="text-base text-ink-muted dark:text-white text-center max-w-md">
           {t('onboarding.wizard.successSubtitle')}
         </p>
       </div>
@@ -245,16 +245,16 @@ export default function OnboardingWizard() {
       <div className="relative w-full max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-md mb-5 shadow-lg shadow-brand-500/30">
             <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] mb-3">
             {t('onboarding.wizard.title')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-md mx-auto">
+          <p className="text-base text-ink-muted dark:text-white max-w-md mx-auto">
             {t('onboarding.wizard.subtitle')}
           </p>
         </div>

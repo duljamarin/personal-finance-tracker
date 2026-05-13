@@ -8,7 +8,7 @@ import { useToast } from '../../context/ToastContext';
 import { fetchNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 
-const EXPENSE_COLOR = '#e05c6b';
+const EXPENSE_COLOR = '#e8394d';
 
 export default function NotificationsPage() {
   const { t } = useTranslation();
@@ -123,7 +123,7 @@ export default function NotificationsPage() {
       default:
         return (
           <div className="w-10 h-10 bg-surface-subtle dark:bg-surface-dark-subtle rounded-full flex items-center justify-center">
-            <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-ink-muted dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
           </div>
@@ -139,7 +139,7 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h1 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
+        <h1 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
           {t('notifications.title')}
         </h1>
         <div className="flex items-center gap-2">
@@ -172,10 +172,10 @@ export default function NotificationsPage() {
       <div className="space-y-3">
         {notifications.length === 0 ? (
           <Card className="p-8 text-center">
-            <svg className="w-16 h-16 mx-auto text-ink-muted dark:text-ink-dark-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-16 h-16 mx-auto text-ink-muted dark:text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <p className="text-ink-muted dark:text-ink-dark-muted">{t('notifications.noNotifications')}</p>
+            <p className="text-ink-muted dark:text-white">{t('notifications.noNotifications')}</p>
           </Card>
         ) : (
           notifications.map(notification => {
@@ -190,10 +190,10 @@ export default function NotificationsPage() {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className={`font-semibold ${!notification.is_read ? 'text-ink-primary dark:text-ink-dark-primary' : 'text-ink-muted dark:text-ink-dark-muted'}`}>
+                    <h3 className={`font-semibold ${!notification.is_read ? 'text-ink-primary dark:text-white' : 'text-ink-muted dark:text-white'}`}>
                       {notifTitle}
                     </h3>
-                    <span className="text-xs text-ink-muted dark:text-ink-dark-muted whitespace-nowrap">
+                    <span className="text-xs text-ink-muted dark:text-white whitespace-nowrap">
                       {new Date(notification.created_at).toLocaleDateString(undefined, {
                         month: 'short',
                         day: 'numeric',
@@ -203,7 +203,7 @@ export default function NotificationsPage() {
                     </span>
                   </div>
 
-                  <p className="mt-1 text-sm text-ink-muted dark:text-ink-dark-muted">
+                  <p className="mt-1 text-sm text-ink-muted dark:text-white">
                     {notifMessage}
                   </p>
 
@@ -218,7 +218,7 @@ export default function NotificationsPage() {
                     )}
                     <button
                       onClick={() => handleDelete(notification.id)}
-                      className="text-xs text-ink-muted dark:text-ink-dark-muted hover:opacity-80"
+                      className="text-xs text-ink-muted dark:text-white hover:opacity-80"
                     >
                       {t('notifications.delete')}
                     </button>

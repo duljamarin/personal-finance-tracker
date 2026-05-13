@@ -221,13 +221,13 @@ export default function CSVImport({ categories, onImportComplete }) {
           {/* Summary */}
           <div className="flex gap-4">
             <Card className="flex-1 p-4">
-              <div className="text-sm text-gray-600 dark:text-gray-400">{t('import.validRows')}</div>
+              <div className="text-sm text-ink-secondary dark:text-white">{t('import.validRows')}</div>
               <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                 {previewData.length}
               </div>
             </Card>
             <Card className="flex-1 p-4">
-              <div className="text-sm text-gray-600 dark:text-gray-400">{t('import.invalidRows')}</div>
+              <div className="text-sm text-ink-secondary dark:text-white">{t('import.invalidRows')}</div>
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">
                 {validationErrors.length}
               </div>
@@ -270,11 +270,11 @@ export default function CSVImport({ categories, onImportComplete }) {
           {/* Preview Table */}
           {previewData.length > 0 && (
             <div className="max-h-96 overflow-auto">
-              <h3 className="text-sm font-semibold mb-2 text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold mb-2 text-ink-primary dark:text-white">
                 {t('import.preview')} ({previewData.slice(0, 10).length} {t('import.of')} {previewData.length})
               </h3>
               <table className="w-full text-xs">
-                <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0">
+                <thead className="bg-surface-subtle dark:bg-surface-dark-elevated sticky top-0">
                   <tr>
                     <th className="px-2 py-1 text-left">{t('transactions.titleLabel')}</th>
                     <th className="px-2 py-1 text-left">{t('transactions.type')}</th>
@@ -283,9 +283,9 @@ export default function CSVImport({ categories, onImportComplete }) {
                     <th className="px-2 py-1 text-left">{t('transactions.date')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
                   {previewData.slice(0, 10).map((row, i) => (
-                    <tr key={i} className="text-gray-900 dark:text-gray-100">
+                    <tr key={i} className="text-ink-primary dark:text-white">
                       <td className="px-2 py-1">{row.title}</td>
                       <td className="px-2 py-1">
                         <span className={`inline-block px-1.5 py-0.5 rounded text-xs ${
@@ -312,7 +312,7 @@ export default function CSVImport({ categories, onImportComplete }) {
           )}
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-4 border-t dark:border-gray-700">
+          <div className="flex justify-end gap-2 pt-4 border-t dark:border-surface-dark-hairline">
             <Button
               onClick={() => setShowModal(false)}
               variant="secondary"

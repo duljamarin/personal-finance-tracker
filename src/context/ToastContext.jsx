@@ -94,16 +94,16 @@ function Toast({ message, type, onClose }) {
 
   return (
     <div 
-      className={`bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700 border-l-4 ${borderColors[type]} px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[280px] max-w-md pointer-events-auto animate-slide-in-right`}
+      className={`bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline border-l-4 ${borderColors[type]} px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[280px] max-w-md pointer-events-auto animate-slide-in-right`}
       onClick={onClose}
     >
       <div className={`flex-shrink-0 ${iconColors[type]}`}>
         {icons[type]}
       </div>
-      <p className="text-sm font-medium text-gray-800 dark:text-gray-100 flex-1">{message}</p>
+      <p className="text-sm font-medium text-ink-primary dark:text-white flex-1">{message}</p>
       <button
         onClick={onClose}
-        className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded p-1 transition-colors"
+        className="flex-shrink-0 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary rounded p-1 transition-colors"
       >
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

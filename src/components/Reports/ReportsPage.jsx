@@ -103,20 +103,20 @@ export default function ReportsPage() {
   const hasData = transactions.length > 0;
 
   const dateInputClass =
-    'text-sm px-3 py-2 rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+    'text-sm px-3 py-2 rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-display font-semibold tracking-tight text-3xl text-ink-primary dark:text-ink-dark-primary flex items-center gap-3">
+          <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
             <svg className="w-8 h-8 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             {t('reports.title')}
           </h1>
-          <p className="text-ink-muted dark:text-ink-dark-muted mt-1">
+          <p className="text-ink-muted dark:text-white mt-1">
             {startDate} - {endDate}
           </p>
         </div>
@@ -131,7 +131,7 @@ export default function ReportsPage() {
             className={`px-4 py-2 rounded-md font-medium text-sm transition ${
               activePreset === key
                 ? 'bg-brand-600 text-white'
-                : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-ink-dark-primary hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline border border-surface-hairline dark:border-surface-dark-hairline'
+                : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline border border-surface-hairline dark:border-surface-dark-hairline'
             }`}
           >
             {t(`reports.${key}`)}
@@ -147,7 +147,7 @@ export default function ReportsPage() {
             onChange={handleCustomStart}
             className={dateInputClass}
           />
-          <span className="text-ink-muted dark:text-ink-dark-muted text-sm">-</span>
+          <span className="text-ink-muted dark:text-white text-sm">-</span>
           <input
             type="date"
             value={endDate}

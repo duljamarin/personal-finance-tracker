@@ -19,9 +19,9 @@ function CustomTooltip({ active, payload }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary">{payload[0].name}</p>
-        <p className="text-sm text-ink-primary dark:text-ink-dark-primary tabular-nums mt-0.5">€{payload[0].value.toFixed(2)}</p>
-        <p className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums">{payload[0].payload.pct}%</p>
+        <p className="text-sm font-semibold text-ink-primary dark:text-white">{payload[0].name}</p>
+        <p className="text-sm text-ink-primary dark:text-white tabular-nums mt-0.5">€{payload[0].value.toFixed(2)}</p>
+        <p className="text-xs text-ink-muted dark:text-white tabular-nums">{payload[0].payload.pct}%</p>
       </div>
     );
   }
@@ -57,10 +57,10 @@ export default function ReportIncomeBreakdown({ transactions }) {
   if (categoryData.length === 0) {
     return (
       <Card padding="md">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-4">
           {t('reports.incomeByCategory')}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
+        <p className="text-sm text-ink-muted dark:text-white text-center py-6">
           {t('reports.noIncome')}
         </p>
       </Card>
@@ -69,7 +69,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
 
   return (
     <Card padding="md">
-      <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-5">
+      <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-5">
         {t('reports.incomeByCategory')}
       </h3>
 
@@ -105,13 +105,13 @@ export default function ReportIncomeBreakdown({ transactions }) {
                 className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
-              <span className="text-sm text-ink-primary dark:text-ink-dark-primary truncate max-w-[160px]">{entry.name}</span>
-              <span className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums ml-2">€{entry.value.toFixed(0)}</span>
-              <span className="text-xs text-ink-muted dark:text-ink-dark-muted tabular-nums">{entry.pct}%</span>
+              <span className="text-sm text-ink-primary dark:text-white truncate max-w-[160px]">{entry.name}</span>
+              <span className="text-sm font-semibold text-ink-primary dark:text-white tabular-nums ml-2">€{entry.value.toFixed(0)}</span>
+              <span className="text-xs text-ink-muted dark:text-white tabular-nums">{entry.pct}%</span>
             </div>
           ))}
           {categoryData.length > 6 && (
-            <p className="text-xs text-ink-muted dark:text-ink-dark-muted pt-1">
+            <p className="text-xs text-ink-muted dark:text-white pt-1">
               + {categoryData.length - 6} {t('reports.moreCategories', { defaultValue: 'more' })}
             </p>
           )}
@@ -119,17 +119,17 @@ export default function ReportIncomeBreakdown({ transactions }) {
       </div>
 
       {/* Full data table */}
-      <div className="overflow-x-auto scrollbar-hide border-t border-gray-100 dark:border-zinc-800 pt-4">
+      <div className="overflow-x-auto scrollbar-hide border-t border-surface-hairline dark:border-surface-dark-hairline pt-4">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 dark:border-zinc-700">
-              <th className="text-left py-2 pr-4 text-gray-500 dark:text-gray-400 font-medium">
+            <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
+              <th className="text-left py-2 pr-4 text-ink-muted dark:text-white font-medium">
                 {t('reports.category')}
               </th>
-              <th className="text-right py-2 pr-4 text-gray-500 dark:text-gray-400 font-medium">
+              <th className="text-right py-2 pr-4 text-ink-muted dark:text-white font-medium">
                 {t('reports.amount')}
               </th>
-              <th className="text-right py-2 text-gray-500 dark:text-gray-400 font-medium">
+              <th className="text-right py-2 text-ink-muted dark:text-white font-medium">
                 {t('reports.percentage')}
               </th>
             </tr>
@@ -138,7 +138,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
             {categoryData.map((row, idx) => (
               <tr
                 key={row.name}
-                className="border-b border-gray-100 dark:border-zinc-800 last:border-0"
+                className="border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0"
               >
                 <td className="py-2.5 pr-4">
                   <div className="flex items-center gap-2">
@@ -146,17 +146,17 @@ export default function ReportIncomeBreakdown({ transactions }) {
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ backgroundColor: COLORS[idx % COLORS.length] }}
                     />
-                    <span className="text-gray-800 dark:text-gray-200 font-medium truncate max-w-[140px]">
+                    <span className="text-ink-primary dark:text-white font-medium truncate max-w-[140px]">
                       {row.name}
                     </span>
                   </div>
                 </td>
-                <td className="py-2.5 pr-4 text-right text-gray-800 dark:text-gray-200 font-medium tabular-nums">
+                <td className="py-2.5 pr-4 text-right text-ink-primary dark:text-white font-medium tabular-nums">
                   €{row.value.toFixed(2)}
                 </td>
                 <td className="py-2.5 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <div className="w-16 h-1.5 bg-gray-100 dark:bg-zinc-700 rounded-full overflow-hidden">
+                    <div className="w-16 h-1.5 bg-surface-hairline dark:bg-surface-dark-elevated rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -165,7 +165,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
                         }}
                       />
                     </div>
-                    <span className="text-gray-500 dark:text-gray-400 tabular-nums w-10 text-right">
+                    <span className="text-ink-muted dark:text-white tabular-nums w-10 text-right">
                       {row.pct}%
                     </span>
                   </div>
@@ -174,12 +174,12 @@ export default function ReportIncomeBreakdown({ transactions }) {
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-gray-200 dark:border-zinc-700">
-              <td className="pt-2.5 pr-4 font-semibold text-gray-900 dark:text-white">Total</td>
-              <td className="pt-2.5 pr-4 text-right font-semibold text-gray-900 dark:text-white tabular-nums">
+            <tr className="border-t-2 border-surface-hairline dark:border-surface-dark-hairline">
+              <td className="pt-2.5 pr-4 font-semibold text-ink-primary dark:text-white">Total</td>
+              <td className="pt-2.5 pr-4 text-right font-semibold text-ink-primary dark:text-white tabular-nums">
                 €{total.toFixed(2)}
               </td>
-              <td className="pt-2.5 text-right font-semibold text-gray-500 dark:text-gray-400">
+              <td className="pt-2.5 text-right font-semibold text-ink-muted dark:text-white">
                 100%
               </td>
             </tr>

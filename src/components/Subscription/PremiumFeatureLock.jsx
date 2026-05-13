@@ -26,7 +26,7 @@ export default function PremiumFeatureLock({ children, featureName }) {
           </div>
 
           {/* Text */}
-          <p className="font-display font-semibold tracking-tight text-sm text-ink-primary dark:text-ink-dark-primary mb-3">
+          <p className="font-semibold tracking-tight text-sm text-ink-primary dark:text-white mb-3">
             {featureName}
           </p>
 

@@ -7,84 +7,25 @@ import { getUnreadNotificationCount } from '../utils/api';
 import { supabase } from '../utils/supabaseClient';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
+import {
+  LayoutDashboard, PieChart, Target, TrendingUp, Repeat,
+  Tag, FileText, Bell, Rocket, User, CreditCard,
+  LogOut, ChevronsLeft, Menu as MenuIcon,
+} from 'lucide-react';
 
 const navItems = [
-  {
-    key: 'dashboard',
-    path: '/dashboard',
-    labelKey: 'nav.dashboard',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-      </svg>
-    ),
-  },
-  {
-    key: 'budgets',
-    path: '/budgets',
-    labelKey: 'budgets.title',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-      </svg>
-    ),
-  },
-  {
-    key: 'goals',
-    path: '/goals',
-    labelKey: 'goals.title',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
-      </svg>
-    ),
-  },
-  {
-    key: 'networth',
-    path: '/networth',
-    labelKey: 'networth.title',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
-      </svg>
-    ),
-  },
-  {
-    key: 'recurring',
-    path: '/recurring',
-    labelKey: 'nav.recurring',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
-      </svg>
-    ),
-  },
-  {
-    key: 'categories',
-    path: '/categories',
-    labelKey: 'nav.categories',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
-      </svg>
-    ),
-  },
-  {
-    key: 'reports',
-    path: '/reports',
-    labelKey: 'reports.title',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-      </svg>
-    ),
-  },
+  { key: 'dashboard',  path: '/dashboard',    labelKey: 'nav.dashboard',   Icon: LayoutDashboard },
+  { key: 'budgets',    path: '/budgets',       labelKey: 'budgets.title',   Icon: PieChart        },
+  { key: 'goals',      path: '/goals',         labelKey: 'goals.title',     Icon: Target          },
+  { key: 'networth',   path: '/networth',      labelKey: 'networth.title',  Icon: TrendingUp      },
+  { key: 'recurring',  path: '/recurring',     labelKey: 'nav.recurring',   Icon: Repeat          },
+  { key: 'categories', path: '/categories',    labelKey: 'nav.categories',  Icon: Tag             },
+  { key: 'reports',    path: '/reports',       labelKey: 'reports.title',   Icon: FileText        },
 ];
 
 function BrandMark({ compact = false }) {
   return (
-    <span className={`inline-flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-10 h-10'} bg-brand-600 rounded-lg shadow-sm shadow-brand-500/25 flex-shrink-0`}>
+    <span className={`inline-flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-10 h-10'} bg-brand-600 rounded-md shadow-sm shadow-brand-500/25 flex-shrink-0`}>
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
@@ -95,6 +36,7 @@ function BrandMark({ compact = false }) {
 
 function NavItem({ item, isActive, collapsed, onClick }) {
   const { t } = useTranslation();
+  const { Icon: NavIcon } = item;
   return (
     <Link
       to={item.path}
@@ -102,16 +44,17 @@ function NavItem({ item, isActive, collapsed, onClick }) {
       className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
         isActive
           ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300'
-          : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
+          : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
       } ${collapsed ? 'justify-center' : ''}`}
       title={collapsed ? t(item.labelKey) : undefined}
     >
       {isActive && !collapsed && (
         <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-brand-500 rounded-r-full" />
       )}
-      <span className={isActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-ink-dark-muted/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}>
-        {item.icon}
-      </span>
+      <NavIcon
+        className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
+        strokeWidth={1.75}
+      />
       {!collapsed && <span>{t(item.labelKey)}</span>}
     </Link>
   );
@@ -194,7 +137,7 @@ export default function Sidebar() {
       <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-4 h-16 shrink-0 border-b border-surface-hairline dark:border-surface-dark-hairline`}>
         <BrandMark compact />
         {!collapsed && (
-          <span className="text-base font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight truncate">
+          <span className="text-base font-semibold text-ink-primary dark:text-white tracking-tight truncate">
             {t('app.shortName')}
           </span>
         )}
@@ -222,16 +165,17 @@ export default function Sidebar() {
           className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
             notifActive
               ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300'
-              : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
+              : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
           } ${collapsed ? 'justify-center' : ''}`}
         >
           {notifActive && !collapsed && (
             <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-brand-500 rounded-r-full" />
           )}
           <span className="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-5 h-5 ${notifActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-ink-dark-muted/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-            </svg>
+            <Bell
+              className={`w-5 h-5 ${notifActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
+              strokeWidth={1.75}
+            />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold leading-none">
                 {unreadCount > 99 ? '99+' : unreadCount}
@@ -248,20 +192,25 @@ export default function Sidebar() {
           {showUpgrade ? (
             <Link
               to="/pricing"
-              className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30"
+              className="block w-full rounded-xl border border-brand-200/60 dark:border-brand-800/40 bg-brand-50 dark:bg-brand-950/30 p-3"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
-              {t('upgrade.goPremium')}
+              <div className="flex items-center gap-2 mb-1.5">
+                <Rocket className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
+                <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">Pro plan</span>
+              </div>
+              <p className="text-xs text-brand-600/70 dark:text-brand-400/70 mb-2.5 leading-relaxed">
+                {t('upgrade.unlockAll', { defaultValue: 'Unlock all features' })}
+              </p>
+              <span className="flex items-center justify-center w-full px-3 py-1.5 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors">
+                {t('upgrade.goPremium')}
+              </span>
             </Link>
           ) : (
             <Link
               to="/pricing"
               className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/30 hover:bg-brand-100 dark:hover:bg-brand-950/50 rounded-md transition-colors border border-brand-200/60 dark:border-brand-800/30"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.204-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
+              <CreditCard className="w-4 h-4" strokeWidth={1.75} />
               {t('pricing.managePlan')}
             </Link>
           )}
@@ -276,12 +225,10 @@ export default function Sidebar() {
             <ThemeToggle />
             <button
               onClick={() => setCollapsed(c => !c)}
-              className="hidden lg:flex p-2 rounded-md text-ink-muted/70 dark:text-ink-dark-muted/70 hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+              className="hidden lg:flex p-2 rounded-md text-ink-muted/70 dark:text-white/70 hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-4 h-4 transition-transform ${collapsed ? 'rotate-180' : ''}`}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
-              </svg>
+              <ChevronsLeft className={`w-4 h-4 transition-transform ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.75} />
             </button>
           </div>
         </div>
@@ -297,7 +244,7 @@ export default function Sidebar() {
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary truncate">
+                <p className="text-sm font-medium text-ink-primary dark:text-white truncate">
                   {user?.user_metadata?.username || user?.email}
                 </p>
                 {showProBadge && (
@@ -312,21 +259,17 @@ export default function Sidebar() {
               <Link
                 to="/account"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}
-                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+                <User className="h-4 w-4 text-ink-muted dark:text-white" strokeWidth={1.75} />
                 {t('nav.myProfile')}
               </Link>
               <Link
                 to="/pricing"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}
-                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-                </svg>
+                <CreditCard className="h-4 w-4 text-ink-muted dark:text-white" strokeWidth={1.75} />
                 {t('nav.subscription')}
               </Link>
               <div className="border-t border-surface-hairline dark:border-surface-dark-hairline my-1" />
@@ -334,9 +277,7 @@ export default function Sidebar() {
                 onClick={() => { setProfileOpen(false); handleLogout(); }}
                 className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+                <LogOut className="h-4 w-4" strokeWidth={1.75} />
                 {t('nav.logout')}
               </button>
             </div>
@@ -356,12 +297,10 @@ export default function Sidebar() {
       {/* Mobile trigger */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 p-2.5 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline shadow-sm text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-40 p-2.5 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline shadow-sm text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
         aria-label="Open menu"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
+        <MenuIcon className="w-5 h-5" strokeWidth={1.75} />
       </button>
 
       {/* Mobile overlay */}
@@ -374,11 +313,9 @@ export default function Sidebar() {
           <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-surface-dark-card border-r border-surface-hairline dark:border-surface-dark-hairline animate-slide-in-left">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-3 p-1.5 rounded-md text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+              className="absolute top-4 right-3 p-1.5 rounded-md text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
+              <ChevronsLeft className="w-5 h-5" strokeWidth={1.75} />
             </button>
             {sidebarContent}
           </aside>

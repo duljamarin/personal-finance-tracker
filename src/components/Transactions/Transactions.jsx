@@ -179,7 +179,7 @@ export default function Transactions() {
   }, [handleAdd]);
 
   const selectClass =
-    'px-3 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary ' +
+    'px-3 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ' +
     'border border-surface-hairline dark:border-surface-dark-hairline rounded-md ' +
     'hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 ' +
     'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors';
@@ -191,7 +191,7 @@ export default function Transactions() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
           <div>
             <span className="eyebrow">{t('transactions.title')}</span>
-            <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight-display text-ink-primary dark:text-ink-dark-primary mt-1.5">
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-ink-primary dark:text-white mt-1.5">
               {t('transactions.title')}
             </h1>
           </div>
@@ -207,7 +207,7 @@ export default function Transactions() {
             <CSVImport categories={categories} onImportComplete={() => { onReload(); reloadCategories(); }} />
             <button
               onClick={exportCSV}
-              className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary px-4 py-2.5 rounded-md font-medium text-sm transition-colors"
+              className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white px-4 py-2.5 rounded-md font-medium text-sm transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span className="hidden sm:inline">{t('transactions.export')}</span>
@@ -215,7 +215,7 @@ export default function Transactions() {
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="sm:hidden inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary px-4 py-2.5 rounded-md font-medium text-sm"
+              className="sm:hidden inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white px-4 py-2.5 rounded-md font-medium text-sm"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -227,7 +227,7 @@ export default function Transactions() {
 
         {/* Search */}
         <div className="relative mb-3">
-          <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-ink-muted dark:text-ink-dark-muted">
+          <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-ink-muted dark:text-white/50">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -238,12 +238,12 @@ export default function Transactions() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder={t('transactions.searchPlaceholder')}
-            className="w-full pl-10 pr-10 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/60 dark:placeholder:text-ink-dark-muted/60 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
+            className="w-full pl-10 pr-10 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-3 flex items-center text-ink-muted hover:text-ink-primary dark:text-ink-dark-muted dark:hover:text-ink-dark-primary"
+              className="absolute inset-y-0 right-3 flex items-center text-ink-muted hover:text-ink-primary dark:text-white/50 dark:hover:text-white"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -288,13 +288,13 @@ export default function Transactions() {
                 type === 'income'
                   ? 'bg-brand-600 text-white'
                   : type === 'expense'
-                  ? 'bg-[#e05c6b] text-white'
+                  ? 'bg-[#e8394d] text-white'
                   : 'bg-ink-primary dark:bg-ink-dark-primary text-white dark:text-ink-primary';
               return (
                 <button
                   key={type}
                   onClick={() => setTypeFilter(type)}
-                  className={`px-3.5 py-1.5 text-xs font-display font-medium tracking-display rounded-full transition-colors ${active ? activeClass : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary'}`}
+                  className={`px-3.5 py-1.5 text-xs font-medium tracking-tight rounded-full transition-colors ${active ? activeClass : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary'}`}
                 >
                   {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.incomes') : t('transactions.expenses')}
                 </button>
@@ -321,10 +321,10 @@ export default function Transactions() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
               </svg>
             </div>
-            <h3 className="font-display text-xl font-semibold tracking-display text-ink-primary dark:text-ink-dark-primary mb-2">
+            <h3 className="text-xl font-semibold tracking-tight text-ink-primary dark:text-white mb-2">
               {searchQuery.trim() ? t('transactions.noSearchResults') : t('transactions.noTransactions')}
             </h3>
-            <p className="text-sm text-ink-muted dark:text-ink-dark-muted mb-6 max-w-sm">
+            <p className="text-sm text-ink-muted dark:text-white mb-6 max-w-sm">
               {searchQuery.trim() ? `"${searchQuery}"` : t('transactions.noTransactionsDesc')}
             </p>
             {items.length === 0 && !searchQuery && (
@@ -344,7 +344,7 @@ export default function Transactions() {
                   setTypeFilter('all');
                   setRecurringFilter(RECURRING_FILTERS.ALL);
                 }}
-                className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary px-5 py-2.5 rounded-md font-medium text-sm transition-colors hover:border-ink-muted/40"
+                className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white px-5 py-2.5 rounded-md font-medium text-sm transition-colors hover:border-ink-muted/40"
               >
                 {t('transactions.clearFilters')}
               </button>
@@ -384,11 +384,11 @@ export default function Transactions() {
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium text-sm text-ink-primary dark:text-ink-dark-primary truncate">
+                          <span className="font-medium text-sm text-ink-primary dark:text-white truncate">
                             {item.title}
                           </span>
                           {item.source_recurring_id && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-display tracking-wider uppercase font-medium bg-surface-page dark:bg-surface-dark-page text-ink-muted dark:text-ink-dark-muted border border-surface-hairline dark:border-surface-dark-hairline">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] tracking-wider uppercase font-medium bg-surface-page dark:bg-surface-dark-page text-ink-muted dark:text-white border border-surface-hairline dark:border-surface-dark-hairline">
                               <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                               </svg>
@@ -398,12 +398,12 @@ export default function Transactions() {
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           {catName && (
-                            <span className="text-xs text-ink-muted dark:text-ink-dark-muted truncate">
+                            <span className="text-xs text-ink-muted dark:text-white truncate">
                               {translateCategoryName(catName)}
                             </span>
                           )}
                           {Array.isArray(item.tags) && item.tags.length > 0 && (
-                            <span className="text-xs text-ink-muted dark:text-ink-dark-muted truncate">
+                            <span className="text-xs text-ink-muted dark:text-white truncate">
                               {item.tags.slice(0, 2).map(tag => `#${tag}`).join(' ')}
                               {item.tags.length > 2 && ` +${item.tags.length - 2}`}
                             </span>
@@ -415,7 +415,7 @@ export default function Transactions() {
                     {/* Date */}
                     <div className="flex sm:flex-col sm:items-start items-center gap-2 sm:gap-0">
                       <span className="eyebrow sm:hidden">{t('transactions.date')}</span>
-                      <span className="font-display text-sm tabular-nums text-ink-primary dark:text-ink-dark-primary">
+                      <span className="text-sm tabular-nums text-ink-primary dark:text-white">
                         {item.date}
                       </span>
                     </div>
@@ -424,7 +424,7 @@ export default function Transactions() {
                     <div className="flex sm:justify-end items-baseline gap-2">
                       <span className="eyebrow sm:hidden">{t('transactions.amount')}</span>
                       <span
-                        className={`font-display text-base sm:text-lg font-semibold tabular-nums ${item.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-ink-dark-primary'}`}
+                        className={`text-base sm:text-lg font-semibold tabular-nums ${item.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-white'}`}
                       >
                         {item.type === 'income' ? '+' : '−'}{currencySym}{amountStr}
                       </span>
@@ -433,7 +433,7 @@ export default function Transactions() {
                     {/* Actions */}
                     <div className="flex sm:justify-end gap-1">
                       <button
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-ink-primary dark:text-ink-dark-muted dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-ink-primary dark:text-white dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
                         onClick={() => handleEdit(item)}
                         title={t('transactions.edit')}
                         aria-label={t('transactions.edit')}
@@ -443,7 +443,7 @@ export default function Transactions() {
                         </svg>
                       </button>
                       <button
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-red-600 dark:text-ink-dark-muted dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-red-600 dark:text-white dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
                         onClick={() => setTxToDelete(item)}
                         title={t('transactions.deleteBtn')}
                         aria-label={t('transactions.deleteBtn')}
@@ -463,7 +463,7 @@ export default function Transactions() {
             <div className="flex justify-center mt-6">
               <button
                 onClick={() => setShowAll(prev => !prev)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary rounded-md font-medium text-sm transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white rounded-md font-medium text-sm transition-colors"
               >
                 {showAll ? (
                   <>

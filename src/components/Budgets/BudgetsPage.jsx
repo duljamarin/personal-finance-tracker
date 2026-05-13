@@ -220,13 +220,13 @@ export default function BudgetsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-display font-semibold tracking-tight text-3xl text-ink-primary dark:text-ink-dark-primary flex items-center gap-3">
+          <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
             <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             {t('budgets.title')}
           </h1>
-          <p className="text-ink-secondary dark:text-ink-dark-secondary mt-1">{t('budgets.subtitle')}</p>
+          <p className="text-ink-secondary dark:text-white mt-1">{t('budgets.subtitle')}</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
@@ -235,7 +235,7 @@ export default function BudgetsPage() {
             className={`px-4 py-2 text-sm font-medium border rounded-md transition ${
               canCreateBudget(budgets.length)
                 ? 'text-brand-700 dark:text-brand-500 bg-brand-50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/30 border-surface-hairline dark:border-surface-dark-hairline'
-                : 'text-ink-muted dark:text-ink-dark-muted bg-surface-subtle dark:bg-surface-dark-subtle border-surface-hairline dark:border-surface-dark-hairline cursor-not-allowed'
+                : 'text-ink-muted dark:text-white bg-surface-subtle dark:bg-surface-dark-subtle border-surface-hairline dark:border-surface-dark-hairline cursor-not-allowed'
             }`}
           >
             {t('budgets.copyFromPrevious')}
@@ -253,18 +253,18 @@ export default function BudgetsPage() {
       <div className="flex items-center justify-center gap-4 bg-white dark:bg-surface-dark-card rounded-xl shadow-sm border border-surface-hairline dark:border-surface-dark-hairline p-3">
         <button
           onClick={goToPrevMonth}
-          className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-ink-dark-secondary transition"
+          className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-white transition"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <span className="text-lg font-semibold text-ink-primary dark:text-ink-dark-primary min-w-[160px] text-center">
+        <span className="text-lg font-semibold text-ink-primary dark:text-white min-w-[160px] text-center">
           {t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`)} {selectedYear}
         </span>
         <button
           onClick={goToNextMonth}
-          className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-ink-dark-secondary transition"
+          className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-white transition"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -294,18 +294,18 @@ export default function BudgetsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('budgets.stats.totalBudgeted')}</p>
-              <p className="font-display font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
+              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalBudgeted')}</p>
+              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
                 €{totalBudgeted.toFixed(2)}
               </p>
             </div>
           </Card>
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('budgets.stats.totalSpent')}</p>
-              <p className={`font-display font-semibold tracking-tight text-2xl ${getValueColorClass(totalSpent, totalBudgeted, {
-                positive: 'text-[#e05c6b] dark:text-[#f08090]',
-                negative: 'text-ink-primary dark:text-ink-dark-primary'
+              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalSpent')}</p>
+              <p className={`font-semibold tracking-tight text-2xl ${getValueColorClass(totalSpent, totalBudgeted, {
+                positive: 'text-[#e8394d] dark:text-[#e8394d]',
+                negative: 'text-ink-primary dark:text-white'
               })}`}>
                 €{totalSpent.toFixed(2)}
               </p>
@@ -313,10 +313,10 @@ export default function BudgetsPage() {
           </Card>
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('budgets.stats.totalRemaining')}</p>
-              <p className={`font-display font-semibold tracking-tight text-2xl ${getValueColorClass(totalRemaining, 0, {
+              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalRemaining')}</p>
+              <p className={`font-semibold tracking-tight text-2xl ${getValueColorClass(totalRemaining, 0, {
                 positive: 'text-brand-600 dark:text-brand-500',
-                negative: 'text-[#e05c6b] dark:text-[#f08090]'
+                negative: 'text-[#e8394d] dark:text-[#e8394d]'
               })}`}>
                 €{totalRemaining.toFixed(2)}
               </p>
@@ -324,8 +324,8 @@ export default function BudgetsPage() {
           </Card>
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('budgets.stats.percentUsed')}</p>
-              <p className={`font-display font-semibold tracking-tight text-2xl ${percentUsed > 100 ? 'text-[#e05c6b] dark:text-[#f08090]' : percentUsed > 80 ? 'text-brand-700 dark:text-brand-500' : 'text-brand-600 dark:text-brand-500'}`}>
+              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.percentUsed')}</p>
+              <p className={`font-semibold tracking-tight text-2xl ${percentUsed > 100 ? 'text-[#e8394d] dark:text-[#e8394d]' : percentUsed > 80 ? 'text-brand-700 dark:text-brand-500' : 'text-brand-600 dark:text-brand-500'}`}>
                 {percentUsed}%
               </p>
             </div>

@@ -107,12 +107,12 @@ function ForecastTooltip({ active, payload, label }) {
 
   return (
     <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md text-sm">
-      <p className="font-semibold text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
-      <p className="tabular-nums" style={{ color: balance >= 0 ? '#168b78' : '#e05c6b' }}>
+      <p className="font-semibold text-ink-primary dark:text-white mb-1">{label}</p>
+      <p className="tabular-nums" style={{ color: balance >= 0 ? '#168b78' : '#e8394d' }}>
         {t('cashFlow.balance')}: {fmtCurrency(balance, 'EUR', { compact: true })}
       </p>
       {change !== 0 && (
-        <p className="tabular-nums mt-0.5" style={{ color: change > 0 ? '#43c5aa' : '#e05c6b' }}>
+        <p className="tabular-nums mt-0.5" style={{ color: change > 0 ? '#43c5aa' : '#e8394d' }}>
           {change > 0 ? '+' : ''}{fmtCurrency(change, 'EUR', { compact: true })}
         </p>
       )}
@@ -160,20 +160,20 @@ export default function CashFlowForecast() {
   const delta = endBalance - net;
   const hasRecurring = recurring.some((r) => r.is_active);
 
-  const axisColor = dark ? '#9ca3af' : '#6b7280';
-  const gridColor = dark ? '#27272a' : '#e5e7eb';
-  const areaColor = endBalance >= 0 ? '#168b78' : '#e05c6b';
-  const areaFill = endBalance >= 0 ? '#168b7833' : '#e05c6b33';
+  const axisColor = dark ? '#FFFFFF' : '#6b7280';
+  const gridColor = dark ? '#1F1F22' : '#EDEDE8';
+  const areaColor = endBalance >= 0 ? '#168b78' : '#e8394d';
+  const areaFill = endBalance >= 0 ? '#168b7833' : '#e8394d33';
 
   return (
-    <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800 mb-6">
+    <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-sm font-semibold text-ink-primary dark:text-white">
             {t('cashFlow.title')}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-ink-muted dark:text-white mt-0.5">
             {t('cashFlow.subtitle')}
           </p>
         </div>
@@ -187,10 +187,10 @@ export default function CashFlowForecast() {
                 title={locked ? t('cashFlow.premiumOnly') : undefined}
                 className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                   locked
-                    ? 'bg-gray-100 dark:bg-zinc-800 text-gray-300 dark:text-zinc-600 cursor-not-allowed'
+                    ? 'bg-surface-secondary dark:bg-surface-dark-elevated text-ink-muted/40 dark:text-white/40 cursor-not-allowed'
                     : horizon === h
                       ? 'bg-brand-600 text-white'
-                      : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
+                      : 'bg-surface-secondary dark:bg-surface-dark-elevated text-ink-muted dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-tertiary'
                 }`}
               >
                 {t(`cashFlow.horizon.${h}`)}
@@ -207,16 +207,16 @@ export default function CashFlowForecast() {
 
       {/* Summary pill */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 bg-gray-50 dark:bg-zinc-800/60 rounded-lg px-3 py-2">
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t('cashFlow.trackedBalance')}</p>
+        <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
+          <p className="text-xs text-ink-muted dark:text-white">{t('cashFlow.trackedBalance')}</p>
           <p className={`text-sm font-bold ${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtCurrency(net, 'EUR', { compact: true })}
           </p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
+          <p className="text-[10px] text-ink-muted/60 dark:text-white mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
         </div>
-        <div className="text-gray-400 dark:text-gray-600 text-lg font-light">→</div>
-        <div className="flex-1 bg-gray-50 dark:bg-zinc-800/60 rounded-lg px-3 py-2">
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t(`cashFlow.projectedIn.${horizon}`)}</p>
+        <div className="text-ink-muted/50 dark:text-white/50 text-lg font-light">→</div>
+        <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
+          <p className="text-xs text-ink-muted dark:text-white">{t(`cashFlow.projectedIn.${horizon}`)}</p>
           <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtCurrency(endBalance, 'EUR', { compact: true })}
           </p>
@@ -239,8 +239,8 @@ export default function CashFlowForecast() {
         </div>
       ) : !hasRecurring ? (
         <div className="h-48 flex flex-col items-center justify-center text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">{t('cashFlow.noRecurring')}</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('cashFlow.noRecurringHint')}</p>
+          <p className="text-sm text-ink-muted dark:text-white">{t('cashFlow.noRecurring')}</p>
+          <p className="text-xs text-ink-muted/60 dark:text-white mt-1">{t('cashFlow.noRecurringHint')}</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={220}>

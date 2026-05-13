@@ -10,11 +10,11 @@ export default function PasswordInput({ value, onChange, className, placeholder,
 
   const borderState = error
     ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-    : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40';
+    : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20';
 
   const defaultClass =
-    `w-full py-3 ${leadingIcon ? 'pl-11' : 'pl-3.5'} pr-10 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary ` +
-    'placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 ' +
+    `w-full py-3 ${leadingIcon ? 'pl-11' : 'pl-3.5'} pr-10 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ` +
+    'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
     `border ${borderState} ` +
     'rounded-md transition-colors duration-150 focus:outline-none ' +
     'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500';
@@ -22,7 +22,7 @@ export default function PasswordInput({ value, onChange, className, placeholder,
   return (
     <div className="relative">
       {leadingIcon && (
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted dark:text-ink-dark-muted flex items-center pointer-events-none">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted dark:text-white/50 flex items-center pointer-events-none">
           {leadingIcon}
         </span>
       )}
@@ -38,7 +38,7 @@ export default function PasswordInput({ value, onChange, className, placeholder,
         type="button"
         tabIndex={-1}
         onClick={toggle}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted dark:text-white/50 hover:text-ink-primary dark:hover:text-white transition-colors"
         aria-label={visible ? t('auth.hidePassword') : t('auth.showPassword')}
       >
         {visible ? (

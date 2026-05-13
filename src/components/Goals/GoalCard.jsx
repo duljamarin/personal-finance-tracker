@@ -25,10 +25,10 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
 
   const getStatusColor = () => {
     if (goal.is_completed) return 'text-brand-600 dark:text-brand-500';
-    if (!daysLeft) return 'text-ink-muted dark:text-ink-dark-muted';
-    if (daysLeft < 0) return 'text-[#e05c6b] dark:text-[#f08090]';
+    if (!daysLeft) return 'text-ink-muted dark:text-white';
+    if (daysLeft < 0) return 'text-[#e8394d] dark:text-[#e8394d]';
     if (daysLeft < 30) return 'text-brand-700 dark:text-brand-500';
-    return 'text-ink-secondary dark:text-ink-dark-secondary';
+    return 'text-ink-secondary dark:text-white';
   };
 
   return (
@@ -41,12 +41,12 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: goal.color }}
               />
-              <h3 className="font-display font-semibold tracking-tight text-lg text-ink-primary dark:text-ink-dark-primary">
+              <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
                 {goal.name}
               </h3>
             </div>
             {goal.description && (
-              <p className="text-sm text-ink-muted dark:text-ink-dark-muted line-clamp-2">
+              <p className="text-sm text-ink-muted dark:text-white line-clamp-2">
                 {goal.description}
               </p>
             )}
@@ -54,14 +54,14 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
           <div className="flex gap-1">
             <button
               onClick={() => onEdit(goal)}
-              className="p-2 text-ink-muted dark:text-ink-dark-muted hover:text-brand-600 dark:hover:text-brand-500 transition"
+              className="p-2 text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 transition"
               title={t('goals.editGoal')}
             >
               <Icon name="edit" />
             </button>
             <button
               onClick={() => onDelete(goal)}
-              className="p-2 text-ink-muted dark:text-ink-dark-muted hover:text-[#e05c6b] dark:hover:text-[#f08090] transition"
+              className="p-2 text-ink-muted dark:text-white hover:text-[#e8394d] dark:hover:text-[#e8394d] transition"
               title={t('goals.deleteGoal')}
             >
               <Icon name="delete" />
@@ -72,10 +72,10 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
         <div className="space-y-3">
           <div>
             <div className="flex justify-between text-sm mb-1">
-              <span className="font-display text-ink-secondary dark:text-ink-dark-secondary">
+              <span className="text-ink-secondary dark:text-white">
                 €{currentAmount.toFixed(2)} {t('goals.card.saved')}
               </span>
-              <span className="font-semibold text-ink-secondary dark:text-ink-dark-secondary">
+              <span className="font-semibold text-ink-secondary dark:text-white">
                 {displayProgress}%
               </span>
             </div>
@@ -85,16 +85,16 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
                 style={{ width: `${displayProgress}%`, backgroundColor: '#168b78' }}
               />
             </div>
-            <div className="flex justify-between text-xs mt-1 text-ink-muted dark:text-ink-dark-muted font-display">
+            <div className="flex justify-between text-xs mt-1 text-ink-muted dark:text-white">
               <span>€0</span>
               <span>€{targetAmount.toFixed(2)}</span>
             </div>
           </div>
 
           <div className="flex justify-between items-center text-sm">
-            <span className="text-ink-secondary dark:text-ink-dark-secondary">
+            <span className="text-ink-secondary dark:text-white">
               {remaining > 0 ? (
-                <><span className="font-display">€{remaining.toFixed(2)}</span> {t('goals.card.remaining')}</>
+                <><span className="">€{remaining.toFixed(2)}</span> {t('goals.card.remaining')}</>
               ) : (
                 <span className="text-brand-600 dark:text-brand-500 font-semibold">
                   {t('goals.status.completed')}
@@ -111,7 +111,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
               </span>
             )}
             {daysLeft === null && (
-              <span className="text-ink-muted dark:text-ink-dark-muted">
+              <span className="text-ink-muted dark:text-white">
                 {t('goals.card.noDeadline')}
               </span>
             )}

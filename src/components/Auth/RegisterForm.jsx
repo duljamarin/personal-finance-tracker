@@ -126,16 +126,16 @@ export default function RegisterForm() {
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5 shadow-lg shadow-brand-500/30">
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] mb-3">
             {t('auth.registerTitle')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
+          <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
             {t('auth.joinDescription')}
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function RegisterForm() {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 text-ink-primary dark:text-ink-dark-primary px-4 py-3 rounded-md font-medium text-sm transition-colors"
+            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 text-ink-primary dark:text-white px-4 py-3 rounded-md font-medium text-sm transition-colors"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -157,7 +157,7 @@ export default function RegisterForm() {
 
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
-            <span className="text-[11px] text-ink-muted dark:text-ink-dark-muted font-medium uppercase tracking-[0.14em]">{t('auth.or')}</span>
+            <span className="text-[11px] text-ink-muted dark:text-white font-medium uppercase tracking-[0.14em]">{t('auth.or')}</span>
             <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
           </div>
 
@@ -191,11 +191,11 @@ export default function RegisterForm() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">{t('auth.preferredLanguage')}</label>
+              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">{t('auth.preferredLanguage')}</label>
               <select
                 value={language}
                 onChange={e => setLanguage(e.target.value)}
-                className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary transition-colors"
+                className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white transition-colors"
               >
                 <option value="en">{t('languages.english', 'English')}</option>
                 <option value="sq">{t('languages.albanian', 'Shqip (Albanian)')}</option>
@@ -203,7 +203,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">{t('auth.password')}</label>
+              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">{t('auth.password')}</label>
               <PasswordInput
                 name="password"
                 id="password"
@@ -241,7 +241,7 @@ export default function RegisterForm() {
                     <path d="M4.5 12.75 10.5 18 20 6" />
                   </svg>
                 </span>
-                <span className="text-sm text-ink-primary dark:text-ink-dark-primary leading-relaxed">
+                <span className="text-sm text-ink-primary dark:text-white leading-relaxed">
                   {t('auth.agreeToTerms')}{' '}
                   <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.termsOfService')}</Link>
                   {' '}{t('auth.andThe')}{' '}
@@ -273,7 +273,7 @@ export default function RegisterForm() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-ink-muted dark:text-ink-dark-muted mt-8">
+        <p className="text-center text-sm text-ink-muted dark:text-white mt-8">
           {t('auth.hasAccount')}{' '}
           <Link to="/login" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.signIn')}</Link>
         </p>

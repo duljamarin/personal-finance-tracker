@@ -160,10 +160,10 @@ export default function PricingPage() {
     <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="font-display font-semibold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-ink-dark-primary mb-3">
+        <h1 className="font-semibold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-white mb-3">
           {t('pricing.title')}
         </h1>
-        <p className="text-lg text-ink-muted dark:text-ink-dark-muted max-w-xl mx-auto">
+        <p className="text-lg text-ink-muted dark:text-white max-w-xl mx-auto">
           {t('pricing.subtitle')}
         </p>
       </div>
@@ -172,20 +172,20 @@ export default function PricingPage() {
       {isPremium && subscription?.subscription_status !== 'none' && (
         <div className={`mb-8 p-4 rounded-xl text-center ${
           subscription?.subscription_cancel_at
-            ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
-            : 'bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800'
+            ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700'
+            : 'bg-brand-50 dark:bg-surface-dark-elevated border border-brand-500 dark:border-brand-600'
         }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
               subscription?.subscription_cancel_at
-                ? 'bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-200'
-                : 'bg-brand-100 text-brand-800 dark:bg-brand-800 dark:text-brand-200'
+                ? 'bg-amber-100 text-amber-800 dark:bg-amber-800/40 dark:text-amber-200'
+                : 'bg-brand-600 text-white dark:bg-brand-600 dark:text-white'
             }`}>
               {t('subscription.proBadge')}
             </span>
             <span className={subscription?.subscription_cancel_at
-              ? 'text-amber-800 dark:text-amber-200 font-medium'
-              : 'text-brand-700 dark:text-brand-300 font-medium'
+              ? 'text-amber-800 dark:text-amber-300 font-medium'
+              : 'text-brand-700 dark:text-white font-medium'
             }>
               {subscription?.subscription_cancel_at && subscription?.period_end
                 ? t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() })
@@ -199,7 +199,7 @@ export default function PricingPage() {
               onClick={handleManageSubscription}
               className={subscription?.subscription_cancel_at
                 ? 'text-sm text-amber-700 dark:text-amber-300 underline hover:no-underline'
-                : 'text-sm text-brand-700 dark:text-brand-300 underline hover:no-underline'
+                : 'text-sm text-brand-600 dark:text-brand-400 underline hover:no-underline'
               }
             >
               {t('pricing.managePlan')}
@@ -211,7 +211,7 @@ export default function PricingPage() {
       {/* Savings callout banner */}
       {!isPremium && (
         <div className="mb-8 flex items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-700">
+          <span className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-600 text-sm font-medium px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-700">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -226,17 +226,17 @@ export default function PricingPage() {
         {/* Free Plan */}
         <Card className="relative border border-surface-hairline dark:border-surface-dark-hairline h-full">
           <div className="p-6 flex flex-col h-full">
-            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
+            <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
               {t('pricing.free')}
             </h3>
             <div className="mb-6">
-              <span className="font-display font-semibold tracking-tight text-4xl text-ink-primary dark:text-ink-dark-primary">€0</span>
-              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.forever')}</span>
+              <span className="font-semibold tracking-tight text-4xl text-ink-primary dark:text-white">€0</span>
+              <span className="text-ink-muted dark:text-white ml-1">{t('pricing.forever')}</span>
             </div>
             <ul className="space-y-3 flex-1">
               {freeFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-ink-dark-secondary">
-                  <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white">
+                  <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -258,30 +258,30 @@ export default function PricingPage() {
         </Card>
 
         {/* Yearly Plan — hero card */}
-        <Card className="relative ring-2 ring-emerald-500 dark:ring-emerald-400 border border-transparent h-full shadow-lg">
+        <Card className="relative ring-2 ring-brand-600 dark:ring-brand-800 border border-transparent h-full shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-emerald-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
+            <span className="bg-emerald-800 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
               {t('pricing.bestValue')}
             </span>
           </div>
           <div className="p-6 pt-8 flex flex-col h-full">
-            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-ink-dark-primary mb-2">
+            <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
               {t('pricing.premium')}
             </h3>
 
             {/* Price block */}
             <div className="mb-1">
-              <span className="font-display font-semibold tracking-tight text-5xl text-ink-primary dark:text-ink-dark-primary">
+              <span className="font-semibold tracking-tight text-5xl text-ink-primary dark:text-white">
                 {t('pricing.yearlyPrice')}
               </span>
-              <span className="text-ink-muted dark:text-ink-dark-muted ml-1">{t('pricing.perYear')}</span>
+              <span className="text-ink-muted dark:text-white ml-1">{t('pricing.perYear')}</span>
             </div>
             <div className="mb-1">
-              <span className="text-base font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="text-base font-semibold text-emerald-600 dark:text-emerald-600">
                 {t('pricing.yearlyPerMonth')}
               </span>
             </div>
-            <p className="text-sm text-emerald-700 dark:text-emerald-300 font-medium mb-5">
+            <p className="text-sm text-emerald-700 dark:text-emerald-800 font-medium mb-5">
               {t('pricing.saveYearly')}
               {!hasHadTrial && <span> · {t('pricing.freeTrial')}</span>}
             </p>
@@ -289,7 +289,7 @@ export default function PricingPage() {
             <ul className="space-y-3 flex-1">
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
-                  <svg className="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -306,8 +306,8 @@ export default function PricingPage() {
                     const isPaused  = status === 'paused';
                     const isCancelled = status === 'cancelled';
 
-                    let dotColor = 'bg-emerald-500';
-                    let textColor = 'text-emerald-600 dark:text-emerald-400';
+                    let dotColor = 'bg-brand-500';
+                    let textColor = 'text-brand-600 dark:text-white';
                     let label = t('pricing.currentPlan');
                     let btnLabel = t('pricing.managePlan');
                     let btnVariant = 'success';
@@ -365,7 +365,7 @@ export default function PricingPage() {
                   >
                     {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
                   </Button>
-                  <p className="text-xs text-center text-ink-muted dark:text-ink-dark-muted">
+                  <p className="text-xs text-center text-ink-muted dark:text-white">
                     {t('pricing.noCardRequired')} · {t('pricing.thenYearly')}
                   </p>
                 </>
@@ -380,7 +380,7 @@ export default function PricingPage() {
       </div>
 
       {/* Trust strip */}
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-ink-muted dark:text-ink-dark-muted mb-8">
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-ink-muted dark:text-white mb-8">
         <span className="flex items-center gap-1">
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -406,7 +406,7 @@ export default function PricingPage() {
         <div className="text-center">
           <Link
             to="/dashboard"
-            className="text-sm text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary underline"
+            className="text-sm text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary underline"
           >
             {t('nav.dashboard')}
           </Link>

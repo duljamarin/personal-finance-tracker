@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { APP_CONFIG } from '../../config/app';
 
-const EXPENSE_COLOR = '#e05c6b';
+const EXPENSE_COLOR = '#e8394d';
 
 export default function UpgradeBanner() {
   const { t } = useTranslation();
@@ -62,7 +62,7 @@ export default function UpgradeBanner() {
       {/* Close button */}
       <button
         onClick={handleDismiss}
-        className="absolute top-2 right-2 p-1 rounded-md text-ink-muted dark:text-ink-dark-muted hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
+        className="absolute top-2 right-2 p-1 rounded-md text-ink-muted dark:text-white hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
         aria-label={t('upgrade.dismiss')}
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +80,7 @@ export default function UpgradeBanner() {
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-display font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
                 {t('subscription.cancelled')}
               </h3>
               <p className="text-sm text-brand-700/80 dark:text-brand-300/80">
@@ -105,7 +105,7 @@ export default function UpgradeBanner() {
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-display font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
                 {trialTimeLabel}
               </h3>
               <p className="text-sm text-brand-700/80 dark:text-brand-300/80">
@@ -117,7 +117,7 @@ export default function UpgradeBanner() {
           <div>
             <div className="w-full bg-white/60 dark:bg-surface-dark-card/60 rounded-full h-2 overflow-hidden">
               <div
-                className="bg-brand-600 dark:bg-brand-500 h-full rounded-full transition-all duration-300"
+                className="bg-brand-600 dark:bg-brand-500 h-full rounded-md transition-all duration-300"
                 style={{ width: `${trialDaysLeft === 0 && trialEndsAt
                   ? Math.max(5, ((new Date(trialEndsAt) - Date.now()) / (APP_CONFIG.TRIAL_DAYS * 86400000)) * 100)
                   : Math.max(5, (trialDaysLeft / APP_CONFIG.TRIAL_DAYS) * 100)}%` }}
@@ -138,7 +138,7 @@ export default function UpgradeBanner() {
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-display font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
                 {t('subscription.trialEnded')}
               </h3>
               <p className="text-sm text-brand-700/80 dark:text-brand-300/80">
@@ -163,10 +163,10 @@ export default function UpgradeBanner() {
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-display font-semibold tracking-tight text-lg text-brand-700 dark:text-ink-dark-primary mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-white mb-1">
                 {t('upgrade.bannerFreeLimit', { used: monthlyTransactionCount, limit: transactionLimit })}
               </h3>
-              <p className="text-sm text-brand-700/80 dark:text-ink-dark-secondary">
+              <p className="text-sm text-brand-700/80 dark:text-white">
                 {t('upgrade.bannerSubtitle')}
               </p>
             </div>
@@ -182,7 +182,7 @@ export default function UpgradeBanner() {
                 }}
               >
                 {usagePercent < 100 && (
-                  <div className="h-full w-full rounded-full bg-brand-600 dark:bg-brand-500" />
+                  <div className="h-full w-full rounded-md bg-brand-600 dark:bg-brand-500" />
                 )}
               </div>
             </div>

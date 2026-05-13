@@ -27,7 +27,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   const { budgets, expenses } = data;
 
   const getProgressColor = (ratio) => {
-    if (ratio >= 1.0) return '#e05c6b';
+    if (ratio >= 1.0) return '#e8394d';
     if (ratio >= 0.9) return '#d97706';
     if (ratio >= 0.7) return '#ca8a04';
     return '#168b78';
@@ -53,7 +53,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
       <Card className="mb-6" padding="none">
         <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <h3 className="font-display font-semibold tracking-tight text-base text-ink-primary dark:text-ink-dark-primary flex items-center gap-2">
+            <h3 className="font-semibold tracking-tight text-base text-ink-primary dark:text-white flex items-center gap-2">
               <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
@@ -63,7 +63,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
               {t('dashboard.setupBudgets')}
             </Link>
           </div>
-          <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-2">{t('dashboard.noBudgets')}</p>
+          <p className="text-sm text-ink-muted dark:text-white mt-2">{t('dashboard.noBudgets')}</p>
         </div>
       </Card>
     );
@@ -75,7 +75,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
     <Card className="mb-6">
       <div className="p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display font-semibold tracking-tight text-base text-ink-primary dark:text-ink-dark-primary flex items-center gap-2">
+          <h3 className="font-semibold tracking-tight text-base text-ink-primary dark:text-white flex items-center gap-2">
             <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
@@ -97,15 +97,15 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
             return (
               <div key={budget.id}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-ink-secondary dark:text-ink-dark-secondary font-medium truncate">
+                  <span className="text-sm text-ink-secondary dark:text-white font-medium truncate">
                     {translateCategoryName(budget.category?.name || '')}
                   </span>
-                  <span className="text-xs text-ink-muted dark:text-ink-dark-muted ml-2 whitespace-nowrap">
-                    <span className={ratio >= 1 ? 'text-[#e05c6b] dark:text-[#f08090] font-semibold' : ''}>
+                  <span className="text-xs text-ink-muted dark:text-white ml-2 whitespace-nowrap">
+                    <span className={ratio >= 1 ? 'text-[#e8394d] dark:text-[#e8394d] font-semibold' : ''}>
                       &euro;{spent.toFixed(0)}
                     </span>
                     {' / '}&euro;{budgetAmount.toFixed(0)}
-                    <span className="ml-1 text-ink-muted dark:text-ink-dark-muted">({percentUsed}%)</span>
+                    <span className="ml-1 text-ink-muted dark:text-white">({percentUsed}%)</span>
                   </span>
                 </div>
                 <div className="w-full bg-surface-hairline dark:bg-surface-dark-hairline rounded-full h-1.5 overflow-hidden">

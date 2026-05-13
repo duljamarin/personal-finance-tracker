@@ -18,7 +18,7 @@ export default function FirstRunGuide({ onAddTransaction }) {
                   <path d="M16 36 L24 30 L32 36" className="stroke-brand-400 dark:stroke-brand-600" />
                 </svg>
               </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-brand-600 flex items-center justify-center shadow-sm shadow-brand-500/30">
+              <div className="absolute -top-1 -right-1 w-6 h-6 rounded-md bg-brand-600 flex items-center justify-center shadow-sm shadow-brand-500/30">
                 <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -26,16 +26,16 @@ export default function FirstRunGuide({ onAddTransaction }) {
             </div>
           </div>
 
-          <h2 className="text-2xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight font-display mb-3">
+          <h2 className="text-2xl font-semibold text-ink-primary dark:text-white tracking-tight mb-3">
             {t('dashboard.firstRun.title')}
           </h2>
-          <p className="text-base text-ink-muted dark:text-ink-dark-muted leading-relaxed mb-8">
+          <p className="text-base text-ink-muted dark:text-white leading-relaxed mb-8">
             {t('dashboard.firstRun.subtitle')}
           </p>
 
           <button
             onClick={onAddTransaction}
-            className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-all shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30 active:scale-[0.98] text-base"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30 active:scale-[0.98] text-base"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -43,7 +43,7 @@ export default function FirstRunGuide({ onAddTransaction }) {
             {t('dashboard.firstRun.cta')}
           </button>
 
-          <p className="mt-4 text-sm text-ink-muted/70 dark:text-ink-dark-muted/70">
+          <p className="mt-4 text-sm text-ink-muted/70 dark:text-white/70">
             {t('dashboard.firstRun.hint')}
           </p>
         </div>
@@ -59,8 +59,8 @@ export default function FirstRunGuide({ onAddTransaction }) {
               <div key={step} className="flex items-start gap-3">
                 <span className="flex-shrink-0 w-7 h-7 rounded-full bg-brand-100 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 flex items-center justify-center text-xs font-bold tabular-nums">{step}</span>
                 <div>
-                  <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary mb-0.5">{t(titleKey)}</p>
-                  <p className="text-xs text-ink-muted dark:text-ink-dark-muted leading-relaxed">{t(descKey)}</p>
+                  <p className="text-sm font-semibold text-ink-primary dark:text-white mb-0.5">{t(titleKey)}</p>
+                  <p className="text-xs text-ink-muted dark:text-white leading-relaxed">{t(descKey)}</p>
                 </div>
               </div>
             ))}

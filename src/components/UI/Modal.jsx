@@ -36,7 +36,7 @@ export default function Modal({ children, onClose, className = '', drawer = fals
 
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-ink-muted hover:text-ink-primary dark:text-ink-dark-muted dark:hover:text-ink-dark-primary focus:outline-none z-10 w-8 h-8 flex items-center justify-center hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
+          className="absolute top-4 right-4 text-ink-muted hover:text-ink-primary dark:text-white dark:hover:text-ink-dark-primary focus:outline-none z-10 w-8 h-8 flex items-center justify-center hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
           aria-label="Close"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

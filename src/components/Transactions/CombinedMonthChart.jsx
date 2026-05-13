@@ -16,12 +16,12 @@ function CombinedMonthChartLegend() {
 
   const items = [
     { key: 'income', color: '#168b78', label: t('chart.income') },
-    { key: 'expense', color: '#e05c6b', label: t('chart.expense') }
+    { key: 'expense', color: '#e8394d', label: t('chart.expense') }
   ];
 
   return (
     <div
-      className="flex justify-center gap-6 mt-2 text-sm text-gray-600 dark:text-gray-300"
+      className="flex justify-center gap-6 mt-2 text-sm text-ink-muted dark:text-white"
     >
       {items.map(item => (
         <div key={item.key} className="flex items-center gap-2">
@@ -67,11 +67,11 @@ function CombinedMonthTooltip({ active, payload, label }) {
 
   return (
     <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md text-sm">
-      <p className="font-semibold text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
+      <p className="font-semibold text-ink-primary dark:text-white mb-1">{label}</p>
       <p className="tabular-nums" style={{ color: '#168b78' }}>
         {t('chart.income')} : {formatCurrency(incomeValue)}
       </p>
-      <p className="tabular-nums mt-0.5" style={{ color: '#e05c6b' }}>
+      <p className="tabular-nums mt-0.5" style={{ color: '#e8394d' }}>
         {t('chart.expense')} : {formatCurrency(expenseValue)}
       </p>
     </div>
@@ -123,12 +123,12 @@ export default function CombinedMonthChart({ transactions }) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <div className="w-16 h-16 rounded-full bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-8 h-8 text-ink-muted dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
         </div>
-        <p className="text-ink-secondary dark:text-ink-dark-secondary font-medium">{t('chart.noData')}</p>
-        <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1">{t('transactions.noTransactions')}</p>
+        <p className="text-ink-secondary dark:text-white font-medium">{t('chart.noData')}</p>
+        <p className="text-sm text-ink-muted dark:text-white mt-1">{t('transactions.noTransactions')}</p>
       </div>
     );
   }
@@ -137,13 +137,13 @@ export default function CombinedMonthChart({ transactions }) {
     <div style={{ minHeight: 320 }}>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
-          <XAxis 
-            dataKey="month" 
-            tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
+          <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.5} />
+          <XAxis
+            dataKey="month"
+            tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#1f2937' }}
           />
-          <YAxis 
-            tick={{ fontSize: 12, fill: dark ? '#fff' : '#1f2937' }}
+          <YAxis
+            tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#1f2937' }}
           />
           <Tooltip content={<CombinedMonthTooltip />} />
           <Legend
@@ -153,7 +153,7 @@ export default function CombinedMonthChart({ transactions }) {
             content={<CombinedMonthChartLegend />}
           />
           <Bar dataKey="income" fill="#168b78" name="income" radius={[8, 8, 0, 0]} />
-          <Bar dataKey="expense" fill="#e05c6b" name="expense" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="expense" fill="#e8394d" name="expense" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

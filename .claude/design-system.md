@@ -1,134 +1,102 @@
 # Personal Finance Tracker — Design System
 
-This is the contract for the editorial redesign. When in doubt, refer back here. The goal is a typographic, human-feeling interface — not the generic "AI SaaS" aesthetic.
-
 ## Typography
 
 ### Fonts
-- **Primary / body**: **Inter** (Google Fonts), 400 weight, with `font-feature-settings: 'cv02','cv03','cv04','cv11','ss01'` applied on `<body>`. Uses Tailwind's default `font-sans`.
-- **Display / non-primary labels**: **Space Grotesk** (Google Fonts), 500–600 weight. Exposed as Tailwind `font-display`.
+- **Primary / body + headings**: **Inter Tight** (Google Fonts), 400–700 weight. Applied globally via `font-sans` in `tailwind.config.cjs`. All headings inherit this — there is no separate display font.
+- **Monospace**: **Geist Mono**, used for code/amounts where a mono face is explicitly appropriate.
 
-### When to use `font-display` (Space Grotesk) — broader than originally planned
-Space Grotesk is the **dominant** typographic voice of this app. Use it on all of:
-- All headings: `h1`, `h2`, `h3`, `h4`
-- Primary and secondary CTA button labels
-- All labels: form fields, stat captions, nav, chips/badges/tags, column headers
-- Eyebrow / overline text, metadata, timestamps, "updated X ago"
-- Feature card titles and their short descriptions
-- Dashboard preview mockup labels ("BALANCE", "INCOME", "EXPENSES", "BUDGET", "RECENT")
+### Rules
+- No `font-display` class — it was removed. Do not reintroduce it.
+- No `tracking-display` or `tracking-tight-display` — removed. Use standard Tailwind tracking utilities.
+- Use `tracking-tight` on large headings.
+- `.eyebrow` class: `text-[12px] font-medium text-ink-muted` (no uppercase, no wide tracking — the "creepy AI" style was explicitly removed).
 
-### Stays Inter (narrower than originally planned)
-- Long-form body paragraphs (hero subtitle, showcase descriptions, marketing copy over ~30 words)
-- Transaction descriptions in lists
-- Numeric values (amounts, percentages, counts) — always `tabular-nums`
+## Colors
 
-### Tracking
-| Size | Tracking | Notes |
-|---|---|---|
-| ≥24px display | `-0.035em` (`tracking-tight-display`) | Hero, big numbers |
-| 18–22px headings | `-0.02em` (`tracking-display`) | H2, H3 |
-| 14–16px | `-0.01em` | H4, large labels |
-| Small body | `0` | 12–14px body |
-| Eyebrow labels | `+0.08em` + `uppercase` | Section overlines |
-
-### Line height
-- **1.6** — body copy
-- **1.35** — subheadings
-- **1.1** — large display headings
-
-## Neutrals (warmer, less "Tailwind gray")
-
-### Light mode
-- Page bg: `#FAFAF7` — replaces `surface.secondary`'s `#f9fafb`
-- Card bg: `#FFFFFF`
-- Hairline border: `#EDEDE8`
-- Body text: `#111112`
-- Secondary text: `#5A5A55`
-
-### Dark mode
-- Page bg: `#0A0A0B`
-- Card bg: `#111113`
-- Hairline border: `#1F1F22`
-- Body text: `#EDEDE9`
-- Secondary text: `#8A8A85`
-
-### Tailwind tokens (added in `tailwind.config.cjs` under `extend.colors`)
-
+### Brand (teal-green, darkened from original)
 ```
-surface.page         #FAFAF7
-surface.card         #FFFFFF
-surface.hairline     #EDEDE8
-surface.dark-page    #0A0A0B
-surface.dark-card    #111113
-surface.dark-hairline #1F1F22
-
-ink.primary          #111112
-ink.muted            #5A5A55
-ink.dark-primary     #EDEDE9
-ink.dark-muted       #8A8A85
+brand-500  #168b78   (accent, active states)
+brand-600  #0f6b5e   (primary button fill)
+brand-700  #0b5449   (button hover)
 ```
 
-Existing `surface.dark`, `surface.dark-secondary`, `surface.dark-tertiary`, `surface.dark-elevated`, `border.*` remain — they're referenced elsewhere.
+### Expense / negative (strong red, not washed-out pink)
+```
+#e8394d   — use everywhere for expense amounts, negative values, over-budget indicators
+```
+The old `#e05c6b` and `#f08090` (washed pink) have been replaced globally with `#e8394d`.
 
-## Radii (deliberate, not uniform)
+### Surface tokens
+```
+surface.page          #FAFAF7    light page bg
+surface.card          #FFFFFF    light card bg
+surface.hairline      #EDEDE8    light border
+surface.dark          #0C0C0E
+surface.dark-page     #0A0A0B    dark page bg
+surface.dark-card     #111113    dark card bg
+surface.dark-hairline #1F1F22    dark border
+surface.dark-elevated #222226
+surface.dark-tertiary #1A1A1E
+```
+
+### Ink tokens
+```
+ink.primary       #111112    light body text
+ink.muted         #2F2F2C    light secondary text
+ink.dark-primary  #FFFFFF    dark body text (white)
+ink.dark-muted    #FFFFFF    dark secondary text (white)
+```
+
+**Important**: `ink.dark-primary` and `ink.dark-muted` are both `#FFFFFF`. In dark mode, all text is white. Hierarchy is achieved via opacity modifiers (`text-white/70`) or layout, not by making secondary text gray.
+
+### Dark mode text — critical rules
+All dark mode text is forced white via CSS outside `@layer` in `index.css`. Do not fight this:
+- Use `dark:text-white` for primary text
+- Use `dark:text-white` for muted/secondary text (the CSS cascade handles opacity if needed)
+- Never use `dark:text-gray-*`, `dark:text-zinc-*`, or `dark:text-ink-dark-*` (tokens may not regenerate correctly from JIT cache)
+- CSS fallbacks in `index.css` cover: `.dark .text-ink-primary`, `.dark .text-ink-muted`, `.dark .text-ink-dark-primary`, `.dark .text-ink-dark-muted`, `.dark label`, `.dark input`, `.dark textarea`, `.dark select`
+
+## Radii
 
 | Element | Radius |
 |---|---|
-| Buttons, inputs, small chips | `rounded-md` (6px) |
-| Pills / true tags | `rounded-full` |
-| Data cards (SummaryCards, feature cards, dashboard panels) | `rounded-[10px]` |
-| Modals, dropdowns, large containers | `rounded-xl` (12px) |
-| Data tables, transaction rows | `rounded-none` (sharp — this is data) |
+| Buttons, inputs, chips | `rounded-md` |
+| Pills / tags | `rounded-full` |
+| Data cards, feature cards, panels | `rounded-[10px]` |
+| Modals, dropdowns | `rounded-xl` |
+| Transaction rows / data tables | `rounded-none` |
 
-Kill every stray `rounded-2xl`.
+## Buttons
+
+Primary brand buttons use `rounded-md` (not `rounded-full`). The `Button` component variant `primary` uses `bg-brand-600 hover:bg-brand-700`. All inline brand buttons follow the same pattern.
 
 ## Elevation
 
-- **Default card**: 1px hairline border, no shadow.
-- **Shadow is reserved for**: modals, popovers / dropdowns, the hero dashboard-mockup.
-- Remove `shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl` from all other cards and panels.
+- Default card: 1px hairline border, no shadow.
+- Shadows only on: modals, popovers, hero mockup.
 
-## Emerald usage — sparingly
+## Expense / budget colors
 
-**Allowed:**
-- Primary CTA fill
-- Positive numeric values (income, net-positive totals)
-- Active nav item indicator (sidebar)
-- Goal-completion accents, progress-bar fill
-- Brand logomark
+When over budget, avoid showing everything in red simultaneously. Hierarchy:
+- The percentage or one key number stays red (`#e8394d`)
+- Supporting text (over-budget label, forecast) uses softer treatment (`text-white/60` in dark, or reduced opacity red)
+- Progress bar carries the color signal; body text does not need to repeat it
 
-**Remove from:**
-- Decorative dots, pulse halos, glow halos
-- Feature-card icon backgrounds (swap to neutral)
-- "Live" badges
-- Hover backgrounds that aren't action affordances
+## Placeholder text
 
-## Motion
+- Light mode: `placeholder:text-ink-muted/40`
+- Dark mode: `dark:placeholder:text-white/40` (40% white — visibly different from typed text but not gray)
+- CSS fallback in `index.css`: `.dark input::placeholder { color: rgba(255,255,255,0.4) }`
 
-- CSS only. Existing keyframes in `tailwind.config.cjs` + `src/index.css` stay.
-- Prefer `transition-colors` / `transition-opacity` over `transition-all`.
-- No new animations unless an equivalent is removed.
-
-## AI-tell removals (apply everywhere)
-
-1. **Gradient-blur halos** — delete every `absolute -inset-* bg-brand-*/10 blur-*` (start with `LandingPage.jsx` behind `DashboardPreview`). Dashboard mockups sit on a flat surface.
-2. **Pulse-dot "live" pill** — replaced with an editorial metadata strip: a 32px horizontal rule leading into wide-tracked Space Grotesk uppercase text, splitting any `·` divider into a proper inline structure. A bare `.eyebrow` class is **not** sufficient on landing-page hero strings — they need more intentional composition.
-3. **Emoji in mockups** (`☕ 💰 🏠`) — replace with an 8px neutral category dot + the label. Replace the emoji favicon in `index.html` with an inline minimalist SVG geometric mark.
-4. **Heroicons outline feature icons** — replaced with custom hairline 1.5px-stroke SVGs on a 40×40 viewBox, all sharing stroke width / linecap / aesthetic. Each feature gets a drawn-by-hand mini-illustration (trend line, bar trio, gauge, bullseye, loop, Venn, 2×2 grid, etc.). **Do NOT use numbered cards — "01/02/03" numerals were explicitly rejected by the user.**
-5. **Uniform rounded-xl / rounded-2xl** — audit every file and apply the radii scale above. Don't find-replace; decide by context.
-6. **Pure grays** — migrate to the warmer `surface.*` / `ink.*` tokens.
-7. **Soft shadows** — removed from default cards; kept only on modals + dropdowns + hero mockup.
-8. **Symmetric 3-col feature grid** — editorial asymmetric layout instead. Example: first feature full-width with large display type + description, next two side-by-side (1/2, 1/2), last three in 1/3,1/3,1/3. Vary type size between tiers.
-
-## Utility classes (added in `src/index.css`)
+## Utility classes (`src/index.css`)
 
 ```css
 .eyebrow {
-  @apply font-display uppercase tracking-[0.08em] text-xs font-medium text-ink-muted;
+  /* 12px medium, no uppercase, no wide tracking */
+  @apply text-[12px] font-medium text-ink-muted;
 }
-.label-display {
-  @apply font-display text-sm font-medium tracking-tight;
+.dark .eyebrow {
+  color: #FFFFFF;
 }
 ```
-
-Use `.eyebrow` for section overlines, `.label-display` for stat/field/nav labels.

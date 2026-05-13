@@ -159,13 +159,13 @@ export default function GoalsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-display font-semibold tracking-tight text-3xl text-ink-primary dark:text-ink-dark-primary flex items-center gap-3">
+          <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
             <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
             </svg>
             {t('goals.title')}
           </h1>
-          <p className="text-ink-secondary dark:text-ink-dark-secondary mt-1">{t('goals.subtitle')}</p>
+          <p className="text-ink-secondary dark:text-white mt-1">{t('goals.subtitle')}</p>
         </div>
         <Button onClick={() => setShowGoalForm(true)} disabled={!canAdd}>
           + {t('goals.addGoal')}
@@ -189,32 +189,32 @@ export default function GoalsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('goals.stats.totalSaved')}</p>
-              <p className="font-display font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
+              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.totalSaved')}</p>
+              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
                 €{stats.totalSaved.toFixed(2)}
               </p>
             </div>
           </Card>
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('goals.stats.totalTarget')}</p>
-              <p className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
+              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.totalTarget')}</p>
+              <p className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
                 €{stats.totalTarget.toFixed(2)}
               </p>
             </div>
           </Card>
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('goals.stats.activeGoals')}</p>
-              <p className="font-display font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
+              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.activeGoals')}</p>
+              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
                 {stats.activeGoals}
               </p>
             </div>
           </Card>
           <Card>
             <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-ink-dark-muted">{t('goals.stats.completedGoals')}</p>
-              <p className="font-display font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
+              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.completedGoals')}</p>
+              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
                 {stats.completedGoals}
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function GoalsPage() {
             className={`px-4 py-2 rounded-md font-medium text-sm transition ${
               filter === f
                 ? 'bg-brand-600 text-white'
-                : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-secondary dark:text-ink-dark-secondary hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline'
+                : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-secondary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline'
             }`}
           >
             {t(`goals.filters.${f}`)}

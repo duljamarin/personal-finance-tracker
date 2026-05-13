@@ -76,7 +76,7 @@ export default function TransactionSplitForm({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="block text-sm font-medium text-ink-primary dark:text-white">
           {t('split.title')}
         </label>
         <Button 
@@ -92,9 +92,9 @@ export default function TransactionSplitForm({
         </Button>
       </div>
 
-      <div className="space-y-2 bg-gray-50 dark:bg-surface-dark-tertiary p-3 rounded-lg">
+      <div className="space-y-2 bg-surface-subtle dark:bg-surface-dark-subtle p-3 rounded-lg">
         {splits.map((split, index) => (
-          <div key={index} className={`flex items-center gap-2${index > 0 ? ' pt-2 border-t border-gray-200 dark:border-zinc-700' : ''}`}>
+          <div key={index} className={`flex items-center gap-2${index > 0 ? ' pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline' : ''}`}>
             {/* Category */}
             <div className="flex-1 min-w-0">
               <CustomSelect
@@ -125,8 +125,8 @@ export default function TransactionSplitForm({
                 placeholder="0.00"
                 className={
                   'w-full py-3 px-3.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card ' +
-                  'text-ink-primary dark:text-ink-dark-primary ' +
-                  'placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 ' +
+                  'text-ink-primary dark:text-white ' +
+                  'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
                   'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ' +
                   (errors[`split_${index}_amount`]
                     ? 'border-red-400'
@@ -152,7 +152,7 @@ export default function TransactionSplitForm({
                 placeholder="0"
                 className="text-sm"
               />
-              <span className="text-xs text-gray-400 dark:text-gray-500 select-none shrink-0">%</span>
+              <span className="text-xs text-ink-muted/60 dark:text-white/60 select-none shrink-0">%</span>
             </div>
 
             {/* Remove Button */}
@@ -171,22 +171,22 @@ export default function TransactionSplitForm({
       </div>
 
       {/* Summary */}
-      <div className="text-sm space-y-1 bg-gray-100 dark:bg-zinc-800 p-3 rounded">
+      <div className="text-sm space-y-1 bg-surface-subtle dark:bg-surface-dark-elevated p-3 rounded">
         <div className="flex justify-between">
-          <span className="text-gray-600 dark:text-gray-400">{t('split.totalAmount')}:</span>
-          <span className="font-medium text-gray-900 dark:text-white">
+          <span className="text-ink-secondary dark:text-white">{t('split.totalAmount')}:</span>
+          <span className="font-medium text-ink-primary dark:text-white">
             €{totalAmount.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600 dark:text-gray-400">{t('split.splitTotal')}:</span>
+          <span className="text-ink-secondary dark:text-white">{t('split.splitTotal')}:</span>
           <span className={`font-medium ${hasValidSplit ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             €{totalSplitAmount.toFixed(2)} ({totalPercentage.toFixed(2)}%)
           </span>
         </div>
         {!hasValidSplit && (
           <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">{t('split.difference')}:</span>
+            <span className="text-ink-secondary dark:text-white">{t('split.difference')}:</span>
             <span className="font-medium text-red-600 dark:text-red-400">
               €{Math.abs(splitDifference).toFixed(2)}
             </span>

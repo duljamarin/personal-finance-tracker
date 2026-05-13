@@ -16,20 +16,20 @@ export default function Footer() {
                 <path d="M15 6 L20 6 L20 11" />
               </svg>
             </span>
-            <p className="text-sm text-ink-muted dark:text-ink-dark-muted">
+            <p className="text-sm text-ink-muted dark:text-white">
               &copy; {year} {t('app.name')}. {t('footer.rights')}
             </p>
           </div>
           <div className="flex items-center gap-6">
             <Link
               to="/terms"
-              className="text-sm text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
+              className="text-sm text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
             >
               {t('footer.terms')}
             </Link>
             <Link
               to="/privacy"
-              className="text-sm text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
+              className="text-sm text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
             >
               {t('footer.privacy')}
             </Link>

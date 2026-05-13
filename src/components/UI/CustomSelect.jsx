@@ -51,9 +51,9 @@ export default function CustomSelect({
   const selected = options.find(o => String(o.value) === String(value));
 
   const baseTrigger =
-    'w-full px-3.5 py-3 text-base rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition flex items-center justify-between gap-2';
+    'w-full px-3.5 py-3 text-base rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition flex items-center justify-between gap-2';
   const borderClass = error
-    ? 'border-[#e05c6b]'
+    ? 'border-[#e8394d]'
     : 'border-surface-hairline dark:border-surface-dark-hairline';
   const disabledClass = disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer';
 
@@ -77,12 +77,12 @@ export default function CustomSelect({
           ) : (
             <>
               {placeholderLeading}
-              <span className="truncate text-ink-muted dark:text-ink-dark-muted">{placeholder}</span>
+              <span className="truncate text-ink-muted dark:text-white">{placeholder}</span>
             </>
           )}
         </span>
         <svg
-          className={`w-4 h-4 flex-shrink-0 text-ink-muted dark:text-ink-dark-muted transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 flex-shrink-0 text-ink-muted dark:text-white transition-transform ${open ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -98,7 +98,7 @@ export default function CustomSelect({
           className="absolute z-50 mt-1 min-w-full max-h-64 overflow-y-auto rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card shadow-lg py-1 scrollbar-thin"
         >
           {options.length === 0 ? (
-            <li className="px-3 py-2 text-sm text-ink-muted dark:text-ink-dark-muted">
+            <li className="px-3 py-2 text-sm text-ink-muted dark:text-white">
               {placeholder}
             </li>
           ) : (
@@ -122,7 +122,7 @@ export default function CustomSelect({
                   } ${
                     isSelected
                       ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 font-medium'
-                      : 'text-ink-primary dark:text-ink-dark-primary'
+                      : 'text-ink-primary dark:text-white'
                   }`}
                 >
                   {opt.leading}

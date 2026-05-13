@@ -8,13 +8,13 @@ import Card from '../UI/Card';
 
 // Status -> design token color map
 // on-track  -> brand-500 (#22ad93)
-// over      -> #e05c6b (warm rose-red)
+// over      -> #e8394d (warm rose-red)
 // under     -> #6A8FC4 (CHART_PALETTE blue)
 const STATUS_COLOR = {
   within: '#22ad93',
   below: '#6A8FC4',
-  above: '#e05c6b',
-  new: '#e05c6b',
+  above: '#e8394d',
+  new: '#e8394d',
 };
 
 export default function CategoryBenchmark({ onReloadTrigger }) {
@@ -52,10 +52,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       case 'above':
         return {
           label: t('benchmark.statusAbove'),
-          pillClass: 'bg-[#fdf2f4] dark:bg-[rgba(224,92,107,0.12)] text-[#e05c6b]',
-          borderClass: 'border-[#e05c6b]/40',
+          pillClass: 'bg-[#fdf2f4] dark:bg-[rgba(224,92,107,0.12)] text-[#e8394d]',
+          borderClass: 'border-[#e8394d]/40',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: '#e05c6b',
+          progressColor: '#e8394d',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -65,10 +65,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       case 'new':
         return {
           label: t('benchmark.statusNew'),
-          pillClass: 'bg-[#fdf2f4] dark:bg-[rgba(224,92,107,0.12)] text-[#e05c6b]',
-          borderClass: 'border-[#e05c6b]/40',
+          pillClass: 'bg-[#fdf2f4] dark:bg-[rgba(224,92,107,0.12)] text-[#e8394d]',
+          borderClass: 'border-[#e8394d]/40',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: '#e05c6b',
+          progressColor: '#e8394d',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -117,12 +117,12 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
     return (
       <Card className="mt-4 sm:mt-6">
         <div className="p-6 text-center">
-          <div className="text-[#e05c6b] dark:text-[#f08090] mb-2">
+          <div className="text-[#e8394d] dark:text-[#e8394d] mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p className="text-ink-muted dark:text-ink-dark-muted">{t('benchmark.loadError')}</p>
+          <p className="text-ink-muted dark:text-white">{t('benchmark.loadError')}</p>
         </div>
       </Card>
     );
@@ -132,7 +132,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
     'px-4 py-2 rounded-lg font-medium text-sm transition-all';
   const periodActive = 'bg-brand-600 text-white shadow-sm';
   const periodInactive =
-    'bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:bg-surface-subtle dark:hover:bg-surface-dark-tertiary';
+    'bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-tertiary';
 
   return (
     <Card className="mt-4 sm:mt-6">
@@ -141,13 +141,13 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <span className="eyebrow block mb-2">{t('benchmark.title')}</span>
-            <h2 className="font-display font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-ink-dark-primary flex items-center gap-2">
+            <h2 className="font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-white flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               {t('benchmark.title')}
             </h2>
-            <p className="text-ink-muted dark:text-ink-dark-muted text-sm mt-1">
+            <p className="text-ink-muted dark:text-white text-sm mt-1">
               {t('benchmark.description')}
             </p>
           </div>
@@ -193,10 +193,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-2">
+                <h3 className="font-semibold tracking-tight text-ink-primary dark:text-white mb-2">
                   {t('benchmark.noData')}
                 </h3>
-                <p className="text-ink-muted dark:text-ink-dark-muted text-sm max-w-sm mx-auto">
+                <p className="text-ink-muted dark:text-white text-sm max-w-sm mx-auto">
                   {t('benchmark.noDataDesc')}
                 </p>
               </div>
@@ -254,11 +254,11 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                       {/* Category header */}
                       <div className="flex items-start justify-between mb-3 gap-3">
                         <div className="min-w-0">
-                          <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary truncate">
+                          <h3 className="font-semibold tracking-tight text-ink-primary dark:text-white truncate">
                             {translateCategoryName(benchmark.category_name)}
                           </h3>
                           {benchmark.months_with_data > 0 && (
-                            <p className="text-xs text-ink-muted dark:text-ink-dark-muted mt-0.5">
+                            <p className="text-xs text-ink-muted dark:text-white mt-0.5">
                               {t('benchmark.basedOn', { months: benchmark.months_with_data })}
                             </p>
                           )}
@@ -275,7 +275,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                           <span className="eyebrow">{t('benchmark.thisMonth')}</span>
                         </div>
                         <div className="flex items-baseline gap-2 mt-1">
-                          <span className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
+                          <span className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
                             €{Number(benchmark.current_month_spending).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </div>
@@ -295,16 +295,16 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                               />
                             </div>
                           </div>
-                          <div className="flex items-center justify-between text-xs text-ink-muted dark:text-ink-dark-muted gap-3">
+                          <div className="flex items-center justify-between text-xs text-ink-muted dark:text-white gap-3">
                             <div>
                               <span className="eyebrow block mb-0.5">{t('benchmark.typical')}</span>
-                              <span className="font-display font-semibold tracking-tight text-ink-secondary dark:text-ink-dark-primary">
+                              <span className="font-semibold tracking-tight text-ink-secondary dark:text-white">
                                 €{Number(benchmark.lower_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} - €{Number(benchmark.upper_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                               </span>
                             </div>
                             <div className="text-right">
                               <span className="eyebrow block mb-0.5">{t('benchmark.average')}</span>
-                              <span className="font-display font-semibold tracking-tight text-ink-secondary dark:text-ink-dark-primary">
+                              <span className="font-semibold tracking-tight text-ink-secondary dark:text-white">
                                 €{Number(benchmark.avg_monthly_spending).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}/{t('benchmark.month')}
                               </span>
                             </div>
@@ -312,7 +312,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                         </>
                       ) : (
                         <div className="mt-2 rounded-lg border border-dashed border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle px-3 py-3 flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 text-ink-muted dark:text-ink-dark-muted">
+                          <div className="flex items-center gap-2 text-ink-muted dark:text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
@@ -336,7 +336,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         {/* Legend */}
         {benchmarks.some(b => b.months_with_data > 0) && (
           <div className="mt-6 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
-            <p className="text-xs text-ink-muted dark:text-ink-dark-muted text-center">
+            <p className="text-xs text-ink-muted dark:text-white text-center">
               {t('benchmark.legendInfo')}
             </p>
           </div>

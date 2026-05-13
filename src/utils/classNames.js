@@ -11,24 +11,24 @@ export function cn(...classes) {
 export const cardClasses = {
   base: "bg-white dark:bg-surface-dark-tertiary rounded-xl p-5 sm:p-6",
   hover: "hover:shadow-md transition-all duration-300",
-  border: "border border-gray-200 dark:border-zinc-800",
+  border: "border border-surface-hairline dark:border-surface-dark-hairline",
 };
 
 // Common input styling classes
 export const inputClasses = {
-  base: "border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-lg sm:w-full bg-white dark:bg-surface-dark-elevated text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 transition",
+  base: "border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-lg sm:w-full bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white focus:outline-none focus:ring-1 transition",
   focus: "focus:ring-brand-500/20 focus:border-brand-500",
   error: "border-red-500 focus:ring-red-500",
-  normal: "border-gray-300 dark:border-zinc-700",
+  normal: "border-surface-hairline dark:border-surface-dark-hairline",
 };
 
 // Button variant classes
 export const buttonClasses = {
   primary: "bg-brand-600 hover:bg-brand-700 text-white",
-  secondary: "bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-zinc-700",
+  secondary: "bg-surface-secondary dark:bg-surface-dark-elevated text-ink-primary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-tertiary",
   danger: "bg-red-600 hover:bg-red-700 text-white",
   warning: "bg-amber-500 hover:bg-amber-600 text-white",
-  ghost: "bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-zinc-700",
+  ghost: "bg-surface-secondary dark:bg-surface-dark-elevated text-ink-primary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-tertiary",
 };
 
 // Badge/tag classes for transaction types

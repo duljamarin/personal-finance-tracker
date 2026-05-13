@@ -29,7 +29,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
     if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-600 dark:text-brand-400', label: 'text-brand-600 dark:text-brand-400' };
     if (value >= 60) return { stroke: 'text-[#6A8FC4]', text: 'text-[#5B8DB8]', label: 'text-[#5B8DB8]' };
     if (value >= 40) return { stroke: 'text-amber-500', text: 'text-amber-600 dark:text-amber-400', label: 'text-amber-600 dark:text-amber-400' };
-    return { stroke: 'text-[#e05c6b]', text: 'text-[#e05c6b]', label: 'text-[#e05c6b]' };
+    return { stroke: 'text-[#e8394d]', text: 'text-[#e8394d]', label: 'text-[#e8394d]' };
   };
 
   const getScoreLabel = (value) => {
@@ -78,7 +78,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
       </svg>
     );
     return (
-      <svg className={`${cls} text-ink-muted dark:text-ink-dark-muted`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <svg className={`${cls} text-ink-muted dark:text-white`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
       </svg>
     );
@@ -105,12 +105,12 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
       <Card className="mt-4 sm:mt-6">
         <div className="p-8 text-center">
           <div className="w-12 h-12 rounded-full bg-surface-page dark:bg-surface-dark-page flex items-center justify-center mx-auto mb-3">
-            <svg className="w-5 h-5 text-ink-muted dark:text-ink-dark-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className="w-5 h-5 text-ink-muted dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
             </svg>
           </div>
-          <p className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">{t('healthScore.noData')}</p>
-          <p className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('healthScore.noDataDesc')}</p>
+          <p className="text-sm font-medium text-ink-primary dark:text-white mb-1">{t('healthScore.noData')}</p>
+          <p className="text-xs text-ink-muted dark:text-white">{t('healthScore.noDataDesc')}</p>
         </div>
       </Card>
     );
@@ -136,12 +136,12 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               <circle cx="50" cy="50" r={r} fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" className={scoreColors.stroke} style={{ strokeDasharray: circ, strokeDashoffset: offset, transition: 'stroke-dashoffset 0.5s ease-in-out' }} />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-lg font-bold tabular-nums font-display ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
+              <span className={`text-lg font-bold tabular-nums ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
             </div>
           </div>
           <div>
-            <p className={`text-xl font-semibold font-display tracking-tight ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
-            <p className="text-sm text-ink-muted dark:text-ink-dark-muted">{t('healthScore.title')}</p>
+            <p className={`text-xl font-semibold tracking-tight ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
+            <p className="text-sm text-ink-muted dark:text-white">{t('healthScore.title')}</p>
           </div>
         </div>
       </Card>
@@ -165,10 +165,10 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-lg font-semibold font-display text-ink-primary dark:text-ink-dark-primary tracking-tight">
+            <h2 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
               {t('healthScore.title')}
             </h2>
-            <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-0.5">
+            <p className="text-sm text-ink-muted dark:text-white mt-0.5">
               {t('healthScore.description')}
             </p>
           </div>
@@ -184,7 +184,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                 style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.6s ease-in-out' }} />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className={`text-4xl font-bold tabular-nums font-display tracking-tight-display leading-none ${scoreColors.text}`}>
+              <span className={`text-4xl font-bold tabular-nums tracking-tight leading-none ${scoreColors.text}`}>
                 {Math.round(score.totalScore)}
               </span>
               <span className={`text-xs font-medium mt-1.5 ${scoreColors.label}`}>
@@ -197,7 +197,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           <div className="flex-1 w-full space-y-3.5">
             {scoreValues.map(({ label, value, color }, i) => (
               <div key={label} className="flex items-center gap-3">
-                <span className={`w-36 text-xs shrink-0 ${isPaid ? 'text-ink-muted dark:text-ink-dark-muted' : 'text-ink-muted/60 dark:text-ink-dark-muted/60'}`}>{label}</span>
+                <span className={`w-36 text-xs shrink-0 ${isPaid ? 'text-ink-muted dark:text-white' : 'text-ink-muted/60 dark:text-white/60'}`}>{label}</span>
                 <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
                   {isPaid
                     ? <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />
@@ -205,8 +205,8 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                   }
                 </div>
                 {isPaid
-                  ? <span className="w-8 text-xs font-semibold text-ink-primary dark:text-ink-dark-primary tabular-nums text-right">{Math.round(value)}</span>
-                  : <svg className="w-3.5 h-3.5 text-ink-muted/40 dark:text-ink-dark-muted/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  ? <span className="w-8 text-xs font-semibold text-ink-primary dark:text-white tabular-nums text-right">{Math.round(value)}</span>
+                  : <svg className="w-3.5 h-3.5 text-ink-muted/40 dark:text-white/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7a4.5 4.5 0 1 0-9 0v3.5M6 10.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18v-6A1.5 1.5 0 0 1 6 10.5Z" />
                     </svg>
                 }
@@ -226,8 +226,8 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                   </svg>
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-ink-primary dark:text-ink-dark-primary">{t('healthScore.unlockFull')}</p>
-                  <p className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('healthScore.unlockFullDesc')}</p>
+                  <p className="text-sm font-semibold text-ink-primary dark:text-white">{t('healthScore.unlockFull')}</p>
+                  <p className="text-xs text-ink-muted dark:text-white">{t('healthScore.unlockFullDesc')}</p>
                 </div>
               </div>
               <svg className="w-4 h-4 text-ink-muted/60 group-hover:text-brand-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -240,7 +240,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         {/* How it works toggle */}
         <div className="mt-5">
           <button onClick={() => setShowExplainer(p => !p)}
-            className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors">
+            className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors">
             <svg className="w-3.5 h-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
             </svg>
@@ -263,10 +263,10 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                     <span className="text-xs font-semibold">{label}</span>
                     <span className="text-[10px] font-medium opacity-70">{t('healthScore.pillarWeight', { weight })}</span>
                   </div>
-                  <p className="text-xs text-ink-muted dark:text-ink-dark-muted leading-relaxed">{desc}</p>
+                  <p className="text-xs text-ink-muted dark:text-white leading-relaxed">{desc}</p>
                 </div>
               ))}
-              <p className="col-span-full text-[10px] text-ink-muted/70 dark:text-ink-dark-muted/70 text-center">{t('healthScore.howItWorksSummary')}</p>
+              <p className="col-span-full text-[10px] text-ink-muted/70 dark:text-white/70 text-center">{t('healthScore.howItWorksSummary')}</p>
             </div>
           )}
         </div>
@@ -279,7 +279,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               {score.insights.map((insight, i) => (
                 <li key={i} className="flex items-start gap-2.5">
                   <div className="mt-0.5">{getInsightIcon(insight.type)}</div>
-                  <p className="text-sm text-ink-muted dark:text-ink-dark-muted leading-relaxed">{getInsightText(insight)}</p>
+                  <p className="text-sm text-ink-muted dark:text-white leading-relaxed">{getInsightText(insight)}</p>
                 </li>
               ))}
             </ul>
@@ -298,13 +298,13 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.expenses')}</p>
-                <p className="text-sm font-semibold tabular-nums text-[#e05c6b] dark:text-[#f08090]">
+                <p className="text-sm font-semibold tabular-nums text-[#e8394d] dark:text-[#e8394d]">
                   €{score.totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.saved')}</p>
-                <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-[#e05c6b] dark:text-[#f08090]'}`}>
+                <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-[#e8394d] dark:text-[#e8394d]'}`}>
                   €{score.savingsAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>

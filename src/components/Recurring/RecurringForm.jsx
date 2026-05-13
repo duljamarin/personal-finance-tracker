@@ -6,16 +6,16 @@ import { updateRecurringTransaction } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation';
 
-const EXPENSE_COLOR = '#e05c6b';
-const EXPENSE_COLOR_DARK = '#f08090';
+const EXPENSE_COLOR = '#e8394d';
+const EXPENSE_COLOR_DARK = '#e8394d';
 
 const inputBaseClass =
-  'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
 const inputErrorClass = 'border-[color:var(--err)]';
 const inputNormalClass = 'border-surface-hairline dark:border-surface-dark-hairline';
 
 const selectClass =
-  'appearance-none w-full pl-3 pr-9 py-2.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'appearance-none w-full pl-3 pr-9 py-2.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
 
 export default function RecurringForm({ onSubmit, onCancel, initial }) {
   const { t } = useTranslation();
@@ -133,17 +133,17 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
       className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full px-4 sm:px-0"
       style={{ '--err': EXPENSE_COLOR }}
     >
-      <h2 className="font-display font-semibold tracking-tight text-lg sm:text-2xl text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2 flex-shrink-0">
+      <h2 className="font-semibold tracking-tight text-lg sm:text-2xl text-ink-primary dark:text-white mb-1 sm:mb-2 flex-shrink-0">
         {t('recurring.editTitle')}
       </h2>
 
       <div className="flex flex-col gap-3 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
         {/* Transaction Info (read-only) */}
         <div className="bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-3 sm:p-4">
-          <h3 className="font-display font-semibold tracking-tight text-sm sm:text-base text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2">
+          <h3 className="font-semibold tracking-tight text-sm sm:text-base text-ink-primary dark:text-white mb-1 sm:mb-2">
             {initial?.title}
           </h3>
-          <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-ink-muted dark:text-ink-dark-muted">
+          <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-ink-muted dark:text-white">
             <span className="inline-flex items-center gap-1.5 font-semibold">
               {initial?.type === 'income' ? (
                 <svg
@@ -182,7 +182,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 €{Number(initial?.amount).toFixed(2)}
               </span>
             </span>
-            <span className="text-ink-muted dark:text-ink-dark-muted">·</span>
+            <span className="text-ink-muted dark:text-white">·</span>
             <span>{t('recurring.readOnlyNote')}</span>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 <option value="yearly">{t('recurring.yearly')}</option>
               </select>
               <svg
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted dark:text-ink-dark-muted"
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted dark:text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -226,7 +226,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 onChange={handleIntervalCountChange}
                 className={`${inputClass(errors.intervalCount)} w-16 sm:w-20`}
               />
-              <span className="text-xs sm:text-sm text-ink-muted dark:text-ink-dark-muted">
+              <span className="text-xs sm:text-sm text-ink-muted dark:text-white">
                 {t(`recurring.${frequency}Unit`, { count: Number(intervalCount) || 1 })}
               </span>
             </div>
@@ -252,7 +252,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 className={`px-3 py-1.5 sm:px-3 sm:py-2 text-xs rounded-md font-medium border transition-colors ${
                   endType === option
                     ? 'bg-brand-600 text-white border-brand-600'
-                    : 'bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-500/40'
+                    : 'bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-500/40'
                 }`}
               >
                 {t(`recurring.end${option.charAt(0).toUpperCase() + option.slice(1)}`)}

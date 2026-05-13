@@ -7,7 +7,7 @@ import LanguageSwitcher from './LanguageSwitcher.jsx';
 
 function BrandMark() {
   return (
-    <span className="inline-flex items-center justify-center w-9 h-9 bg-brand-600 rounded-lg shadow-sm shadow-brand-500/25">
+    <span className="inline-flex items-center justify-center w-9 h-9 bg-brand-600 rounded-md shadow-sm shadow-brand-500/25">
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
@@ -22,14 +22,14 @@ export default function Header() {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const navLink = 'px-3 py-2 text-sm font-medium text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors';
+  const navLink = 'px-3 py-2 text-sm font-medium text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors';
 
   return (
     <header className="bg-white dark:bg-surface-dark-card border-b border-surface-hairline dark:border-surface-dark-hairline">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
           <BrandMark />
-          <span className="hidden sm:block text-base font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight">
+          <span className="hidden sm:block text-base font-semibold text-ink-primary dark:text-white tracking-tight">
             {t('app.name')}
           </span>
         </Link>
@@ -74,7 +74,7 @@ export default function Header() {
           <ThemeToggle />
           <button
             onClick={() => setMenuOpen(m => !m)}
-            className="p-2 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors text-ink-muted dark:text-ink-dark-muted"
+            className="p-2 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors text-ink-muted dark:text-white"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           >
             {menuOpen ? (
@@ -94,14 +94,14 @@ export default function Header() {
               <>
                 <Link
                   to="/pricing"
-                  className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
+                  className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {t('nav.pricing')}
                 </Link>
                 <Link
                   to="/login"
-                  className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
+                  className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {t('auth.login')}

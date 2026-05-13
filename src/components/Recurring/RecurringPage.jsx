@@ -81,10 +81,10 @@ export default function RecurringPage() {
   return (
     <Card className="mt-4 sm:mt-6">
       <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-card rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 border-b border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-display font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-ink-dark-primary">
+        <h2 className="font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-white">
           {t('recurring.manageTitle')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-2">
+        <p className="text-sm text-ink-muted dark:text-white mt-2">
           {t('recurring.manageDescription')}
         </p>
       </div>
@@ -108,10 +108,10 @@ export default function RecurringPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </div>
-          <h3 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary text-lg sm:text-xl mb-2">
+          <h3 className="font-semibold tracking-tight text-ink-primary dark:text-white text-lg sm:text-xl mb-2">
             {t('recurring.noRecurring')}
           </h3>
-          <p className="text-ink-muted dark:text-ink-dark-muted text-sm sm:text-base max-w-sm">
+          <p className="text-ink-muted dark:text-white text-sm sm:text-base max-w-sm">
             {t('recurring.noRecurringDesc')}
           </p>
         </div>
@@ -129,16 +129,16 @@ export default function RecurringPage() {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-display font-semibold tracking-tight text-lg sm:text-xl text-ink-primary dark:text-ink-dark-primary">
+                    <h3 className="font-semibold tracking-tight text-lg sm:text-xl text-ink-primary dark:text-white">
                       {recurring.title}
                     </h3>
                     {!recurring.is_active && (
-                      <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-surface-subtle text-ink-muted dark:bg-surface-dark-subtle dark:text-ink-dark-muted">
+                      <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-surface-subtle text-ink-muted dark:bg-surface-dark-subtle dark:text-white">
                         {t('recurring.paused')}
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-ink-muted dark:text-ink-dark-muted">
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-ink-muted dark:text-white">
                     <span className="flex items-center gap-1">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -155,10 +155,10 @@ export default function RecurringPage() {
                 </div>
                 <div className="text-right">
                   <div
-                    className={`font-display font-semibold tracking-tight text-2xl ${
+                    className={`font-semibold tracking-tight text-2xl ${
                       recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''
                     }`}
-                    style={recurring.type === 'expense' ? { color: '#e05c6b' } : undefined}
+                    style={recurring.type === 'expense' ? { color: '#e8394d' } : undefined}
                   >
                     {CURRENCY_SYMBOLS[recurring.currency_code || 'EUR']}
                     {Number(recurring.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -167,7 +167,7 @@ export default function RecurringPage() {
                     className={`eyebrow ${
                       recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''
                     }`}
-                    style={recurring.type === 'expense' ? { color: '#e05c6b' } : undefined}
+                    style={recurring.type === 'expense' ? { color: '#e8394d' } : undefined}
                   >
                     {recurring.type === 'income' ? t('transactions.income') : t('transactions.expense')}
                   </span>
@@ -177,23 +177,23 @@ export default function RecurringPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-sm">
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.startDate')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-ink-dark-primary">{recurring.start_date}</div>
+                  <div className="font-semibold text-ink-primary dark:text-white">{recurring.start_date}</div>
                 </div>
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.lastRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-ink-dark-primary">
+                  <div className="font-semibold text-ink-primary dark:text-white">
                     {recurring.last_run_at ? new Date(recurring.last_run_at).toISOString().split('T')[0] : '-'}
                   </div>
                 </div>
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.nextRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-ink-dark-primary">
+                  <div className="font-semibold text-ink-primary dark:text-white">
                     {recurring.next_run_at ? new Date(recurring.next_run_at).toISOString().split('T')[0] : '-'}
                   </div>
                 </div>
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.created')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-ink-dark-primary">
+                  <div className="font-semibold text-ink-primary dark:text-white">
                     {recurring.occurrences_created || 0}
                     {recurring.occurrences_limit && ` / ${recurring.occurrences_limit}`}
                   </div>
@@ -245,7 +245,7 @@ export default function RecurringPage() {
                 <button
                   onClick={() => setDeleteConfirm(recurring)}
                   className="flex-1 text-white px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2 hover:opacity-90"
-                  style={{ backgroundColor: '#e05c6b' }}
+                  style={{ backgroundColor: '#e8394d' }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

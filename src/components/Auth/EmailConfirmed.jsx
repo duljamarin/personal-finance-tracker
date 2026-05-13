@@ -47,7 +47,7 @@ export default function EmailConfirmed() {
     <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
       <div className="bg-white dark:bg-surface-dark-card rounded-xl shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-surface-hairline dark:border-surface-dark-hairline text-center">
         {isError ? (
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: '#e05c6b' }}>
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: '#e8394d' }}>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -63,27 +63,27 @@ export default function EmailConfirmed() {
         <div>
           {isError ? (
             <>
-              <h2 className="font-display font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-ink-dark-primary mb-2">
+              <h2 className="font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-white mb-2">
                 {t('auth.emailConfirmationFailedTitle', 'Email confirmation failed')}
               </h2>
-              <p className="text-ink-secondary dark:text-ink-dark-secondary text-sm mb-4">
+              <p className="text-ink-secondary dark:text-white text-sm mb-4">
                 {t('auth.emailConfirmationFailedDescription', 'The confirmation link is invalid or has expired.')}
               </p>
             </>
           ) : (
             <>
-              <h2 className="font-display font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-ink-dark-primary mb-2">
+              <h2 className="font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-white mb-2">
                 {t('auth.emailConfirmedTitle')}
               </h2>
-              <p className="text-ink-secondary dark:text-ink-dark-secondary text-sm mb-4">
+              <p className="text-ink-secondary dark:text-white text-sm mb-4">
                 {t('auth.emailConfirmedDescription')}
               </p>
               {isLoading ? (
-                <p className="text-sm text-ink-muted dark:text-ink-dark-muted">
+                <p className="text-sm text-ink-muted dark:text-white">
                   {t('auth.verifyingEmail', 'Verifying your email, please wait...')}
                 </p>
               ) : (
-                <p className="text-sm text-ink-muted dark:text-ink-dark-muted">
+                <p className="text-sm text-ink-muted dark:text-white">
                   {t('auth.redirectingToDashboard', 'Redirecting you to your dashboard...')}
                 </p>
               )}

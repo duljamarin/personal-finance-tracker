@@ -131,7 +131,7 @@ export default function ResetPassword() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mb-4" />
-        <p className="text-ink-muted dark:text-ink-dark-muted font-medium">{t('auth.verifying')}</p>
+        <p className="text-ink-muted dark:text-white font-medium">{t('auth.verifying')}</p>
       </div>
     );
   }
@@ -141,7 +141,7 @@ export default function ResetPassword() {
   }
 
   const pwInputClass = (hasError) =>
-    `w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 rounded-md transition-colors ${hasError ? 'border-red-400' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`;
+    `w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 rounded-md transition-colors ${hasError ? 'border-red-400' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`;
 
   return (
     <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
@@ -150,16 +150,16 @@ export default function ResetPassword() {
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5 shadow-lg shadow-brand-500/30">
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] mb-3">
             {t('auth.resetPasswordTitle')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
+          <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
             {t('auth.resetPasswordDescription')}
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function ResetPassword() {
         <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">
+              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">
                 {t('auth.newPassword')}
               </label>
               <PasswordInput
@@ -183,7 +183,7 @@ export default function ResetPassword() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-2">
+              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">
                 {t('auth.confirmNewPassword')}
               </label>
               <PasswordInput

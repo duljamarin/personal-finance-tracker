@@ -56,7 +56,7 @@ export default function Dashboard() {
     <>
       {/* Welcome greeting toast */}
       {showGreeting && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-brand-600 text-white px-5 py-3 rounded-xl shadow-lg shadow-brand-500/30 text-sm font-medium animate-fade-in-out max-w-sm text-center">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-brand-600 text-white px-5 py-3 rounded-md shadow-lg shadow-brand-500/30 text-sm font-medium animate-fade-in-out max-w-sm text-center">
           {t('dashboard.welcomeBack')}, {username}!
         </div>
       )}
@@ -66,16 +66,16 @@ export default function Dashboard() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-ink-primary dark:text-ink-dark-primary tracking-tight font-display">
+          <h1 className="text-2xl font-bold text-ink-primary dark:text-white tracking-tight">
             {username ? `${getTimeGreeting(t)}, ${username}` : t('dashboard.title')}
           </h1>
-          <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-0.5">
+          <p className="text-sm text-ink-muted dark:text-white mt-0.5">
             {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
         <button
           onClick={handleAddTransaction}
-          className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors"
+          className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -120,7 +120,7 @@ export default function Dashboard() {
 
         <Suspense fallback={<LoadingSpinner size="md" text={t('dashboard.loadingData')} />}>
           {loading ? (
-            <div className="flex items-center justify-center py-12 text-gray-600 dark:text-gray-300">
+            <div className="flex items-center justify-center py-12 text-ink-primary dark:text-white">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 dark:border-brand-400 mr-3"></div>
               {t('dashboard.loadingData')}
             </div>
@@ -132,7 +132,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6 mb-6">
             <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
               <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display">
+                <h3 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
                   {t('transactions.incomes')} {t('chart.byCategory')}
                 </h3>
                 <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 rounded">
@@ -143,10 +143,10 @@ export default function Dashboard() {
             </div>
             <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
               <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display">
+                <h3 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
                   {t('transactions.expenses')} {t('chart.byCategory')}
                 </h3>
-                <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-surface-hairline dark:bg-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted rounded">
+                <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-surface-hairline dark:bg-surface-dark-hairline text-ink-muted dark:text-white rounded">
                   {t('transactions.expenses')}
                 </span>
               </div>
@@ -162,7 +162,7 @@ export default function Dashboard() {
       {/* Mobile FAB */}
       <button
         onClick={handleAddTransaction}
-        className="fixed bottom-6 right-6 z-40 lg:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-lg transition-all flex items-center justify-center active:scale-95"
+        className="fixed bottom-6 right-6 z-40 lg:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-md shadow-lg transition-all flex items-center justify-center active:scale-95"
         aria-label={t('dashboard.addTransaction')}
       >
         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">

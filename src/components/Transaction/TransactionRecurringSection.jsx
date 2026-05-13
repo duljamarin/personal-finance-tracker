@@ -28,7 +28,7 @@ export default function TransactionRecurringSection({
 					<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 					</svg>
-					<label className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+					<label className="text-xs sm:text-sm font-semibold text-ink-primary dark:text-white">
 						{t('recurring.makeRecurring')}
 					</label>
 				</div>
@@ -54,7 +54,7 @@ export default function TransactionRecurringSection({
 					{/* Frequency & Interval */}
 					<div className="grid grid-cols-2 gap-2 sm:gap-3">
 						<div className="flex flex-col gap-1 sm:gap-2">
-							<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+							<label className="text-xs font-semibold text-ink-primary dark:text-white">
 								{t('recurring.frequency')}
 							</label>
 							<select
@@ -69,7 +69,7 @@ export default function TransactionRecurringSection({
 							</select>
 						</div>
 						<div className="flex flex-col gap-1 sm:gap-2">
-							<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+							<label className="text-xs font-semibold text-ink-primary dark:text-white">
 								{t('recurring.every')}
 							</label>
 							<div className="flex items-center gap-1 sm:gap-2">
@@ -80,7 +80,7 @@ export default function TransactionRecurringSection({
 									onChange={onIntervalCountChange}
 									className={`${getInputClassName(errors.intervalCount)} w-16 sm:w-20`}
 								/>
-								<span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+								<span className="text-xs sm:text-sm text-ink-secondary dark:text-white">
 									{t(`recurring.${frequency}Unit`, { count: Number(intervalCount) || 1 })}
 								</span>
 							</div>
@@ -92,7 +92,7 @@ export default function TransactionRecurringSection({
 
 					{/* End Condition */}
 					<div className="flex flex-col gap-1 sm:gap-2">
-						<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+						<label className="text-xs font-semibold text-ink-primary dark:text-white">
 							{t('recurring.ends')}
 						</label>
 						<div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -104,7 +104,7 @@ export default function TransactionRecurringSection({
 									className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs rounded-lg font-medium border transition-all ${
 										endType === option
 											? 'bg-purple-600 text-white border-purple-700'
-											: 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-zinc-700 hover:border-brand-400'
+											: 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-400'
 									}`}
 								>
 									{t(`recurring.end${option.charAt(0).toUpperCase() + option.slice(1)}`)}
@@ -116,7 +116,7 @@ export default function TransactionRecurringSection({
 					{/* End Date Input */}
 					{endType === 'date' && (
 						<div className="flex flex-col gap-1 sm:gap-2">
-							<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+							<label className="text-xs font-semibold text-ink-primary dark:text-white">
 								{t('recurring.endDate')}
 							</label>
 							<Input
@@ -135,7 +135,7 @@ export default function TransactionRecurringSection({
 					{/* Occurrences Count Input */}
 					{endType === 'count' && (
 						<div className="flex flex-col gap-1 sm:gap-2">
-							<label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+							<label className="text-xs font-semibold text-ink-primary dark:text-white">
 								{t('recurring.occurrences')}
 							</label>
 							<Input

@@ -10,10 +10,10 @@ export default function IncomeStep({ monthlyIncome, onChange, currency }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
+        <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
           {t('onboarding.income.title')}
         </h2>
-        <p className="text-ink-muted dark:text-ink-dark-muted mt-2">
+        <p className="text-ink-muted dark:text-white mt-2">
           {t('onboarding.income.subtitle')}
         </p>
       </div>
@@ -27,7 +27,7 @@ export default function IncomeStep({ monthlyIncome, onChange, currency }) {
           placeholder={placeholder}
           value={monthlyIncome}
           onChange={(e) => onChange(e.target.value)}
-          leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-ink-dark-muted">{symbol}</span>}
+          leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
         />
       </div>
     </div>

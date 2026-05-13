@@ -45,18 +45,18 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
 
   const valueTone = (tone) => {
     if (tone === 'income') return 'text-brand-600 dark:text-brand-400';
-    if (tone === 'positive') return 'text-ink-primary dark:text-ink-dark-primary';
-    if (tone === 'expense' || tone === 'negative') return 'text-[#e05c6b] dark:text-[#f08090]';
-    return 'text-ink-primary dark:text-ink-dark-primary';
+    if (tone === 'positive') return 'text-ink-primary dark:text-white';
+    if (tone === 'expense' || tone === 'negative') return 'text-[#e8394d] dark:text-[#e8394d]';
+    return 'text-ink-primary dark:text-white';
   };
   const iconTone = (tone) => {
     if (tone === 'income' || tone === 'positive') return 'bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400';
-    if (tone === 'expense' || tone === 'negative') return 'bg-rose-50 text-[#e05c6b] dark:bg-rose-950/20 dark:text-[#f08090]';
-    return 'bg-surface-page text-ink-muted dark:bg-surface-dark-page dark:text-ink-dark-muted';
+    if (tone === 'expense' || tone === 'negative') return 'bg-rose-50 text-[#e8394d] dark:bg-rose-950/20 dark:text-[#e8394d]';
+    return 'bg-surface-page text-ink-muted dark:bg-surface-dark-page dark:text-white';
   };
   const borderTone = (tone) => {
     if (tone === 'income' || tone === 'positive') return 'border-l-2 border-l-brand-500';
-    if (tone === 'negative' || tone === 'expense') return 'border-l-2 border-l-[#e05c6b]';
+    if (tone === 'negative' || tone === 'expense') return 'border-l-2 border-l-[#e8394d]';
     return 'border-l-2 border-l-surface-hairline';
   };
 
@@ -77,11 +77,11 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
             {showSkeleton ? (
               <div className="h-9 bg-surface-hairline dark:bg-surface-dark-hairline rounded-md w-2/3 animate-pulse" />
             ) : (
-              <p className={`text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight-display leading-none ${valueTone(card.tone)}`}>
+              <p className={`text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight leading-none ${valueTone(card.tone)}`}>
                 {formatCurrency(card.value)}
               </p>
             )}
-            <p className="text-xs mt-3 text-ink-muted dark:text-ink-dark-muted">{t('currency.baseCurrency')}</p>
+            <p className="text-xs mt-3 text-ink-muted dark:text-white">{t('currency.baseCurrency')}</p>
           </div>
         ))}
       </div>

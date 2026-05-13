@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,7 +34,10 @@
     background-color: #3f3f3a;
   }
   .eyebrow {
-    @apply uppercase tracking-[0.12em] text-[11px] font-medium text-ink-muted dark:text-ink-dark-muted;
+    @apply text-[12px] font-medium text-ink-muted;
+  }
+  .dark .eyebrow {
+    color:  #FFFFFF;
   }
   .dark input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
@@ -71,18 +76,25 @@
     min-height: 100%;
     background-color: #FAFAF7;
     color: #111112;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-weight: 400;
+    font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
   }
   button, input, select, textarea {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
   }
-  h1, h2, h3, h4 {
-    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
-  }
+
   .dark body {
     background-color: #0A0A0B;
-    color: #EDEDE9;
+    color: #FFFFFF;
+  }
+  .dark input,
+  .dark textarea,
+  .dark select {
+    color: #FFFFFF;
+  }
+  .dark label {
+    color: #FFFFFF;
   }
   .tabular-nums {
     font-variant-numeric: tabular-nums;
@@ -94,6 +106,23 @@
     color: #fff;
   }
 }
+
+/* ── Dark mode color overrides ──────────────────────────────────────────────
+   These live outside @layer so they have higher cascade priority than
+   Tailwind utilities (which live in @layer utilities / @layer base).
+   This ensures dark mode always shows white text regardless of JIT cache. */
+.dark .text-ink-primary        { color: #FFFFFF !important; }
+.dark .text-ink-muted          { color: #FFFFFF !important; }
+.dark .text-ink-secondary      { color: #FFFFFF !important; }
+.dark .text-ink-dark-primary   { color: #FFFFFF !important; }
+.dark .text-ink-dark-muted     { color: #FFFFFF !important; }
+.dark .text-ink-dark-secondary { color: #FFFFFF !important; }
+.dark label                    { color: #FFFFFF !important; }
+.dark input                    { color: #FFFFFF !important; }
+.dark textarea                 { color: #FFFFFF !important; }
+.dark select                   { color: #FFFFFF !important; }
+.dark input::placeholder,
+.dark textarea::placeholder    { color: rgba(255,255,255,0.4) !important; }
 
 /* Prevent selection/focus rectangles on Recharts SVG charts */
 .recharts-wrapper,

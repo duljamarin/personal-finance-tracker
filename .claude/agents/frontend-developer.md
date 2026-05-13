@@ -73,13 +73,48 @@ const {
 
 ## Design Tokens (use these, never raw hex in Tailwind classes)
 ```
-Brand:    brand-50 … brand-950   (emerald/teal, primary = brand-600 #168b78)
-Surface:  surface-page, surface-card, surface-hairline, surface-subtle
-          dark: surface-dark-page, surface-dark-card, surface-dark-hairline, surface-dark-subtle, surface-dark-elevated
-Ink:      ink-primary, ink-secondary, ink-muted
-          dark: ink-dark-primary, ink-dark-secondary, ink-dark-muted
-Expense:  #e05c6b (light) / #f08090 (dark)  — use as style={{ color }} not arbitrary Tailwind
+Brand:    brand-50 … brand-950
+          brand-500 #168b78  (accent, active states)
+          brand-600 #0f6b5e  (primary button fill)
+          brand-700 #0b5449  (button hover)
+
+Surface:  surface-page, surface-card, surface-hairline
+          dark: surface-dark-page, surface-dark-card, surface-dark-hairline,
+                surface-dark-elevated, surface-dark-tertiary
+
+Ink:      ink-primary (#111112), ink-muted (#2F2F2C)
+          dark: ink-dark-primary (#FFFFFF), ink-dark-muted (#FFFFFF)
+          ⚠ In dark mode both tokens resolve to white. Use dark:text-white directly.
+          Never dark:text-gray-*, dark:text-zinc-*, or dark:text-ink-dark-* (JIT cache issues).
+
+Expense:  #e8394d — use everywhere for expense amounts, negative values, over-budget indicators.
+          Never #e05c6b or #f08090 (old washed-out pink — removed globally).
 ```
+
+## Dark Mode Rules
+- All dark mode text is white. `index.css` has `!important` overrides outside `@layer` for all ink tokens,
+  labels, inputs, and textareas — do not fight this cascade.
+- Primary text: `dark:text-white`
+- Secondary / muted text: `dark:text-white` (hierarchy via opacity modifiers `text-white/70` or layout)
+- Placeholders: `dark:placeholder:text-white/40` (less contrast than typed text — not gray)
+- Never `dark:text-gray-*` or `dark:text-zinc-*`
+- Chart tick fills (SVG): use JS-computed `dark ? '#FFFFFF' : '#6b7280'` — Tailwind classes don't apply to SVG attributes
+
+## Typography
+- Single font family: **Inter Tight** (`font-sans`) for body + headings. No separate display font.
+- No `font-display` class — removed. Do not reintroduce.
+- No `tracking-display` — removed. Use standard Tailwind tracking utilities.
+- `.eyebrow` utility class: `text-[12px] font-medium text-ink-muted` — NO uppercase, NO wide tracking.
+
+## Buttons & Radii
+- Primary buttons: `bg-brand-600 hover:bg-brand-700`, `rounded-md` (never `rounded-full`)
+- Cards/panels: `rounded-[10px]`; modals/dropdowns: `rounded-xl`; inputs/chips: `rounded-md`; pills: `rounded-full`
+
+## Over-budget / Expense Color Hierarchy
+Avoid unicolor red when showing over-budget state:
+- Percentage (key alarm signal): `text-[#e8394d]`
+- Supporting text (overflow label, forecast): muted treatment — `dark:text-white/60` or `text-[#e8394d]/80`
+- Progress bar carries the color; body text does not need to repeat it
 
 ## Key Rules
 1. All user-visible strings → `t('key')`. Add to BOTH `en/translation.json` AND `sq/translation.json`
@@ -129,7 +164,7 @@ export default function MyComponent({ prop }) {
   // state, effects, handlers
   return (
     <Card>
-      <h2 className="font-display font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary">
+      <h2 className="font-semibold tracking-tight text-ink-primary dark:text-white">
         {t('section.title')}
       </h2>
     </Card>

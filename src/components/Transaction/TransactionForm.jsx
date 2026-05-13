@@ -293,7 +293,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 	return (
 		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-5 w-full">
-			<h2 className="font-display text-lg sm:text-2xl font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2 flex-shrink-0">
+			<h2 className="text-lg sm:text-2xl font-semibold tracking-tight text-ink-primary dark:text-white mb-1 sm:mb-2 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
@@ -320,7 +320,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				
 				{/* Title */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
+					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
 						{t('transactions.titleLabel')}
 					</label>
 					<Input
@@ -344,8 +344,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
 									</svg>
 								),
-								activeClass: 'bg-[#fef0f1] dark:bg-rose-950/30 border-[#e05c6b] text-[#e05c6b] dark:text-[#f08090]',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-[#e05c6b]/50',
+								activeClass: 'bg-[#fef0f1] dark:bg-rose-950/30 border-[#e8394d] text-[#e8394d] dark:text-[#e8394d]',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-[#e8394d]/50',
 							},
 							{
 								value: 'income',
@@ -356,7 +356,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 									</svg>
 								),
 								activeClass: 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-600 dark:text-brand-400',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-ink-dark-muted hover:border-brand-300',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-brand-300',
 							},
 						].map(opt => (
 							<button
@@ -376,7 +376,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 					{/* Amount */}
 					<div className="flex flex-col gap-1.5">
-						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
+						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
 							{t('transactions.amountLabel')}
 						</label>
 						<Input
@@ -392,7 +392,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				{/* Currency Fields */}
 				<div className="grid grid-cols-[1fr_1fr] gap-3 items-start">
 					<div className="flex flex-col gap-1.5">
-						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
+						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
 							{t('currency.code')}
 						</label>
 						<CustomSelect
@@ -413,12 +413,12 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					</div>
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-baseline gap-1.5">
-							<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary whitespace-nowrap">
+							<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white whitespace-nowrap">
 								{t('currency.exchangeRate')}
 							</label>
 							{isFetchingRate
 								? <span className="text-xs text-brand-500 dark:text-brand-400 font-normal animate-pulse">...</span>
-								: <span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal whitespace-nowrap">{t('currency.exchangeRateOptional')}</span>
+								: <span className="text-xs text-ink-muted dark:text-white font-normal whitespace-nowrap">{t('currency.exchangeRateOptional')}</span>
 							}
 						</div>
 						<Input
@@ -432,7 +432,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					</div>
 				</div>
 				{currencyCode !== 'EUR' && (
-					<p className="text-xs text-ink-muted dark:text-ink-dark-muted -mt-2">
+					<p className="text-xs text-ink-muted dark:text-white -mt-2">
 						{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
 					</p>
 				)}
@@ -453,7 +453,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 									{isSplit ? t('split.singleCategory') : t('split.enableSplit')}
 								</button>
 							) : (
-								<span className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+								<span className="flex items-center gap-1.5 text-xs text-ink-muted/60 dark:text-white/60">
 									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
 									</svg>
@@ -501,7 +501,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							className={`flex-shrink-0 w-9 self-stretch rounded-md border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
 								showProposalInput
 									? 'bg-brand-600 border-brand-600 text-white'
-									: 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-muted dark:text-ink-dark-muted hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400'
+									: 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400'
 							}`}
 						>
 							<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
@@ -510,12 +510,12 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						</button>
 					</div>
 					{errors.categoryId && (
-						<span className="text-xs text-[#e05c6b] dark:text-[#f08090] font-medium">{t(errors.categoryId)}</span>
+						<span className="text-xs text-[#e8394d] dark:text-[#e8394d] font-medium">{t(errors.categoryId)}</span>
 					)}
 
 					{showProposalInput && (
 						<div className="mt-2 sm:mt-3 p-3 sm:p-4 bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-lg">
-							<label className="text-xs sm:text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1 sm:mb-2 block">
+							<label className="text-xs sm:text-sm font-medium text-ink-primary dark:text-white mb-1 sm:mb-2 block">
 								{t('categoryProposal.proposedName')}
 							</label>
 							<div className="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -531,7 +531,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										placeholder={t('categoryProposal.proposedNamePlaceholder')}
 										value={proposedCategoryName}
 										onChange={e => setProposedCategoryName(e.target.value)}
-										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 border-surface-hairline dark:border-surface-dark-hairline min-w-0"
+										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 border-surface-hairline dark:border-surface-dark-hairline min-w-0"
 									/>
 								</div>
 								<Button
@@ -557,7 +557,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 											className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
 												proposedCategoryEmoji === key
 													? 'bg-brand-600 text-white'
-													: 'text-ink-muted dark:text-ink-dark-muted hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
+													: 'text-ink-muted dark:text-white hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
 											}`}
 										>
 											{CATEGORY_ICONS[key] && (
@@ -582,9 +582,9 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Tags */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
+					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
 						{t('transactions.tagsLabel')}
-						<span className="text-xs text-ink-muted dark:text-ink-dark-muted font-normal ml-1">
+						<span className="text-xs text-ink-muted dark:text-white font-normal ml-1">
 							{t('transactions.tagsOptional')}
 						</span>
 					</label>
@@ -617,7 +617,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Date */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-ink-dark-secondary">
+					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
 						{t('transactions.dateLabel')}
 					</label>
 					<Input

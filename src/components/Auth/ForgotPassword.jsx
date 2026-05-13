@@ -57,10 +57,10 @@ export default function ForgotPassword() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
             </svg>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.1] mb-3">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
             {t('auth.checkYourEmail')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-ink-dark-muted mb-8">
+          <p className="text-base text-ink-muted dark:text-white mb-8">
             {t('auth.resetEmailSent')}
           </p>
           <Link
@@ -80,16 +80,16 @@ export default function ForgotPassword() {
   return (
     <Shell>
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-xl mb-5 shadow-lg shadow-brand-500/30">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5 shadow-lg shadow-brand-500/30">
           <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 17 L10 11 L14 14 L20 6" />
             <path d="M15 6 L20 6 L20 11" />
           </svg>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight-display leading-[1.05] mb-3">
+        <h1 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] mb-3">
           {t('auth.forgotPasswordTitle')}
         </h1>
-        <p className="text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto">
+        <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
           {t('auth.forgotPasswordDescription')}
         </p>
       </div>

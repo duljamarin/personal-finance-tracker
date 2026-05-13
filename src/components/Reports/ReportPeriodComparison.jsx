@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'recharts';
 import Card from '../UI/Card';
+import useDarkMode from '../../hooks/useDarkMode';
 
 function formatLabel(dateStr) {
   if (!dateStr) return '';
@@ -18,7 +19,7 @@ function formatLabel(dateStr) {
 
 function PctChange({ current, previous, positiveIsGood }) {
   const { t } = useTranslation();
-  if (previous === 0) return <span className="text-xs text-gray-400 dark:text-gray-500">-</span>;
+  if (previous === 0) return <span className="text-xs text-ink-muted/60 dark:text-white/60">-</span>;
 
   const pct = (((current - previous) / previous) * 100).toFixed(1);
   const isUp = current > previous;
@@ -44,7 +45,7 @@ function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="font-semibold text-sm text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
+        <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.name} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: €{Number(entry.value).toFixed(2)}
@@ -65,6 +66,7 @@ export default function ReportPeriodComparison({
   prevEndDate,
 }) {
   const { t } = useTranslation();
+  const [dark] = useDarkMode();
 
   const calcTotals = (txs) => {
     const income = txs
@@ -97,10 +99,10 @@ export default function ReportPeriodComparison({
 
   return (
     <Card padding="md">
-      <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+      <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-1">
         {t('reports.periodComparison')}
       </h3>
-      <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
+      <p className="text-xs text-ink-muted/60 dark:text-white/60 mb-4">
         {t('reports.currentPeriod')}: {formatLabel(startDate)} - {formatLabel(endDate)}
         {' · '}
         {t('reports.previousPeriod')}: {formatLabel(prevStartDate)} - {formatLabel(prevEndDate)}
@@ -110,16 +112,16 @@ export default function ReportPeriodComparison({
         {/* Bar chart */}
         <div className="flex-1 overflow-x-auto">
           <BarChart width={500} height={240} data={chartData} barGap={4} barCategoryGap="35%">
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} />
             <XAxis
               dataKey="name"
-              tick={{ fontSize: 12, fill: '#6b7280' }}
+              tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#6b7280' }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               tickFormatter={(v) => `€${v}`}
-              tick={{ fontSize: 11, fill: '#6b7280' }}
+              tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
               axisLine={false}
               tickLine={false}
               width={70}
@@ -138,14 +140,14 @@ export default function ReportPeriodComparison({
               { label: t('reports.income'), curr: curr.income, prev: prev.income, positiveIsGood: true },
               { label: t('reports.expenses'), curr: curr.expenses, prev: prev.expenses, positiveIsGood: false },
             ].map((row) => (
-              <div key={row.label} className="p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{row.label}</p>
+              <div key={row.label} className="p-3 rounded-lg bg-surface-secondary dark:bg-surface-dark-elevated">
+                <p className="text-xs text-ink-muted dark:text-white mb-1">{row.label}</p>
                 <div className="flex items-end justify-between gap-2">
                   <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                    <p className="text-sm font-semibold text-ink-primary dark:text-white">
                       €{row.curr.toFixed(2)}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                    <p className="text-xs text-ink-muted/60 dark:text-white/60">
                       {t('reports.previousPeriod')}: €{row.prev.toFixed(2)}
                     </p>
                   </div>

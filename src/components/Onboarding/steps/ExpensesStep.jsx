@@ -33,10 +33,10 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary">
+        <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
           {t('onboarding.expenses.title')}
         </h2>
-        <p className="text-ink-muted dark:text-ink-dark-muted mt-2">
+        <p className="text-ink-muted dark:text-white mt-2">
           {t('onboarding.expenses.subtitle')}
         </p>
       </div>
@@ -53,10 +53,10 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
                 placeholder={placeholder}
                 value={expense.amount}
                 onChange={(e) => updateExpense(index, 'amount', e.target.value)}
-                leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-ink-dark-muted">{symbol}</span>}
+                leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
               />
               <div>
-                <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1.5">
+                <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
                   {t('onboarding.expenses.categoryLabel')}
                 </label>
                 <CustomSelect
@@ -83,8 +83,8 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
               <button
                 type="button"
                 onClick={() => removeExpense(index)}
-                className="mt-7 p-2 text-ink-muted dark:text-ink-dark-muted hover:opacity-80 transition-colors"
-                style={{ '--hover-color': '#e05c6b' }}
+                className="mt-7 p-2 text-ink-muted dark:text-white hover:opacity-80 transition-colors"
+                style={{ '--hover-color': '#e8394d' }}
                 aria-label={t('onboarding.expenses.remove')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

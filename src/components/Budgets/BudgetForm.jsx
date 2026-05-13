@@ -47,23 +47,23 @@ export default function BudgetForm({ budget, availableCategories, onSave, onClos
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary mb-6">
+      <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mb-6">
         {isEditing ? t('budgets.editBudget') : t('budgets.addBudget')}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {isEditing ? (
           <div>
-            <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
+            <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
               {t('budgets.form.category')}
             </label>
-            <p className="px-3 py-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md text-ink-secondary dark:text-ink-dark-secondary">
+            <p className="px-3 py-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md text-ink-secondary dark:text-white">
               {translateCategoryName(budget.category?.name || '')}
             </p>
           </div>
         ) : (
           <div>
-            <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
+            <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
               {t('budgets.form.category')}
             </label>
             <CustomSelect

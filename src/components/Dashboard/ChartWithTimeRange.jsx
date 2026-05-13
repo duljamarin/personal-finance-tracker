@@ -19,7 +19,7 @@ export default function ChartWithTimeRange({ transactions }) {
   return (
     <div className="bg-white dark:bg-surface-dark-card rounded-xl p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
       <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h3 className="font-display font-semibold tracking-tight text-sm text-ink-primary dark:text-ink-dark-primary">
+        <h3 className="font-semibold tracking-tight text-sm text-ink-primary dark:text-white">
           {t('chart.monthlyOverview')}
         </h3>
         <div className="flex gap-1">
@@ -30,7 +30,7 @@ export default function ChartWithTimeRange({ transactions }) {
               className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                 range === r
                   ? 'bg-brand-600 text-white'
-                  : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-ink-dark-muted hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline'
+                  : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline'
               }`}
             >
               {t(`dashboard.range.${r}`)}

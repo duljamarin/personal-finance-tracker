@@ -17,12 +17,12 @@ export default function AddTransactionCTA({ onClick }) {
         </svg>
       </div>
 
-      <span className="relative inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 text-white shadow-md shadow-brand-500/30 group-hover:shadow-lg group-hover:shadow-brand-500/40 group-hover:scale-105 transition-all duration-150">
+      <span className="relative inline-flex items-center justify-center w-12 h-12 rounded-md bg-brand-600 text-white shadow-md shadow-brand-500/30 group-hover:shadow-lg group-hover:shadow-brand-500/40 group-hover:scale-105 transition-all duration-150">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
           <path d="M12 5v14M5 12h14" />
         </svg>
       </span>
-      <span className="relative text-base font-semibold text-ink-primary dark:text-ink-dark-primary tracking-tight font-display">
+      <span className="relative text-base font-semibold text-ink-primary dark:text-white tracking-tight">
         {t('dashboard.addTransaction')}
       </span>
       <span className="relative text-sm text-brand-700 dark:text-brand-300 text-center max-w-[260px] font-medium">

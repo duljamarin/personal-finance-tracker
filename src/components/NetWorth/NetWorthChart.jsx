@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
+import useDarkMode from '../../hooks/useDarkMode';
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="font-semibold text-sm text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
+        <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: {CURRENCY_SYMBOLS.EUR}{Number(entry.value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -21,6 +22,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function NetWorthChart({ data, transactions = [] }) {
   const { t } = useTranslation();
+  const [dark] = useDarkMode();
 
   // Compute cumulative cash flow up to a given date string (YYYY-MM-DD)
   const getCashFlowUpTo = (dateStr) => {
@@ -95,7 +97,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
 
   if (chartData.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+      <div className="text-center py-8 text-ink-muted dark:text-white">
         {t('chart.noData')}
       </div>
     );
@@ -104,15 +106,15 @@ export default function NetWorthChart({ data, transactions = [] }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.08} className="text-surface-hairline dark:text-surface-dark-hairline" />
         <XAxis
           dataKey="date"
-          tick={{ fontSize: 11, fill: '#6b7280' }}
+          tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 11, fill: '#6b7280' }}
+          tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(value) => {
@@ -145,9 +147,9 @@ export default function NetWorthChart({ data, transactions = [] }) {
           <Line
             type="monotone"
             dataKey={t('networth.liabilities')}
-            stroke="#e05c6b"
+            stroke="#e8394d"
             strokeWidth={2}
-            dot={{ fill: '#e05c6b', r: 3 }}
+            dot={{ fill: '#e8394d', r: 3 }}
           />
         )}
         <Line

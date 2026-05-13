@@ -4,17 +4,17 @@ import { Link } from 'react-router-dom';
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
 
-  const h2 = 'font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary mt-8 mb-4';
-  const p = 'text-ink-primary dark:text-ink-dark-primary mb-4';
-  const list = 'list-disc list-inside text-ink-primary dark:text-ink-dark-primary mb-4 ml-4 space-y-1';
+  const h2 = 'font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mt-8 mb-4';
+  const p = 'text-ink-primary dark:text-white mb-4';
+  const list = 'list-disc list-inside text-ink-primary dark:text-white mb-4 ml-4 space-y-1';
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="bg-white dark:bg-surface-dark-card rounded-xl p-8 border border-surface-hairline dark:border-surface-dark-hairline">
-        <h1 className="font-display font-semibold tracking-tight text-3xl text-ink-primary dark:text-ink-dark-primary mb-2">
+        <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white mb-2">
           {t('legal.privacy.title')}
         </h1>
-        <p className="text-sm text-ink-muted dark:text-ink-dark-muted mb-8">
+        <p className="text-sm text-ink-muted dark:text-white mb-8">
           {t('legal.lastUpdated')}: {new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
 

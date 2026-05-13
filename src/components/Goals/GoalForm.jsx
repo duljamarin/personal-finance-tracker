@@ -93,13 +93,13 @@ export default function GoalForm({ goal, onSave, onClose }) {
   ];
 
   const colors = [
-    '#168b78', '#0ea5a3', '#d97706', '#e05c6b',
+    '#168b78', '#0ea5a3', '#d97706', '#e8394d',
     '#7c4ddc', '#c2519c', '#0891b2', '#65a30d'
   ];
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary mb-6">
+      <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mb-6">
         {isEditing ? t('goals.editGoal') : t('goals.addGoal')}
       </h2>
 
@@ -115,7 +115,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
             {t('goals.form.description')}
           </label>
           <textarea
@@ -123,7 +123,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder={t('goals.form.descriptionPlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           />
         </div>
 
@@ -148,7 +148,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-2">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-2">
             {t('goals.form.goalType')}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -160,10 +160,10 @@ export default function GoalForm({ goal, onSave, onClose }) {
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border font-medium text-sm transition-colors ${
                   formData.goalType === type
                     ? 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-700 dark:text-brand-300'
-                    : 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-secondary dark:text-ink-dark-secondary hover:border-brand-300 dark:hover:border-brand-700'
+                    : 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-secondary dark:text-white hover:border-brand-300 dark:hover:border-brand-700'
                 }`}
               >
-                <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted dark:text-ink-dark-muted'}`}>
+                <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted dark:text-white'}`}>
                   {GOAL_TYPE_ICONS[type]}
                 </span>
                 {t(`goals.types.${type}`)}
@@ -173,13 +173,13 @@ export default function GoalForm({ goal, onSave, onClose }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
             {t('goals.form.priority')}
           </label>
           <select
             value={formData.priority}
             onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md appearance-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md appearance-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           >
             {priorities.map(p => (
               <option key={p.value} value={p.value}>
@@ -190,7 +190,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-2">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-2">
             {t('goals.form.color')}
           </label>
           <div className="flex gap-2 flex-wrap">

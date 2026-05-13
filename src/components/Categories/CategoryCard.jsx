@@ -21,20 +21,20 @@ export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, de
   return (
     <div className="relative group flex flex-col items-center justify-center gap-3 p-5 rounded-[10px] bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors cursor-pointer min-h-[120px]">
       <span
-        className="w-12 h-12 rounded-full flex items-center justify-center text-white font-display text-lg font-semibold select-none"
+        className="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-semibold select-none"
         style={{ backgroundColor: color }}
       >
         {initial}
       </span>
 
-      <span className="text-sm font-medium text-center text-ink-primary dark:text-ink-dark-primary leading-tight line-clamp-2">
+      <span className="text-sm font-medium text-center text-ink-primary dark:text-white leading-tight line-clamp-2">
         {displayName}
       </span>
 
       <div className="absolute inset-0 rounded-[10px] flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-ink-primary/50 dark:bg-black/60 pointer-events-none group-hover:pointer-events-auto">
         <button
           onClick={e => { e.stopPropagation(); onEdit(); }}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary hover:bg-brand-50 dark:hover:bg-brand-950/40 hover:text-brand-700 dark:hover:text-brand-300 shadow-sm transition-colors"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:bg-brand-50 dark:hover:bg-brand-950/40 hover:text-brand-700 dark:hover:text-brand-300 shadow-sm transition-colors"
           title={editLabel}
           aria-label={editLabel}
         >

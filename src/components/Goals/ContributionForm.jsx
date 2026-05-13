@@ -31,10 +31,10 @@ export default function ContributionForm({ goal, onSave, onClose }) {
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display font-semibold tracking-tight text-2xl text-ink-primary dark:text-ink-dark-primary mb-2">
+      <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mb-2">
         {t('goals.contributions.add')}
       </h2>
-      <p className="text-ink-secondary dark:text-ink-dark-secondary mb-6">
+      <p className="text-ink-secondary dark:text-white mb-6">
         {goal.name}
       </p>
 
@@ -47,7 +47,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'add'
                 ? 'bg-brand-600 text-white'
-                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-ink-dark-secondary hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
           >
             {t('goals.contributions.add')}
@@ -58,9 +58,9 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'withdraw'
                 ? 'text-white'
-                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-ink-dark-secondary hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
-            style={action === 'withdraw' ? { backgroundColor: '#e05c6b' } : undefined}
+            style={action === 'withdraw' ? { backgroundColor: '#e8394d' } : undefined}
           >
             {t('goals.contributions.withdraw')}
           </button>
@@ -90,7 +90,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-ink-dark-secondary mb-1">
+          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
             {t('goals.contributions.note')}
           </label>
           <textarea
@@ -98,7 +98,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onChange={(e) => setNote(e.target.value)}
             placeholder={t('goals.contributions.notePlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           />
         </div>
 

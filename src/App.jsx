@@ -135,8 +135,8 @@ function AuthGlobalUI() {
       {authLoading && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-8 shadow-lg">
-            <div className="w-12 h-12 border-4 border-gray-200 dark:border-zinc-700 border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-300 font-medium text-sm text-center">{t('dashboard.processing')}</p>
+            <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-ink-muted dark:text-white font-medium text-sm text-center">{t('dashboard.processing')}</p>
           </div>
         </div>
       )}
@@ -147,7 +147,7 @@ function AuthGlobalUI() {
 /* Authenticated app shell with sidebar */
 function AuthenticatedLayout({ children }) {
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300 font-sans">
+    <div className="flex min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
       <Sidebar />
       <main className="flex-1 min-w-0 overflow-x-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-6 sm:pt-6 lg:py-8">
@@ -161,7 +161,7 @@ function AuthenticatedLayout({ children }) {
 /* Public layout without sidebar */
 function PublicLayout({ children }) {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300 font-sans">
+    <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
         <main className="flex-1">
@@ -188,7 +188,7 @@ function InnerAppContent() {
     <ErrorBoundary>
       <AuthGlobalUI />
       {isOnboardingRoute ? (
-        <div className="min-h-screen bg-gray-50 dark:bg-surface-dark transition-colors duration-300 font-sans">
+        <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
           <Routes>
             <Route path="/onboarding" element={
               <OnboardingRoute>

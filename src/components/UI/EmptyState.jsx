@@ -45,18 +45,18 @@ export default function EmptyState({
           </div>
         )}
 
-        <h3 className="text-xl sm:text-2xl font-semibold text-ink-primary dark:text-ink-dark-primary tracking-display leading-tight mb-2">
+        <h3 className="text-xl sm:text-2xl font-semibold text-ink-primary dark:text-white tracking-tight leading-tight mb-2">
           {title}
         </h3>
 
         {description && (
-          <p className="text-sm sm:text-base text-ink-muted dark:text-ink-dark-muted max-w-sm mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-ink-muted dark:text-white max-w-sm mx-auto leading-relaxed">
             {description}
           </p>
         )}
 
         {limitText && (
-          <p className="mt-4 text-xs text-ink-muted dark:text-ink-dark-muted">
+          <p className="mt-4 text-xs text-ink-muted dark:text-white">
             {limitText}
           </p>
         )}
@@ -75,7 +75,7 @@ export default function EmptyState({
               <button
                 type="button"
                 onClick={secondaryAction}
-                className="text-sm font-medium text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
+                className="text-sm font-medium text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
               >
                 {secondaryLabel}
               </button>

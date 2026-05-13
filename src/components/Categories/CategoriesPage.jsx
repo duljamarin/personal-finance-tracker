@@ -118,12 +118,12 @@ export default function CategoriesPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-primary dark:text-ink-dark-primary mb-6">
+      <h2 className="text-3xl font-semibold tracking-tight text-ink-primary dark:text-white mb-6">
         {t('categories.title')}
       </h2>
 
-      {error && <div className="text-[#e05c6b] mb-2 text-sm">{error}</div>}
-      {catError && <div className="text-[#e05c6b] mb-2 text-sm">{catError}</div>}
+      {error && <div className="text-[#e8394d] mb-2 text-sm">{error}</div>}
+      {catError && <div className="text-[#e8394d] mb-2 text-sm">{catError}</div>}
 
       <div className="mb-8 flex flex-col sm:flex-row gap-3 items-center">
         <input
@@ -131,7 +131,7 @@ export default function CategoriesPage() {
           placeholder={t('categories.searchPlaceholder')}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 dark:placeholder:text-ink-dark-muted/50 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"
+          className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"
         />
         <Button
           onClick={openAddModal}
@@ -145,7 +145,7 @@ export default function CategoriesPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-center text-ink-muted dark:text-ink-dark-muted mt-16 text-base">
+        <p className="text-center text-ink-muted dark:text-white mt-16 text-base">
           {t('categories.noCategories')}
         </p>
       ) : (
@@ -166,7 +166,7 @@ export default function CategoriesPage() {
       {showModal && (
         <Modal onClose={closeModal}>
           <form onSubmit={e => { e.preventDefault(); handleModalSave(); }} className="flex flex-col gap-5">
-            <h3 className="font-display text-xl font-semibold text-ink-primary dark:text-ink-dark-primary">
+            <h3 className="text-xl font-semibold text-ink-primary dark:text-white">
               {modalMode === 'add' ? t('categories.addNew') : t('categories.edit')}
             </h3>
 
@@ -179,7 +179,7 @@ export default function CategoriesPage() {
                 <span className="w-10 h-10 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400">
                   <CategoryIconSvg iconKey={editIconKey} className="w-5 h-5" />
                 </span>
-                <span className="text-xs text-ink-muted dark:text-ink-dark-muted">{t('categories.emoji')}</span>
+                <span className="text-xs text-ink-muted dark:text-white">{t('categories.emoji')}</span>
               </div>
               <div className="grid grid-cols-8 gap-1 max-h-40 overflow-y-auto scrollbar-hide p-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md border border-surface-hairline dark:border-surface-dark-hairline">
                 {ICON_PALETTE.map(key => (
@@ -191,7 +191,7 @@ export default function CategoriesPage() {
                     className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
                       editIconKey === key
                         ? 'bg-brand-600 text-white shadow-sm'
-                        : 'text-ink-muted dark:text-ink-dark-muted hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
+                        : 'text-ink-muted dark:text-white hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
                     }`}
                   >
                     <CategoryIconSvg iconKey={key} className="w-4.5 h-4.5" />
@@ -202,19 +202,19 @@ export default function CategoriesPage() {
 
             {/* Name field */}
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-ink-primary dark:text-ink-dark-primary">
+              <label className="text-sm font-medium text-ink-primary dark:text-white">
                 {t('categories.name')}
               </label>
               <input
                 type="text"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
-                className={`border p-3 text-base rounded-md w-full bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary placeholder:text-ink-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ${
-                  modalError ? 'border-[#e05c6b]' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
+                className={`border p-3 text-base rounded-md w-full bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ${
+                  modalError ? 'border-[#e8394d]' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
                 }`}
                 autoFocus
               />
-              {modalError && <span className="text-xs text-[#e05c6b]">{modalError}</span>}
+              {modalError && <span className="text-xs text-[#e8394d]">{modalError}</span>}
             </div>
 
             <div className="flex gap-3 justify-end">

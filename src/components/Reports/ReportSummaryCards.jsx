@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 
-const EXPENSE_COLOR = '#e05c6b';
-const EXPENSE_COLOR_DARK = '#f08090';
+const EXPENSE_COLOR = '#e8394d';
+const EXPENSE_COLOR_DARK = '#e8394d';
 
 function formatAmount(amount) {
   return `€${Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -14,7 +14,7 @@ function ChangeIndicator({ current, previous }) {
 
   if (previous === 0) {
     return (
-      <span className="text-xs text-ink-muted dark:text-ink-dark-muted">
+      <span className="text-xs text-ink-muted dark:text-white">
         {t('reports.vsLastPeriod')}
       </span>
     );
@@ -118,7 +118,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
       case 'expense':
         return '';
       default:
-        return 'text-ink-primary dark:text-ink-dark-primary';
+        return 'text-ink-primary dark:text-white';
     }
   };
 
@@ -129,7 +129,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
           <div className="p-4">
             <p className="eyebrow mb-1">{card.label}</p>
             <p
-              className={`font-display font-semibold tracking-tight text-lg ${toneClass(card.tone)}`}
+              className={`font-semibold tracking-tight text-lg ${toneClass(card.tone)}`}
               style={card.tone === 'expense' ? { color: EXPENSE_COLOR } : undefined}
             >
               {formatValue(card.value, card.format)}

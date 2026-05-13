@@ -14,7 +14,7 @@ function LanguageSwitcher() {
         className={`px-2 py-1 rounded-[5px] font-medium transition-colors ${
           i18n.language === 'sq'
             ? 'bg-brand-600 text-white'
-            : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary'
+            : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary'
         }`}
       >
         SQ
@@ -24,7 +24,7 @@ function LanguageSwitcher() {
         className={`px-2 py-1 rounded-[5px] font-medium transition-colors ${
           i18n.language === 'en'
             ? 'bg-brand-600 text-white'
-            : 'text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary'
+            : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary'
         }`}
       >
         EN

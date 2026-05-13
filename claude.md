@@ -198,6 +198,38 @@ VITE_PADDLE_ENVIRONMENT=sandbox|production
 Edge Function secrets: set via `supabase secrets set` (never in code):
 `SUPABASE_SERVICE_ROLE_KEY`, `PADDLE_API_KEY`, `PADDLE_WEBHOOK_SECRET`, `RESEND_API_KEY`
 
+## Design System
+
+Full reference: `.claude/design-system.md`
+
+### Typography
+- **Single font**: Inter Tight (`font-sans`) for all text — body, headings, labels. No display font.
+- No `font-display` class, no `tracking-display`. Removed — do not reintroduce.
+- `.eyebrow` utility: `text-[12px] font-medium text-ink-muted` — no uppercase, no wide tracking.
+
+### Brand Colors
+```
+brand-500  #168b78   (accent, active states)
+brand-600  #0f6b5e   (primary button fill)
+brand-700  #0b5449   (button hover)
+```
+Primary buttons use `bg-brand-600 hover:bg-brand-700` and `rounded-md` (never `rounded-full`).
+
+### Expense / Negative Color
+Use `#e8394d` everywhere for expense amounts, negative values, over-budget indicators.
+Never `#e05c6b` or `#f08090` — those were removed globally.
+
+### Dark Mode Text — Critical Rules
+All dark mode text is white. `src/index.css` forces this with `!important` outside `@layer` blocks.
+- Use `dark:text-white` for primary text
+- Use `dark:text-white` for secondary/muted text (opacity modifiers `text-white/70` for hierarchy if needed)
+- Placeholder text: `dark:placeholder:text-white/40` (less contrast than typed text — not gray)
+- **Never** `dark:text-gray-*`, `dark:text-zinc-*`, or `dark:text-ink-dark-*` (JIT cache unreliable)
+- Chart/SVG tick fills: JS-computed hex `dark ? '#FFFFFF' : '#6b7280'` — Tailwind classes don't apply to SVG
+
+### Over-budget Hierarchy
+Avoid unicolor red: keep percentage red (`#e8394d`), supporting text muted (`dark:text-white/60`), progress bar carries the color signal.
+
 ## Notes for AI Assistants
 
 1. **API layer is modular** — check `src/utils/api/` (not a single api.js) before adding functions
@@ -208,6 +240,7 @@ Edge Function secrets: set via `supabase secrets set` (never in code):
 6. **Context management** — when context exceeds ~50%, delegate to subagents or start fresh conversation
 7. **Deployment** — frontend auto-deploys on push to `main`; migrations and Edge Functions need manual CLI deploy
 8. **mutationCount** — increments on every mutation (add/update/delete); it's a change signal, not a record count
+9. **Dark mode** — do not add `dark:text-gray-*` or `dark:text-ink-dark-*`; always `dark:text-white`. See Design System section above.
 
 ## Specialized Sub-Agents
 

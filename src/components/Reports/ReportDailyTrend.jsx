@@ -11,12 +11,13 @@ import {
 } from 'recharts';
 import Card from '../UI/Card';
 import { toISODate } from '../../utils/date';
+import useDarkMode from '../../hooks/useDarkMode';
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="font-semibold text-sm text-ink-primary dark:text-ink-dark-primary mb-1">{label}</p>
+        <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: €{Number(entry.value).toFixed(2)}
@@ -30,6 +31,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function ReportDailyTrend({ transactions, startDate, endDate }) {
   const { t } = useTranslation();
+  const [dark] = useDarkMode();
 
   const dailyData = useMemo(() => {
     const start = new Date(startDate + 'T00:00:00');
@@ -67,7 +69,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
 
   return (
     <Card padding="md">
-      <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+      <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-4">
         {t('reports.dailySpendingTrend')}
       </h3>
       <div className="w-full">
@@ -79,21 +81,21 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                   <stop offset="95%" stopColor="#168b78" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#e05c6b" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#e05c6b" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#e8394d" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#e8394d" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+              <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: '#6b7280' }}
+                tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
                 axisLine={false}
                 tickLine={false}
                 interval="preserveStartEnd"
               />
               <YAxis
                 tickFormatter={(v) => `€${v}`}
-                tick={{ fontSize: 11, fill: '#6b7280' }}
+                tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
                 axisLine={false}
                 tickLine={false}
                 width={60}
@@ -111,7 +113,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 type="monotone"
                 dataKey="expenses"
                 name={t('reports.dailyExpenses')}
-                stroke="#e05c6b"
+                stroke="#e8394d"
                 strokeWidth={2}
                 fill="url(#colorExpenses)"
               />
@@ -122,11 +124,11 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
       <div className="flex items-center justify-center gap-6 mt-2">
         <div className="flex items-center gap-1.5">
           <span className="w-3 h-0.5 rounded bg-[#168b78]" />
-          <span className="text-xs text-gray-500 dark:text-gray-400">{t('reports.dailyIncome')}</span>
+          <span className="text-xs text-ink-muted dark:text-white">{t('reports.dailyIncome')}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-[#e05c6b]" />
-          <span className="text-xs text-gray-500 dark:text-gray-400">{t('reports.dailyExpenses')}</span>
+          <span className="w-3 h-0.5 rounded bg-[#e8394d]" />
+          <span className="text-xs text-ink-muted dark:text-white">{t('reports.dailyExpenses')}</span>
         </div>
       </div>
     </Card>

@@ -11,7 +11,7 @@ export default function LoadingSpinner({ size = 'md', text, className = '' }) {
         className={`${sizes[size]} border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 dark:border-t-brand-500 rounded-full animate-spin`}
       />
       {text && (
-        <p className="mt-3 text-sm text-ink-muted dark:text-ink-dark-muted">
+        <p className="mt-3 text-sm text-ink-muted dark:text-white">
           {text}
         </p>
       )}

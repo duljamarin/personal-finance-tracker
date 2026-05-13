@@ -5,7 +5,7 @@ import Button from '../UI/Button';
 import CustomSelect from '../UI/CustomSelect';
 
 const inputBaseClass =
-  'w-full px-3 py-2 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-ink-dark-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'w-full px-3 py-2 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
 
 const TYPE_ICONS = {
   cash: ['M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'],
@@ -102,7 +102,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">
+        <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1">
           {t('networth.nameLabel')}
         </label>
         <Input
@@ -116,7 +116,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
 
       {/* Type (Asset/Liability) */}
       <div>
-        <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">
+        <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1">
           {t('networth.typeLabel')}
         </label>
         <div className="flex gap-4">
@@ -132,7 +132,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
               }}
               className="mr-2 accent-brand-600"
             />
-            <span className="text-ink-primary dark:text-ink-dark-primary">{t('networth.asset')}</span>
+            <span className="text-ink-primary dark:text-white">{t('networth.asset')}</span>
           </label>
           <label className="flex items-center">
             <input
@@ -146,14 +146,14 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
               }}
               className="mr-2 accent-brand-600"
             />
-            <span className="text-ink-primary dark:text-ink-dark-primary">{t('networth.liability')}</span>
+            <span className="text-ink-primary dark:text-white">{t('networth.liability')}</span>
           </label>
         </div>
       </div>
 
       {/* Asset Type */}
       <div>
-        <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">
+        <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1">
           {type === 'asset' ? t('networth.assetTypeLabel') : t('networth.liabilityTypeLabel')}
         </label>
         <CustomSelect
@@ -174,7 +174,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
 
       {/* Current Value */}
       <div>
-        <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">
+        <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1">
           {t('networth.currentValueLabel')}
         </label>
         <Input
@@ -190,7 +190,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
 
       {/* Notes */}
       <div>
-        <label className="block text-sm font-medium text-ink-primary dark:text-ink-dark-primary mb-1">
+        <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1">
           {t('networth.notesLabel')} {t('transactions.tagsOptional')}
         </label>
         <textarea

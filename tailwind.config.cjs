@@ -4,12 +4,16 @@ module.exports = {
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
   ],
+  safelist: [
+    'dark:text-white',
+    'text-white',
+  ],
   darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Space Grotesk"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Inter Tight"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
         brand: {
@@ -18,12 +22,12 @@ module.exports = {
           200: '#aeebdb',
           300: '#79dbc5',
           400: '#43c5aa',
-          500: '#22ad93',
-          600: '#168b78',
-          700: '#137062',
-          800: '#12594f',
-          900: '#114a43',
-          950: '#062b27',
+          500: '#168b78',
+          600: '#0f6b5e',
+          700: '#0b5449',
+          800: '#094438',
+          900: '#07352b',
+          950: '#041f1a',
         },
         surface: {
           DEFAULT: '#ffffff',
@@ -42,14 +46,14 @@ module.exports = {
         ink: {
           primary: '#111112',
           muted: '#2F2F2C',
-          'dark-primary': '#EDEDE9',
-          'dark-muted': '#C8C8C3',
+          'dark-primary': '#FFFFFF',
+          'dark-muted': '#FFFFFF',
         },
         expense: {
-          DEFAULT: '#e05c6b',
-          light: '#f08090',
+          DEFAULT: '#e8394d',
+          light: '#f06070',
           bg: '#fdf2f4',
-          'dark-bg': 'rgba(224,92,107,0.12)',
+          'dark-bg': 'rgba(232,57,77,0.12)',
         },
         border: {
           DEFAULT: '#e5e7eb',
@@ -101,10 +105,6 @@ module.exports = {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-      },
-      letterSpacing: {
-        'display': '-0.02em',
-        'tight-display': '-0.035em',
       },
     },
   },

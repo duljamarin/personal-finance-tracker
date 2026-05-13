@@ -4,13 +4,13 @@ export default function Button({ children, className = '', variant = 'primary', 
       'bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white border border-transparent',
     secondary:
       'bg-transparent border border-ink-primary/25 hover:border-ink-primary/60 text-ink-primary ' +
-      'dark:border-ink-dark-primary/25 dark:hover:border-ink-dark-primary/60 dark:text-ink-dark-primary',
+      'dark:border-ink-dark-primary/25 dark:hover:border-ink-dark-primary/60 dark:text-white',
     success:
-      'bg-emerald-600 hover:bg-emerald-700 text-white border border-transparent',
+      'bg-emerald-800 hover:bg-emerald-700 text-white border border-transparent',
     danger:
       'bg-transparent border border-red-500/50 hover:border-red-500 hover:bg-red-500/5 text-red-600 dark:text-red-400',
     ghost:
-      'bg-transparent hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 text-ink-muted dark:text-ink-dark-muted hover:text-ink-primary dark:hover:text-ink-dark-primary border border-transparent',
+      'bg-transparent hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary border border-transparent',
   };
 
   const sizes = {
