@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useDarkMode } from '../../hooks/useDarkMode';
+import useDarkMode from '../../hooks/useDarkMode';
 
 export default function ProgressBar({ currentStep, totalSteps }) {
   const { t } = useTranslation();
