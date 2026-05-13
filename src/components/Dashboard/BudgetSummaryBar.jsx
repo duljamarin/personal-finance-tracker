@@ -6,9 +6,10 @@ import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
 
 export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
   const now = new Date();
-  const monthLabel = now.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  const monthLabel = now.toLocaleDateString(dateLocale, { month: 'long', year: 'numeric' });
 
   const { data, loading } = useAsyncData(
     async () => {

@@ -23,7 +23,8 @@ function getTimeGreeting(t) {
 }
 
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
   const {
     transactions,
     loading,
@@ -70,7 +71,7 @@ export default function Dashboard() {
             {username ? `${getTimeGreeting(t)}, ${username}` : t('dashboard.title')}
           </h1>
           <p className="text-sm text-ink-muted dark:text-white mt-0.5">
-            {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {new Date().toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
         <button

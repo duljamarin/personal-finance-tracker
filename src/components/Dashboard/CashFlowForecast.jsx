@@ -121,7 +121,8 @@ function ForecastTooltip({ active, payload, label }) {
 }
 
 export default function CashFlowForecast() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
   const { net, transactions } = useTransactions();
   const { isPremium, isTrialing } = useSubscription();
   const isPaid = isPremium || isTrialing;
@@ -257,7 +258,7 @@ export default function CashFlowForecast() {
               tick={{ fontSize: 11, fill: axisColor }}
               tickFormatter={(d) => {
                 const dt = new Date(d + 'T00:00:00');
-                return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                return dt.toLocaleDateString(dateLocale, { month: 'short', day: 'numeric' });
               }}
             />
             <YAxis
