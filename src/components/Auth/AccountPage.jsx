@@ -100,7 +100,6 @@ export default function AccountPage() {
 
       {/* Display Name Section */}
       <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-4">{t('account.displayName')}</h2>
         <form onSubmit={handleSaveName} className="flex flex-col gap-4">
           <div>
             <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
