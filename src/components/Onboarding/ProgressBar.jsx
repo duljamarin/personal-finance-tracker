@@ -43,7 +43,10 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           const isCurrent = step === currentStep;
           return (
             <div key={`label-${step}`} className="flex items-center gap-2">
-              <span className={`w-10 text-center text-[10px] font-medium progressbar-label ${isCurrent ? 'progressbar-label--active' : 'progressbar-label--inactive'}`}>
+              <span
+                className="w-10 text-center text-[10px] font-medium"
+                style={{ color: isCurrent ? '#22ad93' : 'inherit' }}
+              >
                 {t(`onboarding.steps.${step}`)}
               </span>
               {step < totalSteps && <div className="w-12 sm:w-20" />}
@@ -51,7 +54,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           );
         })}
       </div>
-      <p className="text-center mt-4 text-[12px] font-medium progressbar-step-of">
+      <p className="text-center mt-4 text-[12px] font-medium" style={{ color: 'inherit' }}>
         {t('onboarding.wizard.stepOf', { current: currentStep, total: totalSteps })}
       </p>
     </div>
