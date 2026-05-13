@@ -15,7 +15,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
             ? 'bg-brand-600 text-white border-brand-600'
             : isCurrent
               ? 'bg-brand-600 text-white border-brand-600 shadow-md shadow-brand-500/30 ring-4 ring-brand-500/15'
-              : 'bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white border-surface-hairline dark:border-surface-dark-hairline';
+              : 'bg-white dark:bg-surface-dark-card progressbar-circle--inactive border-surface-hairline dark:border-surface-dark-hairline';
 
           return (
             <div key={step} className="flex items-center gap-2">
