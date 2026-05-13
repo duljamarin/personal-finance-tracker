@@ -212,14 +212,6 @@ export default function LandingPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-24 sm:pb-32">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className={`transition-opacity duration-700 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-medium mb-6 border border-brand-200/60 dark:border-brand-800/30">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-md bg-brand-600 opacity-75" />
-                <span className="relative inline-flex rounded-md h-2 w-2 bg-brand-600" />
-              </span>
-              {t('landing.hero.badge')}
-            </div>
-
             <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-semibold text-ink-primary dark:text-white leading-[1.02] mb-7">
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-700">{t('landing.hero.titleAccent')}</span>
