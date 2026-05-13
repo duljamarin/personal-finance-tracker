@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import useDarkMode from '../../hooks/useDarkMode';
 
 export default function ProgressBar({ currentStep, totalSteps }) {
   const { t } = useTranslation();
-  const [dark] = useDarkMode();
 
   return (
     <div className="mb-8">
@@ -43,14 +41,9 @@ export default function ProgressBar({ currentStep, totalSteps }) {
         {Array.from({ length: totalSteps }, (_, i) => {
           const step = i + 1;
           const isCurrent = step === currentStep;
-          const labelStyle = isCurrent
-            ? { color: '#0f6b5e' }
-            : dark
-              ? { color: 'rgba(255,255,255,0.45)' }
-              : { color: 'rgba(47,47,44,0.5)' };
           return (
             <div key={`label-${step}`} className="flex items-center gap-2">
-              <span className="w-10 text-center text-[10px] font-medium" style={labelStyle}>
+              <span className={`w-10 text-center text-[10px] font-medium progressbar-label ${isCurrent ? 'progressbar-label--active' : 'progressbar-label--inactive'}`}>
                 {t(`onboarding.steps.${step}`)}
               </span>
               {step < totalSteps && <div className="w-12 sm:w-20" />}
@@ -58,10 +51,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           );
         })}
       </div>
-      <p
-        className="text-center mt-4 text-[12px] font-medium"
-        style={{ color: dark ? 'rgba(255,255,255,0.6)' : 'rgba(47,47,44,0.6)' }}
-      >
+      <p className="text-center mt-4 text-[12px] font-medium progressbar-step-of">
         {t('onboarding.wizard.stepOf', { current: currentStep, total: totalSteps })}
       </p>
     </div>

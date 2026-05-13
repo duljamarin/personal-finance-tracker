@@ -124,6 +124,14 @@
 .dark input::placeholder,
 .dark textarea::placeholder    { color: rgba(255,255,255,0.4) !important; }
 
+/* ── Onboarding ProgressBar labels ─────────────────────────────────────────*/
+.progressbar-label--active      { color: #0f6b5e; }
+.progressbar-label--inactive    { color: rgba(47,47,44,0.5); }
+.progressbar-step-of            { color: rgba(47,47,44,0.6); }
+.dark .progressbar-label--active   { color: #22ad93; }
+.dark .progressbar-label--inactive { color: rgba(255,255,255,0.45); }
+.dark .progressbar-step-of         { color: rgba(255,255,255,0.55); }
+
 /* Prevent selection/focus rectangles on Recharts SVG charts */
 .recharts-wrapper,
 .recharts-wrapper svg,
