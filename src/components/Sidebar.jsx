@@ -196,10 +196,10 @@ export default function Sidebar() {
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <Rocket className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
-                <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">Pro plan</span>
+                <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">{t('upgrade.proPlan')}</span>
               </div>
               <p className="text-xs text-brand-600/70 dark:text-brand-400/70 mb-2.5 leading-relaxed">
-                {t('upgrade.unlockAll', { defaultValue: 'Unlock all features' })}
+                {t('upgrade.unlockAll')}
               </p>
               <span className="flex items-center justify-center w-full px-3 py-1.5 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors">
                 {t('upgrade.goPremium')}

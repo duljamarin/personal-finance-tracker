@@ -877,6 +877,8 @@
   },
   "upgrade": {
     "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",
+    "proPlan": "Pro Plan",
+    "unlockAll": "Unlock all features",
     "upgradeCta": "Upgrade to Premium",
     "goPremium": "Go Premium",
     "viewPlans": "View Plans",

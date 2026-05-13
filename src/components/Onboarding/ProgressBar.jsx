@@ -43,7 +43,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           const isCurrent = step === currentStep;
           const labelClass = isCurrent
             ? 'text-brand-600'
-            : 'text-ink-muted/60 dark:text-white/60';
+            : 'text-ink-muted/60 dark:text-white/50';
           return (
             <div key={`label-${step}`} className="flex items-center gap-2">
               <span className={`w-10 text-center text-[10px] font-medium ${labelClass}`}>
@@ -54,7 +54,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           );
         })}
       </div>
-      <p className="text-center eyebrow mt-4 text-xs">
+      <p className="text-center mt-4 text-[12px] font-medium text-ink-muted dark:text-white/70">
         {t('onboarding.wizard.stepOf', { current: currentStep, total: totalSteps })}
       </p>
     </div>

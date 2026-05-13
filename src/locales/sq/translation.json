@@ -877,6 +877,8 @@
   },
   "upgrade": {
     "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",
+    "proPlan": "Plani Pro",
+    "unlockAll": "Zhbllokoni të gjitha funksionet",
     "upgradeCta": "Kaloni në Premium",
     "goPremium": "Kaloni Premium",
     "viewPlans": "Shiko Planet",
