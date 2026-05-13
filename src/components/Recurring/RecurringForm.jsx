@@ -204,14 +204,6 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 <option value="monthly">{t('recurring.monthly')}</option>
                 <option value="yearly">{t('recurring.yearly')}</option>
               </select>
-              <svg
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted dark:text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
             </div>
           </div>
           <div className="flex flex-col gap-1 sm:gap-2">

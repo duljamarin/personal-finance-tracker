@@ -14,7 +14,12 @@ import RecurringForm from './RecurringForm';
 import LoadingSpinner from '../UI/LoadingSpinner';
 
 export default function RecurringPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
+  const fmtDate = (str) => {
+    if (!str) return '-';
+    return new Date(str).toLocaleDateString(dateLocale, { year: 'numeric', month: 'short', day: 'numeric' });
+  };
   const { addToast } = useToast();
   const { isPremium, recurringLimit } = useSubscription();
   const [recurrings, setRecurrings] = useState([]);
@@ -177,18 +182,18 @@ export default function RecurringPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-sm">
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.startDate')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white">{recurring.start_date}</div>
+                  <div className="font-semibold text-ink-primary dark:text-white">{fmtDate(recurring.start_date)}</div>
                 </div>
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.lastRun')}</div>
                   <div className="font-semibold text-ink-primary dark:text-white">
-                    {recurring.last_run_at ? new Date(recurring.last_run_at).toISOString().split('T')[0] : '-'}
+                    {fmtDate(recurring.last_run_at)}
                   </div>
                 </div>
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
                   <div className="eyebrow mb-1">{t('recurring.nextRun')}</div>
                   <div className="font-semibold text-ink-primary dark:text-white">
-                    {recurring.next_run_at ? new Date(recurring.next_run_at).toISOString().split('T')[0] : '-'}
+                    {fmtDate(recurring.next_run_at)}
                   </div>
                 </div>
                 <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
@@ -203,7 +208,7 @@ export default function RecurringPage() {
               <div className="bg-brand-50 dark:bg-brand-900/20 rounded-lg p-3 mb-4 border border-brand-200 dark:border-brand-800">
                 <div className="eyebrow mb-1 text-brand-700 dark:text-brand-300">{t('recurring.endsLabel')}</div>
                 <div className="font-semibold text-brand-700 dark:text-brand-300">
-                  {recurring.end_date || (recurring.occurrences_limit ? t('recurring.afterCount', { count: recurring.occurrences_limit }) : t('recurring.endNever'))}
+                  {recurring.end_date ? fmtDate(recurring.end_date) : (recurring.occurrences_limit ? t('recurring.afterCount', { count: recurring.occurrences_limit }) : t('recurring.endNever'))}
                 </div>
               </div>
 

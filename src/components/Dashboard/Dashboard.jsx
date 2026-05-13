@@ -24,7 +24,16 @@ function getTimeGreeting(t) {
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
-  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
+  const isSq = i18n.language === 'sq';
+  const formatTodayLabel = () => {
+    const d = new Date();
+    if (!isSq) {
+      return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    const weekdays = ['E diel', 'E hënë', 'E martë', 'E mërkurë', 'E enjte', 'E premte', 'E shtunë'];
+    const months = ['janar', 'shkurt', 'mars', 'prill', 'maj', 'qershor', 'korrik', 'gusht', 'shtator', 'tetor', 'nëntor', 'dhjetor'];
+    return `${weekdays[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  };
   const {
     transactions,
     loading,
@@ -71,7 +80,7 @@ export default function Dashboard() {
             {username ? `${getTimeGreeting(t)}, ${username}` : t('dashboard.title')}
           </h1>
           <p className="text-sm text-ink-muted dark:text-white mt-0.5">
-            {new Date().toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {formatTodayLabel()}
           </p>
         </div>
         <button
