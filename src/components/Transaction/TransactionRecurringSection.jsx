@@ -38,7 +38,7 @@ export default function TransactionRecurringSection({
 					aria-checked={isRecurring}
 					onClick={onToggle}
 					className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-1 ${
-						isRecurring ? 'bg-brand-600' : 'bg-surface-hairline dark:bg-surface-dark-hairline'
+						isRecurring ? 'bg-brand-600' : 'bg-ink-muted/20 dark:bg-surface-dark-elevated'
 					}`}
 				>
 					<span
