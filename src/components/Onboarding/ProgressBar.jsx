@@ -15,11 +15,14 @@ export default function ProgressBar({ currentStep, totalSteps }) {
             ? 'bg-brand-600 text-white border-brand-600'
             : isCurrent
               ? 'bg-brand-600 text-white border-brand-600 shadow-md shadow-brand-500/30 ring-4 ring-brand-500/15'
-              : 'bg-white dark:bg-surface-dark-card progressbar-circle--inactive border-surface-hairline dark:border-surface-dark-hairline';
+              : 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline';
 
           return (
             <div key={step} className="flex items-center gap-2">
-              <div className={`w-10 h-10 rounded-full border flex items-center justify-center text-sm font-semibold tabular-nums transition-all duration-200 ${circle}`}>
+              <div
+                className={`w-10 h-10 rounded-full border flex items-center justify-center text-sm font-semibold tabular-nums transition-all duration-200 ${circle}`}
+                style={(!isCompleted && !isCurrent) ? { color: 'inherit' } : undefined}
+              >
                 {isCompleted ? (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 13l4 4L19 7" />
