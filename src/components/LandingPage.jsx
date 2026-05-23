@@ -369,8 +369,11 @@ export default function LandingPage() {
                 <img
                   src={showcaseImg}
                   alt={t('landing.showcase.imageAlt')}
+                  width={800}
+                  height={533}
                   className="w-full h-auto object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
