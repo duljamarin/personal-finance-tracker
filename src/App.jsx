@@ -176,12 +176,33 @@ function PublicLayout({ children }) {
 function InnerAppContent() {
   const location = useLocation();
   const { accessToken } = useAuth();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const seg = location.pathname.split('/')[1];
+    const urlLang = seg === 'sq' ? 'sq' : seg === 'en' ? 'en' : null;
+    if (urlLang && i18n.language !== urlLang) i18n.changeLanguage(urlLang);
+    document.documentElement.lang = urlLang || (i18n.language || 'en').slice(0, 2);
+  }, [location.pathname, i18n]);
+
+  useEffect(() => {
+    const indexablePaths = ['/', '/sq', '/pricing', '/register', '/terms', '/privacy'];
+    const indexable = indexablePaths.includes(location.pathname);
+    let robots = document.querySelector('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.setAttribute('name', 'robots');
+      document.head.appendChild(robots);
+    }
+    robots.setAttribute('content', indexable ? 'index, follow' : 'noindex, nofollow');
+  }, [location.pathname]);
 
   // Public routes that use the public layout (header + footer, no sidebar)
   const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy'];
   const isOnboardingRoute = location.pathname === '/onboarding';
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
+    || (!accessToken && location.pathname === '/sq')
     || (!accessToken && location.pathname === '/pricing');
 
   return (
@@ -211,6 +232,7 @@ function InnerAppContent() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/" element={<LandingPage />} />
+            <Route path="/sq" element={<LandingPage />} />
             <Route path="*" element={<CatchAllRedirect />} />
           </Routes>
         </PublicLayout>

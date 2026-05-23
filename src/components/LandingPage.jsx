@@ -171,13 +171,14 @@ function FlagshipCard({ t }) {
 }
 
 export default function LandingPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [visible, setVisible] = useState(false);
+  const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
 
   useMetaTags({
-    title: 'Personal Finance Tracker - Track Income, Expenses & Goals',
-    description: 'Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start.',
-    canonical: 'https://personal-finances.app',
+    title: t('meta.title'),
+    description: t('meta.description'),
+    canonical: isSq ? 'https://personal-finances.app/sq' : 'https://personal-finances.app/',
   });
 
   useEffect(() => {

@@ -1,1 +1,6 @@
-/* /index.html 200
+# Albanian language shell — must come BEFORE the SPA catch-all
+/sq        /sq.html     200
+/sq/*      /sq.html     200
+
+# Everything else boots the default (English) shell for client-side routing
+/*         /index.html  200
