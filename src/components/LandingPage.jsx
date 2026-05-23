@@ -170,13 +170,8 @@ function FlagshipCard({ t }) {
 }
 
 export default function LandingPage() {
-<<<<<<< HEAD
-  const { t } = useTranslation();
-=======
   const { t, i18n } = useTranslation();
-  const [visible, setVisible] = useState(false);
   const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
->>>>>>> d6e89c95f302da2fa3b05bfe4eec9858b0c586f1
 
   useMetaTags({
     title: t('meta.title'),

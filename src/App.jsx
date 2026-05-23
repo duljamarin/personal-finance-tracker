@@ -235,10 +235,7 @@ function InnerAppContent() {
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/" element={<LandingPage />} />
-<<<<<<< HEAD
-=======
               <Route path="/sq" element={<LandingPage />} />
->>>>>>> d6e89c95f302da2fa3b05bfe4eec9858b0c586f1
               <Route path="*" element={<CatchAllRedirect />} />
             </Routes>
           </Suspense>
