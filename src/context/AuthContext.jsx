@@ -1,6 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { supabase } from '../utils/supabaseClient';
 import { storeUsername } from '../utils/authHelpers';
+
+let supabasePromise = null;
+function loadSupabase() {
+  if (!supabasePromise) {
+    supabasePromise = import('../utils/supabaseClient').then(m => m.supabase);
+  }
+  return supabasePromise;
+}
 
 const AuthContext = createContext();
 
@@ -13,41 +20,49 @@ export function AuthProvider({ children }) {
   // Initialize auth state and listen for auth changes
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      // "Sign out on close" logic:
-      // beforeunload fires on BOTH tab-close AND reload. To tell them apart we use
-      // sessionStorage: it persists across reloads but is cleared when the tab closes.
-      //
-      // • If _reloadFlag is absent  → fresh open after tab close → clear session (no rememberMe)
-      // • If _reloadFlag is present → it was a reload → keep session, clear flag
-      const reloadFlag = sessionStorage.getItem('_reloadFlag');
-      if (reloadFlag) {
-        // It was a reload - just clear the flag and continue normally
-        sessionStorage.removeItem('_reloadFlag');
-      } else if (!localStorage.getItem('rememberMe') && session) {
-        // Tab was closed and re-opened without "Remember Me" - sign out
-        const storageKeys = Object.keys(localStorage).filter(k => k.startsWith('sb-'));
-        storageKeys.forEach(k => localStorage.removeItem(k));
-        supabase.auth.signOut().catch(() => {});
-        setSession(null);
-        setUser(null);
+    let subscription = null;
+    let cancelled = false;
+
+    loadSupabase().then(supabase => {
+      if (cancelled) return;
+
+      // Get initial session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        // "Sign out on close" logic:
+        // beforeunload fires on BOTH tab-close AND reload. To tell them apart we use
+        // sessionStorage: it persists across reloads but is cleared when the tab closes.
+        //
+        // • If _reloadFlag is absent  → fresh open after tab close → clear session (no rememberMe)
+        // • If _reloadFlag is present → it was a reload → keep session, clear flag
+        const reloadFlag = sessionStorage.getItem('_reloadFlag');
+        if (reloadFlag) {
+          // It was a reload - just clear the flag and continue normally
+          sessionStorage.removeItem('_reloadFlag');
+        } else if (!localStorage.getItem('rememberMe') && session) {
+          // Tab was closed and re-opened without "Remember Me" - sign out
+          const storageKeys = Object.keys(localStorage).filter(k => k.startsWith('sb-'));
+          storageKeys.forEach(k => localStorage.removeItem(k));
+          supabase.auth.signOut().catch(() => {});
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        setSession(session);
+        setUser(session?.user ?? null);
         setLoading(false);
-        return;
-      }
+        storeUsername(session?.user);
+      });
 
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-      storeUsername(session?.user);
-    });
-
-    // Listen for auth state changes within this tab
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-      storeUsername(session?.user);
+      // Listen for auth state changes within this tab
+      const result = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+        storeUsername(session?.user);
+      });
+      subscription = result.data.subscription;
     });
 
     // Cross-tab auth sync: listen for storage events from other tabs
@@ -56,7 +71,7 @@ export function AuthProvider({ children }) {
       // Only process events from OTHER tabs (event.storageArea is not our window.localStorage)
       if (event.key && event.key.startsWith('sb-')) {
         // Refresh session from Supabase to sync across tabs
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        loadSupabase().then(supabase => supabase.auth.getSession().then(({ data: { session } }) => {
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
@@ -68,10 +83,10 @@ export function AuthProvider({ children }) {
           } else {
             localStorage.removeItem('username');
           }
-        });
+        }));
       }
     };
-    
+
     window.addEventListener('storage', handleStorage);
 
     // If "Remember Me" was not checked, sign out when the browser tab is closed.
@@ -85,7 +100,8 @@ export function AuthProvider({ children }) {
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      subscription.unsubscribe();
+      cancelled = true;
+      subscription?.unsubscribe?.();
       window.removeEventListener('storage', handleStorage);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
@@ -96,6 +112,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
+      const supabase = await loadSupabase();
       // If not "remember me", use a shorter session by clearing persistence hint
       // Supabase stores sessions in localStorage by default; we clear on tab close if not remembered
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -137,6 +154,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
+      const supabase = await loadSupabase();
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -196,6 +214,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
+      const supabase = await loadSupabase();
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
@@ -211,6 +230,7 @@ export function AuthProvider({ children }) {
 
   // Refresh user state (e.g. after updating user_metadata)
   const refreshUser = useCallback(async () => {
+    const supabase = await loadSupabase();
     const { data, error } = await supabase.auth.getUser();
     if (!error && data?.user) setUser(data.user);
   }, []);

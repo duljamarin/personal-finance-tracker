@@ -170,12 +170,18 @@ function FlagshipCard({ t }) {
 }
 
 export default function LandingPage() {
+<<<<<<< HEAD
   const { t } = useTranslation();
+=======
+  const { t, i18n } = useTranslation();
+  const [visible, setVisible] = useState(false);
+  const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
+>>>>>>> d6e89c95f302da2fa3b05bfe4eec9858b0c586f1
 
   useMetaTags({
-    title: 'Personal Finance Tracker - Track Income, Expenses & Goals',
-    description: 'Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start.',
-    canonical: 'https://personal-finances.app',
+    title: t('meta.title'),
+    description: t('meta.description'),
+    canonical: isSq ? 'https://personal-finances.app/sq' : 'https://personal-finances.app/',
   });
 
   const steps = [
@@ -361,8 +367,11 @@ export default function LandingPage() {
                 <img
                   src={showcaseImg}
                   alt={t('landing.showcase.imageAlt')}
+                  width={800}
+                  height={533}
                   className="w-full h-auto object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
