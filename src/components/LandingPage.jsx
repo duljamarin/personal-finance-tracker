@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import showcaseImg from '../assets/showcase-finance.jpg';
 import { useMetaTags } from '../hooks/useMetaTags';
 import {
@@ -172,18 +171,12 @@ function FlagshipCard({ t }) {
 
 export default function LandingPage() {
   const { t } = useTranslation();
-  const [visible, setVisible] = useState(false);
 
   useMetaTags({
     title: 'Personal Finance Tracker - Track Income, Expenses & Goals',
     description: 'Take control of your personal finances. Track income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow - free to start.',
     canonical: 'https://personal-finances.app',
   });
-
-  useEffect(() => {
-    const id = setTimeout(() => setVisible(true), 50);
-    return () => clearTimeout(id);
-  }, []);
 
   const steps = [
     { num: 1, key: 'step1' },
@@ -211,7 +204,7 @@ export default function LandingPage() {
       {/* ── Hero ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-24 sm:pb-32">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div className={`transition-opacity duration-700 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
+          <div>
             <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-semibold text-ink-primary dark:text-white leading-[1.02] mb-7">
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-700">{t('landing.hero.titleAccent')}</span>
@@ -242,7 +235,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className={`relative transition-opacity duration-700 delay-150 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="relative">
             <DashboardPreview t={t} />
             <div aria-hidden="true" className="hidden lg:block absolute -top-3 -right-3 w-24 h-24 border-t-2 border-r-2 border-brand-500/40 rounded-tr-2xl pointer-events-none" />
           </div>

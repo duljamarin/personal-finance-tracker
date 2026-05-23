@@ -5,23 +5,7 @@ import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-import Sidebar from './components/Sidebar.jsx';
-import Dashboard from './components/Dashboard/Dashboard.jsx';
-import CategoriesPage from './components/Categories/CategoriesPage.jsx';
-import RecurringPage from './components/Recurring/RecurringPage.jsx';
-import GoalsPage from './components/Goals/GoalsPage.jsx';
-import BudgetsPage from './components/Budgets/BudgetsPage.jsx';
-import NetWorthPage from './components/NetWorth/NetWorthPage.jsx';
-import NotificationsPage from './components/Notifications/NotificationsPage.jsx';
-import LoginForm from './components/Auth/LoginForm.jsx';
-import RegisterForm from './components/Auth/RegisterForm.jsx';
-import AccountPage from './components/Auth/AccountPage.jsx';
-import EmailConfirmed from './components/Auth/EmailConfirmed.jsx';
-import ForgotPassword from './components/Auth/ForgotPassword.jsx';
-import ResetPassword from './components/Auth/ResetPassword.jsx';
 import LandingPage from './components/LandingPage.jsx';
-import TermsOfService from './components/Legal/TermsOfService.jsx';
-import PrivacyPolicy from './components/Legal/PrivacyPolicy.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -29,9 +13,25 @@ import { TransactionProvider } from './context/TransactionContext';
 import { SubscriptionProvider, useSubscription } from './context/SubscriptionContext';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
-import PricingPage from './components/Pricing/PricingPage.jsx';
-import ReportsPage from './components/Reports/ReportsPage.jsx';
 
+const Sidebar = lazy(() => import('./components/Sidebar.jsx'));
+const Dashboard = lazy(() => import('./components/Dashboard/Dashboard.jsx'));
+const CategoriesPage = lazy(() => import('./components/Categories/CategoriesPage.jsx'));
+const RecurringPage = lazy(() => import('./components/Recurring/RecurringPage.jsx'));
+const GoalsPage = lazy(() => import('./components/Goals/GoalsPage.jsx'));
+const BudgetsPage = lazy(() => import('./components/Budgets/BudgetsPage.jsx'));
+const NetWorthPage = lazy(() => import('./components/NetWorth/NetWorthPage.jsx'));
+const NotificationsPage = lazy(() => import('./components/Notifications/NotificationsPage.jsx'));
+const LoginForm = lazy(() => import('./components/Auth/LoginForm.jsx'));
+const RegisterForm = lazy(() => import('./components/Auth/RegisterForm.jsx'));
+const AccountPage = lazy(() => import('./components/Auth/AccountPage.jsx'));
+const EmailConfirmed = lazy(() => import('./components/Auth/EmailConfirmed.jsx'));
+const ForgotPassword = lazy(() => import('./components/Auth/ForgotPassword.jsx'));
+const ResetPassword = lazy(() => import('./components/Auth/ResetPassword.jsx'));
+const TermsOfService = lazy(() => import('./components/Legal/TermsOfService.jsx'));
+const PrivacyPolicy = lazy(() => import('./components/Legal/PrivacyPolicy.jsx'));
+const PricingPage = lazy(() => import('./components/Pricing/PricingPage.jsx'));
+const ReportsPage = lazy(() => import('./components/Reports/ReportsPage.jsx'));
 const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {
@@ -148,7 +148,9 @@ function AuthGlobalUI() {
 function AuthenticatedLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
-      <Sidebar />
+      <Suspense fallback={null}>
+        <Sidebar />
+      </Suspense>
       <main className="flex-1 min-w-0 overflow-x-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-6 sm:pt-6 lg:py-8">
           {children}
@@ -201,53 +203,57 @@ function InnerAppContent() {
         </div>
       ) : isPublicRoute ? (
         <PublicLayout>
-          <Routes>
-            <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
-            <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
-            <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/auth/confirmed" element={<EmailConfirmed />} />
-            <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/" element={<LandingPage />} />
-            <Route path="*" element={<CatchAllRedirect />} />
-          </Routes>
+          <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[40vh]" />}>
+            <Routes>
+              <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
+              <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
+              <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/auth/confirmed" element={<EmailConfirmed />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="*" element={<CatchAllRedirect />} />
+            </Routes>
+          </Suspense>
         </PublicLayout>
       ) : (
         <AuthenticatedLayout>
-          <Routes>
-            <Route path="/account" element={
-              <PrivateRoute><AccountPage /></PrivateRoute>
-            } />
-            <Route path="/categories" element={
-              <PrivateRoute><CategoriesPage /></PrivateRoute>
-            } />
-            <Route path="/recurring" element={
-              <PrivateRoute><RecurringPage /></PrivateRoute>
-            } />
-            <Route path="/goals" element={
-              <PrivateRoute><GoalsPage /></PrivateRoute>
-            } />
-            <Route path="/budgets" element={
-              <PrivateRoute><BudgetsPage /></PrivateRoute>
-            } />
-            <Route path="/networth" element={
-              <PrivateRoute><NetWorthPage /></PrivateRoute>
-            } />
-            <Route path="/notifications" element={
-              <PrivateRoute><NotificationsPage /></PrivateRoute>
-            } />
-            <Route path="/reports" element={
-              <PrivateRoute><ReportsPage /></PrivateRoute>
-            } />
-            <Route path="/dashboard" element={
-              <PrivateRoute><Dashboard /></PrivateRoute>
-            } />
-            <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<CatchAllRedirect />} />
-          </Routes>
+          <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[60vh]" />}>
+            <Routes>
+              <Route path="/account" element={
+                <PrivateRoute><AccountPage /></PrivateRoute>
+              } />
+              <Route path="/categories" element={
+                <PrivateRoute><CategoriesPage /></PrivateRoute>
+              } />
+              <Route path="/recurring" element={
+                <PrivateRoute><RecurringPage /></PrivateRoute>
+              } />
+              <Route path="/goals" element={
+                <PrivateRoute><GoalsPage /></PrivateRoute>
+              } />
+              <Route path="/budgets" element={
+                <PrivateRoute><BudgetsPage /></PrivateRoute>
+              } />
+              <Route path="/networth" element={
+                <PrivateRoute><NetWorthPage /></PrivateRoute>
+              } />
+              <Route path="/notifications" element={
+                <PrivateRoute><NotificationsPage /></PrivateRoute>
+              } />
+              <Route path="/reports" element={
+                <PrivateRoute><ReportsPage /></PrivateRoute>
+              } />
+              <Route path="/dashboard" element={
+                <PrivateRoute><Dashboard /></PrivateRoute>
+              } />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<CatchAllRedirect />} />
+            </Routes>
+          </Suspense>
         </AuthenticatedLayout>
       )}
     </ErrorBoundary>
