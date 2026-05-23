@@ -34,6 +34,8 @@ export function useMetaTags({ title, description, canonical } = {}) {
     if (canonical) {
       let canonEl = document.querySelector('link[rel="canonical"]');
       if (canonEl) canonEl.setAttribute('href', canonical);
+      let ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute('content', canonical);
     }
   }, [title, description, canonical]);
 }
