@@ -26,10 +26,14 @@ export default function OnboardingWizard() {
   const { addToast } = useToast();
   const { reloadTransactions, reloadCategories } = useTransactions();
 
-  // Detect demo data on mount — determines step sequence
+  // Detect demo data on mount — determines step sequence.
+  // Falls back to localStorage because email confirmation opens in a new tab
+  // where sessionStorage is empty (sessionStorage is tab-scoped, localStorage is not).
   const [hasDemoData] = useState(() => {
     try {
-      const raw = sessionStorage.getItem('demo_pending_import');
+      const raw =
+        sessionStorage.getItem('demo_pending_import') ||
+        localStorage.getItem('demo_pending_import');
       if (!raw) return false;
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) && parsed.length > 0;
@@ -155,11 +159,15 @@ export default function OnboardingWizard() {
       });
       await refreshUser();
 
-      // Import demo transactions if the user chose to keep them
+      // Import demo transactions if the user chose to keep them.
+      // Read from sessionStorage first, fall back to localStorage (email confirmation
+      // opens in a new tab where sessionStorage is empty).
       if (hasDemoData) {
         if (demoChoice === 'keep') {
           try {
-            const raw = sessionStorage.getItem('demo_pending_import');
+            const raw =
+              sessionStorage.getItem('demo_pending_import') ||
+              localStorage.getItem('demo_pending_import');
             if (raw) {
               const demoTxs = JSON.parse(raw);
               if (Array.isArray(demoTxs) && demoTxs.length > 0) {
@@ -194,6 +202,7 @@ export default function OnboardingWizard() {
           }
         }
         sessionStorage.removeItem('demo_pending_import');
+        localStorage.removeItem('demo_pending_import');
       }
 
       await Promise.all([reloadTransactions(), reloadCategories()]);

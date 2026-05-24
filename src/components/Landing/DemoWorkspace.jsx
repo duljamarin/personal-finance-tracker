@@ -5,12 +5,18 @@ import { Link, useNavigate } from 'react-router-dom';
 const DEMO_STORAGE_KEY = 'demo_pending_import';
 
 function saveDemoAndNavigate(transactions, navigate, path) {
-  // Only save transactions that the user added (non-seed or any — include all)
   const payload = transactions.map(({ id: _id, ...tx }) => tx);
+  const json = JSON.stringify(payload);
   try {
-    sessionStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(payload));
+    sessionStorage.setItem(DEMO_STORAGE_KEY, json);
   } catch {
-    // sessionStorage full or blocked — continue without saving
+    // sessionStorage full or blocked
+  }
+  try {
+    // localStorage survives cross-tab navigation (e.g. email confirmation link opens in new tab)
+    localStorage.setItem(DEMO_STORAGE_KEY, json);
+  } catch {
+    // localStorage blocked
   }
   navigate(path);
 }

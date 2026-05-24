@@ -51,14 +51,19 @@ export default function Dashboard() {
 
   const { monthlyTransactionCount, transactionLimit } = useSubscription();
 
-  // Import demo transactions if the user saved them before signing in
+  // Import demo transactions if the user saved them before signing in.
+  // Falls back to localStorage for the email-confirmation flow where the
+  // confirmation link opens in a new tab (sessionStorage is tab-scoped).
   const demoImportedRef = useRef(false);
   useEffect(() => {
     if (demoImportedRef.current) return;
-    const raw = sessionStorage.getItem('demo_pending_import');
+    const raw =
+      sessionStorage.getItem('demo_pending_import') ||
+      localStorage.getItem('demo_pending_import');
     if (!raw) return;
     demoImportedRef.current = true;
     sessionStorage.removeItem('demo_pending_import');
+    localStorage.removeItem('demo_pending_import');
     (async () => {
       try {
         const demoTxs = JSON.parse(raw);
