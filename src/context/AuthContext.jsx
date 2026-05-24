@@ -190,15 +190,14 @@ export function AuthProvider({ children }) {
           localStorage.setItem('username', data.user.email.split('@')[0]);
         }
       } else if (data.user && !data.session) {
-        // Email confirmation enabled - user created but not logged in
-        // Session will be null until they confirm their email
+        // Email confirmation required — user created but not yet logged in.
+        // This is a success state, not an error. Return data so the caller
+        // can detect session === null and show the "check your email" message.
         setUser(null);
         setSession(null);
-        
-        // Throw a specific error to let the UI know
-        throw new Error('Please check your email to confirm your account before logging in.');
+        return data;
       }
-      
+
       return data;
     } catch (err) {
       // Pass through Supabase error message for proper translation matching
