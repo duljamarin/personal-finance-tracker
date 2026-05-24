@@ -18,6 +18,7 @@ export default defineConfig({
           if (!id.includes('node_modules')) return;
           if (id.includes('@supabase')) return 'supabase';
           if (id.includes('recharts') || id.includes('victory-vendor') || id.includes('d3-')) return 'recharts';
+          if (id.includes('papaparse')) return 'csv';
           if (id.includes('react-router')) return 'react';
           if (/[\\/]react[\\/]|[\\/]react-dom[\\/]|[\\/]scheduler[\\/]/.test(id)) return 'react';
           if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n';
