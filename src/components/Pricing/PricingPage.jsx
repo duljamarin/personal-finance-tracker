@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { usePaddle } from '../../hooks/usePaddle';
 import { useToast } from '../../context/ToastContext';
+import { trackEvent } from '../../lib/analytics';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
 
@@ -33,6 +34,7 @@ export default function PricingPage() {
   useEffect(() => {
     if (checkoutInitiatedRef.current && isPremium) {
       checkoutInitiatedRef.current = false;
+      trackEvent('PremiumUpgrade');
       navigate('/dashboard', { replace: true });
     }
   }, [isPremium, navigate]);

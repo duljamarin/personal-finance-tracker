@@ -1063,6 +1063,10 @@
       "section10": {
         "title": "10. Na Kontaktoni",
         "content": "Për çdo pyetje rreth kësaj Politike Privatësie, na kontaktoni përmes kanaleve tona të mbështetjes."
+      },
+      "section11": {
+        "title": "11. Analitika",
+        "content": "Përdorim GoatCounter, një mjet analitike miqësor ndaj privatësisë që nuk përdor cookies dhe nuk mbledh të dhëna personale."
       }
     }
   },
