@@ -2,10 +2,9 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
-import { initPromise } from './i18n'
+import './i18n'
 
-const root = createRoot(document.getElementById('root'));
-
-initPromise.then(() => {
-  root.render(<App />);
-});
+// Render immediately — i18n initialises asynchronously but react-i18next
+// re-renders components once translations are ready, so there is no flash
+// of untranslated keys (keys resolve to empty string via useSuspense:false).
+createRoot(document.getElementById('root')).render(<App />);

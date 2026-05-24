@@ -31,6 +31,10 @@ const initPromise = (async () => {
       fallbackLng: 'en',
       debug: false,
       interpolation: { escapeValue: false },
+      // Don't suspend React rendering while translations load — components
+      // re-render automatically once the bundle arrives (eliminates the
+      // initPromise block that was delaying first paint on mobile).
+      react: { useSuspense: false },
       detection: {
         order: ['path', 'localStorage', 'navigator'],
         lookupFromPathIndex: 0,
