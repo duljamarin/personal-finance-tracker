@@ -1,23 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import Critters from 'critters'
 
-// Injects critical resource hints so the browser parallelises fetches:
-//   - <link rel="preload" as="style">  for the main CSS (eliminates render-blocking delay)
-//   - <link rel="modulepreload">       for recharts (breaks the 4-hop lazy-load chain on LandingPage)
+// Injects modulepreload hints so the browser parallelises lazy-chunk fetches.
+// CSS critical-path extraction is handled by critters (see criticalCssPlugin).
 function resourceHintsPlugin() {
-  const collected = { css: '', recharts: '', localeEn: '', localeSq: '' };
+  const collected = { recharts: '', localeEn: '', localeSq: '' };
 
   return {
     name: 'resource-hints',
     generateBundle(_, bundle) {
       for (const [fileName, chunk] of Object.entries(bundle)) {
-        if (fileName.startsWith('assets/main') && fileName.endsWith('.css')) {
-          collected.css = '/' + fileName;
-        }
         if (fileName.startsWith('assets/recharts') && fileName.endsWith('.js')) {
           collected.recharts = '/' + fileName;
         }
-        // Identify locale chunks by their source module paths
         if (chunk.type === 'chunk' && chunk.moduleIds) {
           const ids = chunk.moduleIds.join('|');
           if (ids.includes('locales/en/translation')) collected.localeEn = '/' + fileName;
@@ -27,9 +23,6 @@ function resourceHintsPlugin() {
     },
     transformIndexHtml(html, ctx) {
       let hints = '';
-      if (collected.css) {
-        hints += `  <link rel="preload" as="style" href="${collected.css}">\n`;
-      }
       if (collected.recharts) {
         hints += `  <link rel="modulepreload" href="${collected.recharts}">\n`;
       }
@@ -44,8 +37,40 @@ function resourceHintsPlugin() {
   };
 }
 
+// Extracts above-the-fold CSS and inlines it, converting the full stylesheet
+// to load asynchronously — eliminates the render-blocking CSS penalty.
+function criticalCssPlugin() {
+  return {
+    name: 'critical-css',
+    apply: 'build',
+    async closeBundle() {
+      const path = await import('path');
+      const fs = await import('fs');
+      const outDir = path.resolve('dist');
+
+      const critters = new Critters({
+        path: outDir,
+        publicPath: '/',
+        preload: 'swap',   // loads full CSS async, no FOUC
+        pruneSource: false,
+        logLevel: 'silent',
+      });
+
+      const htmlFiles = ['index.html', 'en.html', 'sq.html']
+        .map(f => path.join(outDir, f))
+        .filter(f => fs.existsSync(f));
+
+      for (const file of htmlFiles) {
+        const html = fs.readFileSync(file, 'utf8');
+        const result = await critters.process(html);
+        fs.writeFileSync(file, result);
+      }
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), resourceHintsPlugin()],
+  plugins: [react(), resourceHintsPlugin(), criticalCssPlugin()],
   css: {
     postcss: true,
   },
