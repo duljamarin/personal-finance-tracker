@@ -1,8 +1,8 @@
-import { supabase } from '../supabaseClient';
-import { withAuth } from './_auth';
+import { withAuth, getSupabase } from './_auth';
 
 export async function fetchGoals(filters = {}) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     let query = supabase
       .from('goals')
       .select('*, categories (id, name)')
@@ -29,6 +29,7 @@ export async function fetchGoals(filters = {}) {
 
 export async function fetchGoalById(goalId) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('goals')
       .select(`
@@ -49,6 +50,7 @@ export async function fetchGoalById(goalId) {
 
 export async function createGoal(goalData) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('goals')
       .insert({
@@ -72,6 +74,7 @@ export async function createGoal(goalData) {
 
 export async function updateGoal(goalId, updates) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const updateData = {
       name: updates.name,
       description: updates.description ?? null,
@@ -100,6 +103,7 @@ export async function updateGoal(goalId, updates) {
 
 export async function deleteGoal(goalId) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('goals')
       .delete()
@@ -113,6 +117,7 @@ export async function deleteGoal(goalId) {
 
 export async function fetchContributions(goalId) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('goal_contributions')
       .select('*')
@@ -127,6 +132,7 @@ export async function fetchContributions(goalId) {
 
 export async function addContribution(goalId, contributionData) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('goal_contributions')
       .insert({
@@ -141,8 +147,6 @@ export async function addContribution(goalId, contributionData) {
       .single();
 
     if (error) throw error;
-    // Fire goal milestone notification check asynchronously (non-blocking)
-    // DB trigger has already updated current_amount by the time this runs
     supabase.rpc('check_goal_milestone_notifications', {
       p_user_id: user.id,
       p_goal_id: goalId,
@@ -153,6 +157,7 @@ export async function addContribution(goalId, contributionData) {
 
 export async function deleteContribution(contributionId) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('goal_contributions')
       .delete()
@@ -166,6 +171,7 @@ export async function deleteContribution(contributionId) {
 
 export async function fetchGoalsStats() {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data: goals, error } = await supabase
       .from('goals')
       .select('target_amount, current_amount, is_completed, is_active')

@@ -1,8 +1,8 @@
-import { supabase } from '../supabaseClient';
-import { withAuth, withAuthOrEmpty } from './_auth';
+import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 
 export async function fetchAssets() {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('assets')
       .select('*')
@@ -17,6 +17,7 @@ export async function fetchAssets() {
 
 export async function addAsset(asset) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('assets')
       .insert([{ ...asset, user_id: user.id }])
@@ -25,7 +26,6 @@ export async function addAsset(asset) {
 
     if (error) throw error;
 
-    // Update today's snapshot
     await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
 
     return data;
@@ -34,6 +34,7 @@ export async function addAsset(asset) {
 
 export async function updateAsset(id, asset) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('assets')
       .update(asset)
@@ -44,7 +45,6 @@ export async function updateAsset(id, asset) {
 
     if (error) throw error;
 
-    // Update today's snapshot
     await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
 
     return data;
@@ -53,6 +53,7 @@ export async function updateAsset(id, asset) {
 
 export async function deleteAsset(id) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('assets')
       .delete()
@@ -61,7 +62,6 @@ export async function deleteAsset(id) {
 
     if (error) throw error;
 
-    // Update today's snapshot
     await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
 
     return 'OK';
@@ -70,12 +70,13 @@ export async function deleteAsset(id) {
 
 export async function fetchNetWorthHistory() {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('net_worth_snapshots')
       .select('*')
       .eq('user_id', user.id)
       .order('snapshot_date', { ascending: true })
-      .limit(24); // 2 years of monthly snapshots
+      .limit(24);
 
     if (error) throw error;
     return data || [];

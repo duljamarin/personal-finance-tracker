@@ -1,7 +1,5 @@
-import { supabase } from '../supabaseClient';
-import { withAuth, withAuthOrEmpty } from './_auth';
+import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 
-// Helper function to calculate next date (handles month-end dates properly)
 export function calculateNextDate(currentDate, frequency, intervalCount) {
   const date = new Date(currentDate);
   const interval = intervalCount || 1;
@@ -15,19 +13,16 @@ export function calculateNextDate(currentDate, frequency, intervalCount) {
       date.setDate(date.getDate() + interval * 7);
       break;
     case 'monthly': {
-      // Store original month and add interval
       const targetMonth = date.getMonth() + interval;
       date.setMonth(targetMonth);
-      // If the day changed (overflow), set to last day of target month
       if (date.getDate() !== originalDay) {
-        date.setDate(0); // Go to last day of previous month (which is target month)
+        date.setDate(0);
       }
       break;
     }
     case 'yearly': {
       const targetYear = date.getFullYear() + interval;
       date.setFullYear(targetYear);
-      // Handle Feb 29 on non-leap years
       if (date.getDate() !== originalDay) {
         date.setDate(0);
       }
@@ -42,6 +37,7 @@ export function calculateNextDate(currentDate, frequency, intervalCount) {
 
 export async function fetchRecurringTransactions() {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('recurring_transactions')
       .select(`
@@ -58,6 +54,7 @@ export async function fetchRecurringTransactions() {
 
 export async function addRecurringTransaction(recurring) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const {
       category,
       categoryId,
@@ -68,17 +65,16 @@ export async function addRecurringTransaction(recurring) {
       startDate,
       endDate,
       occurrencesLimit,
-      date,               // Exclude - recurring_transactions uses start_date instead
-      isRecurring,        // Exclude frontend-only flag
-      endType,            // Exclude frontend-only field
-      updateRecurringTemplate, // Exclude frontend-only field
-      sourceRecurringId,  // Exclude frontend-only field
-      has_splits,         // Exclude - not a column on recurring_transactions
-      splits,             // Exclude - not a column on recurring_transactions
+      date,
+      isRecurring,
+      endType,
+      updateRecurringTemplate,
+      sourceRecurringId,
+      has_splits,
+      splits,
       ...rest
     } = recurring;
 
-    // Calculate next_run_at based on start_date
     const nextRunAt = new Date(startDate);
     nextRunAt.setUTCHours(0, 0, 0, 0);
 
@@ -110,6 +106,7 @@ export async function addRecurringTransaction(recurring) {
 
 export async function updateRecurringTransaction(id, recurring) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const {
       category,
       categoryId,
@@ -121,13 +118,13 @@ export async function updateRecurringTransaction(id, recurring) {
       endDate,
       occurrencesLimit,
       isActive,
-      updateRecurringTemplate, // Exclude frontend-only field
-      sourceRecurringId,       // Exclude frontend-only field
-      has_splits,              // Exclude - not a column on recurring_transactions
-      splits,                  // Exclude - not a column on recurring_transactions
-      isRecurring,             // Exclude frontend-only flag
-      endType,                 // Exclude frontend-only field
-      date,                    // Exclude - recurring uses start_date
+      updateRecurringTemplate,
+      sourceRecurringId,
+      has_splits,
+      splits,
+      isRecurring,
+      endType,
+      date,
       ...rest
     } = recurring;
 
@@ -143,9 +140,7 @@ export async function updateRecurringTransaction(id, recurring) {
     if (occurrencesLimit !== undefined) updateData.occurrences_limit = occurrencesLimit;
     if (isActive !== undefined) updateData.is_active = isActive;
 
-    // Recalculate next_run_at if frequency or intervalCount changed
     if (frequency !== undefined || intervalCount !== undefined) {
-      // Fetch current recurring transaction data
       const { data: current, error: fetchError } = await supabase
         .from('recurring_transactions')
         .select('frequency, interval_count, last_run_at, start_date, next_run_at')
@@ -155,12 +150,9 @@ export async function updateRecurringTransaction(id, recurring) {
 
       if (fetchError) throw fetchError;
 
-      // Determine the new frequency and interval
       const newFrequency = frequency !== undefined ? frequency : current.frequency;
       const newIntervalCount = intervalCount !== undefined ? intervalCount : current.interval_count;
 
-      // Base date: last_run_at if it exists (meaning at least one instance was created),
-      // otherwise use start_date or next_run_at
       let baseDate;
       if (current.last_run_at) {
         baseDate = new Date(current.last_run_at).toISOString().split('T')[0];
@@ -170,11 +162,9 @@ export async function updateRecurringTransaction(id, recurring) {
         baseDate = new Date(current.next_run_at).toISOString().split('T')[0];
       }
 
-      // Calculate next_run_at from the base date + new interval
       const nextRunAt = calculateNextDate(baseDate, newFrequency, newIntervalCount);
       updateData.next_run_at = nextRunAt;
 
-      // Recalculate occurrences_created based on actual instances in the database
       const { count, error: countError } = await supabase
         .from('transactions')
         .select('*', { count: 'exact', head: true })
@@ -204,6 +194,7 @@ export async function updateRecurringTransaction(id, recurring) {
 
 export async function deleteRecurringTransaction(id) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('recurring_transactions')
       .delete()
@@ -223,11 +214,9 @@ export async function resumeRecurringTransaction(id) {
   return updateRecurringTransaction(id, { isActive: true });
 }
 
-// Generate recurring transaction instances (call this on app load or periodically).
-// Only generates instances that are due (on or before today), never future instances.
 export async function processRecurringTransactions() {
   return withAuthOrEmpty(async (user) => {
-    // Fetch active recurring transactions that are due (next_run_at <= now)
+    const supabase = await getSupabase();
     const now = new Date().toISOString();
     const { data: dueRecurrings, error: fetchError } = await supabase
       .from('recurring_transactions')
@@ -253,14 +242,11 @@ export async function processRecurringTransactions() {
     for (const recurring of dueRecurrings) {
       let currentNextRun = recurring.next_run_at;
       let instancesCreated = 0;
-      let loopAdvanced = false; // Track if we advanced past the original next_run_at
+      let loopAdvanced = false;
 
-      // Generate all due instances (could be multiple if app wasn't opened for days)
       while (new Date(currentNextRun) <= new Date()) {
-        // Check if we've reached the occurrences limit
         const totalCreated = (recurring.occurrences_created || 0) + instancesCreated;
         if (recurring.occurrences_limit && totalCreated >= recurring.occurrences_limit) {
-          // Deactivate the recurring transaction
           await supabase
             .from('recurring_transactions')
             .update({ is_active: false })
@@ -268,7 +254,6 @@ export async function processRecurringTransactions() {
           break;
         }
 
-        // Check if end_date has passed
         const transactionDate = new Date(currentNextRun).toISOString().split('T')[0];
         if (recurring.end_date && new Date(transactionDate) > new Date(recurring.end_date)) {
           await supabase
@@ -278,7 +263,6 @@ export async function processRecurringTransactions() {
           break;
         }
 
-        // Check for idempotency - don't create if already exists for this period
         const { data: existing } = await supabase
           .from('transactions')
           .select('id')
@@ -287,10 +271,8 @@ export async function processRecurringTransactions() {
           .single();
 
         if (!existing) {
-          // Calculate base_amount
           const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
 
-          // Create the transaction instance
           const { data: newTx, error: insertError } = await supabase
             .from('transactions')
             .insert([{
@@ -314,27 +296,23 @@ export async function processRecurringTransactions() {
 
           if (insertError) {
             console.error('Error creating recurring transaction instance:', insertError);
-            break; // Stop trying for this recurring rule
+            break;
           }
 
           generatedTransactions.push(newTx);
           instancesCreated++;
         }
 
-        // Calculate next date for next iteration (always advance, even if instance existed)
         currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
         loopAdvanced = true;
       }
 
-      // Update the recurring transaction with the new next_run_at and count.
-      // Update even if instancesCreated === 0 as long as we advanced the schedule.
       if (loopAdvanced) {
         const updateData = {
           next_run_at: currentNextRun,
           last_run_at: now,
         };
 
-        // Only update occurrences_created if we actually created new instances
         if (instancesCreated > 0) {
           updateData.occurrences_created = (recurring.occurrences_created || 0) + instancesCreated;
         }
@@ -346,16 +324,10 @@ export async function processRecurringTransactions() {
       }
     }
 
-    return { generated: generatedTransactions.length, transactions: generatedTransactions };
-  }).then(result => {
-    if (!result) return { generated: 0, transactions: [] };
     // Fire recurring due notification check after processing (non-blocking)
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user) {
-        supabase.rpc('check_recurring_notifications', { p_user_id: data.user.id })
-          .then(() => {}).catch(() => {});
-      }
-    });
-    return result;
-  });
+    supabase.rpc('check_recurring_notifications', { p_user_id: user.id })
+      .then(() => {}).catch(() => {});
+
+    return { generated: generatedTransactions.length, transactions: generatedTransactions };
+  }).then(result => result || { generated: 0, transactions: [] });
 }

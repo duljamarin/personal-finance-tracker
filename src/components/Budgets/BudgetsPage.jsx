@@ -16,7 +16,7 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
 import { Link } from 'react-router-dom';
-import { supabase } from '../../utils/supabaseClient';
+import { getSupabase } from '../../utils/api/_auth';
 
 export default function BudgetsPage() {
   const { t } = useTranslation();
@@ -94,18 +94,21 @@ export default function BudgetsPage() {
   // Realtime: refresh spent amounts instantly when transactions change
   useEffect(() => {
     if (!user) return;
-    const channel = supabase
-      .channel(`budgets-live-${user.id}-${selectedYear}-${selectedMonth}`)
-      .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'transactions',
-        filter: `user_id=eq.${user.id}`
-      }, refreshExpenses)
-      .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'transaction_splits',
-        filter: `user_id=eq.${user.id}`
-      }, refreshExpenses)
-      .subscribe();
-    return () => supabase.removeChannel(channel);
+    let channel = null;
+    getSupabase().then(supabase => {
+      channel = supabase
+        .channel(`budgets-live-${user.id}-${selectedYear}-${selectedMonth}`)
+        .on('postgres_changes', {
+          event: '*', schema: 'public', table: 'transactions',
+          filter: `user_id=eq.${user.id}`
+        }, refreshExpenses)
+        .on('postgres_changes', {
+          event: '*', schema: 'public', table: 'transaction_splits',
+          filter: `user_id=eq.${user.id}`
+        }, refreshExpenses)
+        .subscribe();
+    });
+    return () => getSupabase().then(supabase => { if (channel) supabase.removeChannel(channel); });
   }, [user, selectedYear, selectedMonth, refreshExpenses]);
 
   // Month navigator

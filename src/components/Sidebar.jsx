@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { useTranslation } from 'react-i18next';
 import { getUnreadNotificationCount } from '../utils/api';
-import { supabase } from '../utils/supabaseClient';
+import { getSupabase } from '../utils/api/_auth';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import {
@@ -90,23 +90,26 @@ export default function Sidebar() {
     };
     window.addEventListener('notifications:changed', handleNotifChanged);
 
-    const channel = supabase
-      .channel('sidebar-notifications-' + user.id)
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'notifications',
-        filter: `user_id=eq.${user.id}`
-      }, () => {
-        getUnreadNotificationCount()
-          .then(count => setUnreadCount(count || 0))
-          .catch(() => {});
-      })
-      .subscribe();
+    let channel = null;
+    getSupabase().then(supabase => {
+      channel = supabase
+        .channel('sidebar-notifications-' + user.id)
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        }, () => {
+          getUnreadNotificationCount()
+            .then(count => setUnreadCount(count || 0))
+            .catch(() => {});
+        })
+        .subscribe();
+    });
 
     return () => {
       window.removeEventListener('notifications:changed', handleNotifChanged);
-      supabase.removeChannel(channel);
+      getSupabase().then(supabase => { if (channel) supabase.removeChannel(channel); });
     };
   }, [user]);
 

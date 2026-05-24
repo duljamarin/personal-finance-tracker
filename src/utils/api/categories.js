@@ -1,8 +1,8 @@
-import { supabase } from '../supabaseClient';
-import { withAuth, withAuthOrEmpty } from './_auth';
+import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 
 export async function fetchCategories() {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('categories')
       .select('*')
@@ -16,7 +16,7 @@ export async function fetchCategories() {
 
 export async function addCategory(category) {
   return withAuth(async (user) => {
-    // Check if category already exists
+    const supabase = await getSupabase();
     const { data: existing } = await supabase
       .from('categories')
       .select('id')
@@ -41,7 +41,7 @@ export async function addCategory(category) {
 
 export async function updateCategory(id, category) {
   return withAuth(async (user) => {
-    // Check if another category with the same name exists
+    const supabase = await getSupabase();
     const { data: existing } = await supabase
       .from('categories')
       .select('id')
@@ -69,7 +69,7 @@ export async function updateCategory(id, category) {
 
 export async function deleteCategory(id) {
   return withAuth(async (user) => {
-    // Database CASCADE constraint will automatically delete associated transactions
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('categories')
       .delete()
@@ -83,6 +83,7 @@ export async function deleteCategory(id) {
 
 export async function getCategory(id) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('categories')
       .select('*')

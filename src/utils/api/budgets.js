@@ -1,8 +1,8 @@
-import { supabase } from '../supabaseClient';
-import { withAuth, withAuthOrEmpty } from './_auth';
+import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 
 export async function fetchBudgets(year, month) {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('budgets')
       .select(`
@@ -21,6 +21,7 @@ export async function fetchBudgets(year, month) {
 
 export async function createBudget({ categoryId, year, month, amount }) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('budgets')
       .insert({
@@ -43,6 +44,7 @@ export async function createBudget({ categoryId, year, month, amount }) {
 
 export async function updateBudget(id, { amount }) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('budgets')
       .update({
@@ -64,6 +66,7 @@ export async function updateBudget(id, { amount }) {
 
 export async function deleteBudget(id) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('budgets')
       .delete()
@@ -77,12 +80,12 @@ export async function deleteBudget(id) {
 
 export async function fetchMonthlyExpensesByCategory(year, month) {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
     const nextMonth = month === 12 ? 1 : month + 1;
     const nextYear = month === 12 ? year + 1 : year;
     const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
 
-    // All expense transactions for this month
     const { data: txData, error: txError } = await supabase
       .from('transactions')
       .select('id, category_id, base_amount, has_splits, exchange_rate')
@@ -97,7 +100,6 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
     const splitParentIds = [];
     const totals = {};
 
-    // Sum direct (non-split) transactions
     for (const tx of allTx) {
       if (tx.has_splits) {
         splitParentIds.push(tx.id);
@@ -106,7 +108,6 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
       }
     }
 
-    // Fetch splits for parent transactions and sum by category
     if (splitParentIds.length > 0) {
       const rateMap = Object.fromEntries(
         allTx.filter(tx => tx.has_splits).map(tx => [tx.id, tx.exchange_rate || 1.0])

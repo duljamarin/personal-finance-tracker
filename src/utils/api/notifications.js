@@ -1,8 +1,8 @@
-import { supabase } from '../supabaseClient';
-import { withAuth, withAuthOrEmpty } from './_auth';
+import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 
 export async function fetchNotifications() {
   return withAuthOrEmpty(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('notifications')
       .select('*')
@@ -17,6 +17,7 @@ export async function fetchNotifications() {
 
 export async function markNotificationAsRead(id) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('notifications')
       .update({ is_read: true })
@@ -30,6 +31,7 @@ export async function markNotificationAsRead(id) {
 
 export async function markAllNotificationsAsRead() {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('notifications')
       .update({ is_read: true })
@@ -43,6 +45,7 @@ export async function markAllNotificationsAsRead() {
 
 export async function deleteNotification(id) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { error } = await supabase
       .from('notifications')
       .delete()
@@ -56,6 +59,7 @@ export async function deleteNotification(id) {
 
 export async function getUnreadNotificationCount() {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { count, error } = await supabase
       .from('notifications')
       .select('*', { count: 'exact', head: true })
@@ -69,6 +73,7 @@ export async function getUnreadNotificationCount() {
 
 export async function fetchNotificationSettings() {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const { data, error } = await supabase
       .from('notification_settings')
       .select('*')
@@ -76,7 +81,6 @@ export async function fetchNotificationSettings() {
       .single();
 
     if (error) {
-      // No settings row yet - return defaults
       if (error.code === 'PGRST116') return null;
       throw error;
     }
@@ -86,6 +90,7 @@ export async function fetchNotificationSettings() {
 
 export async function updateNotificationSettings(settings) {
   return withAuth(async (user) => {
+    const supabase = await getSupabase();
     const {
       email_enabled,
       budget_overrun_enabled,
