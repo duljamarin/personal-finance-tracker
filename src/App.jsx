@@ -188,7 +188,7 @@ function InnerAppContent() {
   }, [location.pathname, i18n]);
 
   useEffect(() => {
-    const indexablePaths = ['/', '/sq', '/pricing', '/register', '/terms', '/privacy'];
+    const indexablePaths = ['/', '/sq', '/pricing', '/terms', '/privacy'];
     const indexable = indexablePaths.includes(location.pathname);
     let robots = document.querySelector('meta[name="robots"]');
     if (!robots) {

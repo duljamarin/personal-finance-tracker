@@ -169,6 +169,12 @@ function FlagshipCard({ t }) {
   );
 }
 
+const LANDING_HREFLANGS = [
+  { lang: 'en', href: 'https://personal-finances.app/' },
+  { lang: 'sq', href: 'https://personal-finances.app/sq' },
+  { lang: 'x-default', href: 'https://personal-finances.app/' },
+];
+
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
@@ -177,6 +183,7 @@ export default function LandingPage() {
     title: t('meta.title'),
     description: t('meta.description'),
     canonical: isSq ? 'https://personal-finances.app/sq' : 'https://personal-finances.app/',
+    hreflangs: LANDING_HREFLANGS,
   });
 
   const steps = [

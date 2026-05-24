@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function useMetaTags({ title, description, canonical } = {}) {
+export function useMetaTags({ title, description, canonical, hreflangs } = {}) {
   useEffect(() => {
     if (title) document.title = title;
 
@@ -37,5 +37,19 @@ export function useMetaTags({ title, description, canonical } = {}) {
       let ogUrl = document.querySelector('meta[property="og:url"]');
       if (ogUrl) ogUrl.setAttribute('content', canonical);
     }
-  }, [title, description, canonical]);
+
+    // hreflang: remove all existing, then add the provided set (if any).
+    // Non-landing routes pass no hreflangs — Semrush flags hreflang conflicts
+    // when /pricing, /terms etc. inherit the root's hreflang from the SPA shell.
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+    if (Array.isArray(hreflangs)) {
+      hreflangs.forEach(({ lang, href }) => {
+        const link = document.createElement('link');
+        link.setAttribute('rel', 'alternate');
+        link.setAttribute('hreflang', lang);
+        link.setAttribute('href', href);
+        document.head.appendChild(link);
+      });
+    }
+  }, [title, description, canonical, hreflangs]);
 }
