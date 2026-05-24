@@ -14,7 +14,12 @@ import { useSubscription } from '../../context/SubscriptionContext';
  */
 export default function FreePlanUsageCounter({ used, limit, labelKey, threshold = 0.5 }) {
   const { t } = useTranslation();
-  const { isPremium, isTrialing } = useSubscription();
+  const { isPremium, isTrialing, loading: subLoading } = useSubscription();
+
+  // Reserve layout space while loading to prevent CLS
+  if (subLoading) {
+    return <div className="h-[52px] rounded-lg bg-surface-subtle dark:bg-surface-dark-subtle animate-pulse" />;
+  }
 
   if (isPremium || isTrialing) return null;
   if (!limit || limit <= 0) return null;

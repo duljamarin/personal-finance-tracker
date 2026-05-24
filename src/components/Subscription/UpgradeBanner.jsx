@@ -17,6 +17,7 @@ export default function UpgradeBanner() {
     transactionLimit,
     hasHadTrial,
     isPremium,
+    loading: subLoading,
   } = useSubscription();
 
   const trialTimeLabel = (() => {
@@ -51,8 +52,13 @@ export default function UpgradeBanner() {
 
   const isCancelled = subscription?.subscription_cancel_at != null;
   const hasActivePaidSubscription = subscription?.subscription_status === 'active' && !isCancelled;
-  if (hasActivePaidSubscription || dismissed) return null;
 
+  // Reserve layout space while loading to prevent CLS — render a fixed-height placeholder
+  if (subLoading) {
+    return <div className="mb-6 h-[88px] rounded-xl bg-surface-subtle dark:bg-surface-dark-subtle animate-pulse" />;
+  }
+
+  if (hasActivePaidSubscription || dismissed) return null;
   if (!trialExpired && !isTrialing && !isCancelled && monthlyTransactionCount === 0) return null;
 
   const usagePercent = Math.min((monthlyTransactionCount / transactionLimit) * 100, 100);

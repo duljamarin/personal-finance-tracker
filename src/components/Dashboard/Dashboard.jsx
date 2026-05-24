@@ -176,8 +176,8 @@ export default function Dashboard() {
             <AddTransactionCTA onClick={handleAddTransaction} />
           </div>
 
-          {/* Budget + Chart section */}
-          <div className="mt-8 space-y-6">
+          {/* Budget + Chart section — below fold, skip layout until scrolled into view */}
+          <div className="mt-8 space-y-6" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}>
             <BudgetSummaryBar reloadTrigger={totalExpense} />
             <ChartWithTimeRange transactions={transactions} />
             <CashFlowForecast />
@@ -185,8 +185,8 @@ export default function Dashboard() {
         </>
       )}
 
-      {/* Transactions + category breakdowns */}
-      <div className="mt-8">
+      {/* Transactions + category breakdowns — below fold */}
+      <div className="mt-8" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1200px' }}>
         {error && (
           <div className="mb-6 p-4 bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] border border-[#e8394d]/30 rounded-xl text-[#e8394d] font-medium text-sm">
             {error}

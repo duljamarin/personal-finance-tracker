@@ -14,6 +14,28 @@ import { SubscriptionProvider, useSubscription } from './context/SubscriptionCon
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 
+// Shown while the Dashboard chunk is loading — LCP element (h1) is present immediately
+function DashboardShell() {
+  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : '';
+  return (
+    <div className="min-h-[60vh]">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-ink-primary dark:text-white tracking-tight">
+            {username || ' '}
+          </h1>
+          <div className="h-4 w-40 mt-1 rounded bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {[0, 1, 2].map(i => (
+          <div key={i} className="h-28 rounded-[10px] bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const Sidebar = lazy(() => import('./components/Sidebar.jsx'));
 const Dashboard = lazy(() => import('./components/Dashboard/Dashboard.jsx'));
 const CategoriesPage = lazy(() => import('./components/Categories/CategoriesPage.jsx'));
@@ -252,7 +274,7 @@ function InnerAppContent() {
         </PublicLayout>
       ) : (
         <AuthenticatedLayout>
-          <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[60vh]" />}>
+          <Suspense fallback={<DashboardShell />}>
             <Routes>
               <Route path="/account" element={
                 <PrivateRoute><AccountPage /></PrivateRoute>

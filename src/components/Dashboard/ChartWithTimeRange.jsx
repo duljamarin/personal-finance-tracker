@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import CombinedMonthChart from '../Transactions/CombinedMonthChart';
 
@@ -7,6 +7,7 @@ const RANGES = ['3m', '6m', '12m', 'all'];
 export default function ChartWithTimeRange({ transactions }) {
   const { t } = useTranslation();
   const [range, setRange] = useState('6m');
+  const [isPending, startTransition] = useTransition();
 
   const filtered = useMemo(() => {
     if (range === 'all') return transactions;
@@ -26,7 +27,7 @@ export default function ChartWithTimeRange({ transactions }) {
           {RANGES.map(r => (
             <button
               key={r}
-              onClick={() => setRange(r)}
+              onClick={() => startTransition(() => setRange(r))}
               className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                 range === r
                   ? 'bg-brand-600 text-white'
@@ -38,7 +39,9 @@ export default function ChartWithTimeRange({ transactions }) {
           ))}
         </div>
       </div>
-      <CombinedMonthChart transactions={filtered} />
+      <div className={isPending ? 'opacity-60 transition-opacity' : ''}>
+        <CombinedMonthChart transactions={filtered} />
+      </div>
     </div>
   );
 }
