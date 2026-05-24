@@ -117,10 +117,8 @@ export default function OnboardingWizard() {
 
       let localCategories = categories;
 
-      // Only add manual expenses when the user didn't come from demo (or discarded it)
-      if (!hasDemoData || demoChoice === 'discard') {
-        const validExpenses = expenses.filter((e) => e.amount && Number(e.amount) > 0);
-
+      const validExpenses = expenses.filter((e) => e.amount && Number(e.amount) > 0);
+      if (validExpenses.length > 0) {
         const needsUncategorized = validExpenses.some((e) => !e.categoryId);
         let uncategorizedCategory = null;
 
@@ -153,11 +151,6 @@ export default function OnboardingWizard() {
           })
         );
       }
-
-      await supabase.auth.updateUser({
-        data: { onboarding_completed: true, preferred_currency: currency },
-      });
-      await refreshUser();
 
       // Import demo transactions if the user chose to keep them.
       // Read from sessionStorage first, fall back to localStorage (email confirmation
@@ -205,6 +198,13 @@ export default function OnboardingWizard() {
         localStorage.removeItem('demo_pending_import');
       }
 
+      // Update onboarding flag after all data is written, then reload everything once.
+      // Doing this last avoids the race where refreshUser triggers TransactionContext's
+      // auth-change useEffect which re-fetches and overwrites our freshly imported data.
+      await supabase.auth.updateUser({
+        data: { onboarding_completed: true, preferred_currency: currency },
+      });
+      await refreshUser();
       await Promise.all([reloadTransactions(), reloadCategories()]);
 
       trackEvent('OnboardingComplete');

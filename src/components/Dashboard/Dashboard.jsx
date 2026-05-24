@@ -93,7 +93,7 @@ export default function Dashboard() {
         }));
 
         await bulkImportTransactions(rows);
-        reloadTransactions();
+        await reloadTransactions();
       } catch {
         // Silent — demo import must not disrupt the dashboard
       }
