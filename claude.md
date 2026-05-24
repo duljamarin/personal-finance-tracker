@@ -241,6 +241,13 @@ Avoid unicolor red: keep percentage red (`#e8394d`), supporting text muted (`dar
 7. **Deployment** — frontend auto-deploys on push to `main`; migrations and Edge Functions need manual CLI deploy
 8. **mutationCount** — increments on every mutation (add/update/delete); it's a change signal, not a record count
 9. **Dark mode** — do not add `dark:text-gray-*` or `dark:text-ink-dark-*`; always `dark:text-white`. See Design System section above.
+10. **Performance / Core Web Vitals** — target: Mobile ≥85, Desktop ≥95. Current baselines: Mobile 78, Desktop 95 (SEO 100, Best Practices 100). Rules:
+    - **Never add eager imports of heavy libs** (Recharts, PapaParse, Supabase) in components that render on the landing page. Always use `lazy()` + `Suspense`.
+    - **DemoWorkspace** (`src/components/Landing/DemoWorkspace.jsx`) must stay lazy-loaded inside LandingPage — it pulls Recharts (107 KiB).
+    - **LandingPage** itself must stay `lazy()` in `App.jsx` — it was previously an eager import causing Recharts to enter the critical bundle.
+    - **CLS rule**: any component mounted inside a `Suspense` that has visible height must have a `fallback` with a matching `minHeight` (or `min-h-*`) so the footer doesn't shift when content loads.
+    - **LCP image**: the showcase image (`src/assets/showcase-finance.jpg`) uses `loading="eager" fetchPriority="high"` — do not change to `loading="lazy"`.
+    - **`netlify.toml`** — exists at project root. All `/assets/*` served with `Cache-Control: max-age=31536000, immutable`. Do not remove this file.
 
 ## Specialized Sub-Agents
 

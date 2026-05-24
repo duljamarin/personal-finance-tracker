@@ -1,13 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import showcaseImg from '../assets/showcase-finance.jpg';
 import { useMetaTags } from '../hooks/useMetaTags';
-import DemoWorkspace from './Landing/DemoWorkspace';
 import {
   TrendingUp, Target, PieChart, Activity, RefreshCw,
   Globe, BarChart3, Bell, Tag, FileText, Heart,
   ArrowRight, CheckCircle2, Zap, Lock, CloudOff, ShieldCheck,
 } from 'lucide-react';
+
+const DemoWorkspace = lazy(() => import('./Landing/DemoWorkspace'));
 
 /* ═══ Bento card shell ═══ */
 function Bento({ className = '', icon: Icon, title, desc }) {
@@ -234,7 +236,9 @@ export default function LandingPage() {
           {/* Right: Live Demo Workspace */}
           <div className="relative">
             <div aria-hidden="true" className="hidden lg:block absolute -top-3 -right-3 w-20 h-20 border-t-2 border-r-2 border-brand-500/40 rounded-tr-2xl pointer-events-none" />
-            <DemoWorkspace />
+            <Suspense fallback={<div className="rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline bg-surface-page dark:bg-surface-dark-page" style={{ minHeight: 520 }} />}>
+              <DemoWorkspace />
+            </Suspense>
           </div>
         </div>
       </section>

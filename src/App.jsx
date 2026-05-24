@@ -166,8 +166,8 @@ function PublicLayout({ children }) {
   return (
     <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
-        <main className="flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
+        <main className="flex-1 min-h-[calc(100vh-4rem)]">
           {children}
         </main>
         <Footer />
