@@ -8,8 +8,8 @@
     "shortName": "Financat e Mia"
   },
   "meta": {
-    "title": "Gjurmues i Financave Personale - Ndiqni Të Ardhurat, Shpenzimet & Qëllimet Tuaja Financiare",
-    "description": "Merrni kontrollin e financave tuaja. Ndiqni të ardhurat dhe shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë - falas për të filluar."
+    "title": "Gjurmues Financash Falas - Buxhet, Shpenzime & Qëllime",
+    "description": "Gjurmues i financave personale falas për Shqipëri. Ndiqni shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë."
   },
   "theme": {
     "light": "Modalitet i çelët",
@@ -1063,6 +1063,10 @@
       "section10": {
         "title": "10. Na Kontaktoni",
         "content": "Për çdo pyetje rreth kësaj Politike Privatësie, na kontaktoni përmes kanaleve tona të mbështetjes."
+      },
+      "section11": {
+        "title": "11. Analitika",
+        "content": "Përdorim GoatCounter, një mjet analitike miqësor ndaj privatësisë që nuk përdor cookies dhe nuk mbledh të dhëna personale."
       }
     }
   },

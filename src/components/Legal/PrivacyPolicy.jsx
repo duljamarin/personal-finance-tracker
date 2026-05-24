@@ -75,6 +75,9 @@ export default function PrivacyPolicy() {
 
           <h2 className={h2}>{t('legal.privacy.section10.title')}</h2>
           <p className={p}>{t('legal.privacy.section10.content')}</p>
+
+          <h2 className={h2}>{t('legal.privacy.section11.title')}</h2>
+          <p className={p}>{t('legal.privacy.section11.content')}</p>
         </div>
 
         <div className="mt-8 pt-6 border-t border-surface-hairline dark:border-surface-dark-hairline">
