@@ -43,13 +43,14 @@ export function TransactionProvider({ children }) {
     try {
       const data = await fetchTransactions();
       setTransactions(Array.isArray(data) ? data : []);
+      refreshSubscription();
     } catch (e) {
       console.error('❌ Error loading transactions:', e);
       setError(t('messages.error'));
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, refreshSubscription]);
 
   const reloadCategories = useCallback(async () => {
     setCatError(null);
