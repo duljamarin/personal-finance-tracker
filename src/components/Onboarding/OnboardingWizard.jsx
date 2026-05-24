@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
+import { trackEvent } from '../../lib/analytics';
 import { supabase } from '../../utils/supabaseClient';
 import { fetchCategories, addCategory, addTransaction, bulkImportTransactions } from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
@@ -197,6 +198,7 @@ export default function OnboardingWizard() {
 
       await Promise.all([reloadTransactions(), reloadCategories()]);
 
+      trackEvent('OnboardingComplete');
       setShowSuccess(true);
       setTimeout(() => {
         navigate('/dashboard', { replace: true });

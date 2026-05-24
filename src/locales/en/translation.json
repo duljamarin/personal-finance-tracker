@@ -1129,6 +1129,10 @@
       "section10": {
         "title": "10. Contact Us",
         "content": "If you have any questions about this Privacy Policy, please contact us through our support channels."
+      },
+      "section11": {
+        "title": "11. Analytics",
+        "content": "We use GoatCounter, a privacy-friendly analytics tool that uses no cookies and collects no personal data."
       }
     }
   },

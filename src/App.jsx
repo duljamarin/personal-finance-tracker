@@ -1,4 +1,5 @@
 import { useEffect, useRef, lazy, Suspense } from 'react';
+import { trackPageview } from './lib/analytics';
 import { useMetaTags } from './hooks/useMetaTags';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -179,6 +180,15 @@ function InnerAppContent() {
   const location = useLocation();
   const { accessToken } = useAuth();
   const { i18n } = useTranslation();
+  const firstView = useRef(true);
+
+  useEffect(() => {
+    if (firstView.current) {
+      firstView.current = false;
+      return;
+    }
+    trackPageview(location.pathname + location.search);
+  }, [location]);
 
   useEffect(() => {
     const seg = location.pathname.split('/')[1];

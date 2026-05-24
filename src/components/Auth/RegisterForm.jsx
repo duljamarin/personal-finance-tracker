@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 import PasswordInput from '../UI/PasswordInput';
 import Input from '../UI/Input';
+import { trackEvent } from '../../lib/analytics';
 
 export default function RegisterForm() {
   const { register, loading, accessToken, clearError } = useAuth();
@@ -94,8 +95,10 @@ export default function RegisterForm() {
       const result = await register(email.trim(), username, password, language);
 
       if (result.session) {
+        trackEvent('Signup');
         navigate('/');
       } else {
+        trackEvent('Signup');
         scheduleLoginRedirect();
       }
     } catch (err) {
