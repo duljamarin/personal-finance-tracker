@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <header className="bg-white dark:bg-surface-dark-card border-b border-surface-hairline dark:border-surface-dark-hairline">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 group">
+        <Link to="/" className="flex items-center gap-3 group" aria-label={t('app.name')}>
           <BrandMark />
           <span className="hidden sm:block text-base font-semibold text-ink-primary dark:text-white tracking-tight">
             {t('app.name')}
