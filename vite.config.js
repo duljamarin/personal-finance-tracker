@@ -1,8 +1,42 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// Injects critical resource hints so the browser parallelises fetches:
+//   - <link rel="preload" as="style">  for the main CSS (eliminates render-blocking delay)
+//   - <link rel="modulepreload">       for recharts (breaks the 4-hop lazy-load chain on LandingPage)
+function resourceHintsPlugin() {
+  const collected = { css: '', recharts: '' };
+
+  return {
+    name: 'resource-hints',
+    generateBundle(_, bundle) {
+      for (const [fileName] of Object.entries(bundle)) {
+        if (fileName.startsWith('assets/main') && fileName.endsWith('.css')) {
+          collected.css = '/' + fileName;
+        }
+        if (fileName.startsWith('assets/recharts') && fileName.endsWith('.js')) {
+          collected.recharts = '/' + fileName;
+        }
+      }
+    },
+    transformIndexHtml(html) {
+      let hints = '';
+      if (collected.css) {
+        hints += `  <link rel="preload" as="style" href="${collected.css}">\n`;
+      }
+      if (collected.recharts) {
+        // modulepreload makes the browser fetch recharts in parallel with main.js,
+        // cutting the LandingPage → DemoWorkspace → recharts waterfall by ~2 s on mobile.
+        hints += `  <link rel="modulepreload" href="${collected.recharts}">\n`;
+      }
+      if (!hints) return html;
+      return html.replace('<link rel="preload" as="font"', hints + '  <link rel="preload" as="font"');
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), resourceHintsPlugin()],
   css: {
     postcss: true,
   },
