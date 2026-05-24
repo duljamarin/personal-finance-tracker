@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-import LandingPage from './components/LandingPage.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -32,6 +31,7 @@ const TermsOfService = lazy(() => import('./components/Legal/TermsOfService.jsx'
 const PrivacyPolicy = lazy(() => import('./components/Legal/PrivacyPolicy.jsx'));
 const PricingPage = lazy(() => import('./components/Pricing/PricingPage.jsx'));
 const ReportsPage = lazy(() => import('./components/Reports/ReportsPage.jsx'));
+const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {

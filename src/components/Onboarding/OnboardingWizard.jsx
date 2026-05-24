@@ -5,62 +5,18 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { supabase } from '../../utils/supabaseClient';
-import { fetchCategories, addCategory, addTransaction } from '../../utils/api';
+import { fetchCategories, addCategory, addTransaction, bulkImportTransactions } from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import Button from '../UI/Button';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ProgressBar from './ProgressBar';
 import CurrencyStep from './steps/CurrencyStep';
-import IncomeStep from './steps/IncomeStep';
 import ExpensesStep from './steps/ExpensesStep';
-
-const TOTAL_STEPS = 3;
-
-/* Step illustrations — hairline brand SVGs */
-const StepArt = {
-  1: (
-    <svg viewBox="0 0 200 160" className="w-full h-auto" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="100" cy="80" r="48" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30 animate-pulse opacity-40" />
-      <circle cx="100" cy="80" r="32" stroke="#22ad93" strokeWidth="2" />
-      <text x="100" y="92" textAnchor="middle" className="fill-brand-600 dark:fill-brand-400" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '28px', fontWeight: 600 }}>€</text>
-      <text x="40" y="40" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>$</text>
-      <text x="160" y="48" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>£</text>
-      <text x="40" y="130" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>¥</text>
-      <text x="160" y="124" className="fill-ink-muted dark:fill-ink-dark-muted" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '14px', fontWeight: 500 }}>₣</text>
-    </svg>
-  ),
-  2: (
-    <svg viewBox="0 0 200 160" className="w-full h-auto" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="20" y1="140" x2="180" y2="140" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <line x1="20" y1="100" x2="180" y2="100" className="stroke-ink-primary/15 dark:stroke-ink-dark-primary/15" strokeDasharray="2 3" />
-      <line x1="20" y1="60" x2="180" y2="60" className="stroke-ink-primary/15 dark:stroke-ink-dark-primary/15" strokeDasharray="2 3" />
-      <path d="M20 130 L60 110 L100 80 L140 60 L180 30" stroke="#22ad93" strokeWidth="2.2" />
-      <circle cx="60" cy="110" r="3" fill="#22ad93" />
-      <circle cx="100" cy="80" r="3" fill="#22ad93" />
-      <circle cx="140" cy="60" r="3" fill="#22ad93" />
-      <circle cx="180" cy="30" r="4" fill="#22ad93" />
-      <rect x="160" y="14" width="32" height="22" rx="3" fill="#22ad93" />
-      <text x="176" y="30" textAnchor="middle" fill="white" style={{ fontFamily: 'DM Sans, Inter Tight, system-ui, sans-serif', fontSize: '12px', fontWeight: 600 }}>+</text>
-    </svg>
-  ),
-  3: (
-    <svg viewBox="0 0 200 160" className="w-full h-auto" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="30" y="30" width="60" height="44" rx="4" className="stroke-ink-primary/40 dark:stroke-ink-dark-primary/40" />
-      <line x1="40" y1="44" x2="80" y2="44" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <line x1="40" y1="54" x2="68" y2="54" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <line x1="40" y1="62" x2="74" y2="62" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <rect x="110" y="30" width="60" height="44" rx="4" className="stroke-ink-primary/40 dark:stroke-ink-dark-primary/40" />
-      <line x1="120" y1="44" x2="160" y2="44" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <line x1="120" y1="54" x2="148" y2="54" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <line x1="120" y1="62" x2="154" y2="62" className="stroke-ink-primary/30 dark:stroke-ink-dark-primary/30" />
-      <rect x="30" y="86" width="140" height="14" rx="3" stroke="#22ad93" />
-      <rect x="30" y="86" width="84" height="14" rx="3" fill="#22ad93" />
-      <rect x="30" y="110" width="140" height="14" rx="3" stroke="#22ad93" />
-      <rect x="30" y="110" width="48" height="14" rx="3" fill="#22ad93" />
-    </svg>
-  ),
-};
+import DemoDataStep from './steps/DemoDataStep';
+import CurrencyArt from './art/CurrencyArt';
+import ExpensesArt from './art/ExpensesArt';
+import DemoArt from './art/DemoArt';
 
 export default function OnboardingWizard() {
   const { t } = useTranslation();
@@ -68,6 +24,24 @@ export default function OnboardingWizard() {
   const { refreshUser } = useAuth();
   const { addToast } = useToast();
   const { reloadTransactions, reloadCategories } = useTransactions();
+
+  // Detect demo data on mount — determines step sequence
+  const [hasDemoData] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem('demo_pending_import');
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length > 0;
+    } catch {
+      return false;
+    }
+  });
+
+  // Step sequence:
+  //   With demo data:  [demo(1), currency(2), expenses(3)]
+  //   Without demo:    [currency(1), expenses(2)]
+  const steps = hasDemoData ? ['demo', 'currency', 'expenses'] : ['currency', 'expenses'];
+  const TOTAL_STEPS = steps.length;
 
   const [currentStep, setCurrentStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -79,8 +53,8 @@ export default function OnboardingWizard() {
   const [wizardData, setWizardData] = useState({
     currency: 'EUR',
     exchangeRate: 1.0,
-    monthlyIncome: '',
     expenses: [{ id: crypto.randomUUID(), amount: '', categoryId: '' }],
+    demoChoice: 'keep', // 'keep' | 'discard'
   });
 
   useEffect(() => {
@@ -118,6 +92,10 @@ export default function OnboardingWizard() {
   }
 
   function handleSkip() {
+    // Skipping the demo step means the user doesn't want the demo data
+    if (steps[currentStep - 1] === 'demo') {
+      updateData('demoChoice', 'discard');
+    }
     if (currentStep < TOTAL_STEPS) {
       handleNext();
     } else {
@@ -128,71 +106,94 @@ export default function OnboardingWizard() {
   async function handleFinish() {
     setSubmitting(true);
     try {
-      const { currency, exchangeRate, monthlyIncome, expenses } = wizardData;
+      const { currency, exchangeRate, expenses, demoChoice } = wizardData;
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
 
       let localCategories = categories;
 
-      if (monthlyIncome && Number(monthlyIncome) > 0) {
-        let salaryCategory = localCategories.find((c) => c.name.toLowerCase() === 'salary');
-        if (!salaryCategory) {
-          salaryCategory = await addCategory({ name: 'Salary' });
-          localCategories = [...localCategories, salaryCategory];
-          setCategories(localCategories);
+      // Only add manual expenses when the user didn't come from demo (or discarded it)
+      if (!hasDemoData || demoChoice === 'discard') {
+        const validExpenses = expenses.filter((e) => e.amount && Number(e.amount) > 0);
+
+        const needsUncategorized = validExpenses.some((e) => !e.categoryId);
+        let uncategorizedCategory = null;
+
+        if (needsUncategorized) {
+          uncategorizedCategory = localCategories.find(
+            (c) => c.name.toLowerCase() === 'uncategorized'
+          );
+          if (!uncategorizedCategory) {
+            uncategorizedCategory = await addCategory({ name: 'Uncategorized' });
+            localCategories = [...localCategories, uncategorizedCategory];
+            setCategories(localCategories);
+          }
         }
 
-        await addTransaction({
-          title: translateCategoryName('Salary'),
-          amount: Number(monthlyIncome),
-          type: 'income',
-          categoryId: salaryCategory.id,
-          date: todayStr,
-          currencyCode: currency,
-          exchangeRate: rate,
-        });
-      }
+        const categoryById = new Map(localCategories.map((c) => [c.id, c]));
 
-      const validExpenses = expenses.filter(
-        (e) => e.amount && Number(e.amount) > 0
-      );
-
-      const needsUncategorized = validExpenses.some((e) => !e.categoryId);
-      let uncategorizedCategory = null;
-
-      if (needsUncategorized) {
-        uncategorizedCategory = localCategories.find(
-          (c) => c.name.toLowerCase() === 'uncategorized'
+        await Promise.all(
+          validExpenses.map((expense) => {
+            const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
+            const cat = categoryById.get(resolvedCategoryId);
+            return addTransaction({
+              title: cat?.name ? translateCategoryName(cat.name) : t('transactions.expense'),
+              amount: Number(expense.amount),
+              type: 'expense',
+              categoryId: resolvedCategoryId,
+              date: todayStr,
+              currencyCode: currency,
+              exchangeRate: rate,
+            });
+          })
         );
-        if (!uncategorizedCategory) {
-          uncategorizedCategory = await addCategory({ name: 'Uncategorized' });
-          localCategories = [...localCategories, uncategorizedCategory];
-          setCategories(localCategories);
-        }
       }
-
-      const categoryById = new Map(localCategories.map((c) => [c.id, c]));
-
-      await Promise.all(
-        validExpenses.map((expense) => {
-          const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
-          const cat = categoryById.get(resolvedCategoryId);
-          return addTransaction({
-            title: cat?.name ? translateCategoryName(cat.name) : t('transactions.expense'),
-            amount: Number(expense.amount),
-            type: 'expense',
-            categoryId: resolvedCategoryId,
-            date: todayStr,
-            currencyCode: currency,
-            exchangeRate: rate,
-          });
-        })
-      );
 
       await supabase.auth.updateUser({
         data: { onboarding_completed: true, preferred_currency: currency },
       });
       await refreshUser();
+
+      // Import demo transactions if the user chose to keep them
+      if (hasDemoData) {
+        if (demoChoice === 'keep') {
+          try {
+            const raw = sessionStorage.getItem('demo_pending_import');
+            if (raw) {
+              const demoTxs = JSON.parse(raw);
+              if (Array.isArray(demoTxs) && demoTxs.length > 0) {
+                const catMap = new Map(localCategories.map((c) => [c.name, c.id]));
+                const missingNames = [
+                  ...new Set(demoTxs.map((tx) => tx.category).filter(Boolean)),
+                ].filter((name) => !catMap.has(name));
+
+                await Promise.all(
+                  missingNames.map(async (name) => {
+                    const created = await addCategory({ name });
+                    catMap.set(name, created.id);
+                    localCategories = [...localCategories, created];
+                  })
+                );
+
+                const rows = demoTxs.map((tx) => ({
+                  title: tx.title,
+                  amount: tx.amount,
+                  type: tx.type,
+                  date: tx.date,
+                  category_id: catMap.get(tx.category) ?? null,
+                  currency_code: currency,
+                  exchange_rate: rate,
+                }));
+
+                await bulkImportTransactions(rows);
+              }
+            }
+          } catch {
+            // Demo import failure must not block onboarding completion
+          }
+        }
+        sessionStorage.removeItem('demo_pending_import');
+      }
 
       await Promise.all([reloadTransactions(), reloadCategories()]);
 
@@ -238,7 +239,17 @@ export default function OnboardingWizard() {
     );
   }
 
+  const stepKey = steps[currentStep - 1];
   const isLastStep = currentStep === TOTAL_STEPS;
+
+  const StepArt = {
+    demo: DemoArt,
+    currency: CurrencyArt,
+    expenses: ExpensesArt,
+  }[stepKey];
+
+  // The expenses skip button only shows on the last step when not coming from demo
+  const canSkip = !isLastStep || (!hasDemoData && stepKey === 'expenses');
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
@@ -259,19 +270,29 @@ export default function OnboardingWizard() {
           </p>
         </div>
 
-        <ProgressBar currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+        <ProgressBar
+          currentStep={currentStep}
+          totalSteps={TOTAL_STEPS}
+          stepLabels={steps.map((s) => t(`onboarding.steps.${s}`))}
+        />
 
         {/* Step content — split layout */}
         <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline shadow-sm">
           <div className="grid lg:grid-cols-[5fr_7fr]">
             {/* Illustration column */}
             <div className="hidden lg:flex items-center justify-center p-8 bg-brand-50/30 dark:bg-brand-950/10 border-r border-surface-hairline dark:border-surface-dark-hairline rounded-l-xl overflow-hidden">
-              <div className="w-full max-w-[320px]">{StepArt[currentStep]}</div>
+              <div className="w-full max-w-[320px]">{StepArt && <StepArt />}</div>
             </div>
 
             {/* Form column */}
             <div className="p-6 sm:p-8 overflow-visible">
-              {currentStep === 1 && (
+              {stepKey === 'demo' && (
+                <DemoDataStep
+                  choice={wizardData.demoChoice}
+                  onChoice={(val) => updateData('demoChoice', val)}
+                />
+              )}
+              {stepKey === 'currency' && (
                 <CurrencyStep
                   currency={wizardData.currency}
                   exchangeRate={wizardData.exchangeRate}
@@ -280,14 +301,7 @@ export default function OnboardingWizard() {
                   onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val))}
                 />
               )}
-              {currentStep === 2 && (
-                <IncomeStep
-                  monthlyIncome={wizardData.monthlyIncome}
-                  onChange={(val) => updateData('monthlyIncome', val)}
-                  currency={wizardData.currency}
-                />
-              )}
-              {currentStep === 3 && (
+              {stepKey === 'expenses' && (
                 <ExpensesStep
                   expenses={wizardData.expenses}
                   onChange={(val) => updateData('expenses', val)}
@@ -310,7 +324,7 @@ export default function OnboardingWizard() {
           </div>
 
           <div className="flex items-center gap-3">
-            {!isLastStep && (
+            {canSkip && !isLastStep && (
               <Button variant="ghost" onClick={handleSkip} disabled={submitting}>
                 {t('onboarding.wizard.skip')}
               </Button>

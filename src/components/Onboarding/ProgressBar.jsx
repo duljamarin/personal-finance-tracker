@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-export default function ProgressBar({ currentStep, totalSteps }) {
+export default function ProgressBar({ currentStep, totalSteps, stepLabels }) {
   const { t } = useTranslation();
 
   return (
@@ -50,7 +50,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
                 className="w-10 text-center text-[10px] font-medium"
                 style={{ color: isCurrent ? '#22ad93' : 'inherit' }}
               >
-                {t(`onboarding.steps.${step}`)}
+                {stepLabels ? stepLabels[i] : t(`onboarding.steps.${step}`)}
               </span>
               {step < totalSteps && <div className="w-12 sm:w-20" />}
             </div>

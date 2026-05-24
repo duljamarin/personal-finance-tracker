@@ -197,7 +197,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           <div className="flex-1 w-full space-y-3.5">
             {scoreValues.map(({ label, value, color }, i) => (
               <div key={label} className="flex items-center gap-3">
-                <span className={`w-36 text-xs shrink-0 ${isPaid ? 'text-ink-muted dark:text-white' : 'text-ink-muted/60 dark:text-white/60'}`}>{label}</span>
+                <span className="w-36 text-xs shrink-0 text-ink-muted dark:text-white">{label}</span>
                 <div className="flex-1 h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
                   {isPaid
                     ? <div className={`h-full ${color} rounded-full transition-all duration-500`} style={{ width: `${Math.min(value, 100)}%` }} />

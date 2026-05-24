@@ -24,6 +24,7 @@ export default defineConfig({
           if (/[\\/]react[\\/]|[\\/]react-dom[\\/]|[\\/]scheduler[\\/]/.test(id)) return 'react';
           if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n';
           if (id.includes('lucide-react')) return 'icons';
+          if (id.includes('zod') || id.includes('@hookform')) return 'forms';
         },
       },
     },

@@ -321,14 +321,17 @@
       "getStarted": "Get Started Free",
       "signIn": "Sign In",
       "badge": "Free to start · No credit card required",
-      "trustNote": "✓ Free forever plan  ·  ✓ 30 transactions/month  ·  ✓ Upgrade anytime"
+      "trustNote": "✓ Free forever plan  ·  ✓ 100 transactions/month  ·  ✓ Upgrade anytime",
+      "trust1": "Free forever plan",
+      "trust2": "No credit card required",
+      "trust3": "Cancel anytime"
     },
     "preview": {
       "monthlyOverview": "Monthly Overview",
       "categoryBreakdown": "Category Breakdown"
     },
     "stats": {
-      "freeTransactions": "Free Transactions / Month",
+      "freeTransactions": "Free Transactions / Month (free plan)",
       "features": "Built-in Features",
       "currencies": "Currencies Supported",
       "cloudSync": "Cloud Sync",
@@ -442,7 +445,14 @@
     "cta": {
       "title": "Ready to Take Control?",
       "subtitle": "Join others who are already managing their finances better",
-      "button": "Create Your Free Account"
+      "button": "Create Your Free Account",
+      "seePricing": "See pricing",
+      "statTxUnit": "/mo",
+      "statTxLabel": "Transactions",
+      "statBudgetUnit": "budgets",
+      "statBudgetLabel": "Per month",
+      "statGoalUnit": "goals",
+      "statGoalLabel": "Active at once"
     },
     "months": {
       "jan": "Jan",
@@ -455,7 +465,45 @@
       "transport": "Transport",
       "entertainment": "Entertainment",
       "utilities": "Utilities"
+    },
+    "freePlan": {
+      "badge": "Free forever",
+      "title": "Powerful. Free. No surprises.",
+      "subtitle": "Track your finances without a paywall blocking the basics. Upgrade only when you need more.",
+      "transactions": "Transactions / month",
+      "budgets": "Monthly budgets",
+      "goals": "Financial goals",
+      "charts": "Charts & analytics",
+      "trust": {
+        "privacy": "Privacy-first - your data, your control",
+        "secure": "Encrypted and secure",
+        "noAdvice": "Analytics only, not financial advice"
+      }
     }
+  },
+  "demo": {
+    "liveBadge": "Live demo - try it now",
+    "workspaceTitle": "Your Financial Workspace",
+    "workspaceSubtitle": "Demo data - add, edit and explore",
+    "addTransaction": "Add transaction",
+    "addNewTransaction": "New transaction",
+    "addBtn": "Add",
+    "titlePlaceholder": "e.g. Grocery shopping, Salary",
+    "errorTitle": "Please enter a title.",
+    "errorAmount": "Please enter a valid amount.",
+    "persistenceBanner": "Enjoying the demo? Save your workspace with a free account.",
+    "saveFree": "Save free",
+    "saveAccount": "Save to account",
+    "footerNote": "Data resets on page reload - sign up to keep it.",
+    "byCategory": "By Category",
+    "tab": {
+      "overview": "Overview",
+      "transactions": "Transactions",
+      "budgets": "Budgets"
+    },
+    "overBudget": "{{amount}} over budget",
+    "remaining": "{{amount}} remaining",
+    "budgetSaveHint": "Create a free account to set custom budgets and save your progress."
   },
   "currency": {
     "label": "Currency",
@@ -822,12 +870,12 @@
     "trustCancel": "Cancel anytime, keep access till period ends",
     "trustPaddle": "Billed by Paddle",
     "freeFeatures": {
-      "transactions": "30 transactions/month",
+      "transactions": "100 transactions/month",
       "categories": "Custom categories",
       "dashboard": "Basic dashboard",
-      "budgets": "Up to 3 budget categories",
-      "recurring": "Up to 5 recurring transactions",
-      "goals": "Up to 3 financial goals",
+      "budgets": "Up to 30 budget categories",
+      "recurring": "Up to 30 recurring transactions",
+      "goals": "Up to 40 financial goals",
       "healthScoreBasic": "Basic health score (headline number)",
       "benchmarksBasic": "Basic spending benchmarks",
       "netWorth": "Net worth tracking",
@@ -875,6 +923,11 @@
     "trialEnded": "Your free trial has ended",
     "trialEndedDesc": "Upgrade to keep using all premium features with no limits."
   },
+  "freePlanCounter": {
+    "transactions": "Transactions this month",
+    "budgets": "Monthly budgets",
+    "goals": "Active goals"
+  },
   "upgrade": {
     "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",
     "proPlan": "Pro Plan",
@@ -906,7 +959,20 @@
     "steps": {
       "1": "Currency",
       "2": "Income",
-      "3": "Expenses"
+      "3": "Expenses",
+      "demo": "Your data",
+      "currency": "Currency",
+      "expenses": "Expenses"
+    },
+    "demoData": {
+      "badge": "Demo data detected",
+      "title": "This is the workspace you built.",
+      "subtitle": "Keep it as a trial, or clear it and start with your real numbers.",
+      "keepLabel": "Keep the demo data",
+      "keepHint": "Your demo transactions will be imported - you can delete them any time.",
+      "discardLabel": "Start fresh with my real numbers",
+      "discardHint": "The demo data will be discarded. You'll start with a clean workspace.",
+      "note": "You can always add your first real transaction from the dashboard."
     },
     "currency": {
       "title": "Select your currency",

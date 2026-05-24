@@ -321,7 +321,10 @@
       "getStarted": "Filloni Falas",
       "signIn": "Identifikohu",
       "badge": "Filloni Falas · Pa kartë krediti",
-      "trustNote": "✓ Plan falas përgjithmonë  ·  ✓ 30 transaksione/muaj  ·  ✓ Përmirësoni kurdo"
+      "trustNote": "✓ Plan falas përgjithmonë  ·  ✓ 100 transaksione/muaj  ·  ✓ Përmirësoni kurdo",
+      "trust1": "Plan falas përgjithmonë",
+      "trust2": "Pa kartë krediti",
+      "trust3": "Anuloni kurdo"
     },
     "preview": {
       "monthlyOverview": "Përmbledhje sipas Muajve",
@@ -442,7 +445,14 @@
     "cta": {
       "title": "Gati të Merrni Kontrollin?",
       "subtitle": "Bashkohuni me përdorues të tjerë që tashmë po menaxhojnë financat e tyre më mirë",
-      "button": "Krijoni Llogarinë Tuaj Falas"
+      "button": "Krijoni Llogarinë Tuaj Falas",
+      "seePricing": "Shihni çmimet",
+      "statTxUnit": "/në muaj",
+      "statTxLabel": "Transaksione",
+      "statBudgetUnit": "buxhete",
+      "statBudgetLabel": "Në muaj",
+      "statGoalUnit": "qëllime",
+      "statGoalLabel": "Njëkohësisht"
     },
     "months": {
       "jan": "Jan",
@@ -455,7 +465,45 @@
       "transport": "Transport",
       "entertainment": "Argëtim",
       "utilities": "Shërbime"
+    },
+    "freePlan": {
+      "badge": "Falas përgjithmonë",
+      "title": "I fuqishëm. Falas. Pa surpriza.",
+      "subtitle": "Ndiqni financat tuaja pa bllokime. Përmirësoni vetëm kur keni nevojë për më shumë.",
+      "transactions": "Transaksione / muaj",
+      "budgets": "Buxhete mujore",
+      "goals": "Qëllime financiare",
+      "charts": "Grafikë & analitikë",
+      "trust": {
+        "privacy": "Privatësi e parë - të dhënat tuaja, kontrolli juaj",
+        "secure": "Të enkriptuara dhe të sigurta",
+        "noAdvice": "Vetëm analitikë, jo këshilla financiare"
+      }
     }
+  },
+  "demo": {
+    "liveBadge": "Demo live - provoni tani",
+    "workspaceTitle": "Hapësira Juaj Financiare",
+    "workspaceSubtitle": "Të dhëna demo - shtoni, modifikoni dhe eksploroni",
+    "addTransaction": "Shto transaksion",
+    "addNewTransaction": "Transaksion i ri",
+    "addBtn": "Shto",
+    "titlePlaceholder": "p.sh. Blerje ushqimore, Pagë",
+    "errorTitle": "Ju lutem vendosni një titull.",
+    "errorAmount": "Ju lutem vendosni një shumë të vlefshme.",
+    "persistenceBanner": "Po e gëzoni demon? Ruajeni hapësirën tuaj me një llogari falas.",
+    "saveFree": "Ruaj falas",
+    "saveAccount": "Ruaj në llogari",
+    "footerNote": "Të dhënat rivendosen me ringarkimin e faqes - regjistrohuni për t'i ruajtur.",
+    "byCategory": "Sipas Kategorisë",
+    "tab": {
+      "overview": "Përmbledhje",
+      "transactions": "Transaksionet",
+      "budgets": "Buxhetet"
+    },
+    "overBudget": "{{amount}} mbi buxhet",
+    "remaining": "{{amount}} mbetet",
+    "budgetSaveHint": "Krijoni llogari falas për të vendosur buxhete dhe ruajtur progresin tuaj."
   },
   "currency": {
     "label": "Valuta",
@@ -822,12 +870,12 @@
     "trustCancel": "Anulim në çdo kohë, akses deri në fund të periudhës",
     "trustPaddle": "Faturuar nga Paddle",
     "freeFeatures": {
-      "transactions": "30 transaksione/muaj",
+      "transactions": "100 transaksione/muaj",
       "categories": "Kategori të personalizuara",
       "dashboard": "Paneli bazik",
-      "budgets": "Deri në 3 kategori buxheti",
-      "recurring": "Deri në 5 transaksione të përsëritura",
-      "goals": "Deri në 3 objektiva financiare",
+      "budgets": "Deri në 30 kategori buxheti",
+      "recurring": "Deri në 30 transaksione të përsëritura",
+      "goals": "Deri në 40 objektiva financiare",
       "healthScoreBasic": "Rezultati bazë i shëndetit financiar",
       "benchmarksBasic": "Krahasime bazë të shpenzimeve",
       "netWorth": "Gjurmimi i vlerës neto",
@@ -875,6 +923,11 @@
     "trialEnded": "Prova juaj falas ka përfunduar",
     "trialEndedDesc": "Kaloni në premium për të vazhduar me të gjitha funksionet pa kufizime."
   },
+  "freePlanCounter": {
+    "transactions": "Transaksionet këtë muaj",
+    "budgets": "Buxhetet mujore",
+    "goals": "Qëllimet aktive"
+  },
   "upgrade": {
     "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",
     "proPlan": "Plani Pro",
@@ -906,7 +959,20 @@
     "steps": {
       "1": "Valuta",
       "2": "Të ardhurat",
-      "3": "Shpenzimet"
+      "3": "Shpenzimet",
+      "demo": "Të dhënat tuaja",
+      "currency": "Valuta",
+      "expenses": "Shpenzimet"
+    },
+    "demoData": {
+      "badge": "Të dhëna demo u zbuluan",
+      "title": "Kjo është hapësira që ndërtuat.",
+      "subtitle": "Mbajeni si provë, ose pastroni dhe filloni me numrat tuaj realë.",
+      "keepLabel": "Mbaj të dhënat e demostratës",
+      "keepHint": "Transaksionet e demostratës do të importohen - mund t'i fshini në çdo kohë.",
+      "discardLabel": "Fillo me numrat e mi realë",
+      "discardHint": "Të dhënat e demostratës do të hidhen. Do të filloni me hapësirë të pastër.",
+      "note": "Gjithmonë mund të shtoni transaksionin tuaj të parë real nga paneli kryesor."
     },
     "currency": {
       "title": "Zgjidhni monedhën tuaj",

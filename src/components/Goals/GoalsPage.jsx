@@ -13,6 +13,7 @@ import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useTransactions } from '../../context/TransactionContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 
 export default function GoalsPage() {
   const { t } = useTranslation();
@@ -171,6 +172,14 @@ export default function GoalsPage() {
           + {t('goals.addGoal')}
         </Button>
       </div>
+
+      {/* Free plan usage counter */}
+      <FreePlanUsageCounter
+        used={activeGoalCount}
+        limit={goalLimit}
+        labelKey="freePlanCounter.goals"
+        threshold={0.5}
+      />
 
       {/* Free tier limit banner */}
       {!isPremium && !canAdd && (

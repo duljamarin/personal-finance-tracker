@@ -2,83 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import showcaseImg from '../assets/showcase-finance.jpg';
 import { useMetaTags } from '../hooks/useMetaTags';
+import DemoWorkspace from './Landing/DemoWorkspace';
 import {
   TrendingUp, Target, PieChart, Activity, RefreshCw,
   Globe, BarChart3, Bell, Tag, FileText, Heart,
-  ArrowRight, CheckCircle2, Zap,
+  ArrowRight, CheckCircle2, Zap, Lock, CloudOff, ShieldCheck,
 } from 'lucide-react';
-
-/* ─── Hero dashboard mockup ─── */
-function DashboardPreview({ t }) {
-  return (
-    <div className="relative">
-      <div className="relative bg-white dark:bg-surface-dark-elevated rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline shadow-lg overflow-hidden">
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline">
-          <div className="flex gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline" />
-            <span className="w-2 h-2 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline" />
-            <span className="w-2 h-2 rounded-md bg-brand-600 dark:bg-brand-700" />
-          </div>
-          <span className="text-[11px] text-ink-muted dark:text-white ml-2 font-medium tracking-wide">
-            {t('landing.mockup.dashboard')}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 px-5 pt-5 pb-4">
-          <div>
-            <p className="eyebrow text-[10px] mb-1">{t('landing.mockup.balance')}</p>
-            <p className="text-lg font-bold text-ink-primary dark:text-white tabular-nums">€1,353</p>
-          </div>
-          <div>
-            <p className="eyebrow text-[10px] mb-1">{t('landing.mockup.income')}</p>
-            <p className="text-lg font-bold text-brand-600 dark:text-brand-700 tabular-nums">+€3,200</p>
-          </div>
-          <div>
-            <p className="eyebrow text-[10px] mb-1">{t('landing.mockup.expenses')}</p>
-            <p className="text-lg font-bold text-[#be3232] dark:text-[#be3232] tabular-nums">-€1,847</p>
-          </div>
-        </div>
-
-        <div className="px-5 pb-4">
-          <div className="flex items-end gap-[5px] h-14">
-            {[35, 58, 42, 72, 50, 64, 85, 55, 68, 78, 46, 90].map((h, i) => (
-              <div key={i} className="flex-1 rounded-[3px] bg-brand-700/70 dark:bg-brand-700/60" style={{ height: `${h}%` }} />
-            ))}
-          </div>
-        </div>
-
-        <div className="px-5 pb-4">
-          <div className="flex items-center justify-between text-[11px] mb-1.5">
-            <span className="text-ink-muted dark:text-white font-medium">{t('landing.mockup.budget')}</span>
-            <span className="text-ink-muted dark:text-white tabular-nums">60%</span>
-          </div>
-          <div className="h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
-            <div className="h-full bg-brand-700 rounded-md" style={{ width: '60%' }} />
-          </div>
-        </div>
-
-        <div className="border-t border-surface-hairline dark:border-surface-dark-hairline px-5 py-3">
-          <p className="eyebrow text-[10px] mb-2">{t('landing.mockup.recent')}</p>
-          {[
-            { color: '#be3232', label: t('landing.mockup.coffee'), amount: '-€4.50', positive: false },
-            { color: '#168b78', label: t('landing.mockup.salary'), amount: '+€3,200', positive: true },
-            { color: '#6A8FC4', label: t('landing.mockup.rent'), amount: '-€850.00', positive: false },
-          ].map((tx, i) => (
-            <div key={i} className="flex items-center justify-between py-1.5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: tx.color }} />
-                <span className="text-xs text-ink-primary dark:text-white">{tx.label}</span>
-              </div>
-              <span className={`text-xs font-semibold tabular-nums ${tx.positive ? 'text-brand-700 dark:text-brand-700' : 'text-[#be3232] dark:text-[#be3232]'}`}>
-                {tx.amount}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ═══ Bento card shell ═══ */
 function Bento({ className = '', icon: Icon, title, desc }) {
@@ -110,7 +39,6 @@ function FlagshipCard({ t }) {
   return (
     <div className="mb-5 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card rounded-[10px] overflow-hidden">
       <div className="grid lg:grid-cols-[2fr_3fr]">
-        {/* Left: copy */}
         <div className="p-8 sm:p-10 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-surface-hairline dark:border-surface-dark-hairline">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-600 mb-6">
             <TrendingUp className="w-7 h-7" strokeWidth={1.5} />
@@ -136,8 +64,6 @@ function FlagshipCard({ t }) {
             </div>
           </div>
         </div>
-
-        {/* Right: bar chart */}
         <div className="p-6 sm:p-8 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <p className="text-sm font-semibold text-ink-primary dark:text-white">2025 - {t('landing.viz.ytdSavings')}</p>
@@ -150,14 +76,8 @@ function FlagshipCard({ t }) {
             {MONTHS.map((m, i) => (
               <div key={m} className="flex-1 flex flex-col items-center gap-0.5">
                 <div className="w-full flex flex-col items-center gap-[3px]">
-                  <div
-                    className="w-full rounded-t-[3px] bg-brand-600/80 dark:bg-brand-700/70 transition-all"
-                    style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 120}px` }}
-                  />
-                  <div
-                    className="w-full rounded-t-[3px] bg-[#d12323]/70 dark:bg-[#d12323]/60 transition-all"
-                    style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 120}px` }}
-                  />
+                  <div className="w-full rounded-t-[3px] bg-brand-600/80 dark:bg-brand-700/70 transition-all" style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 120}px` }} />
+                  <div className="w-full rounded-t-[3px] bg-[#d12323]/70 dark:bg-[#d12323]/60 transition-all" style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 120}px` }} />
                 </div>
                 <span className="text-[9px] text-ink-muted dark:text-white mt-1 hidden sm:block">{m}</span>
               </div>
@@ -166,6 +86,58 @@ function FlagshipCard({ t }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/* ── Free Plan card ─────────────────────────────────────────────────────────── */
+function FreePlanSection({ t }) {
+  const items = [
+    { key: 'tx',       icon: Tag,       value: '100', label: t('landing.freePlan.transactions') },
+    { key: 'budgets',  icon: PieChart,  value: '30',  label: t('landing.freePlan.budgets') },
+    { key: 'goals',    icon: Target,    value: '40',  label: t('landing.freePlan.goals') },
+    { key: 'charts',   icon: BarChart3, value: '∞',   label: t('landing.freePlan.charts') },
+  ];
+  return (
+    <section className="py-20 sm:py-28 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-600/10 text-brand-700 dark:text-brand-400 text-xs font-semibold uppercase tracking-[0.12em] mb-5 border border-brand-600/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
+            {t('landing.freePlan.badge')}
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-semibold text-ink-primary dark:text-white leading-[1.05] mb-4">
+            {t('landing.freePlan.title')}
+          </h2>
+          <p className="text-lg text-ink-muted dark:text-white max-w-xl mx-auto leading-relaxed">
+            {t('landing.freePlan.subtitle')}
+          </p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+          {items.map(({ key, icon: Icon, value, label }) => (
+            <div key={key} className="flex flex-col items-center text-center p-6 rounded-xl border border-surface-hairline dark:border-surface-dark-hairline bg-surface-page dark:bg-surface-dark-page hover:border-brand-500/40 dark:hover:border-brand-700/40 transition-colors">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400 mb-3">
+                <Icon className="w-5 h-5" strokeWidth={1.5} />
+              </div>
+              <p className="text-4xl font-semibold text-ink-primary dark:text-white tabular-nums mb-1">{value}</p>
+              <p className="text-sm text-ink-muted dark:text-white leading-snug">{label}</p>
+            </div>
+          ))}
+        </div>
+        {/* Trust indicators */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-sm text-ink-muted dark:text-white">
+          {[
+            { icon: ShieldCheck, key: 'privacy' },
+            { icon: Lock,        key: 'secure'  },
+            { icon: CloudOff,    key: 'noAdvice'},
+          ].map(({ icon: Icon, key }) => (
+            <div key={key} className="flex items-center gap-2">
+              <Icon className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={1.6} />
+              <span>{t(`landing.freePlan.trust.${key}`)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -209,53 +181,70 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen">
+
       {/* ── Hero ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-24 sm:pb-32">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div>
-            <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-semibold text-ink-primary dark:text-white leading-[1.02] mb-7">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {/* Left: copy */}
+          <div className="lg:pt-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-600/10 text-brand-700 dark:text-brand-400 text-xs font-medium border border-brand-600/20 mb-7">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
+              {t('demo.liveBadge')}
+            </div>
+
+            <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-semibold text-ink-primary dark:text-white leading-[1.02] mb-6">
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-700">{t('landing.hero.titleAccent')}</span>
             </h1>
 
-            <p className="text-2xl text-ink-muted dark:text-white leading-relaxed mb-10 max-w-xl">
+            <p className="text-xl text-ink-muted dark:text-white leading-relaxed mb-8 max-w-lg">
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 mb-5">
               <Link
                 to="/register"
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-700 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
+                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-700 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.getStarted')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
               </Link>
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center px-8 py-4 border border-ink-primary/25 hover:border-ink-primary/60 dark:border-ink-dark-primary/25 dark:hover:border-ink-dark-primary/60 text-ink-primary dark:text-white font-medium rounded-md transition-colors text-base"
+                className="inline-flex items-center justify-center px-7 py-3.5 border border-ink-primary/25 hover:border-ink-primary/60 dark:border-ink-dark-primary/25 dark:hover:border-ink-dark-primary/60 text-ink-primary dark:text-white font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.signIn')}
               </Link>
             </div>
 
-            <p className="text-base text-ink-muted dark:text-white">
-              {t('landing.hero.trustNote')}
-            </p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white">
+              {[
+                { icon: CheckCircle2, label: t('landing.hero.trust1') },
+                { icon: CheckCircle2, label: t('landing.hero.trust2') },
+                { icon: CheckCircle2, label: t('landing.hero.trust3') },
+              ].map(({ icon: Icon, label }) => (
+                <span key={label} className="flex items-center gap-1.5">
+                  <Icon className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
 
+          {/* Right: Live Demo Workspace */}
           <div className="relative">
-            <DashboardPreview t={t} />
-            <div aria-hidden="true" className="hidden lg:block absolute -top-3 -right-3 w-24 h-24 border-t-2 border-r-2 border-brand-500/40 rounded-tr-2xl pointer-events-none" />
+            <div aria-hidden="true" className="hidden lg:block absolute -top-3 -right-3 w-20 h-20 border-t-2 border-r-2 border-brand-500/40 rounded-tr-2xl pointer-events-none" />
+            <DemoWorkspace />
           </div>
         </div>
       </section>
 
       {/* ── Product Stats ── */}
       <section className="border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="grid grid-cols-2 md:grid-cols-4">
             {[
-              { value: '30',   label: t('landing.stats.freeTransactions') },
+              { value: '100',  label: t('landing.stats.freeTransactions') },
               { value: '10+',  label: t('landing.stats.features') },
               { value: '24/7', label: t('landing.stats.cloudSync') },
               { value: '100%', label: t('landing.stats.free') },
@@ -264,7 +253,7 @@ export default function LandingPage() {
                 key={i}
                 className={`px-5 py-2 ${i > 0 ? 'border-l border-surface-hairline dark:border-surface-dark-hairline' : ''}`}
               >
-                <p className="text-6xl sm:text-7xl font-semibold text-ink-primary dark:text-white tabular-nums leading-none">
+                <p className="text-5xl sm:text-6xl font-semibold text-ink-primary dark:text-white tabular-nums leading-none">
                   {stat.value}
                 </p>
                 <p className="mt-4 text-base font-medium text-ink-muted dark:text-white leading-snug">{stat.label}</p>
@@ -273,6 +262,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Free Plan ── */}
+      <FreePlanSection t={t} />
 
       {/* ── Features Bento Grid ── */}
       <section className="py-20 sm:py-28">
@@ -286,10 +278,8 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Flagship card */}
           <FlagshipCard t={t} />
 
-          {/* Feature bento grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
             {bentoFeatures.map(({ key, icon, col }) => (
               <Bento
@@ -372,7 +362,8 @@ export default function LandingPage() {
                   width={800}
                   height={533}
                   className="w-full h-auto object-cover"
-                  loading="lazy"
+                  loading="eager"
+                  fetchPriority="high"
                   decoding="async"
                 />
               </div>
@@ -382,30 +373,92 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="relative border-t border-surface-hairline dark:border-surface-dark-hairline bg-gradient-to-br from-white via-brand-50/40 to-white dark:from-surface-dark-card dark:via-brand-950/20 dark:to-surface-dark-card py-24 sm:py-32 overflow-hidden">
-        <div aria-hidden="true" className="absolute top-8 left-8 w-16 h-16 border-t border-l border-brand-600/30 rounded-tl-2xl pointer-events-none" />
-        <div aria-hidden="true" className="absolute bottom-8 right-8 w-16 h-16 border-b border-r border-brand-600/30 rounded-br-2xl pointer-events-none" />
-        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-600/10 text-brand-700 dark:text-brand-300 text-xs font-semibold uppercase tracking-[0.14em] mb-6 border border-brand-600/20">
-            <span className="w-1.5 h-1.5 rounded-md bg-brand-600" />
-            {t('landing.hero.badge').split('·')[0].trim()}
+      <section className="relative overflow-hidden bg-[#0a1a17] py-24 sm:py-32">
+        {/* Dot grid background */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: 'radial-gradient(circle, rgba(34,173,147,0.18) 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+          }}
+        />
+        {/* Radial glow */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="w-[700px] h-[400px] rounded-full bg-brand-600/10 blur-[120px]" />
+        </div>
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-600/15 border border-brand-500/30 text-brand-300 text-xs font-semibold uppercase tracking-[0.14em] mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            {t('landing.freePlan.badge')}
           </div>
-          <h2 className="text-5xl sm:text-6xl font-semibold text-ink-primary dark:text-white leading-[1.05] mb-5">
+
+          {/* Headline */}
+          <h2 className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-white leading-[1.05] mb-6">
             {t('landing.cta.title')}
           </h2>
-          <p className="text-xl text-ink-muted dark:text-white leading-relaxed max-w-lg mx-auto">
+          <p className="text-lg sm:text-xl text-white leading-relaxed max-w-xl mx-auto mb-10">
             {t('landing.cta.subtitle')}
           </p>
-          <Link
-            to="/register"
-            className="group inline-flex items-center gap-2 mt-10 px-9 py-4 bg-brand-700 hover:bg-brand-700 text-white font-medium rounded-md transition-all text-base shadow-lg shadow-brand-600/20 hover:shadow-xl hover:shadow-brand-600/30"
-          >
-            {t('landing.cta.button')}
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
-          </Link>
-          <p className="mt-6 text-sm text-ink-muted dark:text-white">
-            {t('landing.hero.trustNote')}
-          </p>
+
+          {/* Feature chips */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+            {[
+              { icon: CheckCircle2, label: t('landing.hero.trust1') },
+              { icon: CheckCircle2, label: t('landing.hero.trust2') },
+              { icon: CheckCircle2, label: t('landing.hero.trust3') },
+            ].map(({ icon: Icon, label }) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 text-white text-sm font-medium"
+              >
+                <Icon className="w-3.5 h-3.5 text-brand-400 flex-shrink-0" strokeWidth={2.5} />
+                {label}
+              </span>
+            ))}
+          </div>
+
+          {/* CTA buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              to="/register"
+              className="group inline-flex items-center gap-2 px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-md transition-all text-base shadow-lg shadow-brand-600/30 hover:shadow-xl hover:shadow-brand-500/40"
+            >
+              {t('landing.cta.button')}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
+            </Link>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-1.5 px-8 py-3.5 rounded-md border border-white/30 text-white hover:border-white/60 font-medium text-base transition-all"
+            >
+              {t('landing.cta.seePricing')}
+            </Link>
+          </div>
+
+          {/* Divider */}
+          <div className="mt-14 pt-10 border-t border-white/10">
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-0 max-w-lg mx-auto">
+              {[
+                { value: '100', unit: t('landing.cta.statTxUnit'), label: t('landing.cta.statTxLabel') },
+                { value: '30', unit: t('landing.cta.statBudgetUnit'), label: t('landing.cta.statBudgetLabel') },
+                { value: '40', unit: t('landing.cta.statGoalUnit'), label: t('landing.cta.statGoalLabel') },
+              ].map(({ value, unit, label }, i) => (
+                <div
+                  key={i}
+                  className={`px-4 py-2 ${i > 0 ? 'border-l border-white/10' : ''}`}
+                >
+                  <p className="text-2xl font-semibold text-white tabular-nums leading-none">
+                    {value}
+                    <span className="text-sm font-medium text-white ml-1">{unit}</span>
+                  </p>
+                  <p className="mt-1 text-xs text-white/80 leading-snug">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>

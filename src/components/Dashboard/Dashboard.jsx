@@ -1,7 +1,10 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTransactions } from '../../context/TransactionContext';
+import { useSubscription } from '../../context/SubscriptionContext';
+import { fetchCategories, addCategory, bulkImportTransactions } from '../../utils/api';
 import UpgradeBanner from '../Subscription/UpgradeBanner';
+import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 import HealthScore from '../HealthScore/HealthScore';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import SummaryCards from './SummaryCards';
@@ -43,7 +46,54 @@ export default function Dashboard() {
     net,
     hasMixedCurrencies,
     mutationCount,
+    reloadTransactions,
   } = useTransactions();
+
+  const { monthlyTransactionCount, transactionLimit } = useSubscription();
+
+  // Import demo transactions if the user saved them before signing in
+  const demoImportedRef = useRef(false);
+  useEffect(() => {
+    if (demoImportedRef.current) return;
+    const raw = sessionStorage.getItem('demo_pending_import');
+    if (!raw) return;
+    demoImportedRef.current = true;
+    sessionStorage.removeItem('demo_pending_import');
+    (async () => {
+      try {
+        const demoTxs = JSON.parse(raw);
+        if (!Array.isArray(demoTxs) || demoTxs.length === 0) return;
+
+        const cats = await fetchCategories();
+        const catMap = new Map(cats.map((c) => [c.name, c.id]));
+
+        const missingNames = [...new Set(demoTxs.map((tx) => tx.category).filter(Boolean))].filter(
+          (name) => !catMap.has(name),
+        );
+        await Promise.all(
+          missingNames.map(async (name) => {
+            const created = await addCategory({ name });
+            catMap.set(name, created.id);
+          }),
+        );
+
+        const rows = demoTxs.map((tx) => ({
+          title: tx.title,
+          amount: tx.amount,
+          type: tx.type,
+          date: tx.date,
+          category_id: catMap.get(tx.category) ?? null,
+          currency_code: 'EUR',
+          exchange_rate: 1.0,
+        }));
+
+        await bulkImportTransactions(rows);
+        reloadTransactions();
+      } catch {
+        // Silent — demo import must not disrupt the dashboard
+      }
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [showGreeting, setShowGreeting] = useState(false);
   const username = localStorage.getItem('username');
@@ -72,6 +122,16 @@ export default function Dashboard() {
       )}
 
       <UpgradeBanner />
+
+      {/* Transaction usage counter (free plan only, shows when >= 50% used) */}
+      <div className="mb-4">
+        <FreePlanUsageCounter
+          used={monthlyTransactionCount}
+          limit={transactionLimit}
+          labelKey="freePlanCounter.transactions"
+          threshold={0.5}
+        />
+      </div>
 
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">

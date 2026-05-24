@@ -6,6 +6,7 @@ import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import EmptyState from '../UI/EmptyState';
 import BudgetCard from './BudgetCard';
 import BudgetForm from './BudgetForm';
+import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExpensesByCategory, fetchCategories } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
@@ -251,6 +252,14 @@ export default function BudgetsPage() {
           </Button>
         </div>
       </div>
+
+      {/* Free plan usage counter */}
+      <FreePlanUsageCounter
+        used={budgets.length}
+        limit={budgetLimit}
+        labelKey="freePlanCounter.budgets"
+        threshold={0.5}
+      />
 
       {/* Month Navigator */}
       <div className="flex items-center justify-center gap-4 bg-white dark:bg-surface-dark-card rounded-xl shadow-sm border border-surface-hairline dark:border-surface-dark-hairline p-3">
