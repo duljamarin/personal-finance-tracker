@@ -380,7 +380,7 @@ function TransactionsTab({ transactions, onDelete, onAddOpen }) {
           {t('demo.addTransaction')}
         </button>
       </div>
-      <div className="space-y-1.5 max-h-[320px] overflow-y-auto pr-0.5">
+      <div className="space-y-1.5 max-h-[320px] overflow-y-auto scrollbar-thin pr-0.5">
         {transactions.length === 0 && (
           <p className="text-xs text-ink-muted dark:text-white text-center py-8">{t('transactions.noTransactions')}</p>
         )}
