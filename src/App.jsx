@@ -210,7 +210,7 @@ function InnerAppContent() {
       return;
     }
     trackPageview(location.pathname + location.search);
-  }, [location]);
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     const seg = location.pathname.split('/')[1];

@@ -11,6 +11,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true
-  }
+    detectSessionInUrl: true,
+  },
 });
+
+// App does not use Realtime subscriptions. Disconnect immediately to prevent
+// the WebSocket from opening and causing 429 rate-limit errors in the console.
+supabase.realtime.disconnect();
