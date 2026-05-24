@@ -154,7 +154,7 @@ function AddTxForm({ onAdd, onClose }) {
         className="w-full px-3 py-2 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white focus:outline-none focus:border-brand-500 dark:focus:border-brand-500"
       >
         {CATEGORIES.map((c) => (
-          <option key={c} value={c}>{c}</option>
+          <option key={c} value={c}>{t(`defaultCategories.${c}`, c)}</option>
         ))}
       </select>
       <div className="flex gap-2 pt-1">
@@ -393,7 +393,7 @@ function TransactionsTab({ transactions, onDelete, onAddOpen }) {
               <CategoryDot cat={tx.category} />
               <div className="min-w-0">
                 <p className="text-xs font-medium text-ink-primary dark:text-white truncate">{tx.title}</p>
-                <p className="text-[10px] text-ink-muted dark:text-white truncate">{tx.category} · {tx.date}</p>
+                <p className="text-[10px] text-ink-muted dark:text-white truncate">{t(`defaultCategories.${tx.category}`, tx.category)} · {tx.date}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -442,7 +442,7 @@ function BudgetsTab({ transactions, budgets }) {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <CategoryDot cat={b.category} />
-                <span className="text-xs font-medium text-ink-primary dark:text-white">{b.category}</span>
+                <span className="text-xs font-medium text-ink-primary dark:text-white">{t(`defaultCategories.${b.category}`, b.category)}</span>
               </div>
               <span className={`text-[10px] font-semibold tabular-nums ${over ? 'text-[#e8394d]' : near ? 'text-amber-500' : 'text-ink-muted dark:text-white'}`}>
                 {fmtEur(used)} / {fmtEur(b.limit)}
