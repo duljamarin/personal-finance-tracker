@@ -23,6 +23,8 @@ export default defineConfig({
           if (id.includes('react-router')) return 'react';
           if (/[\\/]react[\\/]|[\\/]react-dom[\\/]|[\\/]scheduler[\\/]/.test(id)) return 'react';
           if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n';
+          if (id.includes('locales/en/translation')) return 'locale-en';
+          if (id.includes('locales/sq/translation')) return 'locale-sq';
           if (id.includes('lucide-react')) return 'icons';
           if (id.includes('zod') || id.includes('@hookform')) return 'forms';
         },
