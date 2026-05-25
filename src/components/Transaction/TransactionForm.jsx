@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
@@ -62,14 +62,14 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 		}).catch(() => setCategories([]))
 	}, [])
 
-	const initialCurrency = currencyCode
+	const initialCurrencyRef = useRef(currencyCode)
 	useEffect(() => {
 		if (currencyCode === 'EUR') {
 			setExchangeRate(1.0)
 			return
 		}
 		// Don't auto-fetch on mount when editing an existing transaction that already has a rate
-		if (currencyCode === initialCurrency && initial?.id) return
+		if (currencyCode === initialCurrencyRef.current && initial?.id) return
 		let cancelled = false
 		setIsFetchingRate(true)
 		fetchExchangeRate(currencyCode).then(rate => {
