@@ -47,7 +47,7 @@ function criticalCssPlugin() {
       const critters = new Critters({
         path: outDir,
         publicPath: '/',
-        preload: 'media',  // media=print trick — most reliable non-blocking method
+        preload: 'swap',   // loads full CSS async, no FOUC
         pruneSource: false,
         logLevel: 'silent',
       });
