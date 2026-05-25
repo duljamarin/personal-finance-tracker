@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['"Inter Tight"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Hanken Grotesk"', '"Inter Tight"', 'system-ui', 'sans-serif'],
         mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
@@ -75,6 +76,7 @@ module.exports = {
         'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-in-left': 'slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
         'fade-in': 'fadeIn 0.2s ease-out',
+        'hero-in': 'heroIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
       },
       keyframes: {
         fadeOut: {
@@ -104,6 +106,10 @@ module.exports = {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        heroIn: {
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

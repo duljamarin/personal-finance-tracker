@@ -479,6 +479,151 @@
         "secure": "Encrypted and secure",
         "noAdvice": "Analytics only, not financial advice"
       }
+    },
+    "demoBand": {
+      "title": "The demo IS the proof.",
+      "desc": "No screenshots. No marketing copy. Explore the real app right here - add transactions, browse budgets, check the overview. Create an account only when you want to keep your data.",
+      "cta": "Start tracking free"
+    },
+    "heroFeatures": {
+      "tracking": {
+        "eyebrow": "Smart Tracking",
+        "title": "See where your money actually goes",
+        "desc": "Log income and expenses by category. Get a clear monthly breakdown - no more end-of-month surprises."
+      },
+      "budgets": {
+        "eyebrow": "Monthly Budgets",
+        "title": "Set limits. Know when you're close.",
+        "desc": "Assign spending limits per category. See real-time progress and end-of-month forecasts so you can adjust before it's too late."
+      },
+      "healthscore": {
+        "eyebrow": "Financial Health Score",
+        "title": "One number that tells the honest truth",
+        "desc": "A 0–100 score calculated from your saving rate, budget adherence, and goal progress. Highlights what to fix, not just what looks good."
+      },
+      "multicurrency": {
+        "eyebrow": "Multi-Currency",
+        "title": "Track in any currency, totals in one",
+        "desc": "Record transactions in USD, EUR, ALL, or any currency. Everything normalizes to your base currency automatically."
+      }
+    },
+    "secondaryFeatures": {
+      "title": "Everything else included",
+      "items": {
+        "recurring": "Recurring transactions — daily, weekly, monthly, yearly",
+        "goals": "Financial goals with contribution tracking",
+        "cashflow": "Cash flow forecasting from recurring entries",
+        "networth": "Net worth tracking with asset & liability history",
+        "benchmarks": "Spending benchmarks vs. your own patterns",
+        "reports": "Detailed reports",
+        "notifications": "Alerts for budget overruns and goal milestones",
+        "csvImport": "CSV import and export",
+        "categories": "Custom categories with icons"
+      }
+    },
+    "privacy": {
+      "eyebrow": "Your data, your rules",
+      "title": "A finance app you can actually trust",
+      "desc": "Personal finance data is sensitive. Here's exactly what we do - and don't do - with yours.",
+      "items": {
+        "ownership": {
+          "title": "You own your data",
+          "desc": "Export everything as CSV any time. Delete your account and all data is gone - permanently, not archived."
+        },
+        "encryption": {
+          "title": "Encrypted at rest and in transit",
+          "desc": "All data is stored in a PostgreSQL database with enterprise-grade encryption. Transport is TLS-only."
+        },
+        "noSell": {
+          "title": "We never sell your data",
+          "desc": "Your financial data is not sold, traded, or shared with advertisers - ever. It exists only to power your dashboard."
+        },
+        "noAdvice": {
+          "title": "Analytics, not financial advice",
+          "desc": "The health score and benchmarks are informational tools. Always consult a qualified professional for financial decisions."
+        },
+        "analytics": {
+          "title": "Privacy-friendly analytics only",
+          "desc": "We use GoatCounter - no cookies, no personal data collected, no third-party tracking scripts."
+        },
+        "payments": {
+          "title": "Payments handled by Paddle",
+          "desc": "We never see or store your card details. Payment processing is handled entirely by Paddle, a certified PCI-compliant processor."
+        }
+      }
+    },
+    "pricingPreview": {
+      "eyebrow": "Simple pricing",
+      "title": "Free to start. Upgrade when you need more.",
+      "free": {
+        "label": "Free plan - forever",
+        "items": {
+          "tx": "100 transactions / month",
+          "budgets": "30 monthly budgets",
+          "goals": "40 active goals",
+          "charts": "Unlimited charts & analytics",
+          "categories": "Custom categories",
+          "recurring": "Recurring transactions"
+        }
+      },
+      "premium": {
+        "label": "Premium - unlock everything",
+        "items": {
+          "unlimited": "Unlimited transactions",
+          "cashflow": "Cash flow forecasting",
+          "healthscore": "Financial health score",
+          "benchmarks": "Spending benchmarks",
+          "reports": "Financial reports",
+          "networth": "Net worth tracking",
+          "notifications": "Smart notifications"
+        }
+      },
+      "cta": "See full pricing",
+      "trial": "7-day free trial on all paid plans"
+    },
+    "founder": {
+      "eyebrow": "From the builder",
+      "quote": "I built this because I was tired of managing my money in spreadsheets. Not because spreadsheets are bad - they're actually great - but because I wanted something that would just show me the picture without me having to paint it first. Every feature in here exists because I needed it myself.",
+      "name": "Marin Dulja",
+      "role": "Builder & sole developer"
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Honest answers",
+      "items": {
+        "free": {
+          "q": "Is it really free?",
+          "a": "Yes. The free plan is genuinely free - no credit card required, no time limit. You get 100 transactions/month, 30 budgets, and 40 goals. The paid plan unlocks unlimited transactions and premium features like health scores and cash flow forecasting."
+        },
+        "safe": {
+          "q": "Is my financial data safe?",
+          "a": "Your data is encrypted at rest and in transit, stored in a PostgreSQL database, and never sold or shared with third parties. You can export or delete everything at any time."
+        },
+        "currencies": {
+          "q": "Which currencies are supported?",
+          "a": "8 currencies are supported: EUR, USD, GBP, CHF, JPY, CAD, AUD, and ALL (Albanian Lek). Set one as your base currency and log transactions in any of the others — exchange rates are fetched automatically. All totals normalize to your base currency."
+        },
+        "cancel": {
+          "q": "Can I cancel a paid subscription?",
+          "a": "Yes, cancel any time from your account settings. You keep full access until the end of your billing period. No partial refunds for unused time, but there's a 14-day money-back guarantee on your first payment."
+        },
+        "advice": {
+          "q": "Is this financial advice?",
+          "a": "No. The health score, benchmarks, and forecasts are informational tools based on your own data. They help you understand your patterns - they are not professional financial, legal, or tax advice."
+        },
+        "multidevice": {
+          "q": "Does it work on mobile?",
+          "a": "Yes, the app is fully responsive and works in any modern browser on phone, tablet, or desktop. There is no native app - it runs in your browser."
+        }
+      }
+    },
+    "finalCta": {
+      "eyebrow": "Ready to start",
+      "title": "Your finances, finally clear.",
+      "desc": "No spreadsheets. No overwhelm. Just a calm, honest view of your money.",
+      "button": "Create free account",
+      "secondary": "See pricing",
+      "trustLine": "Free forever plan · No credit card · Cancel paid plan anytime"
     }
   },
   "demo": {
@@ -1009,7 +1154,16 @@
   "footer": {
     "rights": "All rights reserved.",
     "terms": "Terms of Service",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "builtBy": "Built by one developer who got tired of spreadsheets.",
+    "product": "Product",
+    "legal": "Legal",
+    "contact": "Contact",
+    "features": "Features",
+    "pricing": "Pricing",
+    "login": "Sign In",
+    "register": "Get Started Free",
+    "contactEmail": "support@personal-finances.app"
   },
   "legal": {
     "backToHome": "Back to Home",

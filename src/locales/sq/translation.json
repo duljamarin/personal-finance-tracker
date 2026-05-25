@@ -479,6 +479,151 @@
         "secure": "Të enkriptuara dhe të sigurta",
         "noAdvice": "Vetëm analitikë, jo këshilla financiare"
       }
+    },
+    "demoBand": {
+      "title": "Demo-ja ËSHTË dëshmi.",
+      "desc": "Pa pamje ekrani. Pa tekst marketingu. Eksploroni aplikacionin real këtu - shtoni transaksione, shfletoni buxhetet, kontrolloni pasqyrën. Krijoni llogari vetëm kur dëshironi të ruani të dhënat.",
+      "cta": "Filloni falas"
+    },
+    "heroFeatures": {
+      "tracking": {
+        "eyebrow": "Gjurmim i Mençur",
+        "title": "Shikoni ku shkojnë paratë tuaja",
+        "desc": "Regjistroni të ardhurat dhe shpenzimet sipas kategorisë. Merrni pasqyrën mujore - pa surpriza në fund të muajit."
+      },
+      "budgets": {
+        "eyebrow": "Buxhete Mujore",
+        "title": "Vendosni limite. Dini kur jeni afër.",
+        "desc": "Caktoni limite shpenzimesh sipas kategorisë. Shikoni progresin dhe parashikimet në kohë reale para se të jetë vonë."
+      },
+      "healthscore": {
+        "eyebrow": "Rezultat i Shëndetit Financiar",
+        "title": "Një numër që tregon të vërtetën",
+        "desc": "Një vlerësim 0–100 bazuar në normën e kursimit, respektimin e buxhetit dhe progresin e qëllimeve. Tregon çfarë duhet përmirësuar."
+      },
+      "multicurrency": {
+        "eyebrow": "Shumë Valuta",
+        "title": "Regjistroni në çdo valutë, totale në një",
+        "desc": "Regjistroni transaksione në USD, EUR, ALL ose çdo valutë. Gjithçka normalizohet automatikisht në valutën tuaj bazë."
+      }
+    },
+    "secondaryFeatures": {
+      "title": "Gjithçka tjetër e përfshirë",
+      "items": {
+        "recurring": "Transaksione të përsëritura - ditore, javore, mujore, vjetore",
+        "goals": "Qëllime financiare me gjurmim kontributesh",
+        "cashflow": "Parashikim i rrjedhës së parasë nga hyrjet e përsëritura",
+        "networth": "Ndjekja e pasurisë neto me historik aktivesh dhe detyrimesh",
+        "benchmarks": "Krahasime shpenzimesh me modelet tuaja",
+        "reports": "Raporte të detajuara",
+        "notifications": "Alarme për tejkalimin e buxhetit dhe arritjet e qëllimeve",
+        "csvImport": "Import dhe eksport CSV",
+        "categories": "Kategori të personalizuara me ikona"
+      }
+    },
+    "privacy": {
+      "eyebrow": "Të dhënat tuaja, rregullat tuaja",
+      "title": "Një aplikacion financiar që mund ta besoni",
+      "desc": "Të dhënat financiare janë të ndjeshme. Ja saktësisht çfarë bëjmë - dhe nuk bëjmë - me të dhënat tuaja.",
+      "items": {
+        "ownership": {
+          "title": "Ju zotëroni të dhënat tuaja",
+          "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të gjitha të dhënat zhduken - përgjithmonë, jo të arkivuara."
+        },
+        "encryption": {
+          "title": "Të enkriptuara në ruajtje dhe transit",
+          "desc": "Të gjitha të dhënat ruhen në një bazë të dhënash PostgreSQL me enkriptim të nivelit të lartë. Transporti është vetëm TLS."
+        },
+        "noSell": {
+          "title": "Nuk i shesim kurrë të dhënat tuaja",
+          "desc": "Të dhënat tuaja financiare nuk shiten, shkëmbehen apo ndahen me reklamues - asnjëherë. Ekzistojnë vetëm për të fuqizuar panelin tuaj."
+        },
+        "noAdvice": {
+          "title": "Analitikë, jo këshilla financiare",
+          "desc": "Rezultati i shëndetit dhe krahasimet janë mjete informuese. Konsultohuni gjithmonë me një profesionist për vendime financiare."
+        },
+        "analytics": {
+          "title": "Vetëm analitikë miqësore me privatësinë",
+          "desc": "Përdorim GoatCounter - pa cookies, pa të dhëna personale, pa skripte gjurmimi nga palë të treta."
+        },
+        "payments": {
+          "title": "Pagesat trajtohen nga Paddle",
+          "desc": "Ne kurrë nuk shohim apo ruajmë detajet e kartës suaj. Procesimi i pagesave kryhet plotësisht nga Paddle, procesor i çertifikuar PCI."
+        }
+      }
+    },
+    "pricingPreview": {
+      "eyebrow": "Çmime të thjeshta",
+      "title": "Falas për të filluar. Përmirësoni kur keni nevojë.",
+      "free": {
+        "label": "Plani falas - përgjithmonë",
+        "items": {
+          "tx": "100 transaksione / muaj",
+          "budgets": "30 buxhete mujore",
+          "goals": "40 qëllime aktive",
+          "charts": "Grafikë & analitikë të pakufizuara",
+          "categories": "Kategori të personalizuara",
+          "recurring": "Transaksione të përsëritura"
+        }
+      },
+      "premium": {
+        "label": "Premium - zhbllokoni gjithçka",
+        "items": {
+          "unlimited": "Transaksione të pakufizuara",
+          "cashflow": "Parashikim i rrjedhës së parasë",
+          "healthscore": "Rezultat i shëndetit financiar",
+          "benchmarks": "Krahasime shpenzimesh",
+          "reports": "Raporte financiare",
+          "networth": "Ndjekja e pasurisë neto",
+          "notifications": "Njoftime inteligjente"
+        }
+      },
+      "cta": "Shikoni çmimet e plota",
+      "trial": "7 ditë provë falas për të gjitha planet me pagesë"
+    },
+    "founder": {
+      "eyebrow": "Nga ndërtuesi",
+      "quote": "E ndërtova këtë aplikacion sepse u lodha nga menaxhimi i parave në fletëllogaritëse. Jo sepse janë keq - janë shumë mirë - por sepse doja diçka që do të më tregonte pamjen pa u dashur ta pikturoja vetë. Çdo funksion këtu ekziston sepse unë vetë kisha nevojë për të.",
+      "name": "Marin Dulja",
+      "role": "Ndërtues & zhvillues i vetëm"
+    },
+    "faq": {
+      "eyebrow": "Pyetje",
+      "title": "Përgjigje të ndershme",
+      "items": {
+        "free": {
+          "q": "A është me të vërtetë falas?",
+          "a": "Po. Plani falas është vërtet falas - pa kartë krediti, pa limit kohor. Merrni 100 transaksione/muaj, 30 buxhete dhe 40 qëllime. Plani me pagesë zhbllokon transaksione të pakufizuara dhe funksione premium."
+        },
+        "safe": {
+          "q": "A janë të sigurta të dhënat e mia financiare?",
+          "a": "Të dhënat tuaja janë të enkriptuara në ruajtje dhe transit, ruhen në bazë të dhënash PostgreSQL dhe nuk shiten kurrë palëve të treta. Mund t'i eksportoni ose fshini gjithçka kurdo."
+        },
+        "currencies": {
+          "q": "Cilat valuta mbështeten?",
+          "a": "Mbështeten 8 valuta: EUR, USD, GBP, CHF, JPY, CAD, AUD dhe ALL (Lekë Shqiptare). Vendosni njërën si valutë bazë dhe regjistroni transaksione në cilëndo prej të tjerave — kurset e këmbimit merren automatikisht. Të gjitha totalet normalizohen në valutën tuaj bazë."
+        },
+        "cancel": {
+          "q": "Mund të anuloj një abonim me pagesë?",
+          "a": "Po, anuloni kurdo nga cilësimet e llogarisë. Mbani akses të plotë deri në fund të periudhës së faturimit. Ka garanci kthimi parash 14-ditore për pagesën e parë."
+        },
+        "advice": {
+          "q": "A është kjo këshillë financiare?",
+          "a": "Jo. Rezultati i shëndetit, krahasimet dhe parashikimet janë mjete informuese bazuar në të dhënat tuaja. Nuk janë këshilla profesionale financiare, ligjore ose tatimore."
+        },
+        "multidevice": {
+          "q": "A funksionon në celular?",
+          "a": "Po, aplikacioni është plotësisht responsive dhe funksionon në çdo shfletues modern - celular, tablet ose desktop. Nuk ka aplikacion nativ - funksionon në shfletues."
+        }
+      }
+    },
+    "finalCta": {
+      "eyebrow": "Gati për të filluar",
+      "title": "Financat tuaja, finalisht të qarta.",
+      "desc": "Pa fletëllogaritëse. Pa stres. Vetëm pamje e qetë dhe e ndershme e parave tuaja.",
+      "button": "Krijoni llogari falas",
+      "secondary": "Shihni çmimet",
+      "trustLine": "Plan falas përgjithmonë · Pa kartë krediti · Anuloni planin me pagesë kurdo"
     }
   },
   "demo": {
@@ -1009,7 +1154,16 @@
   "footer": {
     "rights": "Të gjitha të drejtat e rezervuara.",
     "terms": "Kushtet e Shërbimit",
-    "privacy": "Politika e Privatësisë"
+    "privacy": "Politika e Privatësisë",
+    "builtBy": "Ndërtuar nga një zhvillues i lodhur nga fletëllogaritëset.",
+    "product": "Produkti",
+    "legal": "Ligjore",
+    "contact": "Kontakt",
+    "features": "Funksionalitetet",
+    "pricing": "Çmimet",
+    "login": "Identifikohu",
+    "register": "Filloni Falas",
+    "contactEmail": "support@personal-finances.app"
   },
   "legal": {
     "backToHome": "Kthehu në Ballina",

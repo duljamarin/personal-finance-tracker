@@ -71,6 +71,7 @@
     height: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
   body {
     min-height: 100%;
@@ -78,6 +79,13 @@
     color: #111112;
     font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 500;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
   button, input, select, textarea {
     font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
