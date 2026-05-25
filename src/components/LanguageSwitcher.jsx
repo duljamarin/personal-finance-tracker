@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { switchLanguage } from '../i18n';
 
 function LanguageSwitcher() {
   const { i18n } = useTranslation();
 
   const changeLanguage = (lng) => {
-    switchLanguage(lng);
+    i18n.changeLanguage(lng);
   };
 
   return (
