@@ -2,8 +2,6 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Detect language from URL path immediately (before any async load)
-// so we only fetch the needed translation bundle.
 const pathLang = window.location.pathname.startsWith('/sq') ? 'sq' : 'en';
 
 async function loadTranslation(lang) {
@@ -42,11 +40,24 @@ const initPromise = (async () => {
   return i18n;
 })();
 
-// When user switches language at runtime, load the other bundle on demand.
+// Track which bundles are currently being fetched to avoid concurrent loads
+// and to prevent the re-trigger from creating an infinite loop.
+const loading = new Set();
+
 i18n.on('languageChanged', async (lang) => {
   if (i18n.hasResourceBundle(lang, 'translation')) return;
-  const translation = await loadTranslation(lang);
-  i18n.addResourceBundle(lang, 'translation', translation, true, true);
+  if (loading.has(lang)) return;
+  loading.add(lang);
+  try {
+    const translation = await loadTranslation(lang);
+    i18n.addResourceBundle(lang, 'translation', translation, true, true);
+    // Re-trigger so components re-render with the now-loaded bundle.
+    // loading.has(lang) guard above prevents the resulting languageChanged
+    // from looping back here.
+    await i18n.changeLanguage(lang);
+  } finally {
+    loading.delete(lang);
+  }
 });
 
 export { initPromise };
