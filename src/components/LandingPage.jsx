@@ -1,7 +1,6 @@
 import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import showcaseImg from '../assets/showcase-finance.jpg';
 import { useMetaTags } from '../hooks/useMetaTags';
 import {
   TrendingUp, Target, PieChart, Activity, RefreshCw,
@@ -260,15 +259,12 @@ export default function LandingPage() {
     hreflangs: LANDING_HREFLANGS,
   });
 
-  const [heroRef, heroVisible] = useReveal(0);
-
   // ── Hero ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
-        ref={heroRef}
         className="relative overflow-hidden bg-surface-page dark:bg-surface-dark-page"
       >
         {/* Subtle teal tint blob — CSS only, no libraries */}
@@ -281,8 +277,8 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
           <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-start">
 
-            {/* Copy */}
-            <div className={`lg:pt-6 transition-all duration-700 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
+            <div className="lg:pt-6">
               <div
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-600/10 dark:bg-brand-600/15 text-brand-700 dark:text-brand-400 text-xs font-semibold border border-brand-600/20 mb-7"
                 style={{ animationDelay: '0ms' }}
@@ -333,9 +329,7 @@ export default function LandingPage() {
             </div>
 
             {/* Demo */}
-            <div
-              className={`relative transition-all duration-700 delay-200 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-            >
+            <div className="relative">
               <Suspense fallback={<div className="rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card" style={{ minHeight: 520 }} />}>
                 <DemoWorkspace />
               </Suspense>

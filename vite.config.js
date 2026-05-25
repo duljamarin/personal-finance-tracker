@@ -6,7 +6,7 @@ import Critters from 'critters'
 // Recharts is intentionally excluded — it's only needed after DemoWorkspace
 // lazy-loads, and preloading it wastes 107 KiB on the landing page critical path.
 function resourceHintsPlugin() {
-  const collected = { localeEn: '', localeSq: '' };
+  const collected = { localeEn: '', localeSq: '', landingPage: '' };
 
   return {
     name: 'resource-hints',
@@ -16,15 +16,19 @@ function resourceHintsPlugin() {
           const ids = chunk.moduleIds.join('|');
           if (ids.includes('locales/en/translation')) collected.localeEn = '/' + fileName;
           if (ids.includes('locales/sq/translation')) collected.localeSq = '/' + fileName;
+          if (ids.includes('LandingPage') && !ids.includes('DemoWorkspace')) collected.landingPage = '/' + fileName;
         }
       }
     },
     transformIndexHtml(html, ctx) {
       const isSq = ctx.filename?.includes('sq.html');
       const localeHint = isSq ? collected.localeSq : collected.localeEn;
-      if (!localeHint) return html;
-      const hint = `  <link rel="modulepreload" href="${localeHint}">\n`;
-      return html.replace('<link rel="preload" as="font"', hint + '  <link rel="preload" as="font"');
+      let hints = '';
+      // Preload LandingPage chunk to eliminate main→LandingPage hop from critical path
+      if (collected.landingPage) hints += `  <link rel="modulepreload" href="${collected.landingPage}">\n`;
+      if (localeHint) hints += `  <link rel="modulepreload" href="${localeHint}">\n`;
+      if (!hints) return html;
+      return html.replace('<link rel="preload" as="font"', hints + '  <link rel="preload" as="font"');
     },
   };
 }
