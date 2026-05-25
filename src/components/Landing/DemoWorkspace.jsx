@@ -338,7 +338,7 @@ function OverviewTab({ transactions, isDark }) {
               <div style={{ width: 110, height: 110, flexShrink: 0 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={28} outerRadius={50} dataKey="value" paddingAngle={2}>
+                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={38} outerRadius={52} dataKey="value" paddingAngle={1.5}>
                       {pieData.map((entry, i) => (
                         <Cell key={entry.name} fill={getColor(entry.name, i)} />
                       ))}
