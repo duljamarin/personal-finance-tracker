@@ -561,9 +561,10 @@
           "tx": "100 transaksione / muaj",
           "budgets": "30 buxhete mujore",
           "goals": "40 qëllime aktive",
-          "charts": "Grafikë & analitikë të pakufizuara",
-          "categories": "Kategori të personalizuara",
-          "recurring": "Transaksione të përsëritura"
+          "categories": "Kategori të personalizuara & transaksione të përsëritura",
+          "reports": "Raporte financiare",
+          "networth": "Ndjekja e pasurisë neto",
+          "healthscore": "Rezultat bazë i shëndetit & krahasime shpenzimesh"
         }
       },
       "premium": {
@@ -571,11 +572,10 @@
         "items": {
           "unlimited": "Transaksione të pakufizuara",
           "cashflow": "Parashikim i rrjedhës së parasë",
-          "healthscore": "Rezultat i shëndetit financiar",
-          "benchmarks": "Krahasime shpenzimesh",
-          "reports": "Raporte financiare",
-          "networth": "Ndjekja e pasurisë neto",
-          "notifications": "Njoftime inteligjente"
+          "healthscore": "Rezultat i plotë i shëndetit me analiza të detajuara",
+          "benchmarks": "Krahasime të plota shpenzimesh sipas kategorisë",
+          "splits": "Ndarje transaksionesh sipas kategorive",
+          "notifications": "Njoftime inteligjente & alarme me email"
         }
       },
       "cta": "Shikoni çmimet e plota",
@@ -601,7 +601,7 @@
         },
         "currencies": {
           "q": "Cilat valuta mbështeten?",
-          "a": "Mbështeten 8 valuta: EUR, USD, GBP, CHF, JPY, CAD, AUD dhe ALL (Lekë Shqiptare). Vendosni njërën si valutë bazë dhe regjistroni transaksione në cilëndo prej të tjerave — kurset e këmbimit merren automatikisht. Të gjitha totalet normalizohen në valutën tuaj bazë."
+          "a": "Mbështeten 8 valuta: EUR, USD, GBP, CHF, JPY, CAD, AUD dhe ALL (Lekë Shqiptare). EUR është valuta bazë - të gjitha totalet normalizohen në EUR. Kurset e këmbimit për valutat e tjera merren automatikisht kur regjistroni një transaksion."
         },
         "cancel": {
           "q": "Mund të anuloj një abonim me pagesë?",

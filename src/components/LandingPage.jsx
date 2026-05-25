@@ -594,8 +594,8 @@ function PrivacySection({ t }) {
 
 function PricingPreviewSection({ t }) {
   const [ref, visible] = useReveal(0.1);
-  const freeItems = ['tx','budgets','goals','charts','categories','recurring'];
-  const premiumItems = ['unlimited','cashflow','healthscore','benchmarks','reports','networth','notifications'];
+  const freeItems = ['tx','budgets','goals','categories','reports','networth','healthscore'];
+  const premiumItems = ['unlimited','cashflow','healthscore','benchmarks','splits','notifications'];
   return (
     <section className="py-24 sm:py-32 bg-surface-page dark:bg-surface-dark-page">
       <div

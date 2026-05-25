@@ -556,14 +556,15 @@
       "eyebrow": "Simple pricing",
       "title": "Free to start. Upgrade when you need more.",
       "free": {
-        "label": "Free plan - forever",
+        "label": "Free plan — forever",
         "items": {
           "tx": "100 transactions / month",
           "budgets": "30 monthly budgets",
           "goals": "40 active goals",
-          "charts": "Unlimited charts & analytics",
-          "categories": "Custom categories",
-          "recurring": "Recurring transactions"
+          "categories": "Custom categories & recurring transactions",
+          "reports": "Financial reports",
+          "networth": "Net worth tracking",
+          "healthscore": "Basic health score & spending benchmarks"
         }
       },
       "premium": {
@@ -571,11 +572,10 @@
         "items": {
           "unlimited": "Unlimited transactions",
           "cashflow": "Cash flow forecasting",
-          "healthscore": "Financial health score",
-          "benchmarks": "Spending benchmarks",
-          "reports": "Financial reports",
-          "networth": "Net worth tracking",
-          "notifications": "Smart notifications"
+          "healthscore": "Full health score with detailed insights",
+          "benchmarks": "Full spending benchmarks by category",
+          "splits": "Split transactions across categories",
+          "notifications": "Smart notifications & email alerts"
         }
       },
       "cta": "See full pricing",
@@ -601,7 +601,7 @@
         },
         "currencies": {
           "q": "Which currencies are supported?",
-          "a": "8 currencies are supported: EUR, USD, GBP, CHF, JPY, CAD, AUD, and ALL (Albanian Lek). Set one as your base currency and log transactions in any of the others — exchange rates are fetched automatically. All totals normalize to your base currency."
+          "a": "8 currencies are supported: EUR, USD, GBP, CHF, JPY, CAD, AUD, and ALL (Albanian Lek). EUR is the base currency - all totals are normalized to EUR. Exchange rates for other currencies are fetched automatically when you log a transaction."
         },
         "cancel": {
           "q": "Can I cancel a paid subscription?",
