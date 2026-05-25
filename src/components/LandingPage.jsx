@@ -669,9 +669,10 @@ function FounderSection({ t }) {
         className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
       >
         <Eyebrow>{t('landing.founder.eyebrow')}</Eyebrow>
-        <blockquote className="font-display text-2xl sm:text-3xl font-medium text-ink-primary dark:text-white leading-[1.35] mb-8">
-          <span className="text-brand-600 dark:text-[#22AD93] text-5xl leading-none font-bold select-none">"</span>
+        <blockquote className="relative font-display text-2xl sm:text-3xl font-medium text-ink-primary dark:text-white leading-[1.35] mb-8 pl-10 sm:pl-12">
+          <span className="absolute left-0 top-[-6px] text-brand-600 dark:text-[#22AD93] text-6xl leading-none font-serif select-none" aria-hidden="true">&ldquo;</span>
           {t('landing.founder.quote')}
+          <span className="inline-block ml-1 text-brand-600 dark:text-[#22AD93] text-5xl leading-none font-serif select-none align-bottom translate-y-2" aria-hidden="true">&rdquo;</span>
         </blockquote>
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0">
