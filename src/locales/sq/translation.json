@@ -575,7 +575,7 @@
           "healthscore": "Rezultat i plotë i shëndetit me analiza të detajuara",
           "benchmarks": "Krahasime të plota shpenzimesh sipas kategorisë",
           "splits": "Ndarje transaksionesh sipas kategorive",
-          "notifications": "Njoftime inteligjente & alarme me email"
+          "notifications": "Njoftime inteligjente brenda aplikacionit"
         }
       },
       "cta": "Shikoni çmimet e plota",
