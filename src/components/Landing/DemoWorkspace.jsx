@@ -310,39 +310,43 @@ function OverviewTab({ transactions, isDark }) {
       {/* Charts row */}
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Bar chart */}
-        <div className="bg-white dark:bg-surface-dark-elevated rounded-lg p-4 border border-surface-hairline dark:border-surface-dark-hairline">
+        <div className="bg-white dark:bg-surface-dark-elevated rounded-lg p-4 border border-surface-hairline dark:border-surface-dark-hairline min-h-[180px]">
           <p className="text-xs font-semibold text-ink-primary dark:text-white mb-3">{t('chart.monthlyOverview')}</p>
           {barData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={140}>
-              <BarChart data={barData} barGap={2} barCategoryGap="30%">
-                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#2a2a2a' : '#f0f0f0'} vertical={false} />
-                <XAxis dataKey="month" tick={{ fontSize: 9, fill: tickColor }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: tickColor }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${v}`} width={38} />
-                <Tooltip content={<BarTooltip />} />
-                <Bar dataKey="Income"  fill="#168b78" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Expense" fill="#e8394d" radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <div style={{ width: '100%', height: 140 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData} barGap={2} barCategoryGap="30%">
+                  <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#2a2a2a' : '#f0f0f0'} vertical={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9, fill: tickColor }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 9, fill: tickColor }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${v}`} width={38} />
+                  <Tooltip content={<BarTooltip />} />
+                  <Bar dataKey="Income"  fill="#168b78" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Expense" fill="#e8394d" radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="h-[140px] flex items-center justify-center text-xs text-ink-muted dark:text-white">{t('chart.noData')}</div>
           )}
         </div>
 
         {/* Pie chart */}
-        <div className="bg-white dark:bg-surface-dark-elevated rounded-lg p-4 border border-surface-hairline dark:border-surface-dark-hairline">
+        <div className="bg-white dark:bg-surface-dark-elevated rounded-lg p-4 border border-surface-hairline dark:border-surface-dark-hairline min-h-[180px]">
           <p className="text-xs font-semibold text-ink-primary dark:text-white mb-3">{t('demo.byCategory')}</p>
           {pieData.length > 0 ? (
             <div className="flex items-center gap-2">
-              <ResponsiveContainer width={110} height={110}>
-                <PieChart>
-                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={28} outerRadius={50} dataKey="value" paddingAngle={2}>
-                    {pieData.map((entry, i) => (
-                      <Cell key={entry.name} fill={getColor(entry.name, i)} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<PieTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
+              <div style={{ width: 110, height: 110, flexShrink: 0 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={28} outerRadius={50} dataKey="value" paddingAngle={2}>
+                      {pieData.map((entry, i) => (
+                        <Cell key={entry.name} fill={getColor(entry.name, i)} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<PieTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
               <div className="flex-1 space-y-1 min-w-0">
                 {pieData.slice(0, 5).map((entry, i) => (
                   <div key={entry.name} className="flex items-center gap-1.5 text-[10px]">
