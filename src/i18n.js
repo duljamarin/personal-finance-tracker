@@ -2,7 +2,11 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-const pathLang = window.location.pathname.startsWith('/sq') ? 'sq' : 'en';
+// Path takes priority (for /sq SEO route); fall back to localStorage so
+// language persists across OAuth redirects that land back on '/'.
+const pathHasLang = window.location.pathname.startsWith('/sq');
+const storedLang = localStorage.getItem('i18nextLng');
+const pathLang = pathHasLang ? 'sq' : (storedLang === 'sq' ? 'sq' : 'en');
 
 async function loadTranslation(lang) {
   if (lang === 'sq') {
