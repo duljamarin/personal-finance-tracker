@@ -2,8 +2,6 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Detect language from URL path immediately (before any async load)
-// so we only fetch the needed translation bundle.
 const pathLang = window.location.pathname.startsWith('/sq') ? 'sq' : 'en';
 
 async function loadTranslation(lang) {
@@ -13,6 +11,17 @@ async function loadTranslation(lang) {
   }
   const mod = await import('./locales/en/translation.json');
   return mod.default;
+}
+
+// Load the bundle for `lang` if not already present, then switch.
+// Exported so LanguageSwitcher can call it directly — this guarantees the
+// bundle is in place BEFORE languageChanged fires and components re-render.
+export async function switchLanguage(lang) {
+  if (!i18n.hasResourceBundle(lang, 'translation')) {
+    const t = await loadTranslation(lang);
+    i18n.addResourceBundle(lang, 'translation', t, true, true);
+  }
+  return i18n.changeLanguage(lang);
 }
 
 const initPromise = (async () => {
@@ -31,9 +40,6 @@ const initPromise = (async () => {
       fallbackLng: 'en',
       debug: false,
       interpolation: { escapeValue: false },
-      // Don't suspend React rendering while translations load — components
-      // re-render automatically once the bundle arrives (eliminates the
-      // initPromise block that was delaying first paint on mobile).
       react: { useSuspense: false },
       detection: {
         order: ['path', 'localStorage', 'navigator'],
@@ -44,13 +50,6 @@ const initPromise = (async () => {
 
   return i18n;
 })();
-
-// When user switches language at runtime, load the other bundle on demand
-i18n.on('languageChanged', async (lang) => {
-  if (i18n.hasResourceBundle(lang, 'translation')) return;
-  const translation = await loadTranslation(lang);
-  i18n.addResourceBundle(lang, 'translation', translation, true, true);
-});
 
 export { initPromise };
 export default i18n;
