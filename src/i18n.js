@@ -43,15 +43,10 @@ const initPromise = (async () => {
 })();
 
 // When user switches language at runtime, load the other bundle on demand.
-// Bundle is added BEFORE changeLanguage so when languageChanged fires and
-// React re-renders, translations are already available.
 i18n.on('languageChanged', async (lang) => {
   if (i18n.hasResourceBundle(lang, 'translation')) return;
   const translation = await loadTranslation(lang);
   i18n.addResourceBundle(lang, 'translation', translation, true, true);
-  // Re-trigger so components pick up the now-loaded bundle.
-  // Guard via hasResourceBundle prevents infinite loop.
-  i18n.changeLanguage(lang);
 });
 
 export { initPromise };
