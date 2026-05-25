@@ -409,10 +409,9 @@ function HeroFeaturesSection({ t }) {
     <section className="py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16">
-          <Eyebrow>{t('landing.features.title')}</Eyebrow>
+          <Eyebrow>{t('landing.features.eyebrow')}</Eyebrow>
           <SectionHeading className="max-w-2xl">
-            {/* No generic "Everything You Need" — the cards speak for themselves */}
-            {t('landing.heroFeatures.tracking.title')}
+            {t('landing.features.heading')}
           </SectionHeading>
         </div>
 
@@ -499,7 +498,7 @@ function SecondaryFeaturesSection({ t }) {
         <div className="mb-10">
           <Eyebrow>{t('landing.secondaryFeatures.title')}</Eyebrow>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12">
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 list-none m-0 p-0">
           {items.map(({ icon, key }) => (
             <SecondaryItem
               key={key}
@@ -507,7 +506,7 @@ function SecondaryFeaturesSection({ t }) {
               text={t(`landing.secondaryFeatures.items.${key}`)}
             />
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

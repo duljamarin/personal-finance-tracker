@@ -2,18 +2,16 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import Critters from 'critters'
 
-// Injects modulepreload hints so the browser parallelises lazy-chunk fetches.
-// CSS critical-path extraction is handled by critters (see criticalCssPlugin).
+// Injects modulepreload hints for the locale bundle only.
+// Recharts is intentionally excluded — it's only needed after DemoWorkspace
+// lazy-loads, and preloading it wastes 107 KiB on the landing page critical path.
 function resourceHintsPlugin() {
-  const collected = { recharts: '', localeEn: '', localeSq: '' };
+  const collected = { localeEn: '', localeSq: '' };
 
   return {
     name: 'resource-hints',
     generateBundle(_, bundle) {
       for (const [fileName, chunk] of Object.entries(bundle)) {
-        if (fileName.startsWith('assets/recharts') && fileName.endsWith('.js')) {
-          collected.recharts = '/' + fileName;
-        }
         if (chunk.type === 'chunk' && chunk.moduleIds) {
           const ids = chunk.moduleIds.join('|');
           if (ids.includes('locales/en/translation')) collected.localeEn = '/' + fileName;
@@ -22,17 +20,11 @@ function resourceHintsPlugin() {
       }
     },
     transformIndexHtml(html, ctx) {
-      let hints = '';
-      if (collected.recharts) {
-        hints += `  <link rel="modulepreload" href="${collected.recharts}">\n`;
-      }
       const isSq = ctx.filename?.includes('sq.html');
       const localeHint = isSq ? collected.localeSq : collected.localeEn;
-      if (localeHint) {
-        hints += `  <link rel="modulepreload" href="${localeHint}">\n`;
-      }
-      if (!hints) return html;
-      return html.replace('<link rel="preload" as="font"', hints + '  <link rel="preload" as="font"');
+      if (!localeHint) return html;
+      const hint = `  <link rel="modulepreload" href="${localeHint}">\n`;
+      return html.replace('<link rel="preload" as="font"', hint + '  <link rel="preload" as="font"');
     },
   };
 }
@@ -51,7 +43,7 @@ function criticalCssPlugin() {
       const critters = new Critters({
         path: outDir,
         publicPath: '/',
-        preload: 'swap',   // loads full CSS async, no FOUC
+        preload: 'media',  // media=print trick — most reliable non-blocking method
         pruneSource: false,
         logLevel: 'silent',
       });
