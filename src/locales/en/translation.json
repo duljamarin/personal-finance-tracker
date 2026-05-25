@@ -640,7 +640,7 @@
     "saveFree": "Save free",
     "saveAccount": "Save to account",
     "footerNote": "Data resets on page reload - sign up to keep it.",
-    "byCategory": "By Category",
+    "byCategory": "Expenses by Category",
     "tab": {
       "overview": "Overview",
       "transactions": "Transactions",

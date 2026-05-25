@@ -215,7 +215,7 @@ function InnerAppContent() {
   useEffect(() => {
     const seg = location.pathname.split('/')[1];
     const urlLang = seg === 'sq' ? 'sq' : seg === 'en' ? 'en' : null;
-    if (urlLang && i18n.language !== urlLang) i18n.changeLanguage(urlLang);
+    if (urlLang && i18n.language !== urlLang && typeof i18n.changeLanguage === 'function') i18n.changeLanguage(urlLang);
     document.documentElement.lang = urlLang || (i18n.language || 'en').slice(0, 2);
   }, [location.pathname, i18n]);
 
