@@ -261,7 +261,9 @@ export default function PricingPage() {
                 {!isPremium ? t('pricing.currentPlan') : t('pricing.free')}
               </Button>
             )}
-            <p className="text-xs text-center mt-2 invisible" aria-hidden="true">placeholder</p>
+            {!isYearlyPlan && !hasHadTrial && (
+              <p className="text-xs text-center mt-2 invisible" aria-hidden="true">placeholder</p>
+            )}
           </div>
         </div>
 
