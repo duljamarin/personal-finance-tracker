@@ -210,20 +210,16 @@ export function AuthProvider({ children }) {
 
   // Logout with Supabase Auth
   const logout = useCallback(async () => {
-    setLoading(true);
     setError(null);
     try {
       const supabase = await loadSupabase();
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
       setSession(null);
       setUser(null);
       localStorage.removeItem('username');
     } catch (err) {
       setError('Logout failed');
-    } finally {
-      setLoading(false);
     }
   }, []);
 
