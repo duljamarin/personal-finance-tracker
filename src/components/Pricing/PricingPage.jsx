@@ -223,7 +223,7 @@ export default function PricingPage() {
       )}
 
       {/* Plan Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch">
 
         {/* ── FREE ── */}
         <div className="flex flex-col rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
