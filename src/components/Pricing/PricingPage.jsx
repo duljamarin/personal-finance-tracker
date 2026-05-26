@@ -281,7 +281,7 @@ export default function PricingPage() {
         </div>
 
         {/* ── PREMIUM — features ── */}
-        <div className="border-x-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 py-4 shadow-lg">
+        <div className="border-x-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 py-4">
           <ul className="space-y-3">
             {premiumFeatures.map((feature, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
@@ -308,7 +308,7 @@ export default function PricingPage() {
         </div>
 
         {/* ── PREMIUM — CTA ── */}
-        <div className="rounded-b-[10px] border-2 border-t-0 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 pt-6 pb-6 shadow-lg">
+        <div className="rounded-b-[10px] border-2 border-t-0 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 pt-6 pb-6">
           {isYearlyPlan ? (
             <>
               {(() => {
