@@ -227,26 +227,24 @@ export default function PricingPage() {
 
         {/* Free Plan */}
         <div className="relative flex flex-col rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-6">
-          <div>
-            <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
-              {t('pricing.free')}
-            </h3>
-            <div className="mb-6">
-              <span className="font-semibold tracking-tight text-4xl text-ink-primary dark:text-white">€0</span>
-              <span className="text-ink-muted dark:text-white ml-1">{t('pricing.forever')}</span>
-            </div>
-            <ul className="space-y-3">
-              {freeFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white">
-                  <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  {feature}
-                </li>
-              ))}
-            </ul>
+          <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
+            {t('pricing.free')}
+          </h3>
+          <div className="mb-6">
+            <span className="font-semibold tracking-tight text-4xl text-ink-primary dark:text-white">€0</span>
+            <span className="text-ink-muted dark:text-white ml-1">{t('pricing.forever')}</span>
           </div>
-          <div className="mt-auto pt-8">
+          <ul className="space-y-3 flex-1">
+            {freeFeatures.map((feature, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white">
+                <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <div className="pt-8">
             {!accessToken ? (
               <Link to="/register">
                 <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
