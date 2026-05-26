@@ -226,8 +226,8 @@ export default function PricingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch">
 
         {/* Free Plan */}
-        <Card className="relative border border-surface-hairline dark:border-surface-dark-hairline h-full">
-          <div className="p-6 flex flex-col h-full">
+        <Card className="relative border border-surface-hairline dark:border-surface-dark-hairline flex flex-col" padding="none">
+          <div className="p-6 flex flex-col flex-1">
             <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
               {t('pricing.free')}
             </h3>
@@ -260,13 +260,13 @@ export default function PricingPage() {
         </Card>
 
         {/* Yearly Plan — hero card */}
-        <Card className="relative ring-2 ring-brand-600 dark:ring-brand-800 border border-transparent h-full shadow-lg">
+        <Card className="relative ring-2 ring-brand-600 dark:ring-brand-800 border border-transparent shadow-lg flex flex-col" padding="none">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="bg-emerald-800 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
               {t('pricing.bestValue')}
             </span>
           </div>
-          <div className="p-6 pt-8 flex flex-col h-full">
+          <div className="p-6 pt-8 flex flex-col flex-1">
             <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
               {t('pricing.premium')}
             </h3>
