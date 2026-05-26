@@ -51,7 +51,7 @@ function MiniBarChart() {
               style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 72}px`, backgroundColor: '#e8394d', opacity: 0.75 }}
             />
           </div>
-          <span className="text-[8px] text-ink-muted dark:text-white/50 hidden sm:block">{m}</span>
+          <span className="text-[8px] text-ink-muted dark:text-white hidden sm:block">{m}</span>
         </div>
       ))}
     </div>
@@ -83,7 +83,7 @@ function MiniHealthScore() {
           <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400">Good</span>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-2 w-full text-center text-[10px] text-ink-muted dark:text-white/60">
+      <div className="grid grid-cols-3 gap-2 w-full text-center text-[10px] text-ink-muted dark:text-white">
         <div><div className="font-semibold text-sm text-ink-primary dark:text-white">42%</div>Savings</div>
         <div><div className="font-semibold text-sm text-ink-primary dark:text-white">87%</div>Budget</div>
         <div><div className="font-semibold text-sm text-ink-primary dark:text-white">3/4</div>Goals</div>
@@ -109,7 +109,7 @@ function MiniBudgets() {
           <div key={label}>
             <div className="flex justify-between text-[11px] mb-1">
               <span className="font-medium text-ink-primary dark:text-white truncate">{label}</span>
-              <span className={over ? 'text-expense font-semibold' : 'text-ink-muted dark:text-white/60'}>
+              <span className={over ? 'text-expense font-semibold' : 'text-ink-muted dark:text-white'}>
                 €{spent}<span className="opacity-50">/€{limit}</span>
               </span>
             </div>
@@ -143,12 +143,12 @@ function MiniCurrency() {
               <span className="font-semibold text-ink-primary dark:text-white">{r.code}</span>
               <span className="text-brand-600 dark:text-brand-400 font-semibold tabular-nums">{r.amount}</span>
             </div>
-            <div className="text-[10px] text-ink-muted dark:text-white/50 tabular-nums">{r.base}</div>
+            <div className="text-[10px] text-ink-muted dark:text-white tabular-nums">{r.base}</div>
           </div>
         </div>
       ))}
       <div className="pt-1 border-t border-surface-hairline dark:border-surface-dark-hairline flex justify-between text-[11px]">
-        <span className="text-ink-muted dark:text-white/60">Total (EUR)</span>
+        <span className="text-ink-muted dark:text-white">Total (EUR)</span>
         <span className="font-bold text-ink-primary dark:text-white tabular-nums">€1,961</span>
       </div>
     </div>
@@ -166,7 +166,7 @@ function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = fal
       <div className={`p-8 sm:p-10 flex flex-col justify-center ${flip ? 'lg:order-2' : ''}`}>
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600 dark:text-brand-400 mb-3">{eyebrow}</p>
         <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink-primary dark:text-white leading-tight mb-4">{title}</h3>
-        <p className="text-base text-ink-muted dark:text-white/70 leading-relaxed">{desc}</p>
+        <p className="text-base text-ink-muted dark:text-white leading-relaxed">{desc}</p>
       </div>
       <div className={`border-t lg:border-t-0 ${flip ? 'lg:order-1 lg:border-r' : 'lg:border-l'} border-surface-hairline dark:border-surface-dark-hairline bg-surface-page dark:bg-surface-dark-page p-8 flex flex-col justify-center`}>
         {preview}
@@ -196,7 +196,7 @@ function PrivacyCard({ icon: Icon, title, desc }) {
       </div>
       <div>
         <h4 className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{title}</h4>
-        <p className="text-sm text-ink-muted dark:text-white/65 leading-relaxed">{desc}</p>
+        <p className="text-sm text-ink-muted dark:text-white leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -215,11 +215,11 @@ function FaqItem({ q, a }) {
         <span className="font-semibold text-base text-ink-primary dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{q}</span>
         {open
           ? <ChevronUp className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2} />
-          : <ChevronDown className="w-4 h-4 text-ink-muted dark:text-white/50 flex-shrink-0" strokeWidth={2} />
+          : <ChevronDown className="w-4 h-4 text-ink-muted dark:text-white flex-shrink-0" strokeWidth={2} />
         }
       </button>
       {open && (
-        <p className="pb-5 text-base text-ink-muted dark:text-white/70 leading-relaxed">{a}</p>
+        <p className="pb-5 text-base text-ink-muted dark:text-white leading-relaxed">{a}</p>
       )}
     </div>
   );
@@ -288,7 +288,7 @@ export default function LandingPage() {
               </h1>
 
               <p
-                className="text-lg sm:text-xl text-ink-muted dark:text-white/75 leading-relaxed mb-8 max-w-md"
+                className="text-lg sm:text-xl text-ink-muted dark:text-white leading-relaxed mb-8 max-w-md"
                 style={{ animationDelay: '120ms' }}
               >
                 {t('landing.hero.subtitle')}
@@ -408,7 +408,7 @@ function HeroFeaturesSection({ t }) {
             desc={feats.tracking.desc}
             preview={
               <div>
-                <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white/60">
+                <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
                   <span>2025 — Year to date</span>
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />Income</span>
@@ -418,15 +418,15 @@ function HeroFeaturesSection({ t }) {
                 <MiniBarChart />
                 <div className="flex gap-5 mt-5 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white/50 mb-0.5">Income</p>
+                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Income</p>
                     <p className="text-xl font-bold text-brand-600 dark:text-brand-400 tabular-nums">€{(INCOME_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white/50 mb-0.5">Expenses</p>
+                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Expenses</p>
                     <p className="text-xl font-bold tabular-nums" style={{ color: '#e8394d' }}>€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white/50 mb-0.5">Saved</p>
+                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Saved</p>
                     <p className="text-xl font-bold text-ink-primary dark:text-white tabular-nums">+€{((INCOME_BARS.reduce((s,v)=>s+v,0) - EXPENSE_BARS.reduce((s,v)=>s+v,0))/1000).toFixed(1)}k</p>
                   </div>
                 </div>
@@ -526,7 +526,7 @@ function HowItWorksSection({ t }) {
               <h3 className="font-display text-xl font-bold text-ink-primary dark:text-white mb-2">
                 {t(`landing.howItWorks.${key}.title`)}
               </h3>
-              <p className="text-base text-ink-muted dark:text-white/65 leading-relaxed">
+              <p className="text-base text-ink-muted dark:text-white leading-relaxed">
                 {t(`landing.howItWorks.${key}.desc`)}
               </p>
             </div>
@@ -557,7 +557,7 @@ function PrivacySection({ t }) {
           <div className="lg:sticky lg:top-24">
             <Eyebrow>{t('landing.privacy.eyebrow')}</Eyebrow>
             <SectionHeading className="mb-5">{t('landing.privacy.title')}</SectionHeading>
-            <p className="text-base text-ink-muted dark:text-white/65 leading-relaxed">
+            <p className="text-base text-ink-muted dark:text-white leading-relaxed">
               {t('landing.privacy.desc')}
             </p>
           </div>
@@ -638,7 +638,7 @@ function PricingPreviewSection({ t }) {
             {t('landing.pricingPreview.cta')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
           </Link>
-          <p className="mt-3 text-sm text-ink-muted dark:text-white/50">{t('landing.pricingPreview.trial')}</p>
+          <p className="mt-3 text-sm text-ink-muted dark:text-white">{t('landing.pricingPreview.trial')}</p>
         </div>
       </div>
     </section>
@@ -665,7 +665,7 @@ function FounderSection({ t }) {
           </div>
           <div>
             <p className="font-semibold text-sm text-ink-primary dark:text-white">{t('landing.founder.name')}</p>
-            <p className="text-sm text-ink-muted dark:text-white/55">{t('landing.founder.role')}</p>
+            <p className="text-sm text-ink-muted dark:text-white">{t('landing.founder.role')}</p>
           </div>
         </div>
       </div>

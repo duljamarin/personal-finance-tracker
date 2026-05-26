@@ -225,7 +225,6 @@ function PersistenceBanner({ onDismiss, onSave }) {
   return (
     <div className="flex items-center justify-between gap-4 bg-brand-600/10 dark:bg-brand-900/30 border border-brand-500/20 dark:border-brand-700/40 rounded-lg px-4 py-3 text-sm">
       <div className="flex items-center gap-2.5 min-w-0">
-        <span className="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0" />
         <span className="text-ink-primary dark:text-white font-medium">
           {t('demo.persistenceBanner')}
         </span>
