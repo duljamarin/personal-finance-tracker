@@ -317,7 +317,7 @@
       "titleLine1": "Merrni Kontrollin e",
       "titleAccent": "Financave Tuaja",
       "title": "Merrni Kontrollin e Financave Tuaja Personale",
-      "subtitle": "Ndiqni shpenzimet, vendosni buxhete dhe arrini qëllimet tuaja financiare - të gjitha në një panel të thjeshtë dhe elegant.",
+      "subtitle": "Ndiqni shpenzimet, vendosni buxhete dhe arrini qëllimet tuaja financiare - të gjitha në një vend të thjeshtë dhe të qartë.",
       "getStarted": "Filloni Falas",
       "signIn": "Identifikohu",
       "badge": "Filloni Falas · Pa kartë krediti",
@@ -349,7 +349,7 @@
         "desc": "Regjistroni të ardhurat dhe shpenzimet, vendosni buxhete dhe krijoni transaksione të përsëritura."
       },
       "step3": {
-        "title": "Merrni Njohuri të Qarta",
+        "title": "Kuptoni Financat Tuaja",
         "desc": "Shikoni grafikë, rezultatin e shëndetit financiar, krahasime dhe progresin drejt qëllimeve."
       }
     },
@@ -484,7 +484,7 @@
     },
     "demoBand": {
       "title": "Demo-ja ËSHTË dëshmi.",
-      "desc": "Pa pamje ekrani. Pa tekst marketingu. Eksploroni aplikacionin real këtu - shtoni transaksione, shfletoni buxhetet, kontrolloni pasqyrën. Krijoni llogari vetëm kur dëshironi të ruani të dhënat.",
+      "desc": "Pa screenshot-e. Pa fjalë boshe. Eksploroni aplikacionin real këtu - shtoni transaksione, shfletoni buxhetet, kontrolloni pasqyrën. Krijoni llogari vetëm kur dëshironi të ruani të dhënat.",
       "cta": "Filloni falas"
     },
     "heroFeatures": {
@@ -514,9 +514,9 @@
       "items": {
         "recurring": "Transaksione të përsëritura - ditore, javore, mujore, vjetore",
         "goals": "Qëllime financiare me gjurmim kontributesh",
-        "cashflow": "Parashikim i rrjedhës së parasë nga hyrjet e përsëritura",
-        "networth": "Ndjekja e pasurisë neto me historik aktivesh dhe detyrimesh",
-        "benchmarks": "Krahasime shpenzimesh me modelet tuaja",
+        "cashflow": "Shiko ku do të jetë bilanci yt bazuar në pagesat fikse",
+        "networth": "Shiko pasurinë tënde neto - aktivet dhe borxhet në një vend",
+        "benchmarks": "Krahaso shpenzimet me muajt e kaluar",
         "reports": "Raporte të detajuara",
         "notifications": "Alarme për tejkalimin e buxhetit dhe arritjet e qëllimeve",
         "csvImport": "Import dhe eksport CSV",
@@ -529,7 +529,7 @@
       "desc": "Të dhënat financiare janë të ndjeshme. Ja saktësisht çfarë bëjmë - dhe nuk bëjmë - me të dhënat tuaja.",
       "items": {
         "ownership": {
-          "title": "Ju zotëroni të dhënat tuaja",
+          "title": "Të dhënat janë tuajat",
           "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të gjitha të dhënat zhduken - përgjithmonë, jo të arkivuara."
         },
         "encryption": {
@@ -545,7 +545,7 @@
           "desc": "Rezultati i shëndetit dhe krahasimet janë mjete informuese. Konsultohuni gjithmonë me një profesionist për vendime financiare."
         },
         "analytics": {
-          "title": "Vetëm analitikë miqësore me privatësinë",
+          "title": "Analitikë që respekton privatësinë tuaj",
           "desc": "Përdorim GoatCounter - pa cookies, pa të dhëna personale, pa skripte gjurmimi nga palë të treta."
         },
         "payments": {
@@ -570,14 +570,14 @@
         }
       },
       "premium": {
-        "label": "Premium - zhbllokoni gjithçka",
+        "label": "Premium - hapni gjithçka",
         "items": {
           "unlimited": "Transaksione të pakufizuara",
           "cashflow": "Parashikim i rrjedhës së parasë",
           "healthscore": "Rezultat i plotë i shëndetit me analiza të detajuara",
           "benchmarks": "Krahasime të plota shpenzimesh sipas kategorisë",
           "splits": "Ndarje transaksionesh sipas kategorive",
-          "notifications": "Njoftime inteligjente brenda aplikacionit"
+          "notifications": "Njoftime inteligjente"
         }
       },
       "cta": "Shikoni çmimet e plota",
