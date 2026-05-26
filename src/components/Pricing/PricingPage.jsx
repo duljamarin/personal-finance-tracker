@@ -222,43 +222,25 @@ export default function PricingPage() {
         </div>
       )}
 
-      {/* Plan Cards — 2 column */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch">
+      {/* Plan Cards — subgrid layout: header / features / cta in sync rows */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 mb-10">
 
-        {/* Free Plan */}
-        <div className="relative flex flex-col rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-6">
+        {/* ── FREE — header ── */}
+        <div className="rounded-t-[10px] border border-b-0 border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card px-6 pt-6 pb-4">
           <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
             {t('pricing.free')}
           </h3>
-          <div className="mb-6">
+          <div>
             <span className="font-semibold tracking-tight text-4xl text-ink-primary dark:text-white">€0</span>
             <span className="text-ink-muted dark:text-white ml-1">{t('pricing.forever')}</span>
           </div>
-          <ul className="space-y-3 flex-1">
-            {freeFeatures.map((feature, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white">
-                <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <div className="pt-8">
-            {!accessToken ? (
-              <Link to="/register">
-                <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
-              </Link>
-            ) : (
-              <Button variant="secondary" className="w-full" disabled>
-                {!isPremium ? t('pricing.currentPlan') : t('pricing.free')}
-              </Button>
-            )}
-          </div>
+          {/* spacer to match premium price block height */}
+          <div className="mt-2 mb-1 h-6" />
+          <div className="h-5" />
         </div>
 
-        {/* Yearly Plan — hero card */}
-        <div className="relative flex flex-col rounded-[10px] ring-2 ring-brand-600 dark:ring-brand-800 border border-transparent bg-white dark:bg-surface-dark-card shadow-lg p-6 pt-8">
+        {/* ── PREMIUM — header ── */}
+        <div className="relative rounded-t-[10px] border-2 border-b-0 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 pt-8 pb-4 shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="bg-emerald-800 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
               {t('pricing.bestValue')}
@@ -267,8 +249,6 @@ export default function PricingPage() {
           <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
             {t('pricing.premium')}
           </h3>
-
-          {/* Price block */}
           <div className="mb-1">
             <span className="font-semibold tracking-tight text-5xl text-ink-primary dark:text-white">
               {t('pricing.yearlyPrice')}
@@ -280,12 +260,29 @@ export default function PricingPage() {
               {t('pricing.yearlyPerMonth')}
             </span>
           </div>
-          <p className="text-sm text-emerald-700 dark:text-emerald-800 font-medium mb-5">
+          <p className="text-sm text-emerald-700 dark:text-emerald-800 font-medium">
             {t('pricing.saveYearly')}
             {!hasHadTrial && <span> · {t('pricing.freeTrial')}</span>}
           </p>
+        </div>
 
-          <ul className="space-y-3 flex-1">
+        {/* ── FREE — features ── */}
+        <div className="border-x border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card px-6 py-4">
+          <ul className="space-y-3">
+            {freeFeatures.map((feature, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white">
+                <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ── PREMIUM — features ── */}
+        <div className="border-x-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 py-4 shadow-lg">
+          <ul className="space-y-3">
             {premiumFeatures.map((feature, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
                 <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,86 +292,97 @@ export default function PricingPage() {
               </li>
             ))}
           </ul>
-
-          <div className="mt-auto pt-8">
-              {isYearlyPlan ? (
-                <>
-                  {(() => {
-                    const status = subscription?.subscription_status;
-                    const isPastDue = status === 'past_due';
-                    const isPaused  = status === 'paused';
-                    const isCancelled = status === 'cancelled';
-
-                    let dotColor = 'bg-brand-500';
-                    let textColor = 'text-brand-600 dark:text-white';
-                    let label = t('pricing.currentPlan');
-                    let btnLabel = t('pricing.managePlan');
-                    let btnVariant = 'success';
-
-                    if (isCancelScheduled) {
-                      // Active but cancel scheduled at period end → reactivate via portal
-                      dotColor = 'bg-amber-500';
-                      textColor = 'text-amber-600 dark:text-amber-400';
-                      label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
-                      btnLabel = t('pricing.reactivate');
-                      btnVariant = 'primary';
-                    } else if (isPastDue) {
-                      // Payment failed, grace period active → update payment method
-                      dotColor = 'bg-red-500';
-                      textColor = 'text-red-600 dark:text-red-400';
-                      label = t('subscription.pastDueNotice');
-                      btnLabel = t('pricing.updatePayment');
-                      btnVariant = 'danger';
-                    } else if (isPaused) {
-                      // Subscription paused → resume via portal
-                      dotColor = 'bg-amber-500';
-                      textColor = 'text-amber-600 dark:text-amber-400';
-                      label = t('subscription.paused');
-                      btnLabel = t('pricing.resumePlan');
-                      btnVariant = 'primary';
-                    } else if (isCancelled) {
-                      // Fully cancelled but still within period_end (grace) → resubscribe
-                      dotColor = 'bg-amber-500';
-                      textColor = 'text-amber-600 dark:text-amber-400';
-                      label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
-                      btnLabel = t('pricing.reactivate');
-                      btnVariant = 'primary';
-                    }
-
-                    return (
-                      <>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className={`inline-block w-2 h-2 rounded-full animate-pulse ${dotColor}`} />
-                          <span className={`text-sm font-medium ${textColor}`}>{label}</span>
-                        </div>
-                        <Button variant={btnVariant} className="w-full" onClick={handleManageSubscription}>
-                          {btnLabel}
-                        </Button>
-                      </>
-                    );
-                  })()}
-                </>
-              ) : !hasHadTrial ? (
-                <>
-                  <Button
-                    variant="success"
-                    className="w-full mb-2"
-                    onClick={handleStartTrial}
-                    disabled={trialLoading}
-                  >
-                    {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
-                  </Button>
-                  <p className="text-xs text-center text-ink-muted dark:text-white">
-                    {t('pricing.noCardRequired')} · {t('pricing.thenYearly')}
-                  </p>
-                </>
-              ) : (
-                <Button variant="success" className="w-full" onClick={handleSubscribe}>
-                  {t('pricing.subscribe')}
-                </Button>
-              )}
-          </div>
         </div>
+
+        {/* ── FREE — CTA ── */}
+        <div className="rounded-b-[10px] border border-t-0 border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card px-6 pt-6 pb-6">
+          {!accessToken ? (
+            <Link to="/register">
+              <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
+            </Link>
+          ) : (
+            <Button variant="secondary" className="w-full" disabled>
+              {!isPremium ? t('pricing.currentPlan') : t('pricing.free')}
+            </Button>
+          )}
+        </div>
+
+        {/* ── PREMIUM — CTA ── */}
+        <div className="rounded-b-[10px] border-2 border-t-0 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card px-6 pt-6 pb-6 shadow-lg">
+          {isYearlyPlan ? (
+            <>
+              {(() => {
+                const status = subscription?.subscription_status;
+                const isPastDue = status === 'past_due';
+                const isPaused  = status === 'paused';
+                const isCancelled = status === 'cancelled';
+
+                let dotColor = 'bg-brand-500';
+                let textColor = 'text-brand-600 dark:text-white';
+                let label = t('pricing.currentPlan');
+                let btnLabel = t('pricing.managePlan');
+                let btnVariant = 'success';
+
+                if (isCancelScheduled) {
+                  dotColor = 'bg-amber-500';
+                  textColor = 'text-amber-600 dark:text-amber-400';
+                  label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
+                  btnLabel = t('pricing.reactivate');
+                  btnVariant = 'primary';
+                } else if (isPastDue) {
+                  dotColor = 'bg-red-500';
+                  textColor = 'text-red-600 dark:text-red-400';
+                  label = t('subscription.pastDueNotice');
+                  btnLabel = t('pricing.updatePayment');
+                  btnVariant = 'danger';
+                } else if (isPaused) {
+                  dotColor = 'bg-amber-500';
+                  textColor = 'text-amber-600 dark:text-amber-400';
+                  label = t('subscription.paused');
+                  btnLabel = t('pricing.resumePlan');
+                  btnVariant = 'primary';
+                } else if (isCancelled) {
+                  dotColor = 'bg-amber-500';
+                  textColor = 'text-amber-600 dark:text-amber-400';
+                  label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
+                  btnLabel = t('pricing.reactivate');
+                  btnVariant = 'primary';
+                }
+
+                return (
+                  <>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`inline-block w-2 h-2 rounded-full ${dotColor}`} />
+                      <span className={`text-sm font-medium ${textColor}`}>{label}</span>
+                    </div>
+                    <Button variant={btnVariant} className="w-full" onClick={handleManageSubscription}>
+                      {btnLabel}
+                    </Button>
+                  </>
+                );
+              })()}
+            </>
+          ) : !hasHadTrial ? (
+            <>
+              <Button
+                variant="success"
+                className="w-full mb-2"
+                onClick={handleStartTrial}
+                disabled={trialLoading}
+              >
+                {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
+              </Button>
+              <p className="text-xs text-center text-ink-muted dark:text-white">
+                {t('pricing.noCardRequired')} · {t('pricing.thenYearly')}
+              </p>
+            </>
+          ) : (
+            <Button variant="success" className="w-full" onClick={handleSubscribe}>
+              {t('pricing.subscribe')}
+            </Button>
+          )}
+        </div>
+
       </div>
 
       {/* Trust strip */}
