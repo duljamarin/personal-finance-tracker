@@ -310,7 +310,7 @@ export default function LandingPage() {
                 </Link>
               </div>
 
-              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white/60" style={{ animationDelay: '240ms' }}>
+              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white" style={{ animationDelay: '240ms' }}>
                 {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
                   <span key={label} className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
@@ -722,7 +722,6 @@ function FinalCtaSection({ t }) {
         ref={ref}
         className={`relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-400 mb-6">{t('landing.finalCta.eyebrow')}</p>
         <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.0] tracking-[-0.02em] mb-5">
           {t('landing.finalCta.title')}
         </h2>
