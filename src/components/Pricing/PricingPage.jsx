@@ -223,7 +223,7 @@ export default function PricingPage() {
       )}
 
       {/* Plan Cards — 2 column */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch">
 
         {/* Free Plan */}
         <Card className="relative border border-surface-hairline dark:border-surface-dark-hairline h-full">
@@ -245,7 +245,7 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6">
+            <div className="mt-auto pt-6">
               {!accessToken ? (
                 <Link to="/register">
                   <Button variant="secondary" className="w-full">{t('landing.hero.getStarted')}</Button>
@@ -299,7 +299,7 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <div className="mt-8">
+            <div className="mt-auto pt-8">
               {isYearlyPlan ? (
                 <>
                   {(() => {
