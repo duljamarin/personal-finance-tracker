@@ -725,7 +725,7 @@ function FinalCtaSection({ t }) {
         <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.0] tracking-[-0.02em] mb-5">
           {t('landing.finalCta.title')}
         </h2>
-        <p className="text-lg text-white/65 leading-relaxed max-w-lg mx-auto mb-10">
+        <p className="text-lg text-white leading-relaxed max-w-lg mx-auto mb-10">
           {t('landing.finalCta.desc')}
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
@@ -743,7 +743,7 @@ function FinalCtaSection({ t }) {
             {t('landing.finalCta.secondary')}
           </Link>
         </div>
-        <p className="text-sm text-white/35">{t('landing.finalCta.trustLine')}</p>
+        <p className="text-sm text-white">{t('landing.finalCta.trustLine')}</p>
       </div>
     </section>
   );
