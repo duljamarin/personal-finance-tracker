@@ -223,7 +223,7 @@ export default function PricingPage() {
       )}
 
       {/* Plan Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch pt-4">
 
         {/* ── FREE ── */}
         <div className="flex flex-col rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
@@ -266,7 +266,7 @@ export default function PricingPage() {
         </div>
 
         {/* ── PREMIUM ── */}
-        <div className="flex flex-col rounded-[10px] border-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card relative mt-4">
+        <div className="flex flex-col rounded-[10px] border-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card relative">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
             <span className="bg-emerald-800 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
               {t('pricing.bestValue')}
