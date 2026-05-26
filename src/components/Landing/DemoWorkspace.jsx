@@ -502,18 +502,12 @@ export default function DemoWorkspace() {
   }, []);
 
   return (
-    <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-2xl overflow-hidden shadow-xl">
-      {/* Fake browser chrome */}
+    <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-2xl overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
+      {/* Minimal browser chrome */}
       <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark-card border-b border-surface-hairline dark:border-surface-dark-hairline">
-        <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-        </div>
-        <div className="flex-1 mx-3 bg-surface-page dark:bg-surface-dark-elevated rounded-md px-3 py-1 text-[10px] text-ink-muted dark:text-white font-mono truncate">
+        <div className="flex-1 bg-surface-page dark:bg-surface-dark-elevated rounded-md px-3 py-1 text-[10px] text-ink-muted dark:text-white font-mono truncate">
           personal-finances.app/dashboard
         </div>
-        <span className="text-[10px] text-brand-600 dark:text-brand-400 font-medium">{t('demo.liveBadge')}</span>
       </div>
 
       <div className="p-4 sm:p-5 space-y-4">

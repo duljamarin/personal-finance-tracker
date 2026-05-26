@@ -279,14 +279,6 @@ export default function LandingPage() {
 
             {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
             <div className="lg:pt-6">
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-600/10 dark:bg-brand-600/15 text-brand-700 dark:text-brand-400 text-xs font-semibold border border-brand-600/20 mb-7"
-                style={{ animationDelay: '0ms' }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-                {t('demo.liveBadge')}
-              </div>
-
               <h1
                 className="font-display text-[3.25rem] sm:text-6xl lg:text-[4.25rem] font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-6"
                 style={{ animationDelay: '60ms' }}
