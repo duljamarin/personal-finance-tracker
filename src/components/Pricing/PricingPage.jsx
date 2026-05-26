@@ -316,44 +316,39 @@ export default function PricingPage() {
                 const isPaused  = status === 'paused';
                 const isCancelled = status === 'cancelled';
 
-                let dotColor = 'bg-brand-500';
                 let textColor = 'text-brand-600 dark:text-white';
-                let label = t('pricing.currentPlan');
+                let label = '';
                 let btnLabel = t('pricing.managePlan');
                 let btnVariant = 'success';
 
                 if (isCancelScheduled) {
-                  dotColor = 'bg-amber-500';
                   textColor = 'text-amber-600 dark:text-amber-400';
                   label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
                   btnLabel = t('pricing.reactivate');
                   btnVariant = 'primary';
                 } else if (isPastDue) {
-                  dotColor = 'bg-red-500';
                   textColor = 'text-red-600 dark:text-red-400';
                   label = t('subscription.pastDueNotice');
                   btnLabel = t('pricing.updatePayment');
                   btnVariant = 'danger';
                 } else if (isPaused) {
-                  dotColor = 'bg-amber-500';
                   textColor = 'text-amber-600 dark:text-amber-400';
                   label = t('subscription.paused');
                   btnLabel = t('pricing.resumePlan');
                   btnVariant = 'primary';
                 } else if (isCancelled) {
-                  dotColor = 'bg-amber-500';
                   textColor = 'text-amber-600 dark:text-amber-400';
                   label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
                   btnLabel = t('pricing.reactivate');
                   btnVariant = 'primary';
                 }
 
+                const showStatusLabel = isCancelScheduled || isPastDue || isPaused || isCancelled;
                 return (
                   <>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className={`inline-block w-2 h-2 rounded-full ${dotColor}`} />
-                      <span className={`text-sm font-medium ${textColor}`}>{label}</span>
-                    </div>
+                    {showStatusLabel && (
+                      <p className={`text-sm font-medium mb-3 ${textColor}`}>{label}</p>
+                    )}
                     <Button variant={btnVariant} className="w-full" onClick={handleManageSubscription}>
                       {btnLabel}
                     </Button>
