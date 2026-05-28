@@ -1115,10 +1115,10 @@
       "badge": "Të dhëna demo u zbuluan",
       "title": "Kjo është hapësira që ndërtuat.",
       "subtitle": "Mbajeni si provë, ose pastroni dhe filloni me numrat tuaj realë.",
-      "keepLabel": "Mbaj të dhënat e demostratës",
+      "keepLabel": "Mbaj të dhënat e demos",
       "keepHint": "Transaksionet e demostratës do të importohen - mund t'i fshini në çdo kohë.",
       "discardLabel": "Fillo me numrat e mi realë",
-      "discardHint": "Të dhënat e demostratës do të hidhen. Do të filloni me hapësirë të pastër.",
+      "discardHint": "Të dhënat e demos do të hidhen. Do të filloni me hapësirë të pastër.",
       "note": "Gjithmonë mund të shtoni transaksionin tuaj të parë real nga paneli kryesor."
     },
     "currency": {
