@@ -3,25 +3,38 @@ import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 export async function fetchTransactions({ type } = {}) {
   return withAuthOrEmpty(async (user) => {
     const supabase = await getSupabase();
-    let query = supabase
-      .from('transactions')
-      .select(`
-        *,
-        source_recurring_id,
-        category:categories(id, name),
-        recurring:source_recurring_id(start_date, last_run_at)
-      `)
-      .eq('user_id', user.id)
-      .order('date', { ascending: false });
+    const PAGE_SIZE = 1000;
+    const all = [];
+    let from = 0;
 
-    if (type && type !== 'all') {
-      query = query.eq('type', type);
+    while (true) {
+      let query = supabase
+        .from('transactions')
+        .select(`
+          *,
+          source_recurring_id,
+          category:categories(id, name),
+          recurring:source_recurring_id(start_date, last_run_at)
+        `)
+        .eq('user_id', user.id)
+        .order('date', { ascending: false })
+        .range(from, from + PAGE_SIZE - 1);
+
+      if (type && type !== 'all') {
+        query = query.eq('type', type);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      const page = data || [];
+      all.push(...page);
+
+      if (page.length < PAGE_SIZE) break;
+      from += PAGE_SIZE;
     }
 
-    const { data, error } = await query;
-
-    if (error) throw error;
-    return data || [];
+    return all;
   });
 }
 

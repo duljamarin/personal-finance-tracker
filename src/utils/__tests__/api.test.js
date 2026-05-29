@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Supabase client mock
 const makeChain = (overrides = {}) => {
-  const chain = { select: vi.fn(), insert: vi.fn(), update: vi.fn(), delete: vi.fn(), eq: vi.fn(), neq: vi.fn(), order: vi.fn(), lte: vi.fn(), or: vi.fn(), single: vi.fn(), ...overrides };
+  const chain = { select: vi.fn(), insert: vi.fn(), update: vi.fn(), delete: vi.fn(), eq: vi.fn(), neq: vi.fn(), order: vi.fn(), range: vi.fn(), lte: vi.fn(), or: vi.fn(), single: vi.fn(), ...overrides };
   chain.select.mockReturnValue(chain); chain.insert.mockReturnValue(chain); chain.update.mockReturnValue(chain);
   chain.delete.mockReturnValue(chain); chain.eq.mockReturnValue(chain); chain.neq.mockReturnValue(chain);
-  chain.order.mockReturnValue(chain); chain.lte.mockReturnValue(chain); chain.or.mockReturnValue(chain);
+  chain.order.mockReturnValue(chain); chain.range.mockReturnValue(chain); chain.lte.mockReturnValue(chain); chain.or.mockReturnValue(chain);
   return chain;
 };
 
@@ -203,7 +203,7 @@ describe('Transaction API', () => {
   it('fetchTransactions returns data for authenticated user', async () => {
     mockAuth();
     const mockData = [{ id: 'tx-1', title: 'Salary', amount: 1000 }];
-    currentChain.order.mockResolvedValue({ data: mockData, error: null });
+    currentChain.range.mockResolvedValue({ data: mockData, error: null });
     const result = await fetchTransactions();
     expect(mockFrom).toHaveBeenCalledWith('transactions');
     expect(result).toEqual(mockData);
@@ -217,9 +217,23 @@ describe('Transaction API', () => {
 
   it('fetchTransactions returns empty array fallback when data is null', async () => {
     mockAuth();
-    currentChain.order.mockResolvedValue({ data: null, error: null });
+    currentChain.range.mockResolvedValue({ data: null, error: null });
     const result = await fetchTransactions();
     expect(result).toEqual([]);
+  });
+
+  it('fetchTransactions paginates when result exceeds 1000 rows', async () => {
+    mockAuth();
+    const fullPage = Array.from({ length: 1000 }, (_, i) => ({ id: `tx-${i}` }));
+    const partialPage = [{ id: 'tx-1000' }, { id: 'tx-1001' }];
+    currentChain.range
+      .mockResolvedValueOnce({ data: fullPage, error: null })
+      .mockResolvedValueOnce({ data: partialPage, error: null });
+    const result = await fetchTransactions();
+    expect(result).toHaveLength(1002);
+    expect(currentChain.range).toHaveBeenCalledTimes(2);
+    expect(currentChain.range).toHaveBeenNthCalledWith(1, 0, 999);
+    expect(currentChain.range).toHaveBeenNthCalledWith(2, 1000, 1999);
   });
 });
 
