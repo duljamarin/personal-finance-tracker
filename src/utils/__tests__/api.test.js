@@ -11,18 +11,18 @@ const makeChain = (overrides = {}) => {
 
 let currentChain;
 const mockFrom = vi.fn(() => currentChain);
-const mockGetUser = vi.fn();
+const mockGetSession = vi.fn();
 const mockRpc = vi.fn().mockReturnValue({ then: (cb) => ({ catch: () => {} }) });
 
-vi.mock('../../utils/supabaseClient', () => ({
-  supabase: { auth: { getUser: mockGetUser }, from: mockFrom, rpc: mockRpc },
+vi.mock('../supabaseClient', () => ({
+  supabase: { auth: { getSession: mockGetSession }, from: mockFrom, rpc: mockRpc },
 }));
 
 const { fetchCategories, addCategory, deleteCategory, addTransaction, updateTransaction, deleteTransaction, fetchTransactions, createGoal, deleteGoal, addContribution } = await import('../api.js');
 
 const MOCK_USER = { id: 'user-123', email: 'test@example.com' };
-function mockAuth(user = MOCK_USER) { mockGetUser.mockResolvedValue({ data: { user }, error: null }); }
-function mockAuthFail() { mockGetUser.mockResolvedValue({ data: { user: null }, error: null }); }
+function mockAuth(user = MOCK_USER) { mockGetSession.mockResolvedValue({ data: { session: { user } }, error: null }); }
+function mockAuthFail() { mockGetSession.mockResolvedValue({ data: { session: null }, error: null }); }
 
 // ---------------------------------------------------------------------------
 // Category Tests

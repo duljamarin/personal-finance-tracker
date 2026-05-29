@@ -3,33 +3,33 @@ import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 export function calculateNextDate(currentDate, frequency, intervalCount) {
   const date = new Date(currentDate);
   const interval = intervalCount || 1;
-  const originalDay = date.getDate();
+  const originalDay = date.getUTCDate();
 
   switch (frequency) {
     case 'daily':
-      date.setDate(date.getDate() + interval);
+      date.setUTCDate(date.getUTCDate() + interval);
       break;
     case 'weekly':
-      date.setDate(date.getDate() + interval * 7);
+      date.setUTCDate(date.getUTCDate() + interval * 7);
       break;
     case 'monthly': {
-      const targetMonth = date.getMonth() + interval;
-      date.setMonth(targetMonth);
-      if (date.getDate() !== originalDay) {
-        date.setDate(0);
+      const targetMonth = date.getUTCMonth() + interval;
+      date.setUTCMonth(targetMonth);
+      if (date.getUTCDate() !== originalDay) {
+        date.setUTCDate(0);
       }
       break;
     }
     case 'yearly': {
-      const targetYear = date.getFullYear() + interval;
-      date.setFullYear(targetYear);
-      if (date.getDate() !== originalDay) {
-        date.setDate(0);
+      const targetYear = date.getUTCFullYear() + interval;
+      date.setUTCFullYear(targetYear);
+      if (date.getUTCDate() !== originalDay) {
+        date.setUTCDate(0);
       }
       break;
     }
     default:
-      date.setDate(date.getDate() + interval);
+      date.setUTCDate(date.getUTCDate() + interval);
   }
 
   return date.toISOString();
@@ -268,7 +268,7 @@ export async function processRecurringTransactions() {
           .select('id')
           .eq('source_recurring_id', recurring.id)
           .eq('date', transactionDate)
-          .single();
+          .maybeSingle();
 
         if (!existing) {
           const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
@@ -295,6 +295,12 @@ export async function processRecurringTransactions() {
             .single();
 
           if (insertError) {
+            // Unique-violation: concurrent run already inserted this instance — advance and continue
+            if (insertError.code === '23505') {
+              currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+              loopAdvanced = true;
+              continue;
+            }
             console.error('Error creating recurring transaction instance:', insertError);
             break;
           }

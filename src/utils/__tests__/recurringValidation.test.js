@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { calculateMinEndDate, getMinEndDateString, validateRecurringEndDate, validateRecurringForm } from '../recurringValidation.js';
+import { calculateNextDate } from '../api/recurring.js';
 
 describe('calculateMinEndDate', () => {
   const START = '2025-01-15';
@@ -80,5 +81,43 @@ describe('validateRecurringForm', () => {
   it('returns no errors for valid count-based recurring form', () => {
     const errors = validateRecurringForm({ intervalCount: 1, frequency: 'monthly', endType: 'count', occurrencesLimit: 5, startDate: '2025-01-01' });
     expect(errors.occurrencesLimit).toBeUndefined();
+  });
+});
+
+describe('calculateNextDate (UTC)', () => {
+  const utcDay = (iso) => new Date(iso).toISOString().split('T')[0];
+
+  it('advances daily by interval', () => {
+    expect(utcDay(calculateNextDate('2025-01-15', 'daily', 1))).toBe('2025-01-16');
+    expect(utcDay(calculateNextDate('2025-01-15', 'daily', 7))).toBe('2025-01-22');
+  });
+
+  it('advances weekly by interval weeks', () => {
+    expect(utcDay(calculateNextDate('2025-01-15', 'weekly', 1))).toBe('2025-01-22');
+    expect(utcDay(calculateNextDate('2025-01-15', 'weekly', 2))).toBe('2025-01-29');
+  });
+
+  it('advances monthly preserving day-of-month', () => {
+    expect(utcDay(calculateNextDate('2025-01-15', 'monthly', 1))).toBe('2025-02-15');
+  });
+
+  it('clamps monthly when target month has fewer days', () => {
+    // Jan 31 + 1 month → Feb 28 (non-leap)
+    expect(utcDay(calculateNextDate('2025-01-31', 'monthly', 1))).toBe('2025-02-28');
+  });
+
+  it('advances yearly preserving day-of-month', () => {
+    expect(utcDay(calculateNextDate('2025-03-15', 'yearly', 1))).toBe('2026-03-15');
+  });
+
+  it('clamps yearly leap day to Feb 28 in non-leap year', () => {
+    expect(utcDay(calculateNextDate('2024-02-29', 'yearly', 1))).toBe('2025-02-28');
+  });
+
+  it('is timezone-invariant: YYYY-MM-DD inputs treated as UTC midnight', () => {
+    // This is the regression test for local-time math. Any TZ-sensitive impl
+    // would shift this by a day in westward host TZs at month boundaries.
+    expect(utcDay(calculateNextDate('2025-03-01', 'monthly', 1))).toBe('2025-04-01');
+    expect(utcDay(calculateNextDate('2025-03-01', 'yearly', 1))).toBe('2026-03-01');
   });
 });
