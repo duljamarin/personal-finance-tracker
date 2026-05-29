@@ -1,7 +1,7 @@
 const rateCache = new Map() // key: "USD", value: { rate: 0.9234, fetchedAt: Date.now() }
 const CACHE_TTL_MS = 60 * 60 * 1000 // 1 hour
 
-const PRIMARY_URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@2026.5.29/v1/currencies/eur.json'
+const PRIMARY_URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json'
 const FALLBACK_URL = 'https://currency-api.pages.dev/v1/currencies/eur.min.json'
 
 // Fetches all EUR-based rates once and caches each currency individually.
