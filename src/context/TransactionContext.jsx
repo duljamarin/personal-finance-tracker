@@ -8,7 +8,7 @@ import { fetchTransactions, addTransaction as apiAddTransaction, updateTransacti
 const TransactionContext = createContext();
 
 export function TransactionProvider({ children }) {
-  const { accessToken, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { addToast } = useToast();
   const { t } = useTranslation();
   const { refreshSubscription } = useSubscription();
@@ -65,7 +65,7 @@ export function TransactionProvider({ children }) {
 
   useEffect(() => {
     if (authLoading) return;
-    if (accessToken) {
+    if (user?.id) {
       reloadTransactions();
       reloadCategories();
     } else {
@@ -73,7 +73,7 @@ export function TransactionProvider({ children }) {
       setCategories([]);
       setLoading(false);
     }
-  }, [accessToken, authLoading]);
+  }, [user?.id, authLoading]);
 
   const addTransaction = useCallback(async (item) => {
     try {
@@ -97,11 +97,10 @@ export function TransactionProvider({ children }) {
       setTransactions(prev => prev.map(e => e.id === id ? newItem : e));
       setMutationCount(c => c + 1);
       addToast(t('messages.transactionUpdated'), 'success');
-      refreshSubscription();
     } catch (e) {
       addToast(t('messages.error'), 'error');
     }
-  }, [addToast, t, refreshSubscription]);
+  }, [addToast, t]);
 
   const deleteTransaction = useCallback(async (id) => {
     try {
