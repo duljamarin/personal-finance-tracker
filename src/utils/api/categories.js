@@ -22,7 +22,7 @@ export async function addCategory(category) {
       .select('id')
       .eq('user_id', user.id)
       .eq('name', category.name)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       throw new Error('Category already exists.');
@@ -48,7 +48,7 @@ export async function updateCategory(id, category) {
       .eq('user_id', user.id)
       .eq('name', category.name)
       .neq('id', id)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       throw new Error('Category already exists.');

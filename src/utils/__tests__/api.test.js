@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Supabase client mock
 const makeChain = (overrides = {}) => {
-  const chain = { select: vi.fn(), insert: vi.fn(), update: vi.fn(), delete: vi.fn(), eq: vi.fn(), neq: vi.fn(), order: vi.fn(), range: vi.fn(), lte: vi.fn(), or: vi.fn(), single: vi.fn(), ...overrides };
+  const chain = { select: vi.fn(), insert: vi.fn(), update: vi.fn(), delete: vi.fn(), eq: vi.fn(), neq: vi.fn(), order: vi.fn(), range: vi.fn(), lte: vi.fn(), or: vi.fn(), single: vi.fn(), maybeSingle: vi.fn(), ...overrides };
   chain.select.mockReturnValue(chain); chain.insert.mockReturnValue(chain); chain.update.mockReturnValue(chain);
   chain.delete.mockReturnValue(chain); chain.eq.mockReturnValue(chain); chain.neq.mockReturnValue(chain);
   chain.order.mockReturnValue(chain); chain.range.mockReturnValue(chain); chain.lte.mockReturnValue(chain); chain.or.mockReturnValue(chain);
@@ -53,7 +53,7 @@ describe('Category API', () => {
 
   it('addCategory throws when category already exists', async () => {
     mockAuth();
-    currentChain.single.mockResolvedValueOnce({ data: { id: 'existing-id' }, error: null });
+    currentChain.maybeSingle.mockResolvedValueOnce({ data: { id: 'existing-id' }, error: null });
     await expect(addCategory({ name: 'Food' })).rejects.toThrow('Category already exists.');
   });
 
@@ -64,9 +64,8 @@ describe('Category API', () => {
 
   it('addCategory inserts a new category', async () => {
     mockAuth();
-    currentChain.single
-      .mockResolvedValueOnce({ data: null, error: { code: 'PGRST116' } })
-      .mockResolvedValueOnce({ data: { id: 'cat-1', name: 'Food', user_id: MOCK_USER.id }, error: null });
+    currentChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
+    currentChain.single.mockResolvedValueOnce({ data: { id: 'cat-1', name: 'Food', user_id: MOCK_USER.id }, error: null });
     const result = await addCategory({ name: 'Food' });
     expect(result).toMatchObject({ name: 'Food' });
   });

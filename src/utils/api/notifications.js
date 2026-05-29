@@ -78,12 +78,9 @@ export async function fetchNotificationSettings() {
       .from('notification_settings')
       .select('*')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (error) {
-      if (error.code === 'PGRST116') return null;
-      throw error;
-    }
+    if (error) throw error;
     return data;
   });
 }

@@ -70,6 +70,11 @@ export default defineConfig({
   css: {
     postcss: true,
   },
+  esbuild: {
+    // Strip noisy console calls from production builds. console.error is preserved
+    // for production triage. Dev (vite serve) is unaffected.
+    pure: ['console.log', 'console.warn', 'console.debug', 'console.info'],
+  },
   build: {
     rollupOptions: {
       input: {
