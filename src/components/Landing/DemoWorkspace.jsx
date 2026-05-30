@@ -27,7 +27,7 @@ import {
 
 // ── Colour palette ──────────────────────────────────────────────────────────
 const CAT_COLORS = {
-  'Food & Dining':    '#168b78',
+  'Food & Dining':    '#1c8071',
   'Housing & Rent':   '#6A8FC4',
   'Transportation':   '#E8A838',
   'Entertainment':    '#9B6DC8',
