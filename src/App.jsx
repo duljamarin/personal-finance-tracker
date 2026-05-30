@@ -256,7 +256,10 @@ function InnerAppContent() {
         </div>
       ) : isPublicRoute ? (
         <PublicLayout>
-          <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[40vh]" />}>
+          {/* Taller fallback approximates the landing hero so the page doesn't jump
+              from 40vh to full height when the chunk resolves — that jump shoves the
+              footer (highest field-CLS element on /). */}
+          <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[70vh]" />}>
             <Routes>
               <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
               <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />

@@ -18,7 +18,7 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, threshold 
 
   // Reserve layout space while loading to prevent CLS
   if (subLoading) {
-    return <div className="h-[52px] rounded-lg bg-surface-subtle dark:bg-surface-dark-subtle animate-pulse" />;
+    return <div className="h-[52px] rounded-lg bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />;
   }
 
   if (isPremium || isTrialing) return null;
