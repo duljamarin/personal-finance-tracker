@@ -55,7 +55,7 @@ export default function UpgradeBanner() {
 
   // Reserve layout space while loading to prevent CLS — render a fixed-height placeholder
   if (subLoading) {
-    return <div className="mb-6 h-[88px] rounded-xl bg-surface-subtle dark:bg-surface-dark-subtle animate-pulse" />;
+    return <div className="mb-6 h-[88px] rounded-xl bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />;
   }
 
   if (hasActivePaidSubscription || dismissed) return null;
