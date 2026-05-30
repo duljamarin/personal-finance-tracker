@@ -588,7 +588,6 @@ function PricingPreviewSection({ t }) {
         className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
       >
         <div className="text-center mb-14">
-          <Eyebrow>{t('landing.pricingPreview.eyebrow')}</Eyebrow>
           <SectionHeading>{t('landing.pricingPreview.title')}</SectionHeading>
         </div>
         <div className="grid sm:grid-cols-2 gap-5 mb-8">
