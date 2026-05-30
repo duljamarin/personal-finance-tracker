@@ -558,7 +558,7 @@
       "eyebrow": "Simple pricing",
       "title": "Free to start. Upgrade when you need more.",
       "free": {
-        "label": "Free plan — forever",
+        "label": "Free plan - forever",
         "items": {
           "tx": "100 transactions / month",
           "budgets": "30 monthly budgets",
