@@ -3,8 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Apply dark mode before first paint to avoid a light->dark flash (FOUC/CLS).
+         Reads the same key useDarkMode writes; React state stays in sync. -->
+    <script>try{if(localStorage.getItem('expense_dark_mode')==='1')document.documentElement.classList.add('dark')}catch(e){}</script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111113'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' text-anchor='middle' dominant-baseline='middle' font-family='Space Grotesk, Arial, sans-serif' font-size='42' font-weight='700' fill='%2322ad93'%3E%24%3C/text%3E%3C/svg%3E">
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/hanken-grotesk-latin.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin-ext.woff2" crossorigin>
     <link rel="canonical" href="https://personal-finances.app/sq" />
     <link rel="alternate" hreflang="en" href="https://personal-finances.app/" />

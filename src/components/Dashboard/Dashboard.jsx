@@ -176,7 +176,10 @@ export default function Dashboard() {
             <AddTransactionCTA onClick={handleAddTransaction} />
           </div>
 
-          <div className="mt-8 space-y-6">
+          {/* Reserve height so this block (each child loads its own data async)
+              doesn't shove the page/footer down as it fills in — main field-CLS
+              source on the dashboard (sel. div.mt-8.space-y-6, 0.749). */}
+          <div className="mt-8 space-y-6 min-h-[600px]">
             <BudgetSummaryBar reloadTrigger={totalExpense} />
             <ChartWithTimeRange transactions={transactions} />
             <CashFlowForecast />
