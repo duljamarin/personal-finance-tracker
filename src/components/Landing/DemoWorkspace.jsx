@@ -82,12 +82,15 @@ function CategoryDot({ cat }) {
   return <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 inline-block" style={{ backgroundColor: color }} />;
 }
 
-// ── Add Transaction Form ──────────────────────────────────────────────────────
-function AddTxForm({ onAdd, onClose }) {
+// ── Transaction Form (add + edit) ─────────────────────────────────────────────
+function TxForm({ initial, onSubmit, onClose }) {
   const { t } = useTranslation();
-  const [form, setForm] = useState({
-    title: '', amount: '', type: 'expense', category: 'Food & Dining', date: fmt(new Date()),
-  });
+  const isEdit = Boolean(initial);
+  const [form, setForm] = useState(() =>
+    initial
+      ? { title: initial.title, amount: String(initial.amount), type: initial.type, category: initial.category, date: initial.date }
+      : { title: '', amount: '', type: 'expense', category: 'Food & Dining', date: fmt(new Date()) },
+  );
   const [error, setError] = useState('');
   const titleRef = useRef(null);
 
@@ -98,7 +101,8 @@ function AddTxForm({ onAdd, onClose }) {
     if (!form.title.trim()) { setError(t('demo.errorTitle')); return; }
     const amt = parseFloat(form.amount);
     if (!amt || amt <= 0) { setError(t('demo.errorAmount')); return; }
-    onAdd({ ...form, amount: amt, id: Date.now() });
+    // Preserve id on edit; generate a new one on add.
+    onSubmit({ ...form, amount: amt, id: isEdit ? initial.id : Date.now() });
     onClose();
   };
 
@@ -162,7 +166,7 @@ function AddTxForm({ onAdd, onClose }) {
           type="submit"
           className="flex-1 py-2 text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-md transition-colors"
         >
-          {t('demo.addBtn')}
+          {isEdit ? t('demo.saveBtn') : t('demo.addBtn')}
         </button>
         <button
           type="button"
@@ -366,7 +370,7 @@ function OverviewTab({ transactions, isDark }) {
 }
 
 // ── Transactions tab ──────────────────────────────────────────────────────────
-function TransactionsTab({ transactions, onDelete, onAddOpen }) {
+function TransactionsTab({ transactions, onDelete, onEdit, onAddOpen }) {
   const { t } = useTranslation();
 
   return (
@@ -403,6 +407,16 @@ function TransactionsTab({ transactions, onDelete, onAddOpen }) {
               <span className={`text-xs font-semibold tabular-nums ${tx.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-[#e8394d]'}`}>
                 {tx.type === 'income' ? '+' : '-'}{fmtEur(tx.amount)}
               </span>
+              <button
+                onClick={() => onEdit(tx)}
+                className="opacity-0 group-hover:opacity-100 p-1 rounded text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-all"
+                aria-label={t('demo.editBtn')}
+                title={t('demo.editBtn')}
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
               <button
                 onClick={() => onDelete(tx.id)}
                 className="opacity-0 group-hover:opacity-100 p-1 rounded text-ink-muted dark:text-white hover:text-[#e8394d] transition-all"
@@ -483,6 +497,7 @@ export default function DemoWorkspace() {
   const [budgets] = useState(SEED_BUDGETS);
   const [tab, setTab] = useState('overview');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingTx, setEditingTx] = useState(null);
   const [showBanner, setShowBanner] = useState(true);
 
   // Detect dark mode for chart colours
@@ -496,8 +511,26 @@ export default function DemoWorkspace() {
     setTransactions((prev) => [tx, ...prev]);
   }, []);
 
+  const updateTx = useCallback((tx) => {
+    setTransactions((prev) => prev.map((t) => (t.id === tx.id ? tx : t)));
+  }, []);
+
   const deleteTx = useCallback((id) => {
     setTransactions((prev) => prev.filter((tx) => tx.id !== id));
+    // If the row being edited is deleted, close the form.
+    setEditingTx((cur) => (cur && cur.id === id ? null : cur));
+  }, []);
+
+  // Open the inline form in edit mode for a given transaction.
+  const openEdit = useCallback((tx) => {
+    setEditingTx(tx);
+    setShowAddForm(true);
+    setTab('transactions');
+  }, []);
+
+  const closeForm = useCallback(() => {
+    setShowAddForm(false);
+    setEditingTx(null);
   }, []);
 
   return (
@@ -523,7 +556,7 @@ export default function DemoWorkspace() {
           </div>
           {tab === 'transactions' && !showAddForm && (
             <button
-              onClick={() => setShowAddForm(true)}
+              onClick={() => { setEditingTx(null); setShowAddForm(true); }}
               className="flex items-center gap-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-md transition-colors"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -534,7 +567,7 @@ export default function DemoWorkspace() {
           )}
           {tab === 'overview' && (
             <button
-              onClick={() => { setTab('transactions'); setShowAddForm(true); }}
+              onClick={() => { setTab('transactions'); setEditingTx(null); setShowAddForm(true); }}
               className="flex items-center gap-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-md transition-colors"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -548,17 +581,24 @@ export default function DemoWorkspace() {
         {/* Tab bar */}
         <div className="flex gap-1 p-1 bg-surface-page dark:bg-surface-dark-elevated rounded-lg border border-surface-hairline dark:border-surface-dark-hairline">
           {TABS.map((id) => (
-            <Tab key={id} active={tab === id} onClick={() => { setTab(id); setShowAddForm(false); }}>
+            <Tab key={id} active={tab === id} onClick={() => { setTab(id); closeForm(); }}>
               {t(`demo.tab.${id}`)}
             </Tab>
           ))}
         </div>
 
-        {/* Inline add-form (slides in) */}
+        {/* Inline form (slides in) — add or edit depending on editingTx */}
         {showAddForm && (
           <div className="bg-surface-page dark:bg-surface-dark-elevated rounded-xl border border-brand-500/30 dark:border-brand-700/40 p-4 animate-in slide-in-from-top-2 duration-200">
-            <p className="text-xs font-semibold text-ink-primary dark:text-white mb-3">{t('demo.addNewTransaction')}</p>
-            <AddTxForm onAdd={addTx} onClose={() => setShowAddForm(false)} />
+            <p className="text-xs font-semibold text-ink-primary dark:text-white mb-3">
+              {editingTx ? t('demo.editNewTransaction') : t('demo.addNewTransaction')}
+            </p>
+            <TxForm
+              key={editingTx ? `edit-${editingTx.id}` : 'add'}
+              initial={editingTx}
+              onSubmit={editingTx ? updateTx : addTx}
+              onClose={closeForm}
+            />
           </div>
         )}
 
@@ -568,7 +608,8 @@ export default function DemoWorkspace() {
           <TransactionsTab
             transactions={transactions}
             onDelete={deleteTx}
-            onAddOpen={() => setShowAddForm(true)}
+            onEdit={openEdit}
+            onAddOpen={() => { setEditingTx(null); setShowAddForm(true); }}
           />
         )}
         {tab === 'budgets' && <BudgetsTab transactions={transactions} budgets={budgets} />}
