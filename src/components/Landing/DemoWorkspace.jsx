@@ -354,7 +354,7 @@ function OverviewTab({ transactions, isDark }) {
                 {pieData.slice(0, 5).map((entry, i) => (
                   <div key={entry.name} className="flex items-center gap-1.5 text-[10px]">
                     <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: getColor(entry.name, i) }} />
-                    <span className="text-ink-primary dark:text-white truncate flex-1">{entry.name}</span>
+                    <span className="text-ink-primary dark:text-white truncate flex-1">{t(`defaultCategories.${entry.name}`, entry.name)}</span>
                     <span className="text-ink-muted dark:text-white tabular-nums">{fmtEur(entry.value)}</span>
                   </div>
                 ))}
@@ -535,13 +535,6 @@ export default function DemoWorkspace() {
 
   return (
     <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-2xl overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
-      {/* Minimal browser chrome */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark-card border-b border-surface-hairline dark:border-surface-dark-hairline">
-        <div className="flex-1 bg-surface-page dark:bg-surface-dark-elevated rounded-md px-3 py-1 text-[10px] text-ink-muted dark:text-white font-mono truncate">
-          personal-finances.app/dashboard
-        </div>
-      </div>
-
       <div className="p-4 sm:p-5 space-y-4">
         {/* Persistence banner */}
         {showBanner && (
