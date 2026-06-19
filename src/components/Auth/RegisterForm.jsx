@@ -160,7 +160,7 @@ export default function RegisterForm() {
 
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
-            <span className="text-[11px] text-ink-muted dark:text-white font-medium uppercase tracking-[0.14em]">{t('auth.or')}</span>
+            <span className="text-xs text-ink-muted dark:text-white/60 font-medium">{t('auth.or')}</span>
             <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
           </div>
 
