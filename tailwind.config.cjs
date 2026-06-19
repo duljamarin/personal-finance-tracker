@@ -67,6 +67,15 @@ module.exports = {
         md: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03)',
         lg: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)',
         xl: '0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.03)',
+        // Semantic elevation aliases (see .claude/design-system.md §3).
+        // tier1 = resting card (border only, no shadow); tier2 = floating popover/modal.
+        tier1: 'none',
+        tier2: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)',
+      },
+      borderRadius: {
+        // 2-radius convention (see .claude/design-system.md §3).
+        control: '6px',     // buttons, inputs, chips  (== md)
+        container: '10px',  // cards, panels
       },
       animation: {
         'fade-out': 'fadeOut 0.5s ease-in-out 1.5s forwards',

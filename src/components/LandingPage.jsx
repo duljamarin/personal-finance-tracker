@@ -79,7 +79,7 @@ function MiniHealthScore() {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-bold font-display text-ink-primary dark:text-white tabular-nums">{score}</span>
+          <span className="text-3xl font-semibold text-ink-primary dark:text-white metric">{score}</span>
           <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400">Good</span>
         </div>
       </div>
@@ -161,10 +161,10 @@ function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = fal
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} grid lg:grid-cols-2 gap-0 rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden ${className}`}
+      className={`transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} grid lg:grid-cols-2 gap-0 rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden ${className}`}
     >
       <div className={`p-8 sm:p-10 flex flex-col justify-center ${flip ? 'lg:order-2' : ''}`}>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600 dark:text-brand-400 mb-3">{eyebrow}</p>
+        <p className="text-[13px] font-medium text-ink-muted dark:text-white/70 mb-3">{eyebrow}</p>
         <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink-primary dark:text-white leading-tight mb-4">{title}</h3>
         <p className="text-base text-ink-muted dark:text-white leading-relaxed">{desc}</p>
       </div>
@@ -179,9 +179,7 @@ function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = fal
 function SecondaryItem({ icon: Icon, text }) {
   return (
     <li className="flex items-start gap-3 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0">
-      <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-brand-50 dark:bg-brand-950/40 flex items-center justify-center mt-0.5">
-        <Icon className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" strokeWidth={1.8} />
-      </div>
+      <Icon className="flex-shrink-0 w-4 h-4 mt-0.5 text-ink-muted dark:text-white/60" strokeWidth={1.75} />
       <span className="text-sm text-ink-primary dark:text-white leading-relaxed">{text}</span>
     </li>
   );
@@ -190,10 +188,8 @@ function SecondaryItem({ icon: Icon, text }) {
 // ── Privacy card ──────────────────────────────────────────────────────────────
 function PrivacyCard({ icon: Icon, title, desc }) {
   return (
-    <div className="flex gap-4">
-      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-600/10 dark:bg-brand-600/15 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-brand-600 dark:text-brand-400" strokeWidth={1.6} />
-      </div>
+    <div className="flex gap-3.5">
+      <Icon className="flex-shrink-0 w-5 h-5 mt-0.5 text-ink-muted dark:text-white/60" strokeWidth={1.6} />
       <div>
         <h4 className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{title}</h4>
         <p className="text-sm text-ink-muted dark:text-white leading-relaxed">{desc}</p>
@@ -225,7 +221,6 @@ function FaqItem({ q, a }) {
   );
 }
 
-// ── Eyebrow chip ─────────────────────────────────────────────────────────────
 function Eyebrow({ children }) {
   return (
     <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600 dark:text-brand-400 mb-4">{children}</p>
@@ -294,19 +289,20 @@ export default function LandingPage() {
                 {t('landing.hero.subtitle')}
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 mb-6" style={{ animationDelay: '180ms' }}>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '180ms' }}>
                 <Link
                   to="/register"
                   className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all text-base shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30"
                 >
                   {t('landing.hero.getStarted')}
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
+      
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center px-7 py-3.5 border border-ink-primary/20 hover:border-brand-600/50 dark:border-white/15 dark:hover:border-brand-400/50 text-ink-primary dark:text-white font-medium rounded-md transition-all text-base"
+                  className="group inline-flex items-center gap-1.5 text-base font-medium text-ink-muted dark:text-white/80 hover:text-ink-primary dark:hover:text-white transition-colors"
                 >
                   {t('landing.hero.signIn')}
+                
                 </Link>
               </div>
 
@@ -322,7 +318,7 @@ export default function LandingPage() {
 
             {/* Demo */}
             <div className="relative">
-              <Suspense fallback={<div className="rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card" style={{ minHeight: 520 }} />}>
+              <Suspense fallback={<div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card" style={{ minHeight: 520 }} />}>
                 <DemoWorkspace />
               </Suspense>
             </div>
@@ -409,7 +405,7 @@ function HeroFeaturesSection({ t }) {
             preview={
               <div>
                 <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
-                  <span>2025 — Year to date</span>
+                  <span>2025 - Year to date</span>
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />Income</span>
                     <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: '#e8394d' }} />Expenses</span>
@@ -592,7 +588,7 @@ function PricingPreviewSection({ t }) {
         </div>
         <div className="grid sm:grid-cols-2 gap-5 mb-8">
           {/* Free */}
-          <div className="rounded-2xl border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-8">
+          <div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-8">
             <div className="flex items-center gap-2 mb-6">
               <span className="px-2.5 py-1 rounded-md bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 text-xs font-semibold">
                 {t('landing.pricingPreview.free.label')}
@@ -608,7 +604,7 @@ function PricingPreviewSection({ t }) {
             </ul>
           </div>
           {/* Premium */}
-          <div className="rounded-2xl border-2 border-brand-600/40 bg-white dark:bg-surface-dark-card p-8 relative overflow-hidden">
+          <div className="rounded-[10px] border border-brand-600/50 ring-1 ring-brand-600/20 bg-white dark:bg-surface-dark-card p-8 relative overflow-hidden">
             <div
               aria-hidden="true"
               className="absolute inset-0 pointer-events-none opacity-[0.04]"

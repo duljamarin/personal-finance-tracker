@@ -107,6 +107,19 @@
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+  /* Numeric metric helpers — see .claude/design-system.md §1. Numbers are the hero. */
+  .metric {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .metric-hero {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
   .summary-eur-label {
     color: #000;
   }

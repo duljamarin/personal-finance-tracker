@@ -534,7 +534,7 @@ export default function DemoWorkspace() {
   }, []);
 
   return (
-    <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-2xl overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
+    <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-[10px] overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
       <div className="p-4 sm:p-5 space-y-4">
         {/* Persistence banner */}
         {showBanner && (
