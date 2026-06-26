@@ -10,7 +10,6 @@ import {
   Zap, Database, Eye,
 } from 'lucide-react';
 
-const DemoWorkspace = lazy(() => import('./Landing/DemoWorkspace'));
 
 // ── Scroll-reveal hook ──────────────────────────────────────────────────────
 function useReveal(threshold = 0.12) {
@@ -315,19 +314,9 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-
-            {/* Demo */}
-            <div className="relative">
-              <Suspense fallback={<div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card" style={{ minHeight: 520 }} />}>
-                <DemoWorkspace />
-              </Suspense>
-            </div>
           </div>
         </div>
       </section>
-
-      {/* ── DEMO BAND ────────────────────────────────────────────────────────── */}
-      <DemoBandSection t={t} />
 
       {/* ── HERO FEATURES ────────────────────────────────────────────────────── */}
       <HeroFeaturesSection t={t} />
@@ -358,32 +347,6 @@ export default function LandingPage() {
 }
 
 // ── Section components ────────────────────────────────────────────────────────
-
-function DemoBandSection({ t }) {
-  const [ref, visible] = useReveal(0.15);
-  return (
-    <section
-      ref={ref}
-      className={`bg-brand-600 py-12 sm:py-16 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-    >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white leading-tight mb-3">
-          {t('landing.demoBand.title')}
-        </h2>
-        <p className="text-base text-white/80 leading-relaxed max-w-2xl mx-auto mb-6">
-          {t('landing.demoBand.desc')}
-        </p>
-        <Link
-          to="/register"
-          className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-brand-700 font-semibold rounded-md text-sm hover:bg-brand-50 transition-colors"
-        >
-          {t('landing.demoBand.cta')}
-          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
-        </Link>
-      </div>
-    </section>
-  );
-}
 
 function HeroFeaturesSection({ t }) {
   const feats = t('landing.heroFeatures', { returnObjects: true });

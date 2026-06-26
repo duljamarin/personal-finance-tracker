@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { trackEvent } from '../../lib/analytics';
 import { supabase } from '../../utils/supabaseClient';
-import { fetchCategories, addCategory, addTransaction, bulkImportTransactions } from '../../utils/api';
+import { fetchCategories, addCategory, addTransaction } from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import Button from '../UI/Button';
@@ -14,10 +14,8 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import ProgressBar from './ProgressBar';
 import CurrencyStep from './steps/CurrencyStep';
 import ExpensesStep from './steps/ExpensesStep';
-import DemoDataStep from './steps/DemoDataStep';
 import CurrencyArt from './art/CurrencyArt';
 import ExpensesArt from './art/ExpensesArt';
-import DemoArt from './art/DemoArt';
 
 export default function OnboardingWizard() {
   const { t } = useTranslation();
@@ -26,26 +24,8 @@ export default function OnboardingWizard() {
   const { addToast } = useToast();
   const { reloadTransactions, reloadCategories } = useTransactions();
 
-  // Detect demo data on mount — determines step sequence.
-  // Falls back to localStorage because email confirmation opens in a new tab
-  // where sessionStorage is empty (sessionStorage is tab-scoped, localStorage is not).
-  const [hasDemoData] = useState(() => {
-    try {
-      const raw =
-        sessionStorage.getItem('demo_pending_import') ||
-        localStorage.getItem('demo_pending_import');
-      if (!raw) return false;
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length > 0;
-    } catch {
-      return false;
-    }
-  });
-
-  // Step sequence:
-  //   With demo data:  [demo(1), currency(2), expenses(3)]
-  //   Without demo:    [currency(1), expenses(2)]
-  const steps = hasDemoData ? ['demo', 'currency', 'expenses'] : ['currency', 'expenses'];
+  // Step sequence: currency, then starting expenses.
+  const steps = ['currency', 'expenses'];
   const TOTAL_STEPS = steps.length;
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -59,7 +39,6 @@ export default function OnboardingWizard() {
     currency: 'EUR',
     exchangeRate: 1.0,
     expenses: [{ id: crypto.randomUUID(), amount: '', categoryId: '' }],
-    demoChoice: 'keep', // 'keep' | 'discard'
   });
 
   useEffect(() => {
@@ -97,10 +76,6 @@ export default function OnboardingWizard() {
   }
 
   function handleSkip() {
-    // Skipping the demo step means the user doesn't want the demo data
-    if (steps[currentStep - 1] === 'demo') {
-      updateData('demoChoice', 'discard');
-    }
     if (currentStep < TOTAL_STEPS) {
       handleNext();
     } else {
@@ -111,7 +86,7 @@ export default function OnboardingWizard() {
   async function handleFinish() {
     setSubmitting(true);
     try {
-      const { currency, exchangeRate, expenses, demoChoice } = wizardData;
+      const { currency, exchangeRate, expenses } = wizardData;
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
 
@@ -150,52 +125,6 @@ export default function OnboardingWizard() {
             });
           })
         );
-      }
-
-      // Import demo transactions if the user chose to keep them.
-      // Read from sessionStorage first, fall back to localStorage (email confirmation
-      // opens in a new tab where sessionStorage is empty).
-      if (hasDemoData) {
-        if (demoChoice === 'keep') {
-          try {
-            const raw =
-              sessionStorage.getItem('demo_pending_import') ||
-              localStorage.getItem('demo_pending_import');
-            if (raw) {
-              const demoTxs = JSON.parse(raw);
-              if (Array.isArray(demoTxs) && demoTxs.length > 0) {
-                const catMap = new Map(localCategories.map((c) => [c.name, c.id]));
-                const missingNames = [
-                  ...new Set(demoTxs.map((tx) => tx.category).filter(Boolean)),
-                ].filter((name) => !catMap.has(name));
-
-                await Promise.all(
-                  missingNames.map(async (name) => {
-                    const created = await addCategory({ name });
-                    catMap.set(name, created.id);
-                    localCategories = [...localCategories, created];
-                  })
-                );
-
-                const rows = demoTxs.map((tx) => ({
-                  title: tx.title,
-                  amount: tx.amount,
-                  type: tx.type,
-                  date: tx.date,
-                  category_id: catMap.get(tx.category) ?? null,
-                  currency_code: currency,
-                  exchange_rate: rate,
-                }));
-
-                await bulkImportTransactions(rows);
-              }
-            }
-          } catch {
-            // Demo import failure must not block onboarding completion
-          }
-        }
-        sessionStorage.removeItem('demo_pending_import');
-        localStorage.removeItem('demo_pending_import');
       }
 
       // Update onboarding flag after all data is written, then reload everything once.
@@ -254,13 +183,12 @@ export default function OnboardingWizard() {
   const isLastStep = currentStep === TOTAL_STEPS;
 
   const StepArt = {
-    demo: DemoArt,
     currency: CurrencyArt,
     expenses: ExpensesArt,
   }[stepKey];
 
-  // The expenses skip button only shows on the last step when not coming from demo
-  const canSkip = !isLastStep || (!hasDemoData && stepKey === 'expenses');
+  // The expenses (last) step can be skipped if the user has no starting expenses.
+  const canSkip = !isLastStep || stepKey === 'expenses';
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
@@ -297,12 +225,6 @@ export default function OnboardingWizard() {
 
             {/* Form column */}
             <div className="p-6 sm:p-8 overflow-visible">
-              {stepKey === 'demo' && (
-                <DemoDataStep
-                  choice={wizardData.demoChoice}
-                  onChoice={(val) => updateData('demoChoice', val)}
-                />
-              )}
               {stepKey === 'currency' && (
                 <CurrencyStep
                   currency={wizardData.currency}

@@ -482,11 +482,6 @@
         "noAdvice": "Vetëm analitikë, jo këshilla financiare"
       }
     },
-    "demoBand": {
-      "title": "Demo-ja ËSHTË dëshmi.",
-      "desc": "Pa screenshot-e. Pa fjalë boshe. Eksploroni aplikacionin real këtu - shtoni transaksione, shfletoni buxhetet, kontrolloni pasqyrën. Krijoni llogari vetëm kur dëshironi të ruani të dhënat.",
-      "cta": "Filloni falas"
-    },
     "heroFeatures": {
       "tracking": {
         "eyebrow": "Gjurmim i Mençur",
@@ -627,33 +622,6 @@
       "secondary": "Shihni çmimet",
       "trustLine": "Plan falas përgjithmonë · Pa kartë krediti · Anuloni planin me pagesë kurdo"
     }
-  },
-  "demo": {
-    "liveBadge": "Demo live - provoni tani",
-    "workspaceTitle": "Hapësira Juaj Financiare",
-    "workspaceSubtitle": "Të dhëna demo - shtoni, modifikoni dhe eksploroni",
-    "addTransaction": "Shto transaksion",
-    "addNewTransaction": "Transaksion i ri",
-    "editNewTransaction": "Modifiko transaksionin",
-    "addBtn": "Shto",
-    "saveBtn": "Ruaj",
-    "editBtn": "Modifiko",
-    "titlePlaceholder": "p.sh. Blerje ushqimore, Pagë",
-    "errorTitle": "Ju lutem vendosni një titull.",
-    "errorAmount": "Ju lutem vendosni një shumë të vlefshme.",
-    "persistenceBanner": "Po e gëzoni demon? Ruajeni hapësirën tuaj me një llogari falas.",
-    "saveFree": "Ruaj falas",
-    "saveAccount": "Ruaj në llogari",
-    "footerNote": "Të dhënat rivendosen me ringarkimin e faqes - regjistrohuni për t'i ruajtur.",
-    "byCategory": "Shpenzimet sipas Kategorisë",
-    "tab": {
-      "overview": "Përmbledhje",
-      "transactions": "Transaksionet",
-      "budgets": "Buxhetet"
-    },
-    "overBudget": "{{amount}} mbi buxhet",
-    "remaining": "{{amount}} mbetet",
-    "budgetSaveHint": "Krijoni llogari falas për të vendosur buxhete dhe ruajtur progresin tuaj."
   },
   "currency": {
     "label": "Valuta",
@@ -1112,19 +1080,8 @@
       "1": "Valuta",
       "2": "Të ardhurat",
       "3": "Shpenzimet",
-      "demo": "Të dhënat tuaja",
       "currency": "Valuta",
       "expenses": "Shpenzimet"
-    },
-    "demoData": {
-      "badge": "Të dhëna demo u zbuluan",
-      "title": "Kjo është hapësira që ndërtuat.",
-      "subtitle": "Mbajeni si provë, ose pastroni dhe filloni me numrat tuaj realë.",
-      "keepLabel": "Mbaj të dhënat e demos",
-      "keepHint": "Transaksionet e demostratës do të importohen - mund t'i fshini në çdo kohë.",
-      "discardLabel": "Fillo me numrat e mi realë",
-      "discardHint": "Të dhënat e demos do të hidhen. Do të filloni me hapësirë të pastër.",
-      "note": "Gjithmonë mund të shtoni transaksionin tuaj të parë real nga paneli kryesor."
     },
     "currency": {
       "title": "Zgjidhni monedhën tuaj",

@@ -51,54 +51,6 @@ export default function Dashboard() {
 
   const { monthlyTransactionCount, transactionLimit } = useSubscription();
 
-  // Import demo transactions if the user saved them before signing in.
-  // Falls back to localStorage for the email-confirmation flow where the
-  // confirmation link opens in a new tab (sessionStorage is tab-scoped).
-  const demoImportedRef = useRef(false);
-  useEffect(() => {
-    if (demoImportedRef.current) return;
-    const raw =
-      sessionStorage.getItem('demo_pending_import') ||
-      localStorage.getItem('demo_pending_import');
-    if (!raw) return;
-    demoImportedRef.current = true;
-    sessionStorage.removeItem('demo_pending_import');
-    localStorage.removeItem('demo_pending_import');
-    (async () => {
-      try {
-        const demoTxs = JSON.parse(raw);
-        if (!Array.isArray(demoTxs) || demoTxs.length === 0) return;
-
-        const cats = await fetchCategories();
-        const catMap = new Map(cats.map((c) => [c.name, c.id]));
-
-        const missingNames = [...new Set(demoTxs.map((tx) => tx.category).filter(Boolean))].filter(
-          (name) => !catMap.has(name),
-        );
-        await Promise.all(
-          missingNames.map(async (name) => {
-            const created = await addCategory({ name });
-            catMap.set(name, created.id);
-          }),
-        );
-
-        const rows = demoTxs.map((tx) => ({
-          title: tx.title,
-          amount: tx.amount,
-          type: tx.type,
-          date: tx.date,
-          category_id: catMap.get(tx.category) ?? null,
-          currency_code: 'EUR',
-          exchange_rate: 1.0,
-        }));
-
-        await bulkImportTransactions(rows);
-        await reloadTransactions();
-      } catch {
-        // Silent — demo import must not disrupt the dashboard
-      }
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [showGreeting, setShowGreeting] = useState(false);
   const username = localStorage.getItem('username');

@@ -482,11 +482,6 @@
         "noAdvice": "Analytics only, not financial advice"
       }
     },
-    "demoBand": {
-      "title": "The demo IS the proof.",
-      "desc": "No screenshots. No marketing copy. Explore the real app right here - add transactions, browse budgets, check the overview. Create an account only when you want to keep your data.",
-      "cta": "Start tracking free"
-    },
     "heroFeatures": {
       "tracking": {
         "eyebrow": "Smart Tracking",
@@ -627,33 +622,6 @@
       "secondary": "See pricing",
       "trustLine": "Free forever plan · No credit card · Cancel paid plan anytime"
     }
-  },
-  "demo": {
-    "liveBadge": "Live demo - try it now",
-    "workspaceTitle": "Your Financial Workspace",
-    "workspaceSubtitle": "Demo data - add, edit and explore",
-    "addTransaction": "Add transaction",
-    "addNewTransaction": "New transaction",
-    "editNewTransaction": "Edit transaction",
-    "addBtn": "Add",
-    "saveBtn": "Save",
-    "editBtn": "Edit",
-    "titlePlaceholder": "e.g. Grocery shopping, Salary",
-    "errorTitle": "Please enter a title.",
-    "errorAmount": "Please enter a valid amount.",
-    "persistenceBanner": "Enjoying the demo? Save your workspace with a free account.",
-    "saveFree": "Save free",
-    "saveAccount": "Save to account",
-    "footerNote": "Data resets on page reload - sign up to keep it.",
-    "byCategory": "Expenses by Category",
-    "tab": {
-      "overview": "Overview",
-      "transactions": "Transactions",
-      "budgets": "Budgets"
-    },
-    "overBudget": "{{amount}} over budget",
-    "remaining": "{{amount}} remaining",
-    "budgetSaveHint": "Create a free account to set custom budgets and save your progress."
   },
   "currency": {
     "label": "Currency",
@@ -1112,19 +1080,8 @@
       "1": "Currency",
       "2": "Income",
       "3": "Expenses",
-      "demo": "Your data",
       "currency": "Currency",
       "expenses": "Expenses"
-    },
-    "demoData": {
-      "badge": "Demo data detected",
-      "title": "This is the workspace you built.",
-      "subtitle": "Keep it as a trial, or clear it and start with your real numbers.",
-      "keepLabel": "Keep the demo data",
-      "keepHint": "Your demo transactions will be imported - you can delete them any time.",
-      "discardLabel": "Start fresh with my real numbers",
-      "discardHint": "The demo data will be discarded. You'll start with a clean workspace.",
-      "note": "You can always add your first real transaction from the dashboard."
     },
     "currency": {
       "title": "Select your currency",
