@@ -344,7 +344,10 @@ export default function LandingPage() {
 // ── Section components ────────────────────────────────────────────────────────
 
 function HeroFeaturesSection({ t }) {
-  const feats = t('landing.heroFeatures', { returnObjects: true });
+  // returnObjects can yield the key string before the i18n bundle resolves
+  // (first language switch). Coerce to an object so nested access never throws.
+  const raw = t('landing.heroFeatures', { returnObjects: true });
+  const feats = (raw && typeof raw === 'object') ? raw : {};
   return (
     <section className="py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -357,9 +360,9 @@ function HeroFeaturesSection({ t }) {
 
         <div className="space-y-5">
           <FeatureCard
-            eyebrow={feats.tracking.eyebrow}
-            title={feats.tracking.title}
-            desc={feats.tracking.desc}
+            eyebrow={feats.tracking?.eyebrow}
+            title={feats.tracking?.title}
+            desc={feats.tracking?.desc}
             preview={
               <div>
                 <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
@@ -389,24 +392,24 @@ function HeroFeaturesSection({ t }) {
           />
 
           <FeatureCard
-            eyebrow={feats.budgets.eyebrow}
-            title={feats.budgets.title}
-            desc={feats.budgets.desc}
+            eyebrow={feats.budgets?.eyebrow}
+            title={feats.budgets?.title}
+            desc={feats.budgets?.desc}
             flip
             preview={<MiniBudgets />}
           />
 
           <FeatureCard
-            eyebrow={feats.healthscore.eyebrow}
-            title={feats.healthscore.title}
-            desc={feats.healthscore.desc}
+            eyebrow={feats.healthscore?.eyebrow}
+            title={feats.healthscore?.title}
+            desc={feats.healthscore?.desc}
             preview={<MiniHealthScore />}
           />
 
           <FeatureCard
-            eyebrow={feats.multicurrency.eyebrow}
-            title={feats.multicurrency.title}
-            desc={feats.multicurrency.desc}
+            eyebrow={feats.multicurrency?.eyebrow}
+            title={feats.multicurrency?.title}
+            desc={feats.multicurrency?.desc}
             flip
             preview={<MiniCurrency />}
           />
