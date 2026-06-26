@@ -4,6 +4,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens (CSS custom properties) ──────────────────────────────────
+   Single source of truth for semantic colors. Tailwind tokens in
+   tailwind.config.cjs read these via var(); inline styles / SVG fills / chart
+   arrays read the same var(), so no hex literal survives. See design-system §2. */
+:root {
+  --c-brand-accent: #22AD93;
+  --c-income: #168b78;
+  --c-success: #168b78;
+  --c-expense: #e8394d;
+  --c-expense-bg: #fdf2f4;
+  --c-expense-tint: rgba(232, 57, 77, 0.12);
+  --c-expense-border: rgba(232, 57, 77, 0.30);
+  --c-danger: #e8394d;
+  --c-danger-hover: #cf2f41;
+  --c-warning: #C98A2B;
+  --c-warning-hover: #b3791f;
+  --c-warning-bg: #FBF4E6;
+  --c-warning-dark-bg: rgba(201, 138, 43, 0.14);
+  --c-data-blue: #6A8FC4;
+  --c-data-blue-deep: #5B8DB8;
+  --c-data-violet: #9B7EB3;
+  --c-data-sand: #C9A87C;
+  --c-data-gold: #D0A96A;
+  --c-data-rose: #C46A75;
+  --c-data-sage: #7A9E7E;
+  --c-data-stone: #7A756A;
+}
+.dark {
+  /* Positive emphasis uses the brighter accent teal in dark mode. */
+  --c-income: #22AD93;
+  --c-success: #22AD93;
+  --c-expense-bg: rgba(232, 57, 77, 0.12);
+  --c-warning-bg: rgba(201, 138, 43, 0.14);
+}
+
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;
