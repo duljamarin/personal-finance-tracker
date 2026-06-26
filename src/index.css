@@ -184,7 +184,7 @@
 .progressbar-label--active      { color: #0f6b5e !important; }
 .progressbar-label--inactive    { color: rgba(47,47,44,0.5) !important; }
 .progressbar-step-of            { color: rgba(47,47,44,0.6) !important; }
-.dark .progressbar-label--active   { color: #22ad93 !important; }
+.dark .progressbar-label--active   { color: var(--c-brand-accent) !important; }
 .dark .progressbar-label--inactive { color: rgba(255,255,255,0.45) !important; }
 .dark .progressbar-step-of         { color: rgba(255,255,255,0.55) !important; }
 /* Inactive circle numbers — keep them muted, not full white */

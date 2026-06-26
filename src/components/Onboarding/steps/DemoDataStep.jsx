@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 
 const KeepIcon = () => (
   <svg viewBox="0 0 40 40" fill="none" className="w-10 h-10" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="40" height="40" rx="10" fill="#22ad93" fillOpacity="0.12" />
-    <path d="M12 20.5l5.5 5.5 10.5-11" stroke="#22ad93" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    <rect width="40" height="40" rx="10" fill="var(--c-brand-accent)" fillOpacity="0.12" />
+    <path d="M12 20.5l5.5 5.5 10.5-11" stroke="var(--c-brand-accent)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -37,7 +37,7 @@ export default function DemoDataStep({ choice, onChoice }) {
         <button
           type="button"
           onClick={() => onChoice('keep')}
-          className={`group relative text-left p-4 rounded-xl border-2 transition-all duration-150 ${
+          className={`group relative text-left p-4 rounded-container border-2 transition-all duration-150 ${
             choice === 'keep'
               ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/40 shadow-md shadow-brand-600/10'
               : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-500/50 dark:hover:border-brand-600/50 bg-white dark:bg-surface-dark-card'
@@ -63,7 +63,7 @@ export default function DemoDataStep({ choice, onChoice }) {
         <button
           type="button"
           onClick={() => onChoice('discard')}
-          className={`group relative text-left p-4 rounded-xl border-2 transition-all duration-150 ${
+          className={`group relative text-left p-4 rounded-container border-2 transition-all duration-150 ${
             choice === 'discard'
               ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/40 shadow-md shadow-brand-600/10'
               : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-500/50 dark:hover:border-brand-600/50 bg-white dark:bg-surface-dark-card'

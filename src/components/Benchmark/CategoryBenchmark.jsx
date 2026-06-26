@@ -79,7 +79,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
           pillClass: 'bg-brand-50 dark:bg-brand-950/20 text-brand-700 dark:text-brand-300',
           borderClass: 'border-brand-500/40',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: '#22ad93',
+          progressColor: 'var(--c-brand-accent)',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

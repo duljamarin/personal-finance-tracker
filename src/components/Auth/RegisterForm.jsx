@@ -143,7 +143,7 @@ export default function RegisterForm() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
           <button
             type="button"
             onClick={handleGoogleLogin}

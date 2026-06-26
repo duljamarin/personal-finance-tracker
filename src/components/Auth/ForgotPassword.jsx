@@ -51,7 +51,7 @@ export default function ForgotPassword() {
   if (success) {
     return (
       <Shell>
-        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-8 sm:p-10 text-center shadow-sm">
+        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-8 sm:p-10 text-center shadow-sm">
           <div className="w-16 h-16 bg-brand-50 dark:bg-brand-950/40 rounded-full flex items-center justify-center mx-auto mb-5 border border-brand-200/60 dark:border-brand-800/30">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -94,7 +94,7 @@ export default function ForgotPassword() {
         </p>
       </div>
 
-      <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+      <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label={t('auth.email')}

@@ -159,7 +159,7 @@ function AuthGlobalUI() {
       )}
       {authLoading && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-8 shadow-lg">
+          <div className="bg-white dark:bg-surface-dark-tertiary rounded-container p-8 shadow-lg">
             <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-ink-muted dark:text-white font-medium text-sm text-center">{t('dashboard.processing')}</p>
           </div>

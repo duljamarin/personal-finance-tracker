@@ -18,7 +18,7 @@ export default function ChartWithTimeRange({ transactions }) {
   }, [transactions, range]);
 
   return (
-    <div className="bg-white dark:bg-surface-dark-card rounded-xl p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
+    <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h3 className="font-semibold tracking-tight text-sm text-ink-primary dark:text-white">
           {t('chart.monthlyOverview')}

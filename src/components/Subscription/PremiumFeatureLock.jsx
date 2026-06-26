@@ -9,7 +9,7 @@ export default function PremiumFeatureLock({ children, featureName }) {
   if (isPremium || isTrialing) return children;
 
   return (
-    <div className="relative rounded-xl overflow-hidden border border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle">
+    <div className="relative rounded-container overflow-hidden border border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle">
       {/* Faded content (no blur) */}
       <div className="opacity-30 pointer-events-none select-none">
         {children}

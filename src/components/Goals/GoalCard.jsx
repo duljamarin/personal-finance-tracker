@@ -32,7 +32,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200">
+    <Card className="hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors duration-200">
       <div className="p-4 sm:p-6">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">

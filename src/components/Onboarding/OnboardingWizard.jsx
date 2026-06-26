@@ -288,7 +288,7 @@ export default function OnboardingWizard() {
         />
 
         {/* Step content — split layout */}
-        <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline shadow-sm">
+        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline shadow-sm">
           <div className="grid lg:grid-cols-[5fr_7fr]">
             {/* Illustration column */}
             <div className="hidden lg:flex items-center justify-center p-8 bg-brand-50/30 dark:bg-brand-950/10 border-r border-surface-hairline dark:border-surface-dark-hairline rounded-l-xl overflow-hidden">

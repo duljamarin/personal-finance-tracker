@@ -195,7 +195,7 @@ export default function Sidebar() {
           {showUpgrade ? (
             <Link
               to="/pricing"
-              className="block w-full rounded-xl border border-brand-200/60 dark:border-brand-800/40 bg-brand-50 dark:bg-brand-950/30 p-3"
+              className="block w-full rounded-container border border-brand-200/60 dark:border-brand-800/40 bg-brand-50 dark:bg-brand-950/30 p-3"
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <Rocket className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
@@ -258,7 +258,7 @@ export default function Sidebar() {
           </button>
 
           {profileOpen && (
-            <div className={`absolute ${collapsed ? 'left-full ml-2' : 'left-0 right-0'} bottom-full mb-2 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-xl shadow-lg z-50 py-1.5 animate-scale-in min-w-[200px]`}>
+            <div className={`absolute ${collapsed ? 'left-full ml-2' : 'left-0 right-0'} bottom-full mb-2 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container shadow-lg z-50 py-1.5 animate-scale-in min-w-[200px]`}>
               <Link
                 to="/account"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}

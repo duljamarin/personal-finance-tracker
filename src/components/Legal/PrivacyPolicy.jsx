@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="bg-white dark:bg-surface-dark-card rounded-xl p-8 border border-surface-hairline dark:border-surface-dark-hairline">
+      <div className="bg-white dark:bg-surface-dark-card rounded-container p-8 border border-surface-hairline dark:border-surface-dark-hairline">
         <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white mb-2">
           {t('legal.privacy.title')}
         </h1>

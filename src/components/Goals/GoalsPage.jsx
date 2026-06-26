@@ -183,7 +183,7 @@ export default function GoalsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && !canAdd && (
-        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-surface-hairline dark:border-surface-dark-hairline rounded-xl flex items-center justify-between gap-3">
+        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-surface-hairline dark:border-surface-dark-hairline rounded-container flex items-center justify-between gap-3">
           <p className="text-sm text-brand-700 dark:text-brand-500">
             {t('limits.goalLimitReached', { limit: goalLimit })}
           </p>

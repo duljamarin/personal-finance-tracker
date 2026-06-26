@@ -20,10 +20,10 @@ export default function Modal({ children, onClose, className = '', drawer = fals
     >
       <div
         className={`
-          bg-white dark:bg-surface-dark-card shadow-xl relative w-full border border-surface-hairline dark:border-surface-dark-hairline
+          bg-white dark:bg-surface-dark-card shadow-tier2 relative w-full border border-surface-hairline dark:border-surface-dark-hairline
           ${isMobileDrawer
-            ? 'md:rounded-xl md:max-w-lg rounded-t-xl sm:rounded-xl mb-0 sm:mb-0 md:relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto scrollbar-thin animate-slide-up md:animate-scale-in'
-            : 'rounded-xl max-w-lg max-h-[90vh] overflow-y-auto scrollbar-thin animate-scale-in'
+            ? 'md:rounded-container md:max-w-lg rounded-t-xl sm:rounded-container mb-0 sm:mb-0 md:relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto scrollbar-thin animate-slide-up md:animate-scale-in'
+            : 'rounded-container max-w-lg max-h-[90vh] overflow-y-auto scrollbar-thin animate-scale-in'
           }
           ${className}
         `}

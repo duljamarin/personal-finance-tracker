@@ -6,7 +6,7 @@ export default function FirstRunGuide({ onAddTransaction }) {
   return (
     <div className="mt-6 animate-in">
       {/* Hero empty state */}
-      <div className="rounded-xl border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
+      <div className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
         <div className="px-8 py-12 text-center max-w-lg mx-auto">
           {/* Illustration */}
           <div className="flex justify-center mb-6">
