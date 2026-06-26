@@ -262,7 +262,7 @@ export default function BudgetsPage() {
       />
 
       {/* Month Navigator */}
-      <div className="flex items-center justify-center gap-4 bg-white dark:bg-surface-dark-card rounded-xl shadow-sm border border-surface-hairline dark:border-surface-dark-hairline p-3">
+      <div className="flex items-center justify-center gap-4 bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-3">
         <button
           onClick={goToPrevMonth}
           className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-white transition"
@@ -291,7 +291,7 @@ export default function BudgetsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && budgets.length >= budgetLimit && (
-        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-surface-hairline dark:border-surface-dark-hairline rounded-xl flex items-center justify-between gap-3">
+        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-surface-hairline dark:border-surface-dark-hairline rounded-container flex items-center justify-between gap-3">
           <p className="text-sm text-brand-700 dark:text-brand-500">
             {t('limits.budgetLimitReached', { limit: budgetLimit })}
           </p>
@@ -316,7 +316,7 @@ export default function BudgetsPage() {
             <div className="p-4">
               <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalSpent')}</p>
               <p className={`font-semibold tracking-tight text-2xl ${getValueColorClass(totalSpent, totalBudgeted, {
-                positive: 'text-[#e8394d] dark:text-[#e8394d]',
+                positive: 'text-expense dark:text-expense',
                 negative: 'text-ink-primary dark:text-white'
               })}`}>
                 €{totalSpent.toFixed(2)}
@@ -328,7 +328,7 @@ export default function BudgetsPage() {
               <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalRemaining')}</p>
               <p className={`font-semibold tracking-tight text-2xl ${getValueColorClass(totalRemaining, 0, {
                 positive: 'text-brand-600 dark:text-brand-500',
-                negative: 'text-[#e8394d] dark:text-[#e8394d]'
+                negative: 'text-expense dark:text-expense'
               })}`}>
                 €{totalRemaining.toFixed(2)}
               </p>
@@ -337,7 +337,7 @@ export default function BudgetsPage() {
           <Card>
             <div className="p-4">
               <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.percentUsed')}</p>
-              <p className={`font-semibold tracking-tight text-2xl ${percentUsed > 100 ? 'text-[#e8394d] dark:text-[#e8394d]' : percentUsed > 80 ? 'text-brand-700 dark:text-brand-500' : 'text-brand-600 dark:text-brand-500'}`}>
+              <p className={`font-semibold tracking-tight text-2xl ${percentUsed > 100 ? 'text-expense dark:text-expense' : percentUsed > 80 ? 'text-brand-700 dark:text-brand-500' : 'text-brand-600 dark:text-brand-500'}`}>
                 {percentUsed}%
               </p>
             </div>

@@ -3,7 +3,7 @@ export default function Card({ children, className = '', variant = 'default', pa
     default:
       'bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline',
     elevated:
-      'bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline shadow-md',
+      'bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline shadow-tier2',
     interactive:
       'bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline ' +
       'hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors duration-200 cursor-pointer',
@@ -21,7 +21,7 @@ export default function Card({ children, className = '', variant = 'default', pa
   };
 
   return (
-    <div className={`${variants[variant]} ${paddings[padding]} rounded-[10px] ${className}`}>
+    <div className={`${variants[variant]} ${paddings[padding]} rounded-container ${className}`}>
       {children}
     </div>
   );

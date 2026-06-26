@@ -15,6 +15,17 @@ export const INCOME_COLOR = 'var(--c-income)';
 export const EXPENSE_COLOR = 'var(--c-expense)';
 export const WARNING_COLOR = 'var(--c-warning)';
 
+/**
+ * Budget/usage progress color by spend ratio. over -> expense, near -> warning,
+ * on-track -> income. Single source for budget bars (BudgetCard, BudgetSummaryBar,
+ * FreePlanUsageCounter, Benchmark). Returns a CSS-var string.
+ */
+export function progressColor(ratio) {
+  if (ratio >= 1.0) return EXPENSE_COLOR;
+  if (ratio >= 0.7) return WARNING_COLOR;
+  return INCOME_COLOR;
+}
+
 // Hex fallbacks for the rare case a raw hex is unavoidable (e.g. computing a
 // derived rgba). These mirror :root in index.css.
 export const HEX = {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Icon from '../UI/Icon';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { progressColor } from '../../utils/chartColors';
 
 export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete }) {
   const { t } = useTranslation();
@@ -15,12 +16,7 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
   const remaining = budgetAmount - spentAmount;
   const isOverBudget = spentAmount > budgetAmount;
 
-  const getProgressColor = () => {
-    if (ratio >= 1.0) return '#e8394d';
-    if (ratio >= 0.9) return '#d97706';
-    if (ratio >= 0.7) return '#ca8a04';
-    return '#168b78';
-  };
+  const getProgressColor = () => progressColor(ratio);
 
   // Forecast calculation for the current month
   const getForecast = () => {
@@ -52,7 +48,7 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
             </button>
             <button
               onClick={() => onDelete(budget)}
-              className="p-2 text-ink-muted dark:text-white hover:text-[#e8394d] dark:hover:text-[#e8394d] transition"
+              className="p-2 text-ink-muted dark:text-white hover:text-expense dark:hover:text-expense transition"
               title={t('budgets.deleteConfirm')}
             >
               <Icon name="delete" />
@@ -68,7 +64,7 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
             </span>
             {' '}{t('budgets.card.spent')} {t('budgets.card.of')} €{budgetAmount.toFixed(2)}
           </span>
-          <span className={`font-semibold ${isOverBudget ? 'text-[#e8394d] dark:text-[#e8394d]' : 'text-ink-secondary dark:text-white'}`}>
+          <span className={`font-semibold ${isOverBudget ? 'text-expense dark:text-expense' : 'text-ink-secondary dark:text-white'}`}>
             {percentUsed}%
           </span>
         </div>
@@ -98,7 +94,7 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
         {/* Forecast line */}
         <div className="mt-3 pt-3 border-t border-surface-hairline dark:border-surface-dark-hairline">
           {forecast && (
-            <p className={`text-sm font-medium ${forecast.willExceed ? 'text-[#e8394d]/80 dark:text-[#e8394d]/70' : 'text-brand-600 dark:text-brand-500'}`}>
+            <p className={`text-sm font-medium ${forecast.willExceed ? 'text-expense/80 dark:text-expense/70' : 'text-brand-600 dark:text-brand-500'}`}>
               {forecast.willExceed
                 ? t('budgets.forecast.willExceed', { amount: forecast.exceedBy.toFixed(2) })
                 : t('budgets.forecast.onTrack', { amount: forecast.projected.toFixed(2) })

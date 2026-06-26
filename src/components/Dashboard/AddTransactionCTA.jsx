@@ -12,7 +12,7 @@ export default function AddTransactionCTA({ onClick }) {
       <div aria-hidden="true" className="absolute top-0 right-0 w-24 h-24 opacity-[0.06] dark:opacity-[0.04]">
         <svg viewBox="0 0 96 96" className="w-full h-full">
           {[0,1,2,3].map(row => [0,1,2,3].map(col => (
-            <circle key={`${row}-${col}`} cx={col*24+12} cy={row*24+12} r="2" fill="#168b78" />
+            <circle key={`${row}-${col}`} cx={col*24+12} cy={row*24+12} r="2" fill="var(--c-income)" />
           )))}
         </svg>
       </div>

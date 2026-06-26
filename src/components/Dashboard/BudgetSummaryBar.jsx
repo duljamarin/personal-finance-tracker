@@ -4,6 +4,7 @@ import { fetchBudgets, fetchMonthlyExpensesByCategory } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
+import { progressColor } from '../../utils/chartColors';
 
 export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   const { t, i18n } = useTranslation();
@@ -27,12 +28,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   );
   const { budgets, expenses } = data;
 
-  const getProgressColor = (ratio) => {
-    if (ratio >= 1.0) return '#e8394d';
-    if (ratio >= 0.9) return '#d97706';
-    if (ratio >= 0.7) return '#ca8a04';
-    return '#168b78';
-  };
+  const getProgressColor = (ratio) => progressColor(ratio);
 
   if (loading) {
     // Skeleton mirrors the loaded card's padding (p-4 sm:p-6) and row shape
@@ -109,7 +105,7 @@ export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
                     {translateCategoryName(budget.category?.name || '')}
                   </span>
                   <span className="text-xs text-ink-muted dark:text-white ml-2 whitespace-nowrap">
-                    <span className={ratio >= 1 ? 'text-[#e8394d] dark:text-[#e8394d] font-semibold' : ''}>
+                    <span className={ratio >= 1 ? 'text-expense dark:text-expense font-semibold' : ''}>
                       &euro;{spent.toFixed(0)}
                     </span>
                     {' / '}&euro;{budgetAmount.toFixed(0)}

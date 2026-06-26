@@ -46,17 +46,17 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
   const valueTone = (tone) => {
     if (tone === 'income') return 'text-brand-600 dark:text-brand-400';
     if (tone === 'positive') return 'text-ink-primary dark:text-white';
-    if (tone === 'expense' || tone === 'negative') return 'text-[#e8394d] dark:text-[#e8394d]';
+    if (tone === 'expense' || tone === 'negative') return 'text-expense dark:text-expense';
     return 'text-ink-primary dark:text-white';
   };
   const iconTone = (tone) => {
     if (tone === 'income' || tone === 'positive') return 'bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400';
-    if (tone === 'expense' || tone === 'negative') return 'bg-rose-50 text-[#e8394d] dark:bg-rose-950/20 dark:text-[#e8394d]';
+    if (tone === 'expense' || tone === 'negative') return 'bg-expense-bg text-expense dark:bg-expense-tint dark:text-expense';
     return 'bg-surface-page text-ink-muted dark:bg-surface-dark-page dark:text-white';
   };
   const borderTone = (tone) => {
     if (tone === 'income' || tone === 'positive') return 'border-l-2 border-l-brand-500';
-    if (tone === 'negative' || tone === 'expense') return 'border-l-2 border-l-[#e8394d]';
+    if (tone === 'negative' || tone === 'expense') return 'border-l-2 border-l-expense';
     return 'border-l-2 border-l-surface-hairline';
   };
 

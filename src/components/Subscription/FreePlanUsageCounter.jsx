@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { progressColor } from '../../utils/chartColors';
 
 /**
  * Compact usage counter bar. Shows used/limit and a progress bar.
@@ -30,14 +31,14 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, threshold 
   const isNearLimit = pct >= 0.8 && pct < 1;
   const isAtLimit   = pct >= 1;
 
-  const barColor = isAtLimit ? '#e8394d' : isNearLimit ? '#f59e0b' : '#168b78';
+  const barColor = progressColor(pct);
 
   return (
-    <div className={`flex items-center gap-4 px-4 py-3 rounded-lg border text-sm ${
+    <div className={`flex items-center gap-4 px-4 py-3 rounded-control border text-sm ${
       isAtLimit
-        ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/40'
+        ? 'bg-expense-bg border-expense/30'
         : isNearLimit
-        ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40'
+        ? 'bg-warning-bg border-warning/30'
         : 'bg-surface-page dark:bg-surface-dark-elevated border-surface-hairline dark:border-surface-dark-hairline'
     }`}>
       <div className="flex-1 min-w-0">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { INCOME_COLOR, EXPENSE_COLOR, HEX } from '../../utils/chartColors';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -106,13 +107,13 @@ function ForecastTooltip({ active, payload, label }) {
   const change = payload[0]?.payload?.change ?? 0;
 
   return (
-    <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md text-sm">
+    <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-control shadow-tier2 text-sm">
       <p className="font-semibold text-ink-primary dark:text-white mb-1">{label}</p>
-      <p className="tabular-nums" style={{ color: balance >= 0 ? '#168b78' : '#e8394d' }}>
+      <p className="tabular-nums" style={{ color: balance >= 0 ? INCOME_COLOR : EXPENSE_COLOR }}>
         {t('cashFlow.balance')}: {fmtCurrency(balance, 'EUR', { compact: true })}
       </p>
       {change !== 0 && (
-        <p className="tabular-nums mt-0.5" style={{ color: change > 0 ? '#43c5aa' : '#e8394d' }}>
+        <p className="tabular-nums mt-0.5" style={{ color: change > 0 ? HEX.brandLight : EXPENSE_COLOR }}>
           {change > 0 ? '+' : ''}{fmtCurrency(change, 'EUR', { compact: true })}
         </p>
       )}
@@ -163,11 +164,12 @@ export default function CashFlowForecast() {
 
   const axisColor = dark ? '#FFFFFF' : '#6b7280';
   const gridColor = dark ? '#1F1F22' : '#EDEDE8';
-  const areaColor = endBalance >= 0 ? '#168b78' : '#e8394d';
-  const areaFill = endBalance >= 0 ? '#168b7833' : '#e8394d33';
+  const areaColor = endBalance >= 0 ? INCOME_COLOR : EXPENSE_COLOR;
+  // Recharts area fill needs a literal color+alpha string; HEX mirrors the tokens.
+  const areaFill = endBalance >= 0 ? `${HEX.income}33` : `${HEX.expense}33`;
 
   return (
-    <div className="bg-white dark:bg-surface-dark-tertiary rounded-xl p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
+    <div className="bg-white dark:bg-surface-dark-tertiary rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div>
@@ -210,7 +212,7 @@ export default function CashFlowForecast() {
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
           <p className="text-xs text-ink-muted dark:text-white">{t('cashFlow.trackedBalance')}</p>
-          <p className={`text-sm font-bold ${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#e8394d]'}`}>
+          <p className={`text-sm font-bold ${net >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
             {fmtCurrency(net, 'EUR', { compact: true })}
           </p>
           <p className="text-[10px] text-ink-muted/60 dark:text-white mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
@@ -218,15 +220,15 @@ export default function CashFlowForecast() {
         <div className="text-ink-muted/50 dark:text-white/50 text-lg font-light">→</div>
         <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
           <p className="text-xs text-ink-muted dark:text-white">{t(`cashFlow.projectedIn.${horizon}`)}</p>
-          <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#e8394d]'}`}>
+          <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
             {fmtCurrency(endBalance, 'EUR', { compact: true })}
           </p>
         </div>
         {delta !== 0 && (
           <div className={`text-xs font-medium px-2 py-1 rounded-full ${
             delta >= 0
-              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-              : 'bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] text-[#e8394d]'
+              ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400'
+              : 'bg-expense-bg text-expense'
           }`}>
             {delta > 0 ? '+' : ''}{fmtCurrency(delta, 'EUR', { compact: true })}
           </div>

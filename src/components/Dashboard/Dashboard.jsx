@@ -189,7 +189,7 @@ export default function Dashboard() {
 
       <div className="mt-8">
         {error && (
-          <div className="mb-6 p-4 bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] border border-[#e8394d]/30 rounded-xl text-[#e8394d] font-medium text-sm">
+          <div className="mb-6 p-4 bg-expense-bg border border-expense/30 rounded-container text-expense font-medium text-sm">
             {error}
           </div>
         )}

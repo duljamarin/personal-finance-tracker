@@ -7,10 +7,11 @@ export function cn(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Common card styling classes
+// Common card styling classes. Resting cards are tier-1 (hairline border, no
+// shadow); `hover` lifts the border, not a shadow — see design-system §3.
 export const cardClasses = {
-  base: "bg-white dark:bg-surface-dark-tertiary rounded-xl p-5 sm:p-6",
-  hover: "hover:shadow-md transition-all duration-300",
+  base: "bg-white dark:bg-surface-dark-tertiary rounded-container p-5 sm:p-6",
+  hover: "hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors duration-200",
   border: "border border-surface-hairline dark:border-surface-dark-hairline",
 };
 
