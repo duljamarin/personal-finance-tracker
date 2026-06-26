@@ -122,8 +122,8 @@ export default function CategoriesPage() {
         {t('categories.title')}
       </h2>
 
-      {error && <div className="text-[#e8394d] mb-2 text-sm">{error}</div>}
-      {catError && <div className="text-[#e8394d] mb-2 text-sm">{catError}</div>}
+      {error && <div className="text-expense mb-2 text-sm">{error}</div>}
+      {catError && <div className="text-expense mb-2 text-sm">{catError}</div>}
 
       <div className="mb-8 flex flex-col sm:flex-row gap-3 items-center">
         <input
@@ -210,11 +210,11 @@ export default function CategoriesPage() {
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
                 className={`border p-3 text-base rounded-md w-full bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ${
-                  modalError ? 'border-[#e8394d]' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
+                  modalError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
                 }`}
                 autoFocus
               />
-              {modalError && <span className="text-xs text-[#e8394d]">{modalError}</span>}
+              {modalError && <span className="text-xs text-expense">{modalError}</span>}
             </div>
 
             <div className="flex gap-3 justify-end">

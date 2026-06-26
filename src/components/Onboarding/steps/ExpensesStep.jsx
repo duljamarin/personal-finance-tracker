@@ -83,8 +83,7 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
               <button
                 type="button"
                 onClick={() => removeExpense(index)}
-                className="mt-7 p-2 text-ink-muted dark:text-white hover:opacity-80 transition-colors"
-                style={{ '--hover-color': '#e8394d' }}
+                className="mt-7 p-2 text-ink-muted dark:text-white hover:text-expense transition-colors"
                 aria-label={t('onboarding.expenses.remove')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

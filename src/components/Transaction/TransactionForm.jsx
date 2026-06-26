@@ -300,16 +300,16 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			<div className="flex flex-col gap-3 sm:gap-5">
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
-					<div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-2 sm:p-4">
+					<div className="bg-data-violet/[0.08] dark:bg-data-violet/[0.12] border border-data-violet/30 rounded-container p-2 sm:p-4">
 						<div className="flex items-center gap-2 mb-2">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-data-violet" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 							</svg>
-							<span className="text-xs sm:text-sm font-semibold text-purple-700 dark:text-purple-300">
+							<span className="text-xs sm:text-sm font-semibold text-data-violet">
 								{t('recurring.generatedFromRule')}
 							</span>
 						</div>
-						<p className="text-xs text-purple-600 dark:text-purple-400 flex items-start gap-2">
+						<p className="text-xs text-data-violet flex items-start gap-2">
 							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
@@ -344,8 +344,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
 									</svg>
 								),
-								activeClass: 'bg-[#fef0f1] dark:bg-rose-950/30 border-[#e8394d] text-[#e8394d] dark:text-[#e8394d]',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-[#e8394d]/50',
+								activeClass: 'bg-expense-bg border-expense text-expense dark:text-expense',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-expense/50',
 							},
 							{
 								value: 'income',
@@ -371,7 +371,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						))}
 					</div>
 					{errors.type && (
-						<span className="text-xs text-[#e8394d] font-medium">{t(errors.type)}</span>
+						<span className="text-xs text-expense font-medium">{t(errors.type)}</span>
 					)}
 
 					{/* Amount */}
@@ -510,7 +510,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						</button>
 					</div>
 					{errors.categoryId && (
-						<span className="text-xs text-[#e8394d] dark:text-[#e8394d] font-medium">{t(errors.categoryId)}</span>
+						<span className="text-xs text-expense dark:text-expense font-medium">{t(errors.categoryId)}</span>
 					)}
 
 					{showProposalInput && (

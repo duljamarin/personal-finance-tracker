@@ -5,9 +5,7 @@ import Button from '../UI/Button';
 import { updateRecurringTransaction } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation';
-
-const EXPENSE_COLOR = '#e8394d';
-const EXPENSE_COLOR_DARK = '#e8394d';
+import { EXPENSE_COLOR } from '../../utils/chartColors';
 
 const inputBaseClass =
   'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';

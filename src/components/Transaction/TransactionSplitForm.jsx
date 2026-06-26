@@ -108,7 +108,7 @@ export default function TransactionSplitForm({
                 }))}
               />
               {errors[`split_${index}_category`] && (
-                <p className="text-xs text-[#e8394d] mt-1">
+                <p className="text-xs text-expense mt-1">
                   {t(errors[`split_${index}_category`])}
                 </p>
               )}
@@ -129,12 +129,12 @@ export default function TransactionSplitForm({
                   'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
                   'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ' +
                   (errors[`split_${index}_amount`]
-                    ? 'border-[#e8394d]'
+                    ? 'border-expense'
                     : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40')
                 }
               />
               {errors[`split_${index}_amount`] && (
-                <p className="text-xs text-[#e8394d] mt-1">
+                <p className="text-xs text-expense mt-1">
                   {t(errors[`split_${index}_amount`])}
                 </p>
               )}
@@ -160,7 +160,7 @@ export default function TransactionSplitForm({
               type="button"
               onClick={() => handleRemoveSplit(index)}
               disabled={splits.length <= 1}
-              className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+              className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md text-expense hover:text-expense hover:bg-expense/5 dark:hover:bg-expense/10 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -180,14 +180,14 @@ export default function TransactionSplitForm({
         </div>
         <div className="flex justify-between">
           <span className="text-ink-secondary dark:text-white">{t('split.splitTotal')}:</span>
-          <span className={`font-medium ${hasValidSplit ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#e8394d]'}`}>
+          <span className={`font-medium ${hasValidSplit ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
             €{totalSplitAmount.toFixed(2)} ({totalPercentage.toFixed(2)}%)
           </span>
         </div>
         {!hasValidSplit && (
           <div className="flex justify-between">
             <span className="text-ink-secondary dark:text-white">{t('split.difference')}:</span>
-            <span className="font-medium text-[#e8394d]">
+            <span className="font-medium text-expense">
               €{Math.abs(splitDifference).toFixed(2)}
             </span>
           </div>
@@ -195,7 +195,7 @@ export default function TransactionSplitForm({
       </div>
 
       {!hasValidSplit && (
-        <p className="text-xs text-[#e8394d]">
+        <p className="text-xs text-expense">
           {t('split.mustEqualTotal')}
         </p>
       )}

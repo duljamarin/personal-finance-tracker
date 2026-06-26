@@ -57,10 +57,9 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onClick={() => setAction('withdraw')}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'withdraw'
-                ? 'text-white'
+                ? 'bg-expense text-white'
                 : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
-            style={action === 'withdraw' ? { backgroundColor: '#e8394d' } : undefined}
           >
             {t('goals.contributions.withdraw')}
           </button>

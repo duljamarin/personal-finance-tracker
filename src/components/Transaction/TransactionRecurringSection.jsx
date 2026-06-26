@@ -22,10 +22,10 @@ export default function TransactionRecurringSection({
 	const { t } = useTranslation()
 
 	return (
-		<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+		<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-data-violet/[0.08] dark:bg-data-violet/[0.12] border border-data-violet/30 rounded-container">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
-					<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-data-violet" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 					</svg>
 					<label className="text-xs sm:text-sm font-semibold text-ink-primary dark:text-white">
@@ -50,7 +50,7 @@ export default function TransactionRecurringSection({
 			</div>
 
 			{isRecurring && (
-				<div className="flex flex-col gap-3 sm:gap-4 pt-2 border-t border-purple-200 dark:border-purple-700">
+				<div className="flex flex-col gap-3 sm:gap-4 pt-2 border-t border-data-violet/30">
 					{/* Frequency & Interval */}
 					<div className="grid grid-cols-2 gap-2 sm:gap-3">
 						<div className="flex flex-col gap-1 sm:gap-2">
@@ -85,7 +85,7 @@ export default function TransactionRecurringSection({
 								</span>
 							</div>
 							{errors.intervalCount && (
-								<span className="text-xs text-[#e8394d] font-medium">{t(errors.intervalCount)}</span>
+								<span className="text-xs text-expense font-medium">{t(errors.intervalCount)}</span>
 							)}
 						</div>
 					</div>
@@ -103,7 +103,7 @@ export default function TransactionRecurringSection({
 									onClick={() => onEndTypeChange(option)}
 									className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs rounded-lg font-medium border transition-all ${
 										endType === option
-											? 'bg-purple-600 text-white border-purple-700'
+											? 'bg-data-violet text-white border-data-violet'
 											: 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-400'
 									}`}
 								>
@@ -127,7 +127,7 @@ export default function TransactionRecurringSection({
 								className={`${getInputClassName(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
 							/>
 							{errors.endDate && (
-								<span className="text-xs text-[#e8394d] font-medium">{t(errors.endDate)}</span>
+								<span className="text-xs text-expense font-medium">{t(errors.endDate)}</span>
 							)}
 						</div>
 					)}
@@ -147,14 +147,14 @@ export default function TransactionRecurringSection({
 								className={getInputClassName(errors.occurrencesLimit)}
 							/>
 							{errors.occurrencesLimit && (
-								<span className="text-xs text-[#e8394d] font-medium">{t(errors.occurrencesLimit)}</span>
+								<span className="text-xs text-expense font-medium">{t(errors.occurrencesLimit)}</span>
 							)}
 						</div>
 					)}
 
 					{/* Recurring Summary */}
 					{!errors.intervalCount && !errors.endDate && !errors.occurrencesLimit && (
-						<div className="text-xs text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-lg">
+						<div className="text-xs text-data-violet bg-data-violet/10 dark:bg-data-violet/20 p-2 sm:p-3 rounded-control">
 							<span className="inline-flex items-center gap-2 font-medium">
 								{t('recurring.summary')} : 
 							</span>

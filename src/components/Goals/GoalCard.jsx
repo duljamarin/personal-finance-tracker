@@ -26,7 +26,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
   const getStatusColor = () => {
     if (goal.is_completed) return 'text-brand-600 dark:text-brand-500';
     if (!daysLeft) return 'text-ink-muted dark:text-white';
-    if (daysLeft < 0) return 'text-[#e8394d] dark:text-[#e8394d]';
+    if (daysLeft < 0) return 'text-expense dark:text-expense';
     if (daysLeft < 30) return 'text-brand-700 dark:text-brand-500';
     return 'text-ink-secondary dark:text-white';
   };
@@ -61,7 +61,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
             </button>
             <button
               onClick={() => onDelete(goal)}
-              className="p-2 text-ink-muted dark:text-white hover:text-[#e8394d] dark:hover:text-[#e8394d] transition"
+              className="p-2 text-ink-muted dark:text-white hover:text-expense dark:hover:text-expense transition"
               title={t('goals.deleteGoal')}
             >
               <Icon name="delete" />
@@ -82,7 +82,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
             <div className="w-full bg-surface-hairline dark:bg-surface-dark-hairline rounded-full h-2.5 overflow-hidden">
               <div
                 className="h-full transition-all duration-300"
-                style={{ width: `${displayProgress}%`, backgroundColor: '#168b78' }}
+                style={{ width: `${displayProgress}%`, backgroundColor: 'var(--c-income)' }}
               />
             </div>
             <div className="flex justify-between text-xs mt-1 text-ink-muted dark:text-white">

@@ -96,7 +96,7 @@ export default function RecurringPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && recurrings.filter(r => r.is_active).length >= recurringLimit && (
-        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-xl flex items-center justify-between gap-3">
+        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-container flex items-center justify-between gap-3">
           <p className="text-sm text-brand-700 dark:text-brand-300">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}
           </p>
@@ -125,7 +125,7 @@ export default function RecurringPage() {
           {recurrings.map(recurring => (
             <div
               key={recurring.id}
-              className={`bg-white dark:bg-surface-dark-card rounded-xl p-5 sm:p-6 border transition-all ${
+              className={`bg-white dark:bg-surface-dark-card rounded-container p-5 sm:p-6 border transition-all ${
                 recurring.is_active
                   ? 'border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-300 dark:hover:border-brand-700'
                   : 'border-surface-hairline dark:border-surface-dark-hairline opacity-60'
@@ -161,18 +161,16 @@ export default function RecurringPage() {
                 <div className="text-right">
                   <div
                     className={`font-semibold tracking-tight text-2xl ${
-                      recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''
+                      recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-expense'
                     }`}
-                    style={recurring.type === 'expense' ? { color: '#e8394d' } : undefined}
                   >
                     {CURRENCY_SYMBOLS[recurring.currency_code || 'EUR']}
                     {Number(recurring.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </div>
                   <span
                     className={`eyebrow ${
-                      recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''
+                      recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-expense'
                     }`}
-                    style={recurring.type === 'expense' ? { color: '#e8394d' } : undefined}
                   >
                     {recurring.type === 'income' ? t('transactions.income') : t('transactions.expense')}
                   </span>
@@ -226,7 +224,7 @@ export default function RecurringPage() {
                   onClick={() => handleToggleActive(recurring)}
                   className={`flex-1 px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2 ${
                     recurring.is_active
-                      ? 'bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50'
+                      ? 'bg-warning-bg hover:bg-warning/15 dark:bg-warning/10 dark:hover:bg-warning/20 text-warning border border-warning/30'
                       : 'bg-brand-600 hover:bg-brand-700 text-white'
                   }`}
                 >
@@ -249,8 +247,7 @@ export default function RecurringPage() {
                 </button>
                 <button
                   onClick={() => setDeleteConfirm(recurring)}
-                  className="flex-1 text-white px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2 hover:opacity-90"
-                  style={{ backgroundColor: '#e8394d' }}
+                  className="flex-1 text-white px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2 bg-danger hover:bg-danger-hover"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
