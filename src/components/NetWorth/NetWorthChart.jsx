@@ -3,6 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
 import useDarkMode from '../../hooks/useDarkMode';
+import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
+
+const ASSETS_COLOR = INCOME_COLOR;
+const LIABILITIES_COLOR = 'var(--c-data-blue)';
+const NETWORTH_COLOR = 'var(--c-data-violet)';
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
@@ -130,34 +135,34 @@ export default function NetWorthChart({ data, transactions = [] }) {
           <Line
             type="monotone"
             dataKey={t('networth.assets')}
-            stroke="#168b78"
+            stroke={ASSETS_COLOR}
             strokeWidth={2}
-            dot={{ fill: '#168b78', r: 3 }}
+            dot={{ fill: ASSETS_COLOR, r: 3 }}
           />
         )}
         <Line
           type="monotone"
           dataKey={t('networth.cashBalance')}
-          stroke="#6A8FC4"
+          stroke={LIABILITIES_COLOR}
           strokeWidth={2}
-          dot={{ fill: '#6A8FC4', r: 3 }}
+          dot={{ fill: LIABILITIES_COLOR, r: 3 }}
           strokeDasharray="5 3"
         />
         {hasAssetData && (
           <Line
             type="monotone"
             dataKey={t('networth.liabilities')}
-            stroke="#e8394d"
+            stroke={EXPENSE_COLOR}
             strokeWidth={2}
-            dot={{ fill: '#e8394d', r: 3 }}
+            dot={{ fill: EXPENSE_COLOR, r: 3 }}
           />
         )}
         <Line
           type="monotone"
           dataKey={t('networth.netWorth')}
-          stroke="#8b5cf6"
+          stroke={NETWORTH_COLOR}
           strokeWidth={3}
-          dot={{ fill: '#8b5cf6', r: 3 }}
+          dot={{ fill: NETWORTH_COLOR, r: 3 }}
         />
       </LineChart>
     </ResponsiveContainer>

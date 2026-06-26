@@ -222,13 +222,13 @@ export default function CSVImport({ categories, onImportComplete }) {
           <div className="flex gap-4">
             <Card className="flex-1 p-4">
               <div className="text-sm text-ink-secondary dark:text-white">{t('import.validRows')}</div>
-              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              <div className="text-2xl font-bold text-brand-600 dark:text-brand-400">
                 {previewData.length}
               </div>
             </Card>
             <Card className="flex-1 p-4">
               <div className="text-sm text-ink-secondary dark:text-white">{t('import.invalidRows')}</div>
-              <div className="text-2xl font-bold text-[#e8394d]">
+              <div className="text-2xl font-bold text-expense">
                 {validationErrors.length}
               </div>
             </Card>
@@ -242,7 +242,7 @@ export default function CSVImport({ categories, onImportComplete }) {
             const capped = currentMonthRows.length - Math.min(currentMonthRows.length, remaining);
             if (capped <= 0) return null;
             return (
-              <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-lg text-sm text-amber-800 dark:text-amber-300">
+              <div className="flex items-start gap-2 p-3 bg-warning-bg dark:bg-warning/15 border border-warning/40 rounded-control text-sm text-warning">
                 <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
@@ -254,12 +254,12 @@ export default function CSVImport({ categories, onImportComplete }) {
           {/* Validation Errors */}
           {validationErrors.length > 0 && (
             <div className="max-h-40 overflow-y-auto">
-              <h3 className="text-sm font-semibold text-[#e8394d] mb-2">
+              <h3 className="text-sm font-semibold text-expense mb-2">
                 {t('import.errors')}
               </h3>
               <div className="space-y-1 text-xs">
                 {validationErrors.map((err, i) => (
-                  <div key={i} className="text-[#e8394d]">
+                  <div key={i} className="text-expense">
                     {t('import.lineError', { line: err.line })}: {err.errors.join(', ')}
                   </div>
                 ))}
@@ -289,9 +289,9 @@ export default function CSVImport({ categories, onImportComplete }) {
                       <td className="px-2 py-1">{row.title}</td>
                       <td className="px-2 py-1">
                         <span className={`inline-block px-1.5 py-0.5 rounded text-xs ${
-                          row.type === 'income' 
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
-                            : 'bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] text-[#e8394d]'
+                          row.type === 'income'
+                            ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300'
+                            : 'bg-expense-bg text-expense'
                         }`}>
                           {row.type === 'income' ? t('transactions.income') : t('transactions.expense')}
                         </span>
@@ -300,7 +300,7 @@ export default function CSVImport({ categories, onImportComplete }) {
                       <td className="px-2 py-1">
                         {categories.find(c => c.id === row.category_id)?.name
                           || (row._categoryName
-                            ? <span className="italic text-amber-600 dark:text-amber-400">{row._categoryName} (+)</span>
+                            ? <span className="italic text-warning">{row._categoryName} (+)</span>
                             : null)}
                       </td>
                       <td className="px-2 py-1">{row.date}</td>

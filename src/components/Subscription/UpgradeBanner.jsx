@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { APP_CONFIG } from '../../config/app';
-
-const EXPENSE_COLOR = '#e8394d';
+import { EXPENSE_COLOR } from '../../utils/chartColors';
 
 export default function UpgradeBanner() {
   const { t } = useTranslation();
@@ -55,7 +54,7 @@ export default function UpgradeBanner() {
 
   // Reserve layout space while loading to prevent CLS — render a fixed-height placeholder
   if (subLoading) {
-    return <div className="mb-6 h-[88px] rounded-xl bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />;
+    return <div className="mb-6 h-[88px] rounded-container bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />;
   }
 
   if (hasActivePaidSubscription || dismissed) return null;
@@ -64,7 +63,7 @@ export default function UpgradeBanner() {
   const usagePercent = Math.min((monthlyTransactionCount / transactionLimit) * 100, 100);
 
   return (
-    <div className="mb-6 relative rounded-xl bg-brand-50 dark:bg-brand-950/20 border border-brand-500/20 p-6">
+    <div className="mb-6 relative rounded-container bg-brand-50 dark:bg-brand-950/20 border border-brand-500/20 p-6">
       {/* Close button */}
       <button
         onClick={handleDismiss}

@@ -78,7 +78,7 @@ export default function NotificationSettings() {
         {/* Individual Notification Types */}
         <div className="space-y-3">
           {/* Budget Overrun */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline px-4 py-3 border-l-4" style={{ borderLeftColor: '#e8394d' }}>
+          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline px-4 py-3 border-l-4 border-l-expense">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-ink-primary dark:text-white">
@@ -117,7 +117,7 @@ export default function NotificationSettings() {
           </div>
 
           {/* Recurring Due */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-brand-500 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-brand-500 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-ink-primary dark:text-white">
@@ -155,7 +155,7 @@ export default function NotificationSettings() {
           </div>
 
           {/* Goal Milestone */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-emerald-500 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-data-blue px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-ink-primary dark:text-white">
@@ -192,7 +192,7 @@ export default function NotificationSettings() {
           </div>
 
           {/* Trial Expiring */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-xl border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-amber-500 px-4 py-3">
+          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-warning px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="font-medium text-ink-primary dark:text-white">

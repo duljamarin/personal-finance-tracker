@@ -109,13 +109,13 @@ function TxForm({ initial, onSubmit, onClose }) {
   return (
     <form onSubmit={submit} className="space-y-3">
       {error && (
-        <p className="text-xs text-[#e8394d] bg-rose-50 dark:bg-rose-950/20 rounded-md px-3 py-2">{error}</p>
+        <p className="text-xs text-expense bg-expense-bg rounded-md px-3 py-2">{error}</p>
       )}
       <div className="flex gap-2">
         <button
           type="button"
           onClick={() => set('type', 'expense')}
-          className={`flex-1 py-2 text-xs font-medium rounded-md border transition-colors ${form.type === 'expense' ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-800 text-[#e8394d]' : 'border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-ink-primary/40 dark:hover:border-white/30'}`}
+          className={`flex-1 py-2 text-xs font-medium rounded-md border transition-colors ${form.type === 'expense' ? 'bg-expense-bg border-expense/40 text-expense' : 'border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-ink-primary/40 dark:hover:border-white/30'}`}
         >
           {t('transactions.expense')}
         </button>
@@ -300,8 +300,8 @@ function OverviewTab({ transactions, isDark }) {
       <div className="grid grid-cols-3 gap-3">
         {[
           { label: t('dashboard.totalIncome'),   value: totalIncome,  color: 'text-brand-600 dark:text-brand-400', border: 'border-l-2 border-l-brand-500' },
-          { label: t('dashboard.totalExpenses'),  value: totalExpense, color: 'text-[#e8394d]',                    border: 'border-l-2 border-l-[#e8394d]'  },
-          { label: t('dashboard.balance'),        value: balance,      color: balance >= 0 ? 'text-ink-primary dark:text-white' : 'text-[#e8394d]', border: balance >= 0 ? 'border-l-2 border-l-brand-500' : 'border-l-2 border-l-[#e8394d]' },
+          { label: t('dashboard.totalExpenses'),  value: totalExpense, color: 'text-expense',                    border: 'border-l-2 border-l-expense'  },
+          { label: t('dashboard.balance'),        value: balance,      color: balance >= 0 ? 'text-ink-primary dark:text-white' : 'text-expense', border: balance >= 0 ? 'border-l-2 border-l-brand-500' : 'border-l-2 border-l-expense' },
         ].map((c) => (
           <div key={c.label} className={`bg-white dark:bg-surface-dark-elevated rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline ${c.border}`}>
             <p className="eyebrow text-[9px] mb-1 truncate">{c.label}</p>
@@ -323,8 +323,8 @@ function OverviewTab({ transactions, isDark }) {
                   <XAxis dataKey="month" tick={{ fontSize: 9, fill: tickColor }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 9, fill: tickColor }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${v}`} width={38} />
                   <Tooltip content={<BarTooltip />} />
-                  <Bar dataKey="Income"  fill="#168b78" radius={[2, 2, 0, 0]} />
-                  <Bar dataKey="Expense" fill="#e8394d" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Income"  fill="var(--c-income)" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Expense" fill="var(--c-expense)" radius={[2, 2, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -404,7 +404,7 @@ function TransactionsTab({ transactions, onDelete, onEdit, onAddOpen }) {
               </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className={`text-xs font-semibold tabular-nums ${tx.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-[#e8394d]'}`}>
+              <span className={`text-xs font-semibold tabular-nums ${tx.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
                 {tx.type === 'income' ? '+' : '-'}{fmtEur(tx.amount)}
               </span>
               <button
@@ -419,7 +419,7 @@ function TransactionsTab({ transactions, onDelete, onEdit, onAddOpen }) {
               </button>
               <button
                 onClick={() => onDelete(tx.id)}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded text-ink-muted dark:text-white hover:text-[#e8394d] transition-all"
+                className="opacity-0 group-hover:opacity-100 p-1 rounded text-ink-muted dark:text-white hover:text-expense transition-all"
                 aria-label="Delete"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -461,7 +461,7 @@ function BudgetsTab({ transactions, budgets }) {
                 <CategoryDot cat={b.category} />
                 <span className="text-xs font-medium text-ink-primary dark:text-white">{t(`defaultCategories.${b.category}`, b.category)}</span>
               </div>
-              <span className={`text-[10px] font-semibold tabular-nums ${over ? 'text-[#e8394d]' : near ? 'text-amber-500' : 'text-ink-muted dark:text-white'}`}>
+              <span className={`text-[10px] font-semibold tabular-nums ${over ? 'text-expense' : near ? 'text-warning' : 'text-ink-muted dark:text-white'}`}>
                 {fmtEur(used)} / {fmtEur(b.limit)}
               </span>
             </div>
@@ -470,11 +470,11 @@ function BudgetsTab({ transactions, budgets }) {
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${pct}%`,
-                  backgroundColor: over ? '#e8394d' : near ? '#f59e0b' : '#168b78',
+                  backgroundColor: over ? 'var(--c-expense)' : near ? 'var(--c-warning)' : 'var(--c-income)',
                 }}
               />
             </div>
-            <p className={`text-[10px] mt-1.5 ${over ? 'text-[#e8394d]' : 'text-ink-muted dark:text-white'}`}>
+            <p className={`text-[10px] mt-1.5 ${over ? 'text-expense' : 'text-ink-muted dark:text-white'}`}>
               {over
                 ? t('demo.overBudget', { amount: fmtEur(used - b.limit) })
                 : t('demo.remaining', { amount: fmtEur(b.limit - used) })}
@@ -534,7 +534,7 @@ export default function DemoWorkspace() {
   }, []);
 
   return (
-    <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-[10px] overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
+    <div className="bg-surface-page dark:bg-surface-dark-page border border-surface-hairline dark:border-surface-dark-hairline rounded-container overflow-hidden shadow-tier2">
       <div className="p-4 sm:p-5 space-y-4">
         {/* Persistence banner */}
         {showBanner && (
@@ -582,7 +582,7 @@ export default function DemoWorkspace() {
 
         {/* Inline form (slides in) — add or edit depending on editingTx */}
         {showAddForm && (
-          <div className="bg-surface-page dark:bg-surface-dark-elevated rounded-xl border border-brand-500/30 dark:border-brand-700/40 p-4 animate-in slide-in-from-top-2 duration-200">
+          <div className="bg-surface-page dark:bg-surface-dark-elevated rounded-container border border-brand-500/30 dark:border-brand-700/40 p-4 animate-in slide-in-from-top-2 duration-200">
             <p className="text-xs font-semibold text-ink-primary dark:text-white mb-3">
               {editingTx ? t('demo.editNewTransaction') : t('demo.addNewTransaction')}
             </p>

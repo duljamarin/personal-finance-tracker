@@ -172,21 +172,21 @@ export default function PricingPage() {
 
       {/* Active subscription notice */}
       {isPremium && subscription?.subscription_status !== 'none' && (
-        <div className={`mb-8 p-4 rounded-xl text-center ${
+        <div className={`mb-8 p-4 rounded-container text-center ${
           subscription?.subscription_cancel_at
-            ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700'
+            ? 'bg-warning-bg dark:bg-warning/15 border border-warning/40'
             : 'bg-brand-50 dark:bg-surface-dark-elevated border border-brand-500 dark:border-brand-600'
         }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
               subscription?.subscription_cancel_at
-                ? 'bg-amber-100 text-amber-800 dark:bg-amber-800/40 dark:text-amber-200'
+                ? 'bg-warning/20 text-warning dark:bg-warning/25'
                 : 'bg-brand-600 text-white dark:bg-brand-600 dark:text-white'
             }`}>
               {t('subscription.proBadge')}
             </span>
             <span className={subscription?.subscription_cancel_at
-              ? 'text-amber-800 dark:text-amber-300 font-medium'
+              ? 'text-warning font-medium'
               : 'text-brand-700 dark:text-white font-medium'
             }>
               {subscription?.subscription_cancel_at && subscription?.period_end
@@ -200,7 +200,7 @@ export default function PricingPage() {
             <button
               onClick={handleManageSubscription}
               className={subscription?.subscription_cancel_at
-                ? 'text-sm text-amber-700 dark:text-amber-300 underline hover:no-underline'
+                ? 'text-sm text-warning underline hover:no-underline'
                 : 'text-sm text-brand-600 dark:text-brand-400 underline hover:no-underline'
               }
             >
@@ -213,7 +213,7 @@ export default function PricingPage() {
       {/* Savings callout banner */}
       {!isPremium && (
         <div className="mb-8 flex items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-600 text-sm font-medium px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-700">
+          <span className="inline-flex items-center gap-1.5 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 text-sm font-medium px-4 py-1.5 rounded-full border border-brand-200 dark:border-brand-700">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -270,7 +270,7 @@ export default function PricingPage() {
         {/* ── PREMIUM ── */}
         <div className="flex flex-col rounded-[10px] border-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card relative">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-            <span className="bg-emerald-800 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
+            <span className="bg-brand-700 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
               {t('pricing.bestValue')}
             </span>
           </div>
@@ -286,11 +286,11 @@ export default function PricingPage() {
               <span className="text-ink-muted dark:text-white ml-1">{t('pricing.perYear')}</span>
             </div>
             <div className="mb-1">
-              <span className="text-base font-semibold text-emerald-600 dark:text-emerald-600">
+              <span className="text-base font-semibold text-brand-600 dark:text-brand-400">
                 {t('pricing.yearlyPerMonth')}
               </span>
             </div>
-            <p className="text-sm text-emerald-700 dark:text-emerald-800 font-medium">
+            <p className="text-sm text-brand-700 dark:text-brand-400 font-medium">
               {t('pricing.saveYearly')}
               {!hasHadTrial && <span> · {t('pricing.freeTrial')}</span>}
             </p>
@@ -324,22 +324,22 @@ export default function PricingPage() {
                 let btnVariant = 'success';
 
                 if (isCancelScheduled) {
-                  textColor = 'text-amber-600 dark:text-amber-400';
+                  textColor = 'text-warning';
                   label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
                   btnLabel = t('pricing.reactivate');
                   btnVariant = 'primary';
                 } else if (isPastDue) {
-                  textColor = 'text-red-600 dark:text-red-400';
+                  textColor = 'text-expense';
                   label = t('subscription.pastDueNotice');
                   btnLabel = t('pricing.updatePayment');
                   btnVariant = 'danger';
                 } else if (isPaused) {
-                  textColor = 'text-amber-600 dark:text-amber-400';
+                  textColor = 'text-warning';
                   label = t('subscription.paused');
                   btnLabel = t('pricing.resumePlan');
                   btnVariant = 'primary';
                 } else if (isCancelled) {
-                  textColor = 'text-amber-600 dark:text-amber-400';
+                  textColor = 'text-warning';
                   label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
                   btnLabel = t('pricing.reactivate');
                   btnVariant = 'primary';

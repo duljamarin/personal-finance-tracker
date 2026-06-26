@@ -27,9 +27,9 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
 
   const getScoreColor = (value) => {
     if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-600 dark:text-brand-400', label: 'text-brand-600 dark:text-brand-400' };
-    if (value >= 60) return { stroke: 'text-[#6A8FC4]', text: 'text-[#5B8DB8]', label: 'text-[#5B8DB8]' };
-    if (value >= 40) return { stroke: 'text-amber-500', text: 'text-amber-600 dark:text-amber-400', label: 'text-amber-600 dark:text-amber-400' };
-    return { stroke: 'text-[#e8394d]', text: 'text-[#e8394d]', label: 'text-[#e8394d]' };
+    if (value >= 60) return { stroke: 'text-data-blue', text: 'text-data-blue-deep', label: 'text-data-blue-deep' };
+    if (value >= 40) return { stroke: 'text-warning', text: 'text-warning', label: 'text-warning' };
+    return { stroke: 'text-expense', text: 'text-expense', label: 'text-expense' };
   };
 
   const getScoreLabel = (value) => {
@@ -63,12 +63,12 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   const getInsightIcon = (type) => {
     const cls = 'w-4 h-4 flex-shrink-0';
     if (type === 'income_expense') return (
-      <svg className={`${cls} text-[#6A8FC4]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <svg className={`${cls} text-data-blue`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
       </svg>
     );
     if (type === 'budget') return (
-      <svg className={`${cls} text-[#9B7EB3]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <svg className={`${cls} text-data-violet`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
       </svg>
     );
@@ -149,7 +149,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   }
 
   /* ── Score bar helper ── */
-  const barColors = ['bg-[#9B7EB3]', 'bg-[#6A8FC4]', 'bg-amber-400', 'bg-brand-500'];
+  const barColors = ['bg-data-violet', 'bg-data-blue', 'bg-warning', 'bg-brand-500'];
   const scoreValues = [
     { label: t('healthScore.budgetAdherence'), value: score.budgetAdherenceScore, color: barColors[0] },
     { label: t('healthScore.incomeRatio'),      value: score.incomeExpenseRatioScore, color: barColors[1] },
@@ -253,9 +253,9 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           {showExplainer && (
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { color: 'bg-[#9B7EB3]/10 border-[#9B7EB3]/30 text-[#9B7EB3]', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
-                { color: 'bg-[#6A8FC4]/10 border-[#6A8FC4]/30 text-[#6A8FC4]',   label: t('healthScore.incomeRatio'),      weight: 30, desc: t('healthScore.pillarRatioDesc') },
-                { color: 'bg-amber-50 dark:bg-amber-950/20 border-amber-200/60 dark:border-amber-800/30 text-amber-600 dark:text-amber-400', label: t('healthScore.consistency'), weight: 20, desc: t('healthScore.pillarStabilityDesc') },
+                { color: 'bg-data-violet/10 border-data-violet/30 text-data-violet', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
+                { color: 'bg-data-blue/10 border-data-blue/30 text-data-blue',   label: t('healthScore.incomeRatio'),      weight: 30, desc: t('healthScore.pillarRatioDesc') },
+                { color: 'bg-warning/10 dark:bg-warning/15 border-warning/30 text-warning', label: t('healthScore.consistency'), weight: 20, desc: t('healthScore.pillarStabilityDesc') },
                 { color: 'bg-brand-50 dark:bg-brand-950/20 border-brand-200/60 dark:border-brand-800/30 text-brand-600 dark:text-brand-400', label: t('healthScore.savings'),      weight: 10, desc: t('healthScore.pillarSavingsDesc') },
               ].map(({ color, label, weight, desc }) => (
                 <div key={label} className={`p-3.5 rounded-lg border ${color} bg-opacity-30`}>
@@ -298,13 +298,13 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.expenses')}</p>
-                <p className="text-sm font-semibold tabular-nums text-[#e8394d] dark:text-[#e8394d]">
+                <p className="text-sm font-semibold tabular-nums text-expense dark:text-expense">
                   €{score.totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.saved')}</p>
-                <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-[#e8394d] dark:text-[#e8394d]'}`}>
+                <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense dark:text-expense'}`}>
                   €{score.savingsAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>

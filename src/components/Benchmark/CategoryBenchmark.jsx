@@ -6,15 +6,13 @@ import { useSubscription } from '../../context/SubscriptionContext';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
 
-// Status -> design token color map
-// on-track  -> brand-500 (#22ad93)
-// over      -> #e8394d (warm rose-red)
-// under     -> #6A8FC4 (CHART_PALETTE blue)
+// Status -> design token color map (CSS vars; see chartColors / index.css).
+// on-track -> brand accent; over -> expense; under -> data.blue.
 const STATUS_COLOR = {
-  within: '#22ad93',
-  below: '#6A8FC4',
-  above: '#e8394d',
-  new: '#e8394d',
+  within: 'var(--c-brand-accent)',
+  below: 'var(--c-data-blue)',
+  above: 'var(--c-expense)',
+  new: 'var(--c-expense)',
 };
 
 export default function CategoryBenchmark({ onReloadTrigger }) {
@@ -37,12 +35,12 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         return {
           label: t('benchmark.statusBelow'),
           // under-budget pill
-          pillClass: 'bg-[rgba(106,143,196,0.10)] dark:bg-[rgba(106,143,196,0.18)] text-[#6A8FC4]',
+          pillClass: 'bg-data-blue/10 dark:bg-data-blue/[0.18] text-data-blue',
           // card border
-          borderClass: 'border-[#6A8FC4]/40',
+          borderClass: 'border-data-blue/40',
           // soft tinted card surface
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: '#6A8FC4',
+          progressColor: 'var(--c-data-blue)',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
@@ -52,10 +50,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       case 'above':
         return {
           label: t('benchmark.statusAbove'),
-          pillClass: 'bg-[#fdf2f4] dark:bg-[rgba(224,92,107,0.12)] text-[#e8394d]',
-          borderClass: 'border-[#e8394d]/40',
+          pillClass: 'bg-expense-bg dark:bg-expense-tint text-expense',
+          borderClass: 'border-expense/40',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: '#e8394d',
+          progressColor: 'var(--c-expense)',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -65,10 +63,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       case 'new':
         return {
           label: t('benchmark.statusNew'),
-          pillClass: 'bg-[#fdf2f4] dark:bg-[rgba(224,92,107,0.12)] text-[#e8394d]',
-          borderClass: 'border-[#e8394d]/40',
+          pillClass: 'bg-expense-bg dark:bg-expense-tint text-expense',
+          borderClass: 'border-expense/40',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: '#e8394d',
+          progressColor: 'var(--c-expense)',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -117,7 +115,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
     return (
       <Card className="mt-4 sm:mt-6">
         <div className="p-6 text-center">
-          <div className="text-[#e8394d] dark:text-[#e8394d] mb-2">
+          <div className="text-expense dark:text-expense mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -205,7 +203,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
 
           if (currentMonthOnly) {
             return (
-              <div className="rounded-xl border border-brand-200 dark:border-brand-800/50 bg-brand-50 dark:bg-brand-950/20 p-5">
+              <div className="rounded-container border border-brand-200 dark:border-brand-800/50 bg-brand-50 dark:bg-brand-950/20 p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mt-0.5">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -249,7 +247,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                   return (
                     <div
                       key={benchmark.category_id}
-                      className={`rounded-xl border ${config.borderClass} ${config.cardBgClass} p-4 transition-all hover:shadow-md`}
+                      className={`rounded-container border ${config.borderClass} ${config.cardBgClass} p-4 transition-colors`}
                     >
                       {/* Category header */}
                       <div className="flex items-start justify-between mb-3 gap-3">
