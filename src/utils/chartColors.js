@@ -41,3 +41,22 @@ export const CHART_PALETTE = [
   'var(--c-data-stone)',   // warm stone grey
   'var(--c-data-blue-deep)', // steel blue
 ];
+
+/**
+ * Deterministic hash-to-color palette for per-category dots/avatars. Shared by
+ * Transactions list and CategoryCard so a category always maps to the same hue.
+ * Order is preserved from the original CAT_PALETTE so existing categories keep
+ * their color. brand.accent and brand-400 slots use their CSS vars.
+ */
+export const CATEGORY_PALETTE = [
+  'var(--c-brand-accent)', // #22ad93
+  'var(--c-income)',       // #168b78
+  'var(--c-data-sand)',    // #C9A87C
+  'var(--c-data-blue)',    // #6A8FC4
+  'var(--c-data-rose)',    // #C46A75
+  'var(--c-data-gold)',    // #D0A96A
+  '#8A8A85',               // warm grey (no semantic token — categorical filler)
+  '#43c5aa',               // brand-400 light teal
+  'var(--c-data-stone)',   // #7A756A
+  'var(--c-data-violet)',  // #9B7EB3
+];

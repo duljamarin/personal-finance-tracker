@@ -1,21 +1,7 @@
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { translateCategoryName } from '../../utils/categoryTranslation';
-
-/* Unified brand palette — varied, harmonious, premium */
-const CHART_PALETTE = [
-  '#168b78', // brand-600  — emerald (primary)
-  '#6A8FC4', // muted indigo-blue
-  '#C9A87C', // warm amber-sand
-  '#9B7EB3', // muted purple
-  '#C46A75', // muted rose
-  '#43c5aa', // brand-400  — light emerald
-  '#D0A96A', // golden amber
-  '#7A9E7E', // sage green
-  '#7A756A', // warm stone grey
-  '#5B8DB8', // steel blue
-];
-const COLORS = CHART_PALETTE;
+import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
 
 export default function CategoryPieChart({ transactions, type }) {
   const { t } = useTranslation();

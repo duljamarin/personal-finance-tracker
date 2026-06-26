@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
-
-const EXPENSE_COLOR = '#e8394d';
+import { EXPENSE_COLOR } from '../../utils/chartColors';
 
 function formatAmount(amount) {
   return `€${Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

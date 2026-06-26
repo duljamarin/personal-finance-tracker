@@ -16,12 +16,9 @@ import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
+import { CATEGORY_PALETTE as CAT_PALETTE } from '../../utils/chartColors';
 
 // Category dot color — mirrors the CategoryCard hash-to-color function
-const CAT_PALETTE = [
-  '#22ad93', '#168b78', '#C9A87C', '#6A8FC4', '#C46A75',
-  '#D0A96A', '#8A8A85', '#43c5aa', '#7A756A', '#9B7EB3',
-];
 function colorFromName(name) {
   if (!name) return CAT_PALETTE[0];
   let hash = 0;
@@ -291,7 +288,7 @@ export default function Transactions() {
                 type === 'income'
                   ? 'bg-brand-600 text-white'
                   : type === 'expense'
-                  ? 'bg-[#e8394d] text-white'
+                  ? 'bg-expense text-white'
                   : 'bg-ink-primary dark:bg-ink-dark-primary text-white dark:text-ink-primary';
               return (
                 <button
@@ -446,7 +443,7 @@ export default function Transactions() {
                         </span>
                       </div>
                       <button
-                        className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-red-600 dark:text-white dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                        className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-expense dark:text-white dark:hover:text-expense hover:bg-expense/5 transition-colors"
                         onClick={() => setTxToDelete(item)}
                         title={t('transactions.deleteBtn')}
                         aria-label={t('transactions.deleteBtn')}
@@ -470,7 +467,7 @@ export default function Transactions() {
                         </svg>
                       </button>
                       <button
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-red-600 dark:text-white dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-expense dark:text-white dark:hover:text-expense hover:bg-expense/5 transition-colors"
                         onClick={() => setTxToDelete(item)}
                         title={t('transactions.deleteBtn')}
                         aria-label={t('transactions.deleteBtn')}

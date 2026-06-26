@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import Card from '../UI/Card';
 import useDarkMode from '../../hooks/useDarkMode';
+import { INCOME_COLOR } from '../../utils/chartColors';
 
 function formatLabel(dateStr) {
   if (!dateStr) return '';
@@ -26,7 +27,7 @@ function PctChange({ current, previous, positiveIsGood }) {
   const isGood = positiveIsGood ? isUp : !isUp;
 
   return (
-    <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isGood ? 'text-brand-600 dark:text-brand-400' : 'text-[#e8394d]'}`}>
+    <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isGood ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
       {isUp ? (
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -128,7 +129,8 @@ export default function ReportPeriodComparison({
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: '12px' }} />
-            <Bar dataKey={currentLabel} fill="#168b78" radius={[4, 4, 0, 0]} />
+            <Bar dataKey={currentLabel} fill={INCOME_COLOR} radius={[4, 4, 0, 0]} />
+            {/* previous period: brand-300 tint (lighter teal) — no CSS var, brand-ramp literal */}
             <Bar dataKey={previousLabel} fill="#79dbc5" radius={[4, 4, 0, 0]} />
           </BarChart>
         </div>

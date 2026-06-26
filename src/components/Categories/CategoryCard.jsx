@@ -1,10 +1,6 @@
 import { memo } from 'react';
 import { translateCategoryName } from '../../utils/categoryTranslation';
-
-const PALETTE = [
-  '#22ad93', '#168b78', '#C9A87C', '#6A8FC4', '#C46A75',
-  '#D0A96A', '#8A8A85', '#43c5aa', '#7A756A', '#9B7EB3',
-];
+import { CATEGORY_PALETTE as PALETTE } from '../../utils/chartColors';
 
 function colorFromName(name) {
   if (!name) return PALETTE[0];

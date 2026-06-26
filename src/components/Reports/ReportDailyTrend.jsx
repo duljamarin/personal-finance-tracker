@@ -12,6 +12,7 @@ import {
 import Card from '../UI/Card';
 import { toISODate } from '../../utils/date';
 import useDarkMode from '../../hooks/useDarkMode';
+import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
@@ -77,12 +78,12 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
             <AreaChart data={dailyData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
                 <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#168b78" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#168b78" stopOpacity={0} />
+                  <stop offset="5%" stopColor={INCOME_COLOR} stopOpacity={0.2} />
+                  <stop offset="95%" stopColor={INCOME_COLOR} stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#e8394d" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#e8394d" stopOpacity={0} />
+                  <stop offset="5%" stopColor={EXPENSE_COLOR} stopOpacity={0.2} />
+                  <stop offset="95%" stopColor={EXPENSE_COLOR} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} />
@@ -105,7 +106,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 type="monotone"
                 dataKey="income"
                 name={t('reports.dailyIncome')}
-                stroke="#168b78"
+                stroke={INCOME_COLOR}
                 strokeWidth={2}
                 fill="url(#colorIncome)"
               />
@@ -113,7 +114,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 type="monotone"
                 dataKey="expenses"
                 name={t('reports.dailyExpenses')}
-                stroke="#e8394d"
+                stroke={EXPENSE_COLOR}
                 strokeWidth={2}
                 fill="url(#colorExpenses)"
               />
@@ -123,11 +124,11 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
       {/* Legend */}
       <div className="flex items-center justify-center gap-6 mt-2">
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-[#168b78]" />
+          <span className="w-3 h-0.5 rounded bg-income" />
           <span className="text-xs text-ink-muted dark:text-white">{t('reports.dailyIncome')}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-[#e8394d]" />
+          <span className="w-3 h-0.5 rounded bg-expense" />
           <span className="text-xs text-ink-muted dark:text-white">{t('reports.dailyExpenses')}</span>
         </div>
       </div>

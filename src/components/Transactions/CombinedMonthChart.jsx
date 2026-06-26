@@ -2,6 +2,7 @@ import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Le
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import useDarkMode from '../../hooks/useDarkMode';
+import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
 
 // Month name mapping for translation
 const MONTH_MAP = {
@@ -15,8 +16,8 @@ function CombinedMonthChartLegend() {
   const { t } = useTranslation();
 
   const items = [
-    { key: 'income', color: '#168b78', label: t('chart.income') },
-    { key: 'expense', color: '#e8394d', label: t('chart.expense') }
+    { key: 'income', color: INCOME_COLOR, label: t('chart.income') },
+    { key: 'expense', color: EXPENSE_COLOR, label: t('chart.expense') }
   ];
 
   return (
@@ -68,10 +69,10 @@ function CombinedMonthTooltip({ active, payload, label }) {
   return (
     <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md text-sm">
       <p className="font-semibold text-ink-primary dark:text-white mb-1">{label}</p>
-      <p className="tabular-nums" style={{ color: '#168b78' }}>
+      <p className="tabular-nums" style={{ color: INCOME_COLOR }}>
         {t('chart.income')} : {formatCurrency(incomeValue)}
       </p>
-      <p className="tabular-nums mt-0.5" style={{ color: '#e8394d' }}>
+      <p className="tabular-nums mt-0.5" style={{ color: EXPENSE_COLOR }}>
         {t('chart.expense')} : {formatCurrency(expenseValue)}
       </p>
     </div>
@@ -152,8 +153,8 @@ export default function CombinedMonthChart({ transactions }) {
             height={40}
             content={<CombinedMonthChartLegend />}
           />
-          <Bar dataKey="income" fill="#168b78" name="income" radius={[8, 8, 0, 0]} />
-          <Bar dataKey="expense" fill="#e8394d" name="expense" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="income" fill={INCOME_COLOR} name="income" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="expense" fill={EXPENSE_COLOR} name="expense" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

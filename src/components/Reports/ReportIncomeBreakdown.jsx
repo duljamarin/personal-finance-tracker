@@ -8,12 +8,7 @@ import {
   Tooltip,
 } from 'recharts';
 import Card from '../UI/Card';
-
-const CHART_PALETTE = [
-  '#168b78', '#6A8FC4', '#C9A87C', '#9B7EB3', '#C46A75',
-  '#43c5aa', '#D0A96A', '#7A9E7E', '#7A756A', '#5B8DB8',
-];
-const COLORS = CHART_PALETTE;
+import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
 
 function CustomTooltip({ active, payload }) {
   if (active && payload && payload.length) {

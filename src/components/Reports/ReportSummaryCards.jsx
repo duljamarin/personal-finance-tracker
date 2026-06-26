@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
-
-const EXPENSE_COLOR = '#e8394d';
-const EXPENSE_COLOR_DARK = '#e8394d';
+import { EXPENSE_COLOR } from '../../utils/chartColors';
 
 function formatAmount(amount) {
   return `€${Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -112,7 +110,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
   const toneClass = (tone) => {
     switch (tone) {
       case 'income':
-        return 'text-emerald-600 dark:text-emerald-400';
+        return 'text-brand-600 dark:text-brand-400';
       case 'brand':
         return 'text-brand-600 dark:text-brand-400';
       case 'expense':
