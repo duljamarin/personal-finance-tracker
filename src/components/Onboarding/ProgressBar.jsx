@@ -48,7 +48,7 @@ export default function ProgressBar({ currentStep, totalSteps, stepLabels }) {
             <div key={`label-${step}`} className="flex items-center gap-2">
               <span
                 className="w-10 text-center text-[10px] font-medium"
-                style={{ color: isCurrent ? '#22ad93' : 'inherit' }}
+                style={{ color: isCurrent ? 'var(--c-brand-accent)' : 'inherit' }}
               >
                 {stepLabels ? stepLabels[i] : t(`onboarding.steps.${step}`)}
               </span>

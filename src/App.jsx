@@ -141,13 +141,15 @@ function AuthGlobalUI() {
   return (
     <>
       {authError && (
-        <div className="fixed top-[4.5rem] sm:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-red-50 dark:bg-red-900/90 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 pl-5 pr-3 py-3 rounded-xl shadow-xl text-sm font-medium animate-fade-in max-w-md backdrop-blur-sm">
-          <span className="flex-shrink-0">⚠️</span>
+        <div className="fixed top-[4.5rem] sm:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-expense-bg dark:bg-expense-tint border border-expense/30 text-expense pl-5 pr-3 py-3 rounded-container shadow-tier2 text-sm font-medium animate-fade-in max-w-md backdrop-blur-sm">
+          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
           <span className="flex-1 text-center">{getErrorMessage(authError)}</span>
           <button
             onClick={clearError}
             aria-label="Dismiss"
-            className="flex-shrink-0 ml-1 p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-800/60 transition-colors"
+            className="flex-shrink-0 ml-1 p-1 rounded-md hover:bg-expense/10 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

@@ -141,7 +141,7 @@ export default function ResetPassword() {
   }
 
   const pwInputClass = (hasError) =>
-    `w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 rounded-md transition-colors ${hasError ? 'border-[#e8394d]' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`;
+    `w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 rounded-md transition-colors ${hasError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`;
 
   return (
     <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
@@ -179,7 +179,7 @@ export default function ResetPassword() {
                 placeholder={t('auth.passwordPlaceholder')}
                 className={pwInputClass(passwordError)}
               />
-              {passwordError && <span className="text-[#e8394d] text-xs mt-2 block">{t(passwordError)}</span>}
+              {passwordError && <span className="text-expense text-xs mt-2 block">{t(passwordError)}</span>}
             </div>
 
             <div>
@@ -195,7 +195,7 @@ export default function ResetPassword() {
                 placeholder={t('auth.confirmPasswordPlaceholder')}
                 className={pwInputClass(confirmPasswordError)}
               />
-              {confirmPasswordError && <span className="text-[#e8394d] text-xs mt-2 block">{t(confirmPasswordError)}</span>}
+              {confirmPasswordError && <span className="text-expense text-xs mt-2 block">{t(confirmPasswordError)}</span>}
             </div>
 
             <button

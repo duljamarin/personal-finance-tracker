@@ -47,8 +47,8 @@ function MiniBarChart() {
               style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 72}px` }}
             />
             <div
-              className="w-full rounded-t-[2px]"
-              style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 72}px`, backgroundColor: '#e8394d', opacity: 0.75 }}
+              className="w-full rounded-t-[2px] bg-expense/75"
+              style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 72}px` }}
             />
           </div>
           <span className="text-[8px] text-ink-muted dark:text-white hidden sm:block">{m}</span>
@@ -71,7 +71,7 @@ function MiniHealthScore() {
           <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" strokeWidth="8" className="text-brand-100 dark:text-brand-950/60" />
           <circle
             cx="50" cy="50" r={radius} fill="none"
-            stroke="#22AD93" strokeWidth="8"
+            stroke="var(--c-brand-accent)" strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={circ}
             strokeDashoffset={offset}
@@ -116,7 +116,7 @@ function MiniBudgets() {
             <div className="h-1.5 rounded-full bg-brand-100 dark:bg-brand-950/50 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
-                style={{ width: `${pct}%`, backgroundColor: over ? '#e8394d' : '#22AD93' }}
+                style={{ width: `${pct}%`, backgroundColor: over ? 'var(--c-expense)' : 'var(--c-brand-accent)' }}
               />
             </div>
           </div>
@@ -266,7 +266,7 @@ export default function LandingPage() {
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-[0.07] dark:opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, #22AD93 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, var(--c-brand-accent) 0%, transparent 70%)' }}
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
@@ -279,7 +279,7 @@ export default function LandingPage() {
                 style={{ animationDelay: '60ms' }}
               >
                 {t('landing.hero.titleLine1')}{' '}
-                <span className="text-brand-600 dark:text-[#22AD93]">{t('landing.hero.titleAccent')}</span>
+                <span className="text-brand-600 dark:text-brand-accent">{t('landing.hero.titleAccent')}</span>
               </h1>
 
               <p
@@ -408,7 +408,7 @@ function HeroFeaturesSection({ t }) {
                   <span>2025 - Year to date</span>
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />Income</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: '#e8394d' }} />Expenses</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block bg-expense" />Expenses</span>
                   </div>
                 </div>
                 <MiniBarChart />
@@ -419,7 +419,7 @@ function HeroFeaturesSection({ t }) {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Expenses</p>
-                    <p className="text-xl font-bold tabular-nums" style={{ color: '#e8394d' }}>€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
+                    <p className="text-xl font-bold tabular-nums text-expense">€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Saved</p>
@@ -608,7 +608,7 @@ function PricingPreviewSection({ t }) {
             <div
               aria-hidden="true"
               className="absolute inset-0 pointer-events-none opacity-[0.04]"
-              style={{ background: 'radial-gradient(ellipse at top right, #22AD93, transparent 60%)' }}
+              style={{ background: 'radial-gradient(ellipse at top right, var(--c-brand-accent), transparent 60%)' }}
             />
             <div className="flex items-center gap-2 mb-6">
               <span className="px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold">
@@ -650,9 +650,9 @@ function FounderSection({ t }) {
       >
         <Eyebrow>{t('landing.founder.eyebrow')}</Eyebrow>
         <blockquote className="relative font-display text-2xl sm:text-3xl font-medium text-ink-primary dark:text-white leading-[1.35] mb-8 pl-10 sm:pl-12">
-          <span className="absolute left-0 top-[-6px] text-brand-600 dark:text-[#22AD93] text-6xl leading-none font-serif select-none" aria-hidden="true">&ldquo;</span>
+          <span className="absolute left-0 top-[-6px] text-brand-600 dark:text-brand-accent text-6xl leading-none font-serif select-none" aria-hidden="true">&ldquo;</span>
           {t('landing.founder.quote')}
-          <span className="inline-block ml-1 text-brand-600 dark:text-[#22AD93] text-5xl leading-none font-serif select-none align-bottom translate-y-2" aria-hidden="true">&rdquo;</span>
+          <span className="inline-block ml-1 text-brand-600 dark:text-brand-accent text-5xl leading-none font-serif select-none align-bottom translate-y-2" aria-hidden="true">&rdquo;</span>
         </blockquote>
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0">
@@ -698,7 +698,7 @@ function FaqSection({ t }) {
 function FinalCtaSection({ t }) {
   const [ref, visible] = useReveal(0.1);
   return (
-    <section className="relative overflow-hidden bg-[#0a1a17] py-28 sm:py-36">
+    <section className="relative overflow-hidden bg-surface-dark-deep py-28 sm:py-36">
       {/* Dot grid */}
       <div
         aria-hidden="true"

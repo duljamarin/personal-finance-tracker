@@ -222,7 +222,7 @@ export default function RegisterForm() {
                 }
               />
               {passwordError && (
-                <p className="mt-2 text-xs text-[#e8394d] flex items-center gap-1.5">
+                <p className="mt-2 text-xs text-expense flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                   </svg>
@@ -251,11 +251,11 @@ export default function RegisterForm() {
                   <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.privacyPolicy')}</Link>
                 </span>
               </label>
-              {termsError && <span className="text-[#e8394d] text-xs mt-2 block">{t(termsError)}</span>}
+              {termsError && <span className="text-expense text-xs mt-2 block">{t(termsError)}</span>}
             </div>
 
             {formError && (
-              <div className="bg-[#fdf2f4] dark:bg-[rgba(232,57,77,0.12)] border border-[#e8394d]/30 text-[#e8394d] text-center text-sm p-3 rounded-md">
+              <div className="bg-expense-bg border border-expense/30 text-expense text-center text-sm p-3 rounded-md">
                 {t(formError)}
               </div>
             )}

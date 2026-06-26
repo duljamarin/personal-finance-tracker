@@ -180,7 +180,7 @@ export default function Sidebar() {
               strokeWidth={1.75}
             />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold leading-none">
+              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-expense text-white text-[9px] font-bold leading-none">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
@@ -278,7 +278,7 @@ export default function Sidebar() {
               <div className="border-t border-surface-hairline dark:border-surface-dark-hairline my-1" />
               <button
                 onClick={() => { setProfileOpen(false); handleLogout(); }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
+                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-expense dark:text-expense hover:bg-expense/5 dark:hover:bg-expense/10 transition-colors text-left"
               >
                 <LogOut className="h-4 w-4" strokeWidth={1.75} />
                 {t('nav.logout')}

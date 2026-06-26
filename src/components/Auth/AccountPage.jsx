@@ -141,7 +141,7 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-[#e8394d]' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           <div>
@@ -158,11 +158,11 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-[#e8394d]' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           {passwordError && (
-            <div className="border border-[#e8394d] text-[#e8394d] dark:text-[#e8394d] text-sm p-3 rounded-md font-medium">
+            <div className="border border-expense text-expense dark:text-expense text-sm p-3 rounded-md font-medium">
               {t(passwordError)}
             </div>
           )}
@@ -177,12 +177,12 @@ export default function AccountPage() {
       </Card>
 
       {/* Danger Zone */}
-      <div className="border rounded-xl overflow-hidden" style={{ borderColor: '#e8394d' }}>
-        <div className="px-6 py-4 flex items-center gap-3 border-b" style={{ borderColor: '#e8394d', backgroundColor: 'rgba(224,92,107,0.06)' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" style={{ color: '#e8394d' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="border border-expense rounded-container overflow-hidden">
+        <div className="px-6 py-4 flex items-center gap-3 border-b border-expense bg-expense-bg">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 text-expense" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           </svg>
-          <h2 className="font-semibold tracking-tight text-lg" style={{ color: '#e8394d' }}>{t('account.dangerZone')}</h2>
+          <h2 className="font-semibold tracking-tight text-lg text-expense">{t('account.dangerZone')}</h2>
         </div>
         <div className="bg-white dark:bg-surface-dark-card px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -191,8 +191,7 @@ export default function AccountPage() {
           </div>
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="flex-shrink-0 px-5 py-2.5 text-white text-sm font-bold rounded-md shadow-sm hover:shadow-md transition-all"
-            style={{ backgroundColor: '#e8394d' }}
+            className="flex-shrink-0 px-5 py-2.5 text-white text-sm font-bold rounded-md shadow-sm transition-colors bg-danger hover:bg-danger-hover"
           >
             {t('account.deleteAccountBtn')}
           </button>
@@ -202,10 +201,10 @@ export default function AccountPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
-          <div className="bg-white dark:bg-surface-dark-card rounded-xl shadow-2xl max-w-md w-full p-6 flex flex-col gap-5 border border-surface-hairline dark:border-surface-dark-hairline">
+          <div className="bg-white dark:bg-surface-dark-card rounded-container shadow-tier2 max-w-md w-full p-6 flex flex-col gap-5 border border-surface-hairline dark:border-surface-dark-hairline">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(224,92,107,0.1)' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" style={{ color: '#e8394d' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-expense-tint">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-expense" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </div>
@@ -247,8 +246,7 @@ export default function AccountPage() {
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmText !== 'DELETE' || deleting}
-                className="flex-1 px-4 py-3 text-white rounded-md font-bold text-sm shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: '#e8394d' }}
+                className="flex-1 px-4 py-3 text-white rounded-md font-bold text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-danger hover:bg-danger-hover"
               >
                 {deleting ? t('account.deleting') : t('account.deleteAccountBtn')}
               </button>

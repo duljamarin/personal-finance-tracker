@@ -40,7 +40,7 @@ export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, de
         </button>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-surface-dark-card text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 shadow-sm transition-colors"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-surface-dark-card text-expense hover:bg-expense/5 dark:hover:bg-expense/10 shadow-sm transition-colors"
           title={deleteLabel}
           aria-label={deleteLabel}
         >

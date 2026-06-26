@@ -56,17 +56,17 @@ export function useToast() {
 
 function Toast({ message, type, onClose }) {
   const borderColors = {
-    success: 'border-l-emerald-500',
-    error: 'border-l-red-500',
+    success: 'border-l-success',
+    error: 'border-l-expense',
     info: 'border-l-brand-500',
-    warning: 'border-l-amber-500'
+    warning: 'border-l-warning'
   };
 
   const iconColors = {
-    success: 'text-emerald-500',
-    error: 'text-red-500',
+    success: 'text-success',
+    error: 'text-expense',
     info: 'text-brand-500',
-    warning: 'text-amber-500'
+    warning: 'text-warning'
   };
 
   const icons = {
