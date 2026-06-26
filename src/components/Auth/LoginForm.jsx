@@ -82,8 +82,8 @@ export default function LoginForm() {
   return (
     <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
       {/* Brand backdrop — emerald glow + corner accents */}
-      <div aria-hidden="true" className="absolute top-6 left-6 sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
-      <div aria-hidden="true" className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
+      <div aria-hidden="true" className="hidden sm:block absolute sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
+      <div aria-hidden="true" className="hidden sm:block absolute sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
 
       <div className="relative w-full max-w-md">
         {/* Logomark + titles */}
