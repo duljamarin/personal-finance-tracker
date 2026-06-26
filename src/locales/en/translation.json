@@ -917,7 +917,9 @@
       "notePlaceholder": "Optional note",
       "history": "Contribution History",
       "noContributions": "No contributions yet",
-      "withdraw": "Withdraw"
+      "withdraw": "Withdraw",
+      "available": "Available to withdraw: {{amount}}",
+      "withdrawExceedsError": "You can't withdraw more than the {{amount}} currently saved."
     },
     "stats": {
       "totalSaved": "Total Saved",

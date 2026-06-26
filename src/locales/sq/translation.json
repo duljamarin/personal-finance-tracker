@@ -917,7 +917,9 @@
       "notePlaceholder": "Shënim opsional",
       "history": "Historia e Kontributeve",
       "noContributions": "Asnjë kontribut ende",
-      "withdraw": "Tërhiq"
+      "withdraw": "Tërhiq",
+      "available": "Në dispozicion për tërheqje: {{amount}}",
+      "withdrawExceedsError": "Nuk mund të tërhiqni më shumë se {{amount}} të kursyera aktualisht."
     },
     "stats": {
       "totalSaved": "Totali i Kursyer",
