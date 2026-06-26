@@ -6,9 +6,9 @@ export default function Button({ children, className = '', variant = 'primary', 
       'bg-transparent border border-ink-primary/25 hover:border-ink-primary/60 text-ink-primary ' +
       'dark:border-ink-dark-primary/25 dark:hover:border-ink-dark-primary/60 dark:text-white',
     success:
-      'bg-emerald-800 hover:bg-emerald-700 text-white border border-transparent',
+      'bg-brand-700 hover:bg-brand-600 text-white border border-transparent',
     danger:
-      'bg-transparent border border-[#e8394d]/50 hover:border-[#e8394d] hover:bg-[#e8394d]/5 text-[#e8394d]',
+      'bg-transparent border border-danger/50 hover:border-danger hover:bg-danger/5 text-danger',
     ghost:
       'bg-transparent hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary border border-transparent',
   };
