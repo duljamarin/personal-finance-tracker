@@ -507,7 +507,7 @@
     "secondaryFeatures": {
       "title": "Everything else included",
       "items": {
-        "recurring": "Recurring transactions — daily, weekly, monthly, yearly",
+        "recurring": "Recurring transactions - daily, weekly, monthly, yearly",
         "goals": "Financial goals with contribution tracking",
         "cashflow": "Cash flow forecasting from recurring entries",
         "networth": "Net worth tracking with asset & liability history",
