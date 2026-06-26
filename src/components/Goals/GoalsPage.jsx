@@ -112,6 +112,18 @@ export default function GoalsPage() {
       const isWithdrawal = contributionData.action === 'withdraw';
       const isExpenseGoal = ['debt_payoff', 'purchase'].includes(selectedGoal.goal_type);
 
+      // Backstop: never create a transaction for a withdrawal that would drive
+      // the goal's saved balance negative (DB enforces current_amount >= 0).
+      // The form blocks this too, but guard here so we never orphan a tx.
+      const savedAmount = Number(selectedGoal.current_amount) || 0;
+      if (isWithdrawal && contributionData.amount > savedAmount) {
+        addToast(
+          t('goals.contributions.withdrawExceedsError', { amount: `€${savedAmount.toFixed(2)}` }),
+          'error'
+        );
+        return;
+      }
+
       // Determine transaction type based on goal type and action
       // debt_payoff/purchase: contribution = expense, withdrawal = income
       // savings/investment: contribution = income, withdrawal = expense
@@ -147,7 +159,20 @@ export default function GoalsPage() {
       refreshSubscription();
     } catch (error) {
       console.error('Error adding contribution:', error);
-      addToast(error.message || t('goals.toast.error'), 'error');
+      // The goals_current_amount_check constraint surfaces as a raw Postgres
+      // message — translate it to the friendly over-withdrawal warning.
+      const raw = error?.message || '';
+      const isBalanceConstraint =
+        raw.includes('goals_current_amount_check') || error?.code === '23514';
+      if (isBalanceConstraint) {
+        const savedAmount = Number(selectedGoal?.current_amount) || 0;
+        addToast(
+          t('goals.contributions.withdrawExceedsError', { amount: `€${savedAmount.toFixed(2)}` }),
+          'error'
+        );
+      } else {
+        addToast(raw || t('goals.toast.error'), 'error');
+      }
     }
   };
 

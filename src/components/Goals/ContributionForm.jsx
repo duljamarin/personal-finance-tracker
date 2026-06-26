@@ -12,12 +12,22 @@ export default function ContributionForm({ goal, onSave, onClose }) {
   const [error, setError] = useState('');
   const [action, setAction] = useState('add'); // 'add' or 'withdraw'
 
+  const currentAmount = Number(goal.current_amount) || 0;
+  const fmtEur = (n) => `€${n.toFixed(2)}`;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const numAmount = parseFloat(amount);
 
     if (!amount || numAmount <= 0) {
       setError(t('transactions.amountError'));
+      return;
+    }
+
+    // A withdrawal can't reduce the saved balance below zero — the DB enforces
+    // current_amount >= 0, so guard here with a clear message.
+    if (action === 'withdraw' && numAmount > currentAmount) {
+      setError(t('goals.contributions.withdrawExceedsError', { amount: fmtEur(currentAmount) }));
       return;
     }
 
@@ -43,7 +53,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
         <div className="flex rounded-md border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
           <button
             type="button"
-            onClick={() => setAction('add')}
+            onClick={() => { setAction('add'); setError(''); }}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'add'
                 ? 'bg-brand-600 text-white'
@@ -54,7 +64,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
           </button>
           <button
             type="button"
-            onClick={() => setAction('withdraw')}
+            onClick={() => { setAction('withdraw'); setError(''); }}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'withdraw'
                 ? 'bg-expense text-white'
@@ -70,6 +80,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
           type="number"
           step="0.01"
           min="0.01"
+          max={action === 'withdraw' ? currentAmount : undefined}
           value={amount}
           onChange={(e) => {
             setAmount(e.target.value);
@@ -77,6 +88,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
           }}
           placeholder="0.00"
           error={error}
+          helperText={action === 'withdraw' ? t('goals.contributions.available', { amount: fmtEur(currentAmount) }) : undefined}
           required
         />
 
