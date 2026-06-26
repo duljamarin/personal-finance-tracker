@@ -295,7 +295,7 @@ export default function LandingPage() {
               </Link>
               <Link
                 to="/login"
-                className="group inline-flex items-center gap-1.5 text-base font-medium text-ink-muted dark:text-white/80 hover:text-ink-primary dark:hover:text-white transition-colors"
+                className="group inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-semibold rounded-md border border-surface-hairline dark:border-surface-dark-hairline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
