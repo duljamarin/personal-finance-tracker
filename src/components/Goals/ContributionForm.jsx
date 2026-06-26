@@ -87,7 +87,6 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             setError('');
           }}
           placeholder="0.00"
-          error={error}
           helperText={action === 'withdraw' ? t('goals.contributions.available', { amount: fmtEur(currentAmount) }) : undefined}
           required
         />
@@ -112,6 +111,15 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           />
         </div>
+
+        {error && (
+          <div className="bg-expense-bg border border-expense/30 text-expense text-sm p-3 rounded-md flex items-center gap-2">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+            {error}
+          </div>
+        )}
 
         <div className="flex gap-3 pt-4">
           <Button type="submit" className="flex-1">

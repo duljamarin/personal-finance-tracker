@@ -269,50 +269,45 @@ export default function LandingPage() {
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
-          <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-start">
+          {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
+          <div className="max-w-3xl mx-auto text-center">
+            <h1
+              className="font-display text-[3.25rem] sm:text-6xl lg:text-[4.25rem] font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-6"
+              style={{ animationDelay: '60ms' }}
+            >
+              {t('landing.hero.titleLine1')}{' '}
+              <span className="text-brand-600 dark:text-brand-accent">{t('landing.hero.titleAccent')}</span>
+            </h1>
 
-            {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
-            <div className="lg:pt-6">
-              <h1
-                className="font-display text-[3.25rem] sm:text-6xl lg:text-[4.25rem] font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-6"
-                style={{ animationDelay: '60ms' }}
+            <p
+              className="text-lg sm:text-xl text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl mx-auto"
+              style={{ animationDelay: '120ms' }}
+            >
+              {t('landing.hero.subtitle')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '180ms' }}>
+              <Link
+                to="/register"
+                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all text-base shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30"
               >
-                {t('landing.hero.titleLine1')}{' '}
-                <span className="text-brand-600 dark:text-brand-accent">{t('landing.hero.titleAccent')}</span>
-              </h1>
-
-              <p
-                className="text-lg sm:text-xl text-ink-muted dark:text-white leading-relaxed mb-8 max-w-md"
-                style={{ animationDelay: '120ms' }}
+                {t('landing.hero.getStarted')}
+              </Link>
+              <Link
+                to="/login"
+                className="group inline-flex items-center gap-1.5 text-base font-medium text-ink-muted dark:text-white/80 hover:text-ink-primary dark:hover:text-white transition-colors"
               >
-                {t('landing.hero.subtitle')}
-              </p>
+                {t('landing.hero.signIn')}
+              </Link>
+            </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '180ms' }}>
-                <Link
-                  to="/register"
-                  className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all text-base shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30"
-                >
-                  {t('landing.hero.getStarted')}
-      
-                </Link>
-                <Link
-                  to="/login"
-                  className="group inline-flex items-center gap-1.5 text-base font-medium text-ink-muted dark:text-white/80 hover:text-ink-primary dark:hover:text-white transition-colors"
-                >
-                  {t('landing.hero.signIn')}
-                
-                </Link>
-              </div>
-
-              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white" style={{ animationDelay: '240ms' }}>
-                {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
-                  <span key={label} className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
-                    {label}
-                  </span>
-                ))}
-              </div>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white" style={{ animationDelay: '240ms' }}>
+              {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
+                <span key={label} className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
+                  {label}
+                </span>
+              ))}
             </div>
           </div>
         </div>
