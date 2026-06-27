@@ -687,14 +687,14 @@ function FinalCtaSection({ t }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
           <Link
             to="/register"
-            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-md transition-all text-base shadow-xl shadow-brand-600/25 hover:shadow-2xl hover:shadow-brand-500/30"
+            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-md transition-all text-base shadow-xl shadow-brand-600/25 hover:shadow-2xl hover:shadow-brand-500/30"
           >
             {t('landing.finalCta.button')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
           </Link>
           <Link
             to="/pricing"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-8 py-3.5 rounded-md border border-white/20 text-white hover:border-white/50 font-medium text-base transition-all"
+            className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-8 py-3.5 rounded-md border border-white/20 text-white hover:border-white/50 font-medium text-base transition-all"
           >
             {t('landing.finalCta.secondary')}
           </Link>
