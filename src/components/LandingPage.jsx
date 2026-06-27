@@ -289,13 +289,13 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '180ms' }}>
               <Link
                 to="/register"
-                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all text-base shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30"
+                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all text-base shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30"
               >
                 {t('landing.hero.getStarted')}
               </Link>
               <Link
                 to="/login"
-                className="group inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-semibold rounded-md border border-surface-hairline dark:border-surface-dark-hairline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
+                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-semibold rounded-md border border-surface-hairline dark:border-surface-dark-hairline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
@@ -551,7 +551,7 @@ function PricingPreviewSection({ t }) {
           {/* Free */}
           <div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-8">
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-2.5 py-1 rounded-md bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 text-xs font-semibold">
+              <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 text-xs font-semibold">
                 {t('landing.pricingPreview.free.label')}
               </span>
             </div>
@@ -572,7 +572,7 @@ function PricingPreviewSection({ t }) {
               style={{ background: 'radial-gradient(ellipse at top right, var(--c-brand-accent), transparent 60%)' }}
             />
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold">
+              <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold">
                 {t('landing.pricingPreview.premium.label')}
               </span>
             </div>
@@ -687,7 +687,7 @@ function FinalCtaSection({ t }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
           <Link
             to="/register"
-            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-md transition-all text-base shadow-xl shadow-brand-600/25 hover:shadow-2xl hover:shadow-brand-500/30"
+            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-md transition-all text-base shadow-xl shadow-brand-600/25 hover:shadow-2xl hover:shadow-brand-500/30"
           >
             {t('landing.finalCta.button')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
