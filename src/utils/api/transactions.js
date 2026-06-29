@@ -84,7 +84,11 @@ export async function addTransaction(transaction) {
       .single();
 
     if (error) throw error;
-    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
+    try {
+      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
+    } catch (e) {
+      console.error('budget notification check failed:', e);
+    }
     return data;
   });
 }
@@ -139,7 +143,11 @@ export async function updateTransaction(id, transaction) {
       .single();
 
     if (error) throw error;
-    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
+    try {
+      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
+    } catch (e) {
+      console.error('budget notification check failed:', e);
+    }
     return data;
   });
 }
@@ -259,7 +267,11 @@ export async function addTransactionWithSplits(transaction, splits) {
       if (splitError) throw splitError;
     }
 
-    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
+    try {
+      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
+    } catch (e) {
+      console.error('budget notification check failed:', e);
+    }
     return tx;
   });
 }
@@ -328,7 +340,11 @@ export async function updateTransactionWithSplits(id, transaction, splits) {
       if (splitError) throw splitError;
     }
 
-    supabase.rpc('check_budget_notifications', { p_user_id: user.id }).then(() => {}).catch(() => {});
+   try {
+      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
+    } catch (e) {
+      console.error('budget notification check failed:', e);
+    }
     return tx;
   });
 }
