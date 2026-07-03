@@ -4,6 +4,7 @@ import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { fetchCategories, addCategory, bulkImportTransactions } from '../../utils/api';
 import UpgradeBanner from '../Subscription/UpgradeBanner';
+import EncryptionPromptBanner from '../Encryption/EncryptionPromptBanner';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 import HealthScore from '../HealthScore/HealthScore';
 import LoadingSpinner from '../UI/LoadingSpinner';
@@ -79,6 +80,7 @@ export default function Dashboard() {
       )}
 
       <UpgradeBanner />
+      <EncryptionPromptBanner />
 
       {/* Transaction usage counter (free plan only, shows when >= 50% used) */}
       <div className="mb-4">

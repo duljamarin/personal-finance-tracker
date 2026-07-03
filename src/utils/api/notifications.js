@@ -1,4 +1,41 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
+import { decryptField, isEncrypted } from '../crypto/cipher';
+import { getDEK } from '../crypto/keyring';
+
+// check_recurring_notifications / check_goal_milestone_notifications (server
+// SQL) copy recurring.title / goal.name verbatim into these metadata params —
+// they may be enc:v1: ciphertext for encryption-enabled users. The raw
+// notification.title/.message columns embed the same text via string
+// concatenation and are display fallback-only (legacy, left as-is).
+async function decryptNotificationParams(notification) {
+  const meta = notification.metadata;
+  if (!meta || typeof meta !== 'object') return notification;
+
+  const hasEncrypted =
+    isEncrypted(meta.title_params?.title) ||
+    isEncrypted(meta.title_params?.name) ||
+    isEncrypted(meta.message_params?.title) ||
+    isEncrypted(meta.message_params?.name);
+  if (!hasEncrypted) return notification;
+
+  const dek = await getDEK();
+  const decryptParams = async (params) => {
+    if (!params) return params;
+    const out = { ...params };
+    if (isEncrypted(out.title)) out.title = await decryptField(dek, out.title);
+    if (isEncrypted(out.name)) out.name = await decryptField(dek, out.name);
+    return out;
+  };
+
+  return {
+    ...notification,
+    metadata: {
+      ...meta,
+      title_params: await decryptParams(meta.title_params),
+      message_params: await decryptParams(meta.message_params),
+    },
+  };
+}
 
 export async function fetchNotifications() {
   return withAuthOrEmpty(async (user) => {
@@ -11,7 +48,7 @@ export async function fetchNotifications() {
       .limit(50);
 
     if (error) throw error;
-    return data || [];
+    return Promise.all((data || []).map(decryptNotificationParams));
   });
 }
 

@@ -1,4 +1,5 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
+import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 
 export async function fetchTransactions({ type } = {}) {
   return withAuthOrEmpty(async (user) => {
@@ -34,7 +35,7 @@ export async function fetchTransactions({ type } = {}) {
       from += PAGE_SIZE;
     }
 
-    return all;
+    return decryptRows('transactions', all);
   });
 }
 
@@ -64,7 +65,7 @@ export async function addTransaction(transaction) {
     const rate = exchangeRate || 1.0;
     const baseAmount = transaction.amount * rate;
 
-    const insertData = {
+    const insertData = await encryptRow('transactions', {
       ...rest,
       date: _date,
       category_id: categoryId,
@@ -72,7 +73,7 @@ export async function addTransaction(transaction) {
       currency_code: currencyCode || 'EUR',
       exchange_rate: rate,
       base_amount: baseAmount,
-    };
+    });
 
     const { data, error } = await supabase
       .from('transactions')
@@ -89,7 +90,7 @@ export async function addTransaction(transaction) {
     } catch (e) {
       console.error('budget notification check failed:', e);
     }
-    return data;
+    return decryptRow('transactions', data);
   });
 }
 
@@ -118,10 +119,10 @@ export async function updateTransaction(id, transaction) {
     const rate = exchangeRate !== undefined ? exchangeRate : undefined;
     const amount = transaction.amount;
 
-    const updateData = {
+    const updateData = await encryptRow('transactions', {
       ...rest,
       category_id: categoryId,
-    };
+    });
 
     if (currencyCode !== undefined) updateData.currency_code = currencyCode;
     if (rate !== undefined) updateData.exchange_rate = rate;
@@ -148,7 +149,7 @@ export async function updateTransaction(id, transaction) {
     } catch (e) {
       console.error('budget notification check failed:', e);
     }
-    return data;
+    return decryptRow('transactions', data);
   });
 }
 
@@ -191,7 +192,7 @@ export async function getTransaction(id) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('transactions', data);
   });
 }
 
@@ -209,7 +210,7 @@ export async function fetchTransactionSplits(transactionId) {
       .order('amount', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return decryptRows('transaction_splits', data || []);
   });
 }
 
@@ -233,32 +234,34 @@ export async function addTransactionWithSplits(transaction, splits) {
     } = transaction;
     const rate = exchangeRate || 1.0;
 
+    const insertData = await encryptRow('transactions', {
+      ...rest,
+      category_id: splits?.length > 0 ? null : categoryId,
+      user_id: user.id,
+      currency_code: currencyCode || 'EUR',
+      exchange_rate: rate,
+      base_amount: transaction.amount * rate,
+      has_splits: splits?.length > 0,
+      source_recurring_id: sourceRecurringId || null,
+    });
+
     const { data: tx, error: txError } = await supabase
       .from('transactions')
-      .insert([{
-        ...rest,
-        category_id: splits?.length > 0 ? null : categoryId,
-        user_id: user.id,
-        currency_code: currencyCode || 'EUR',
-        exchange_rate: rate,
-        base_amount: transaction.amount * rate,
-        has_splits: splits?.length > 0,
-        source_recurring_id: sourceRecurringId || null,
-      }])
+      .insert([insertData])
       .select('*, category:categories(id, name)')
       .single();
 
     if (txError) throw txError;
 
     if (splits?.length > 0) {
-      const splitRows = splits.map(s => ({
+      const splitRows = await Promise.all(splits.map(s => encryptRow('transaction_splits', {
         transaction_id: tx.id,
         user_id: user.id,
         category_id: s.category_id,
         amount: Number(s.amount),
         percentage: s.percentage ? Number(s.percentage) : null,
         notes: s.notes || null,
-      }));
+      })));
 
       const { error: splitError } = await supabase
         .from('transaction_splits')
@@ -272,7 +275,7 @@ export async function addTransactionWithSplits(transaction, splits) {
     } catch (e) {
       console.error('budget notification check failed:', e);
     }
-    return tx;
+    return decryptRow('transactions', tx);
   });
 }
 
@@ -297,17 +300,19 @@ export async function updateTransactionWithSplits(id, transaction, splits) {
     const rate = exchangeRate || 1.0;
     const hasSplits = splits?.length > 0;
 
+    const updateData = await encryptRow('transactions', {
+      ...rest,
+      category_id: hasSplits ? null : categoryId,
+      currency_code: currencyCode || 'EUR',
+      exchange_rate: rate,
+      base_amount: transaction.amount * rate,
+      has_splits: hasSplits,
+      source_recurring_id: sourceRecurringId || null,
+    });
+
     const { data: tx, error: txError } = await supabase
       .from('transactions')
-      .update({
-        ...rest,
-        category_id: hasSplits ? null : categoryId,
-        currency_code: currencyCode || 'EUR',
-        exchange_rate: rate,
-        base_amount: transaction.amount * rate,
-        has_splits: hasSplits,
-        source_recurring_id: sourceRecurringId || null,
-      })
+      .update(updateData)
       .eq('id', id)
       .eq('user_id', user.id)
       .select('*, category:categories(id, name)')
@@ -324,14 +329,14 @@ export async function updateTransactionWithSplits(id, transaction, splits) {
     if (delError) throw delError;
 
     if (hasSplits) {
-      const splitRows = splits.map(s => ({
+      const splitRows = await Promise.all(splits.map(s => encryptRow('transaction_splits', {
         transaction_id: id,
         user_id: user.id,
         category_id: s.category_id,
         amount: Number(s.amount),
         percentage: s.percentage ? Number(s.percentage) : null,
         notes: s.notes || null,
-      }));
+      })));
 
       const { error: splitError } = await supabase
         .from('transaction_splits')
@@ -345,7 +350,7 @@ export async function updateTransactionWithSplits(id, transaction, splits) {
     } catch (e) {
       console.error('budget notification check failed:', e);
     }
-    return tx;
+    return decryptRow('transactions', tx);
   });
 }
 
@@ -361,14 +366,14 @@ export async function fetchTransactionsForReport(startDate, endDate) {
       .order('date', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return decryptRows('transactions', data || []);
   });
 }
 
 export async function bulkImportTransactions(transactions) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
-    const rows = transactions.map(tx => ({
+    const rows = await Promise.all(transactions.map(tx => encryptRow('transactions', {
       title: tx.title,
       amount: tx.amount,
       type: tx.type,
@@ -379,7 +384,7 @@ export async function bulkImportTransactions(transactions) {
       exchange_rate: tx.exchange_rate || 1.0,
       base_amount: tx.amount * (tx.exchange_rate || 1.0),
       user_id: user.id,
-    }));
+    })));
 
     const { data, error } = await supabase
       .from('transactions')

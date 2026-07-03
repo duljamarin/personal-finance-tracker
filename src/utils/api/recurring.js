@@ -1,4 +1,5 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
+import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 
 export function calculateNextDate(currentDate, frequency, intervalCount) {
   const date = new Date(currentDate);
@@ -48,7 +49,7 @@ export async function fetchRecurringTransactions() {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return decryptRows('recurring_transactions', data || []);
   });
 }
 
@@ -78,7 +79,7 @@ export async function addRecurringTransaction(recurring) {
     const nextRunAt = new Date(startDate);
     nextRunAt.setUTCHours(0, 0, 0, 0);
 
-    const insertData = {
+    const insertData = await encryptRow('recurring_transactions', {
       ...rest,
       category_id: categoryId,
       user_id: user.id,
@@ -91,7 +92,7 @@ export async function addRecurringTransaction(recurring) {
       occurrences_limit: occurrencesLimit || null,
       next_run_at: nextRunAt.toISOString(),
       is_active: true,
-    };
+    });
 
     const { data, error } = await supabase
       .from('recurring_transactions')
@@ -100,7 +101,7 @@ export async function addRecurringTransaction(recurring) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('recurring_transactions', data);
   });
 }
 
@@ -176,9 +177,11 @@ export async function updateRecurringTransaction(id, recurring) {
       }
     }
 
+    const encryptedUpdateData = await encryptRow('recurring_transactions', updateData);
+
     const { data, error } = await supabase
       .from('recurring_transactions')
-      .update(updateData)
+      .update(encryptedUpdateData)
       .eq('id', id)
       .eq('user_id', user.id)
       .select(`
@@ -188,7 +191,7 @@ export async function updateRecurringTransaction(id, recurring) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('recurring_transactions', data);
   });
 }
 
@@ -334,6 +337,10 @@ export async function processRecurringTransactions() {
     supabase.rpc('check_recurring_notifications', { p_user_id: user.id })
       .then(() => {}).catch(() => {});
 
-    return { generated: generatedTransactions.length, transactions: generatedTransactions };
+    // Note: the insert above copies recurring.title/tags verbatim (may be
+    // ciphertext) — correct, since it's re-encrypted under the same DEK.
+    // Only decrypt for display when handing results back to callers.
+    const decrypted = await decryptRows('transactions', generatedTransactions);
+    return { generated: decrypted.length, transactions: decrypted };
   }).then(result => result || { generated: 0, transactions: [] });
 }

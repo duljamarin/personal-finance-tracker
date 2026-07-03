@@ -1,4 +1,5 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
+import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 
 export async function fetchAssets() {
   return withAuthOrEmpty(async (user) => {
@@ -7,20 +8,25 @@ export async function fetchAssets() {
       .from('assets')
       .select('*')
       .eq('user_id', user.id)
-      .order('type', { ascending: true })
-      .order('name', { ascending: true });
+      .order('type', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+    const decrypted = await decryptRows('assets', data || []);
+    // Server ORDER BY name is meaningless over ciphertext — re-sort client-side.
+    return decrypted.sort((a, b) => {
+      if (a.type !== b.type) return a.type.localeCompare(b.type);
+      return (a.name || '').localeCompare(b.name || '');
+    });
   });
 }
 
 export async function addAsset(asset) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    const insertData = await encryptRow('assets', { ...asset, user_id: user.id });
     const { data, error } = await supabase
       .from('assets')
-      .insert([{ ...asset, user_id: user.id }])
+      .insert([insertData])
       .select()
       .single();
 
@@ -28,16 +34,17 @@ export async function addAsset(asset) {
 
     await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
 
-    return data;
+    return decryptRow('assets', data);
   });
 }
 
 export async function updateAsset(id, asset) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    const updateData = await encryptRow('assets', asset);
     const { data, error } = await supabase
       .from('assets')
-      .update(asset)
+      .update(updateData)
       .eq('id', id)
       .eq('user_id', user.id)
       .select()
@@ -47,7 +54,7 @@ export async function updateAsset(id, asset) {
 
     await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
 
-    return data;
+    return decryptRow('assets', data);
   });
 }
 

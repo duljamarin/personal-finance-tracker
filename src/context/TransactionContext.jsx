@@ -1,8 +1,9 @@
-import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
 import { useSubscription } from './SubscriptionContext';
+import { useCrypto } from './CryptoContext';
 import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from '../utils/api';
 
 const TransactionContext = createContext();
@@ -12,6 +13,7 @@ export function TransactionProvider({ children }) {
   const { addToast } = useToast();
   const { t } = useTranslation();
   const { refreshSubscription } = useSubscription();
+  const { status: cryptoStatus } = useCrypto();
 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +76,18 @@ export function TransactionProvider({ children }) {
       setLoading(false);
     }
   }, [user?.id, authLoading]);
+
+  // Re-fetch once the user unlocks encryption after a restored session
+  // (initial load may have rendered locked-placeholder values).
+  const prevCryptoStatusRef = useRef(cryptoStatus);
+  useEffect(() => {
+    const prev = prevCryptoStatusRef.current;
+    prevCryptoStatusRef.current = cryptoStatus;
+    if (prev === 'locked' && cryptoStatus === 'unlocked' && user?.id) {
+      reloadTransactions();
+      reloadCategories();
+    }
+  }, [cryptoStatus, user?.id, reloadTransactions, reloadCategories]);
 
   const addTransaction = useCallback(async (item) => {
     try {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
@@ -9,6 +9,7 @@ import { translateCategoryName } from '../../utils/categoryTranslation';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useCrypto } from '../../context/CryptoContext';
 import { useFormModal } from '../../hooks/useFormModal';
 import RecurringForm from './RecurringForm';
 import LoadingSpinner from '../UI/LoadingSpinner';
@@ -22,6 +23,7 @@ export default function RecurringPage() {
   };
   const { addToast } = useToast();
   const { isPremium, recurringLimit } = useSubscription();
+  const { status: cryptoStatus } = useCrypto();
   const [recurrings, setRecurrings] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isOpen: showModal, editingItem: editRecurring, openEdit: handleEdit, close: closeFormModal } = useFormModal();
@@ -30,6 +32,17 @@ export default function RecurringPage() {
   useEffect(() => {
     loadRecurrings();
   }, []);
+
+  // Re-fetch once encryption unlocks after a restored session — the initial
+  // load may have raced ahead of unlock and rendered locked-placeholder titles.
+  const prevCryptoStatusRef = useRef(cryptoStatus);
+  useEffect(() => {
+    const prev = prevCryptoStatusRef.current;
+    prevCryptoStatusRef.current = cryptoStatus;
+    if (prev === 'locked' && cryptoStatus === 'unlocked') {
+      loadRecurrings();
+    }
+  }, [cryptoStatus]);
 
   async function loadRecurrings() {
     try {

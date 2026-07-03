@@ -1,25 +1,33 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
+import { useCrypto } from '../../context/CryptoContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 import PasswordInput from '../UI/PasswordInput';
 import Input from '../UI/Input';
 import { trackEvent } from '../../lib/analytics';
+import RecoveryCodeModal from '../Encryption/RecoveryCodeModal';
+
+const E2EE_ENABLED = import.meta.env.VITE_E2EE_ENABLED === 'true';
 
 export default function RegisterForm() {
   const { register, loading, accessToken, clearError } = useAuth();
+  const { setupNow, pendingRecoveryCode, dismissRecoveryCode } = useCrypto();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const redirectTimerRef = useRef(null);
   const [email, setEmail] = useState('');
   const [language, setLanguage] = useState(i18n.language || 'en');
+  // Blocks the auto-redirect below until the recovery code has been shown
+  // and acknowledged — it's the only chance the user gets to see it.
+  const [awaitingRecoveryAck, setAwaitingRecoveryAck] = useState(false);
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && !awaitingRecoveryAck) {
       navigate('/', { replace: true });
     }
-  }, [accessToken, navigate]);
+  }, [accessToken, awaitingRecoveryAck, navigate]);
 
   useEffect(() => {
     return () => clearTimeout(redirectTimerRef.current);
@@ -96,7 +104,18 @@ export default function RegisterForm() {
 
       if (result.session) {
         trackEvent('Signup');
-        navigate('/');
+        if (E2EE_ENABLED) {
+          setAwaitingRecoveryAck(true);
+          try {
+            await setupNow(password, { status: 'enabled' });
+          } catch (e) {
+            console.error('E2EE setup failed:', e);
+            setAwaitingRecoveryAck(false);
+            navigate('/');
+          }
+        } else {
+          navigate('/');
+        }
       } else {
         trackEvent('Signup');
         scheduleLoginRedirect();
@@ -281,6 +300,17 @@ export default function RegisterForm() {
           <Link to="/login" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.signIn')}</Link>
         </p>
       </div>
+
+      {pendingRecoveryCode && (
+        <RecoveryCodeModal
+          recoveryCode={pendingRecoveryCode}
+          onDone={() => {
+            dismissRecoveryCode();
+            setAwaitingRecoveryAck(false);
+            navigate('/');
+          }}
+        />
+      )}
     </div>
   );
 }

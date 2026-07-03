@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { storeUsername } from '../utils/authHelpers';
+import { unlockWithPassword, handleSignOut } from '../utils/crypto/keyLifecycle';
 
 let supabasePromise = null;
 function loadSupabase() {
@@ -46,6 +47,7 @@ export function AuthProvider({ children }) {
           setSession(null);
           setUser(null);
           setLoading(false);
+          handleSignOut();
           return;
         }
 
@@ -61,6 +63,7 @@ export function AuthProvider({ children }) {
         setUser(session?.user ?? null);
         setLoading(false);
         storeUsername(session?.user);
+        if (_event === 'SIGNED_OUT') handleSignOut();
       });
       subscription = result.data.subscription;
     });
@@ -128,17 +131,34 @@ export function AuthProvider({ children }) {
       }
       
       if (error) throw error;
-      
+
+      // Unlock E2EE while the plaintext password is still in scope — this is
+      // the only point in the login flow where we have it. No-op (resolves
+      // to 'off') if the account has no encryption keys. Must happen BEFORE
+      // setUser() below: TransactionContext fetches transactions as soon as
+      // user.id changes, and PBKDF2 (600k iterations) is slow enough on
+      // mobile devices that a fire-and-forget unlock here used to lose the
+      // race — the keyring could still be 'locked' by the time the first
+      // fetch ran, permanently rendering "locked" placeholders for titles
+      // that were actually decryptable (TransactionContext's re-fetch only
+      // triggers on a locked→unlocked transition, which never happens if
+      // unlock finishes before that effect even subscribes).
+      if (data.user?.id) {
+        await unlockWithPassword(data.user.id, password).catch((e) => {
+          console.error('E2EE unlock failed:', e);
+        });
+      }
+
       setSession(data.session);
       setUser(data.user);
-      
+
       // Store username for display
       if (data.user?.user_metadata?.username) {
         localStorage.setItem('username', data.user.user_metadata.username);
       } else if (data.user?.email) {
         localStorage.setItem('username', data.user.email.split('@')[0]);
       }
-      
+
       return data;
     } catch (err) {
       // Pass through Supabase error message for proper translation matching
@@ -218,6 +238,7 @@ export function AuthProvider({ children }) {
       setSession(null);
       setUser(null);
       localStorage.removeItem('username');
+      handleSignOut();
     } catch (err) {
       setError('Logout failed');
     }

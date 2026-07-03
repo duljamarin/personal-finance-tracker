@@ -1,4 +1,5 @@
 import { withAuth, getSupabase } from './_auth';
+import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 
 export async function fetchGoals(filters = {}) {
   return withAuth(async (user) => {
@@ -23,7 +24,7 @@ export async function fetchGoals(filters = {}) {
 
     const { data, error } = await query;
     if (error) throw error;
-    return data;
+    return decryptRows('goals', data);
   });
 }
 
@@ -44,38 +45,40 @@ export async function fetchGoalById(goalId) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('goals', data);
   });
 }
 
 export async function createGoal(goalData) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    const insertData = await encryptRow('goals', {
+      user_id: user.id,
+      name: goalData.name,
+      description: goalData.description || null,
+      target_amount: goalData.targetAmount,
+      target_date: goalData.targetDate || null,
+      category_id: goalData.categoryId || null,
+      goal_type: goalData.goalType || 'savings',
+      priority: goalData.priority || 2,
+      color: goalData.color || '#3B82F6',
+    });
+
     const { data, error } = await supabase
       .from('goals')
-      .insert({
-        user_id: user.id,
-        name: goalData.name,
-        description: goalData.description || null,
-        target_amount: goalData.targetAmount,
-        target_date: goalData.targetDate || null,
-        category_id: goalData.categoryId || null,
-        goal_type: goalData.goalType || 'savings',
-        priority: goalData.priority || 2,
-        color: goalData.color || '#3B82F6',
-      })
+      .insert(insertData)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('goals', data);
   });
 }
 
 export async function updateGoal(goalId, updates) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
-    const updateData = {
+    const updateData = await encryptRow('goals', {
       name: updates.name,
       description: updates.description ?? null,
       target_amount: updates.targetAmount,
@@ -86,7 +89,7 @@ export async function updateGoal(goalId, updates) {
       color: updates.color,
       ...(updates.isActive !== undefined && { is_active: updates.isActive }),
       updated_at: new Date().toISOString(),
-    };
+    });
 
     const { data, error } = await supabase
       .from('goals')
@@ -97,7 +100,7 @@ export async function updateGoal(goalId, updates) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('goals', data);
   });
 }
 
@@ -126,23 +129,25 @@ export async function fetchContributions(goalId) {
       .order('contribution_date', { ascending: false });
 
     if (error) throw error;
-    return data;
+    return decryptRows('goal_contributions', data);
   });
 }
 
 export async function addContribution(goalId, contributionData) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    const insertData = await encryptRow('goal_contributions', {
+      goal_id: goalId,
+      user_id: user.id,
+      amount: contributionData.amount,
+      contribution_date: contributionData.date || new Date().toISOString().split('T')[0],
+      transaction_id: contributionData.transactionId || null,
+      note: contributionData.note || null,
+    });
+
     const { data, error } = await supabase
       .from('goal_contributions')
-      .insert({
-        goal_id: goalId,
-        user_id: user.id,
-        amount: contributionData.amount,
-        contribution_date: contributionData.date || new Date().toISOString().split('T')[0],
-        transaction_id: contributionData.transactionId || null,
-        note: contributionData.note || null,
-      })
+      .insert(insertData)
       .select()
       .single();
 
@@ -151,7 +156,7 @@ export async function addContribution(goalId, contributionData) {
       p_user_id: user.id,
       p_goal_id: goalId,
     }).then(() => {}).catch(() => {});
-    return data;
+    return decryptRow('goal_contributions', data);
   });
 }
 

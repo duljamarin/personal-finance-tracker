@@ -3,16 +3,27 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useCrypto } from '../../context/CryptoContext';
 import { supabase } from '../../utils/supabaseClient';
 import { deleteUserAccount } from '../../utils/api.js';
 import Card from '../UI/Card.jsx';
 import PasswordInput from '../UI/PasswordInput';
+import EncryptionSettings from '../Encryption/EncryptionSettings.jsx';
+import { rewrapForPasswordChange } from '../../utils/crypto/keyLifecycle';
+
+const E2EE_ENABLED = import.meta.env.VITE_E2EE_ENABLED === 'true';
 
 export default function AccountPage() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const { isEncryptionEnabled, keysRow } = useCrypto();
+  // OAuth (Google) users have no Supabase Auth password at all — this form
+  // would silently fail for them. They manage encryption access via the
+  // standalone "app password" inside EncryptionSettings instead.
+  const isOAuthUser = user?.app_metadata?.provider !== 'email';
+  const usesAppPassword = !!keysRow?.is_app_password;
 
   // --- Display Name ---
   const emailLocalPart = user?.email ? user.email.split('@')[0] : '';
@@ -35,6 +46,7 @@ export default function AccountPage() {
   }
 
   // --- Change Password ---
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -53,11 +65,30 @@ export default function AccountPage() {
       setPasswordError('account.passwordMismatch');
       return;
     }
+    if (isEncryptionEnabled && !currentPassword) {
+      setPasswordError('account.currentPasswordRequired');
+      return;
+    }
 
     setSavingPassword(true);
     try {
+      // Unwrap the DEK with the current password FIRST — this both verifies
+      // the current password and gets us the raw key material we need to
+      // re-wrap under the new password. If this throws, nothing has changed
+      // yet, so it's safe to bail out before touching Supabase Auth.
+      if (isEncryptionEnabled) {
+        try {
+          await rewrapForPasswordChange(user.id, currentPassword, newPassword);
+        } catch {
+          setPasswordError('account.currentPasswordIncorrect');
+          setSavingPassword(false);
+          return;
+        }
+      }
+
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
+      setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       addToast(t('account.passwordUpdated'), 'success');
@@ -123,10 +154,32 @@ export default function AccountPage() {
         </form>
       </Card>
 
-      {/* Change Password Section */}
+      {/* Change Password Section — hidden for OAuth users with app-password
+          encryption, since there's no Supabase Auth password to change here
+          (see EncryptionSettings' "Change app password" instead) */}
+      {!(isOAuthUser && usesAppPassword) && (
       <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
         <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-4">{t('account.changePassword')}</h2>
         <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
+          {isEncryptionEnabled && (
+            <div>
+              <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
+                {t('account.currentPassword')}
+              </label>
+              <PasswordInput
+                value={currentPassword}
+                onChange={e => {
+                  setCurrentPassword(e.target.value);
+                  if (passwordError) setPasswordError('');
+                }}
+                placeholder={t('account.currentPasswordPlaceholder')}
+                autoComplete="current-password"
+                show={showPassword}
+                onToggle={() => setShowPassword(v => !v)}
+                className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              />
+            </div>
+          )}
           <div>
             <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
               {t('account.newPassword')}
@@ -175,6 +228,10 @@ export default function AccountPage() {
           </button>
         </form>
       </Card>
+      )}
+
+      {/* Encryption Settings */}
+      {E2EE_ENABLED && <EncryptionSettings userId={user?.id} />}
 
       {/* Danger Zone */}
       <div className="border border-expense rounded-container overflow-hidden">

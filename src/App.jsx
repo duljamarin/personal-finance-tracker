@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { trackPageview } from './lib/analytics';
 import { useMetaTags } from './hooks/useMetaTags';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
@@ -9,9 +9,13 @@ import Footer from './components/Footer.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { CryptoProvider, useCrypto } from './context/CryptoContext';
 import { TransactionProvider } from './context/TransactionContext';
 import { SubscriptionProvider, useSubscription } from './context/SubscriptionContext';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
+
+const UnlockModal = lazy(() => import('./components/Encryption/UnlockModal.jsx'));
+const MigrationBanner = lazy(() => import('./components/Encryption/MigrationBanner.jsx'));
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 // Shown while the Dashboard chunk is loading — LCP element (h1) is present immediately
@@ -170,6 +174,37 @@ function AuthGlobalUI() {
 }
 
 /* Authenticated app shell with sidebar */
+const RecoveryCodeModal = lazy(() => import('./components/Encryption/RecoveryCodeModal.jsx'));
+
+// Renders the E2EE unlock prompt (restored session, no cached key) and the
+// background migration progress indicator. Mounted once for every
+// authenticated screen.
+function EncryptionGate() {
+  const { status, isMigrating, refreshKeysRow } = useCrypto();
+  const [newRecoveryCode, setNewRecoveryCode] = useState(null);
+
+  return (
+    <Suspense fallback={null}>
+      {status === 'locked' && (
+        <UnlockModal
+          onUnlocked={() => {}}
+          onSetupNewKey={(code) => {
+            setNewRecoveryCode(code);
+            refreshKeysRow();
+          }}
+        />
+      )}
+      {newRecoveryCode && (
+        <RecoveryCodeModal
+          recoveryCode={newRecoveryCode}
+          onDone={() => setNewRecoveryCode(null)}
+        />
+      )}
+      {isMigrating && <MigrationBanner />}
+    </Suspense>
+  );
+}
+
 function AuthenticatedLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
@@ -181,6 +216,7 @@ function AuthenticatedLayout({ children }) {
           {children}
         </div>
       </main>
+      <EncryptionGate />
     </div>
   );
 }
@@ -324,13 +360,15 @@ export default function App() {
     <AuthProvider>
       <ToastProvider>
         <ThemeProvider>
-          <SubscriptionProvider>
-            <TransactionProvider>
-              <Router>
-                <InnerAppContent />
-              </Router>
-            </TransactionProvider>
-          </SubscriptionProvider>
+          <CryptoProvider>
+            <SubscriptionProvider>
+              <TransactionProvider>
+                <Router>
+                  <InnerAppContent />
+                </Router>
+              </TransactionProvider>
+            </SubscriptionProvider>
+          </CryptoProvider>
         </ThemeProvider>
       </ToastProvider>
     </AuthProvider>

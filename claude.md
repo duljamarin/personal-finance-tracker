@@ -203,9 +203,10 @@ Edge Function secrets: set via `supabase secrets set` (never in code):
 Full reference: `.claude/design-system.md`
 
 ### Typography
-- **Single font**: Inter Tight (`font-sans`) for all text — body, headings, labels. No display font.
-- No `font-display` class, no `tracking-display`. Removed — do not reintroduce.
+- **Three faces**: Hanken Grotesk (`font-display`) for headings/hero/section titles; Inter Tight (`font-sans`, default) for body/UI/controls; Geist Mono (`font-mono`) for IDs/code. Currency uses `font-sans` + `tabular-nums`, not mono.
+- No `tracking-display`/`tracking-tight-display` — use standard Tailwind tracking.
 - `.eyebrow` utility: `text-[12px] font-medium text-ink-muted` — no uppercase, no wide tracking.
+- **Numbers are the hero**: all currency/percent/count values use `tabular-nums`; focal numbers ≥600 weight, tight tracking. See `.claude/design-system.md` for the full type/metric scale.
 
 ### Brand Colors
 ```
@@ -235,7 +236,7 @@ Avoid unicolor red: keep percentage red (`#e8394d`), supporting text muted (`dar
 1. **API layer is modular** — check `src/utils/api/` (not a single api.js) before adding functions
 2. **Use existing UI primitives** — `Button, Card, Input, Modal, CustomSelect, CategoryIconSvg, PasswordInput`
 3. **i18n both files** — every new string goes in `en/` AND `sq/` simultaneously
-4. **Database changes** — new migration in `supabase_migrations/YYYYMMDDHHMMSS_desc.sql` with RLS
+4. **Database changes** — new migration in `supabase_migrations/YYYYMMDDHHMMSS_desc.sql` with RLS. For every new table, also add explicit `GRANT SELECT, INSERT, UPDATE, DELETE ON public.<table> TO authenticated;` (and `TO service_role;`, plus `TO anon;` only if anonymous/unauthenticated access is actually needed). Supabase no longer grants Data API access to new `public` tables by default — enforced on new projects since 2026-05-30 and on all existing projects from 2026-10-30. RLS policies remain the real access boundary; the grant only makes the table reachable via supabase-js/PostgREST/GraphQL at all. Without it, calls fail with error `42501`.
 5. **Subscription gating** — check `isPremium || isTrialing`, not just `isPremium`
 6. **Context management** — when context exceeds ~50%, delegate to subagents or start fresh conversation
 7. **Deployment** — frontend auto-deploys on push to `main`; migrations and Edge Functions need manual CLI deploy

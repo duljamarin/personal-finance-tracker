@@ -4,6 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 import { useToast } from '../../context/ToastContext';
 import PasswordInput from '../UI/PasswordInput';
+import { fetchUserKeys } from '../../utils/api/userKeys';
+import { rewrapAfterReset, resetWithNewKey } from '../../utils/crypto/keyLifecycle';
+import RecoveryCodeStep from './RecoveryCodeStep';
+
+const E2EE_ENABLED = import.meta.env.VITE_E2EE_ENABLED === 'true';
 
 export default function ResetPassword() {
   const { t } = useTranslation();
@@ -16,6 +21,10 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [isValidSession, setIsValidSession] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
+  // 'password' -> 'recovery' (only if this account has E2EE keys) -> done
+  const [step, setStep] = useState('password');
+  const [userId, setUserId] = useState(null);
+  const [newPasswordForRewrap, setNewPasswordForRewrap] = useState('');
 
   useEffect(() => {
     async function verifyRecoveryToken() {
@@ -98,17 +107,36 @@ export default function ResetPassword() {
     return valid;
   }
 
+  async function finishAndSignOut() {
+    addToast(t('auth.passwordResetSuccess'), 'success');
+    await supabase.auth.signOut();
+    navigate('/login');
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!validate()) return;
 
     setLoading(true);
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData?.user?.id;
+
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-      addToast(t('auth.passwordResetSuccess'), 'success');
-      await supabase.auth.signOut();
-      navigate('/login');
+
+      if (E2EE_ENABLED && uid) {
+        const keysRow = await fetchUserKeys(uid).catch(() => null);
+        if (keysRow) {
+          setUserId(uid);
+          setNewPasswordForRewrap(password);
+          setLoading(false);
+          setStep('recovery');
+          return;
+        }
+      }
+
+      await finishAndSignOut();
     } catch (err) {
       console.error('Reset password error:', err);
       const errorMsg = err?.message || '';
@@ -138,6 +166,21 @@ export default function ResetPassword() {
 
   if (!isValidSession) {
     return null;
+  }
+
+  if (step === 'recovery') {
+    return (
+      <RecoveryCodeStep
+        onSubmitCode={async (code) => {
+          await rewrapAfterReset(userId, newPasswordForRewrap, code);
+          await finishAndSignOut();
+        }}
+        onLostCode={async () => {
+          await resetWithNewKey(userId, newPasswordForRewrap);
+          await finishAndSignOut();
+        }}
+      />
+    );
   }
 
   const pwInputClass = (hasError) =>
