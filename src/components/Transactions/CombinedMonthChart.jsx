@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
@@ -80,45 +81,53 @@ function CombinedMonthTooltip({ active, payload, label }) {
 }
 
 export default function CombinedMonthChart({ transactions }) {
-  const { t } = useTranslation();
+  const { t, i18n: i18nInstance } = useTranslation();
   const [dark] = useDarkMode();
-  
-  // Aggregate transactions by month for both income and expense
-  const monthlyData = {};
-  
-  transactions.forEach(entry => {
-    const date = new Date(entry.date);
-    const monthKey = date.toLocaleString('default', { month: 'short', year: 'numeric' });
-    
-    if (!monthlyData[monthKey]) {
-      monthlyData[monthKey] = { 
-        income: 0, 
-        expense: 0,
-        date: new Date(date.getFullYear(), date.getMonth(), 1)
-      };
-    }
-    
-    // Use base_amount for multi-currency support, fallback to amount
-    const amount = entry.base_amount || entry.amount || 0;
-    
-    if (entry.type === 'income') {
-      monthlyData[monthKey].income += amount;
-    } else if (entry.type === 'expense') {
-      monthlyData[monthKey].expense += amount;
-    }
-  });
 
-  // Convert to array format for Recharts and sort chronologically
-  const data = Object.entries(monthlyData)
-    .map(([month, values]) => ({
-      month,
-      monthDisplay: translateMonth(month),
-      income: parseFloat(values.income.toFixed(2)),
-      expense: parseFloat(values.expense.toFixed(2)),
-      dateObj: values.date
-    }))
-    .sort((a, b) => a.dateObj - b.dateObj)
-    .map(({ monthDisplay, income, expense }) => ({ month: monthDisplay, income, expense }));
+  // Aggregate transactions by month for both income and expense. Memoized —
+  // this ran on every render before (no memo), redoing the full
+  // forEach/sort/map on every parent re-render even when `transactions`
+  // hadn't actually changed, which got noticeably worse once encryption
+  // added extra context re-renders (CryptoContext status changes,
+  // TransactionContext's re-fetch-on-unlock effect) upstream.
+  const data = useMemo(() => {
+    const monthlyData = {};
+
+    transactions.forEach(entry => {
+      const date = new Date(entry.date);
+      const monthKey = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = {
+          income: 0,
+          expense: 0,
+          date: new Date(date.getFullYear(), date.getMonth(), 1)
+        };
+      }
+
+      // Use base_amount for multi-currency support, fallback to amount
+      const amount = entry.base_amount || entry.amount || 0;
+
+      if (entry.type === 'income') {
+        monthlyData[monthKey].income += amount;
+      } else if (entry.type === 'expense') {
+        monthlyData[monthKey].expense += amount;
+      }
+    });
+
+    // Convert to array format for Recharts and sort chronologically
+    return Object.entries(monthlyData)
+      .map(([month, values]) => ({
+        month,
+        monthDisplay: translateMonth(month),
+        income: parseFloat(values.income.toFixed(2)),
+        expense: parseFloat(values.expense.toFixed(2)),
+        dateObj: values.date
+      }))
+      .sort((a, b) => a.dateObj - b.dateObj)
+      .map(({ monthDisplay, income, expense }) => ({ month: monthDisplay, income, expense }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions, i18nInstance.language]);
 
   if (data.length === 0) {
     return (
