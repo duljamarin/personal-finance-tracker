@@ -254,6 +254,8 @@
     "displayNameUpdated": "Display name updated successfully.",
     "displayNameError": "Failed to update display name.",
     "changePassword": "Change Password",
+    "setPassword": "Set a Password",
+    "setPasswordDesc": "You signed in with Google. Set a password to also be able to sign in with your email and password.",
     "currentPassword": "Current Password",
     "currentPasswordPlaceholder": "Enter your current password",
     "currentPasswordRequired": "Please enter your current password.",

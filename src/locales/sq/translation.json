@@ -254,6 +254,8 @@
     "displayNameUpdated": "Emri i shfaqur u përditësua me sukses.",
     "displayNameError": "Dështoi përditësimi i emrit.",
     "changePassword": "Ndrysho Fjalëkalimin",
+    "setPassword": "Vendosni një Fjalëkalim",
+    "setPasswordDesc": "Jeni identifikuar me Google. Vendosni një fjalëkalim që të mund të hyni edhe me email dhe fjalëkalim.",
     "currentPassword": "Fjalëkalimi Aktual",
     "currentPasswordPlaceholder": "Shkruani fjalëkalimin tuaj aktual",
     "currentPasswordRequired": "Ju lutem shkruani fjalëkalimin tuaj aktual.",

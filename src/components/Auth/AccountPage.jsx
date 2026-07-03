@@ -18,12 +18,16 @@ export default function AccountPage() {
   const { user, logout } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
-  const { isEncryptionEnabled, keysRow } = useCrypto();
-  // OAuth (Google) users have no Supabase Auth password at all — this form
-  // would silently fail for them. They manage encryption access via the
-  // standalone "app password" inside EncryptionSettings instead.
+  const { isEncryptionEnabled } = useCrypto();
+  // OAuth (Google) users have no Supabase Auth password at all. They can
+  // still set one here to additionally sign in with email+password — this
+  // is Supabase Auth's normal "link a password to an OAuth identity" flow,
+  // not a password *change*, so there's no "current password" to verify.
+  // Setting a login password is independent from encryption: if they have
+  // app-password encryption enabled (see EncryptionSettings), it keeps
+  // working with that app password unchanged — the new login password is
+  // only ever checked by Supabase Auth, never used to (re)wrap the DEK.
   const isOAuthUser = user?.app_metadata?.provider !== 'email';
-  const usesAppPassword = !!keysRow?.is_app_password;
 
   // --- Display Name ---
   const emailLocalPart = user?.email ? user.email.split('@')[0] : '';
@@ -53,6 +57,12 @@ export default function AccountPage() {
   const [savingPassword, setSavingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Encryption-linked password change only applies to email/password users:
+  // that's the only case where dek_password_wrapped is tied to the Supabase
+  // Auth password. For OAuth users, setting a login password here is
+  // unrelated to their app-password-based encryption (see comment above).
+  const requiresRewrap = isEncryptionEnabled && !isOAuthUser;
+
   async function handleSavePassword(e) {
     e.preventDefault();
     setPasswordError('');
@@ -65,7 +75,7 @@ export default function AccountPage() {
       setPasswordError('account.passwordMismatch');
       return;
     }
-    if (isEncryptionEnabled && !currentPassword) {
+    if (requiresRewrap && !currentPassword) {
       setPasswordError('account.currentPasswordRequired');
       return;
     }
@@ -76,7 +86,7 @@ export default function AccountPage() {
       // the current password and gets us the raw key material we need to
       // re-wrap under the new password. If this throws, nothing has changed
       // yet, so it's safe to bail out before touching Supabase Auth.
-      if (isEncryptionEnabled) {
+      if (requiresRewrap) {
         try {
           await rewrapForPasswordChange(user.id, currentPassword, newPassword);
         } catch {
@@ -154,14 +164,20 @@ export default function AccountPage() {
         </form>
       </Card>
 
-      {/* Change Password Section — hidden for OAuth users with app-password
-          encryption, since there's no Supabase Auth password to change here
-          (see EncryptionSettings' "Change app password" instead) */}
-      {!(isOAuthUser && usesAppPassword) && (
+      {/* Change Password Section. For OAuth users this doubles as "set a
+          password" (Supabase Auth's link-a-password-to-OAuth-identity flow)
+          so they can additionally log in with email+password. */}
       <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-4">{t('account.changePassword')}</h2>
+        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-4">
+          {isOAuthUser ? t('account.setPassword') : t('account.changePassword')}
+        </h2>
+        {isOAuthUser && (
+          <p className="text-sm text-ink-muted dark:text-white/70 mb-4">
+            {t('account.setPasswordDesc')}
+          </p>
+        )}
         <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
-          {isEncryptionEnabled && (
+          {requiresRewrap && (
             <div>
               <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
                 {t('account.currentPassword')}
@@ -228,7 +244,6 @@ export default function AccountPage() {
           </button>
         </form>
       </Card>
-      )}
 
       {/* Encryption Settings */}
       {E2EE_ENABLED && <EncryptionSettings userId={user?.id} />}
