@@ -77,6 +77,17 @@ export function CryptoProvider({ children }) {
 
   const dismissRecoveryCode = useCallback(() => setPendingRecoveryCode(null), []);
 
+  // Stable wrapper for consumers (e.g. EncryptionPromptBanner's mount effect)
+  // — without useCallback this was a brand-new function identity on every
+  // CryptoProvider render, which any consumer's useEffect([refreshKeysRow])
+  // would treat as "dependency changed", re-running refreshKeysRow() ->
+  // setKeysRow() -> re-render -> new function identity -> effect fires
+  // again, in an infinite loop (visible as endless user_keys network requests).
+  const refreshCurrentUserKeys = useCallback(
+    () => refreshKeysRow(user?.id),
+    [refreshKeysRow, user?.id]
+  );
+
   const value = {
     status, // 'loading' | 'off' | 'unlocked' | 'locked'
     keysRow,
@@ -84,7 +95,7 @@ export function CryptoProvider({ children }) {
     isMigrating: keysRow?.encryption_status === 'migrating' || keysRow?.encryption_status === 'disabling',
     migrationProgress,
     featureEnabled: E2EE_ENABLED,
-    refreshKeysRow: () => refreshKeysRow(user?.id),
+    refreshKeysRow: refreshCurrentUserKeys,
     setupNow,
     pendingRecoveryCode,
     dismissRecoveryCode,
