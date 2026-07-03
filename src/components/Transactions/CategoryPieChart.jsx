@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { translateCategoryName } from '../../utils/categoryTranslation';
@@ -5,6 +6,20 @@ import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
 
 export default function CategoryPieChart({ transactions, type }) {
   const { t } = useTranslation();
+
+  // This chart mounts inside a lazy() Suspense boundary alongside the much
+  // larger Transactions list, which is still settling its own layout in the
+  // same paint. Recharts' ResponsiveContainer measures its container via
+  // ResizeObserver on mount; if that first measurement lands mid-reflow it
+  // can read 0x0 and never redraw the <svg> afterwards even though the
+  // container ends up the right size. Remounting ResponsiveContainer one
+  // frame later (after layout has settled) forces a fresh, correct
+  // measurement without needing to touch the shared Suspense structure.
+  const [remountKey, setRemountKey] = useState(0);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setRemountKey((k) => k + 1));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const categoryTotals = {};
 
@@ -59,7 +74,7 @@ export default function CategoryPieChart({ transactions, type }) {
     <div className="grid sm:grid-cols-[auto_1fr] gap-6 items-center">
       {/* Donut with total in center */}
       <div className="relative w-[180px] h-[180px] mx-auto sm:mx-0 shrink-0">
-        <ResponsiveContainer width={180} height={180}>
+        <ResponsiveContainer key={remountKey} width={180} height={180}>
           <PieChart>
             <Pie
               data={data}

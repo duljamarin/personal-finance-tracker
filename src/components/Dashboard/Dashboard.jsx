@@ -158,7 +158,16 @@ export default function Dashboard() {
             <Transactions />
           )}
 
-          {/* Category breakdowns side by side */}
+          {/* Category breakdowns side by side.
+              CategoryPieChart gets its own Suspense boundary, separate from
+              Transactions above — mounting both in the same commit (the
+              shared Suspense resolving) let Recharts' ResponsiveContainer
+              measure its container via ResizeObserver while Transactions'
+              much larger layout was still settling, sometimes catching a
+              0x0 read and never redrawing the <svg> afterwards. Isolating
+              the chart's mount from that layout shift fixes it; the
+              fallback height matches the chart's own rendered height so it
+              doesn't introduce new CLS. */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6 mb-6">
             <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
               <div className="flex items-center justify-between mb-5">
@@ -169,7 +178,9 @@ export default function Dashboard() {
                   {t('transactions.incomes')}
                 </span>
               </div>
-              <CategoryPieChart transactions={transactions} type="income" />
+              <Suspense fallback={<div className="min-h-[180px]" />}>
+                <CategoryPieChart transactions={transactions} type="income" />
+              </Suspense>
             </div>
             <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
               <div className="flex items-center justify-between mb-5">
@@ -180,7 +191,9 @@ export default function Dashboard() {
                   {t('transactions.expenses')}
                 </span>
               </div>
-              <CategoryPieChart transactions={transactions} type="expense" />
+              <Suspense fallback={<div className="min-h-[180px]" />}>
+                <CategoryPieChart transactions={transactions} type="expense" />
+              </Suspense>
             </div>
           </div>
 
