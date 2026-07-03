@@ -4,6 +4,19 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 import Input from '../UI/Input';
 
+// Defined outside the component: when it lived inside ForgotPassword(), a new
+// Shell function identity was created on every render, and React treats a
+// changed component identity as a different element type — unmounting and
+// remounting everything inside it (including the email <Input>) on every
+// keystroke, which dropped focus after each character typed.
+const Shell = ({ children }) => (
+  <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+    <div aria-hidden="true" className="hidden sm:block absolute sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
+    <div aria-hidden="true" className="hidden sm:block absolute sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
+    <div className="relative w-full max-w-md">{children}</div>
+  </div>
+);
+
 export default function ForgotPassword() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
@@ -39,14 +52,6 @@ export default function ForgotPassword() {
       setLoading(false);
     }
   }
-
-  const Shell = ({ children }) => (
-    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
-      <div aria-hidden="true" className="hidden sm:block absolute sm:top-10 sm:left-10 w-20 h-20 border-t border-l border-brand-500/30 rounded-tl-xl pointer-events-none" />
-      <div aria-hidden="true" className="hidden sm:block absolute sm:bottom-10 sm:right-10 w-20 h-20 border-b border-r border-brand-500/30 rounded-br-xl pointer-events-none" />
-      <div className="relative w-full max-w-md">{children}</div>
-    </div>
-  );
 
   if (success) {
     return (
