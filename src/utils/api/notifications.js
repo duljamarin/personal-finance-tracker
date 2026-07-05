@@ -1,6 +1,7 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { decryptField, isEncrypted } from '../crypto/cipher';
 import { getDEK } from '../crypto/keyring';
+import { decryptRows } from '../crypto/rowCodec';
 
 // check_recurring_notifications / check_goal_milestone_notifications (server
 // SQL) copy recurring.title / goal.name verbatim into these metadata params —
@@ -48,7 +49,13 @@ export async function fetchNotifications() {
       .limit(50);
 
     if (error) throw error;
-    return Promise.all((data || []).map(decryptNotificationParams));
+    // Client-generated notifications store title/message ENCRYPTED (in
+    // FIELD_MAP) — decrypt those columns first. decryptRows is tolerant of
+    // legacy plaintext rows (server-created, pre-encryption). Then still run
+    // decryptNotificationParams for older rows that carry ciphertext inside
+    // metadata.*_params.
+    const decrypted = await decryptRows('notifications', data || []);
+    return Promise.all(decrypted.map(decryptNotificationParams));
   });
 }
 
