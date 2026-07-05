@@ -189,14 +189,16 @@ export default function OnboardingWizard() {
           console.error('bill recurring seed failed:', e);
         }
 
-        // Suggested budget = bill + 10% headroom (base currency).
+        // Suggested budget = exactly the bill amount (base currency). Using the
+        // bill as-is keeps it intuitive: a €300 bill shows a €300 budget, not
+        // €330 the user never chose.
         if (resolvedCategoryId) {
           try {
             await createBudget({
               categoryId: resolvedCategoryId,
               year,
               month,
-              amount: Math.round(amountNum * rate * 1.1 * 100) / 100,
+              amount: Math.round(amountNum * rate * 100) / 100,
             });
             seededBudgets += 1;
           } catch (e) {

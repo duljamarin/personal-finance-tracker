@@ -159,6 +159,9 @@ if (!isPremium && !isTrialing) return <PremiumFeatureLock />;
 // src/locales/en/translation.json → "key": "English"
 // src/locales/sq/translation.json → "key": "Albanian"
 ```
+**Never use em dashes (—) in translation JSON values** (en or sq). Use commas,
+"like", "and", ":", or split into two sentences instead. A pre-write hook
+blocks em dashes in `src/locales/**` (see `.claude/settings.json`).
 
 ### setTimeout Cleanup
 ```javascript

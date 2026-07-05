@@ -1179,7 +1179,7 @@
     },
     "expenses": {
       "title": "Faturat e tua mujore fikse",
-      "subtitle": "Shto ato që i paguan çdo muaj — qira, ushqim, transport. Ne i kthejmë në transaksione të përsëritura dhe buxhete.",
+      "subtitle": "Shto ato që i paguan çdo muaj, si qira, ushqim dhe transport. Ne i kthejmë në transaksione të përsëritura dhe buxhete.",
       "amountLabel": "Shuma",
       "categoryLabel": "Kategoria",
       "selectCategory": "Zgjidhni një kategori",
@@ -1192,7 +1192,6 @@
         "food": "Ushqimi",
         "transport": "Transporti",
         "utilities": "Faturat",
-        "phone": "Telefoni & interneti",
         "subscriptions": "Abonimet",
         "housing": "Banesa"
       }
@@ -1209,7 +1208,7 @@
       "projectionTitlePositive": "Mund të kursesh kaq",
       "projectionTitleNegative": "Ja ku fillojmë",
       "projectionSubPositive": "Kjo do të thotë {{amount}} të vëna mënjanë çdo muaj. Ndryshimet e vogla mblidhen shpejt.",
-      "projectionSubNegative": "Për momentin po shpenzon pak më shumë se sa fiton — do të të ndihmojmë ta mbyllësh diferencën.",
+      "projectionSubNegative": "Për momentin po shpenzon pak më shumë se sa fiton, por do të të ndihmojmë ta mbyllësh diferencën.",
       "benchmarkEyebrow": "Mundësia jote më e madhe",
       "you": "Ti",
       "typical": "Mesatarja",

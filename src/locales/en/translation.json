@@ -1179,7 +1179,7 @@
     },
     "expenses": {
       "title": "Your fixed monthly bills",
-      "subtitle": "Add the ones you pay every month — rent, food, transport. We'll turn them into recurring transactions and budgets.",
+      "subtitle": "Add the ones you pay every month, like rent, food and transport. We'll turn them into recurring transactions and budgets.",
       "amountLabel": "Amount",
       "categoryLabel": "Category",
       "selectCategory": "Select a category",
@@ -1192,7 +1192,6 @@
         "food": "Food",
         "transport": "Transport",
         "utilities": "Utilities",
-        "phone": "Phone & internet",
         "subscriptions": "Subscriptions",
         "housing": "Housing"
       }
@@ -1209,7 +1208,7 @@
       "projectionTitlePositive": "You could save this much",
       "projectionTitleNegative": "Here's where we start",
       "projectionSubPositive": "That's {{amount}} set aside every month. Small changes add up fast.",
-      "projectionSubNegative": "You're spending a little more than you earn right now — we'll help you close the gap.",
+      "projectionSubNegative": "You're spending a little more than you earn right now, and we'll help you close the gap.",
       "benchmarkEyebrow": "Your biggest opportunity",
       "you": "You",
       "typical": "Typical",

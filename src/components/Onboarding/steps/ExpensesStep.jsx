@@ -8,14 +8,16 @@ import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
 const MAX_EXPENSES = 6;
 
-// Preset bill chips → matched against category names to pre-select a category.
+// Preset bill chips. `names` lists the exact default category names this chip
+// should map to (first match wins); `match` is a word-boundaried fallback for
+// custom categories. Order matters — exact names are tried before the regex,
+// so e.g. "Healthcare" never gets grabbed by a transport keyword.
 const BILL_PRESETS = [
-  { key: 'rent', match: /(rent|hous|qira|banes|apartment)/i },
-  { key: 'food', match: /(food|groc|ushqim|market)/i },
-  { key: 'transport', match: /(transport|fuel|car|udhet|makin)/i },
-  { key: 'utilities', match: /(util|electric|water|energ|fatur)/i },
-  { key: 'phone', match: /(phone|internet|telefon|mobile)/i },
-  { key: 'subscriptions', match: /(subscri|abonim|netflix|spotify)/i },
+  { key: 'rent', names: ['Housing & Rent'], match: /\b(rent|housing|qira|banes|apartment)\b/i },
+  { key: 'food', names: ['Food & Dining', 'Groceries'], match: /\b(food|groceries|ushqim|market)\b/i },
+  { key: 'transport', names: ['Transportation'], match: /\b(transport|transportation|fuel|udhetim|makina)\b/i },
+  { key: 'utilities', names: ['Utilities'], match: /\b(utilities|electric|water|energji|fatura)\b/i },
+  { key: 'subscriptions', names: ['Subscriptions'], match: /\b(subscriptions|abonim|netflix|spotify)\b/i },
 ];
 
 export default function ExpensesStep({ expenses, onChange, categories, currency }) {
@@ -40,16 +42,33 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
     onChange(expenses.filter((_, i) => i !== index));
   }
 
+  // Resolve a preset to a category id: exact default-name match first, then a
+  // word-boundaried keyword fallback for custom categories.
+  function resolvePresetCategory(preset) {
+    const byName = categories.find((c) =>
+      preset.names.some((n) => n.toLowerCase() === c.name.toLowerCase())
+    );
+    if (byName) return byName.id;
+    const byKeyword = categories.find((c) => preset.match.test(c.name));
+    return byKeyword?.id || '';
+  }
+
+  // A preset is "selected" once its category appears in any bill row.
+  function isPresetSelected(preset) {
+    const catId = resolvePresetCategory(preset);
+    return !!catId && expenses.some((e) => e.categoryId === catId);
+  }
+
   // Add a bill row pre-filled with the best-matching category for a preset.
   function addPreset(preset) {
     if (expenses.length >= MAX_EXPENSES) return;
-    const matched = categories.find((c) => preset.match.test(c.name));
+    const categoryId = resolvePresetCategory(preset);
+    if (categoryId && expenses.some((e) => e.categoryId === categoryId)) return; // already added
     const firstEmpty = expenses.findIndex((e) => !e.amount && !e.categoryId);
-    const row = { categoryId: matched?.id || '' };
     if (firstEmpty >= 0) {
-      updateExpense(firstEmpty, 'categoryId', row.categoryId);
+      updateExpense(firstEmpty, 'categoryId', categoryId);
     } else {
-      onChange([...expenses, { id: crypto.randomUUID(), amount: '', ...row }]);
+      onChange([...expenses, { id: crypto.randomUUID(), amount: '', categoryId }]);
     }
   }
 
@@ -66,17 +85,33 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
 
       {/* Preset quick-pick chips */}
       <div className="max-w-md mx-auto flex flex-wrap justify-center gap-2">
-        {BILL_PRESETS.map((preset) => (
-          <button
-            key={preset.key}
-            type="button"
-            onClick={() => addPreset(preset)}
-            disabled={expenses.length >= MAX_EXPENSES}
-            className="px-3 py-1.5 text-sm rounded-full border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            + {t(`onboarding.expenses.presets.${preset.key}`)}
-          </button>
-        ))}
+        {BILL_PRESETS.map((preset) => {
+          const selected = isPresetSelected(preset);
+          return (
+            <button
+              key={preset.key}
+              type="button"
+              onClick={() => addPreset(preset)}
+              disabled={!selected && expenses.length >= MAX_EXPENSES}
+              aria-pressed={selected}
+              className={
+                'px-3 py-1.5 text-sm rounded-full border inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ' +
+                (selected
+                  ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300 font-medium'
+                  : 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
+              }
+            >
+              {selected ? (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <span aria-hidden="true">+</span>
+              )}
+              {t(`onboarding.expenses.presets.${preset.key}`)}
+            </button>
+          );
+        })}
       </div>
 
       <div className="max-w-md mx-auto space-y-4">
