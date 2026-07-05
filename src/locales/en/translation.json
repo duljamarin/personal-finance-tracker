@@ -558,6 +558,25 @@
         "noAdvice": "Analytics only, not financial advice"
       }
     },
+    "demo": {
+      "yearToDate": "2025 - Year to date",
+      "onTrack": "On track",
+      "highSpend": "High spend",
+      "income": "Income",
+      "expenses": "Expenses",
+      "saved": "Saved",
+      "scoreGood": "Good",
+      "savings": "Savings",
+      "budget": "Budget",
+      "goals": "Goals",
+      "totalEur": "Total (EUR)",
+      "budgetItems": {
+        "food": "Food & Dining",
+        "housing": "Housing & Rent",
+        "entertainment": "Entertainment",
+        "transport": "Transport"
+      }
+    },
     "heroFeatures": {
       "tracking": {
         "eyebrow": "Smart Tracking",

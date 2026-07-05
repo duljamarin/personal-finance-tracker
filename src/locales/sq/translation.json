@@ -558,6 +558,25 @@
         "noAdvice": "Vetëm analitikë, jo këshilla financiare"
       }
     },
+    "demo": {
+      "yearToDate": "2025 - Nga fillimi i vitit",
+      "onTrack": "Në rrugë të mbarë",
+      "highSpend": "Shpenzim i lartë",
+      "income": "Të ardhura",
+      "expenses": "Shpenzime",
+      "saved": "Kursyer",
+      "scoreGood": "Mirë",
+      "savings": "Kursime",
+      "budget": "Buxheti",
+      "goals": "Qëllime",
+      "totalEur": "Totali (EUR)",
+      "budgetItems": {
+        "food": "Ushqim dhe Restorante",
+        "housing": "Strehim dhe Qira",
+        "entertainment": "Argëtim",
+        "transport": "Transport"
+      }
+    },
     "heroFeatures": {
       "tracking": {
         "eyebrow": "Gjurmim i Mençur",

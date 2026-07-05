@@ -63,6 +63,7 @@ function MiniBarChart() {
 
 // ── Health score mini-render ─────────────────────────────────────────────────
 function MiniHealthScore() {
+  const { t } = useTranslation();
   const score = 70;
   const radius = 44;
   const circ = 2 * Math.PI * radius;
@@ -83,13 +84,13 @@ function MiniHealthScore() {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-3xl font-semibold text-ink-primary dark:text-white metric">{score}</span>
-          <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400">Good</span>
+          <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400">{t('landing.demo.scoreGood')}</span>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2 w-full text-center text-[10px] text-ink-muted dark:text-white">
-        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">42%</div>Savings</div>
-        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">87%</div>Budget</div>
-        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">3/4</div>Goals</div>
+        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">42%</div>{t('landing.demo.savings')}</div>
+        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">87%</div>{t('landing.demo.budget')}</div>
+        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">3/4</div>{t('landing.demo.goals')}</div>
       </div>
     </div>
   );
@@ -97,19 +98,21 @@ function MiniHealthScore() {
 
 // ── Mini budget bars ─────────────────────────────────────────────────────────
 function MiniBudgets() {
+  const { t } = useTranslation();
   const items = [
-    { label: 'Food & Dining', spent: 210, limit: 300 },
-    { label: 'Housing & Rent', spent: 850, limit: 900 },
-    { label: 'Entertainment', spent: 47, limit: 50 },
-    { label: 'Transport', spent: 28, limit: 80 },
+    { key: 'food', spent: 210, limit: 300 },
+    { key: 'housing', spent: 850, limit: 900 },
+    { key: 'entertainment', spent: 47, limit: 50 },
+    { key: 'transport', spent: 28, limit: 80 },
   ];
   return (
     <div className="space-y-3 py-2">
-      {items.map(({ label, spent, limit }) => {
+      {items.map(({ key, spent, limit }) => {
+        const label = t(`landing.demo.budgetItems.${key}`);
         const pct = Math.min((spent / limit) * 100, 100);
         const over = spent > limit;
         return (
-          <div key={label}>
+          <div key={key}>
             <div className="flex justify-between text-[11px] mb-1">
               <span className="font-medium text-ink-primary dark:text-white truncate">{label}</span>
               <span className={over ? 'text-expense font-semibold' : 'text-ink-muted dark:text-white'}>
@@ -131,6 +134,7 @@ function MiniBudgets() {
 
 // ── Mini currency card ────────────────────────────────────────────────────────
 function MiniCurrency() {
+  const { t } = useTranslation();
   const rows = [
     { flag: '🇺🇸', code: 'USD', amount: '$1,200', base: '€1,104' },
     { flag: '🇦🇱', code: 'ALL', amount: 'L45,000', base: '€460' },
@@ -151,7 +155,7 @@ function MiniCurrency() {
         </div>
       ))}
       <div className="pt-1 border-t border-surface-hairline dark:border-surface-dark-hairline flex justify-between text-[11px]">
-        <span className="text-ink-muted dark:text-white">Total (EUR)</span>
+        <span className="text-ink-muted dark:text-white">{t('landing.demo.totalEur')}</span>
         <span className="font-bold text-ink-primary dark:text-white tabular-nums">€1,961</span>
       </div>
     </div>
@@ -370,24 +374,24 @@ function HeroFeaturesSection({ t }) {
             preview={
               <div>
                 <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
-                  <span>2025 - Year to date</span>
+                  <span>{t('landing.demo.yearToDate')}</span>
                   <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />On track</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block bg-expense" />High spend</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />{t('landing.demo.onTrack')}</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block bg-expense" />{t('landing.demo.highSpend')}</span>
                   </div>
                 </div>
                 <MiniBarChart />
                 <div className="flex gap-5 mt-5 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Income</p>
+                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">{t('landing.demo.income')}</p>
                     <p className="text-xl font-bold text-brand-600 dark:text-brand-400 tabular-nums">€{(INCOME_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Expenses</p>
+                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">{t('landing.demo.expenses')}</p>
                     <p className="text-xl font-bold tabular-nums text-expense">€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">Saved</p>
+                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">{t('landing.demo.saved')}</p>
                     <p className="text-xl font-bold text-ink-primary dark:text-white tabular-nums">+€{((INCOME_BARS.reduce((s,v)=>s+v,0) - EXPENSE_BARS.reduce((s,v)=>s+v,0))/1000).toFixed(1)}k</p>
                   </div>
                 </div>
