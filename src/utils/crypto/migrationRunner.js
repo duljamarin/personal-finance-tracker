@@ -24,6 +24,10 @@ const TABLE_ORDER = [
   'goal_milestones',
   'goal_contributions',
   'assets',
+  'budgets',
+  'net_worth_snapshots',
+  'financial_health_scores',
+  'notifications',
 ];
 
 async function withPool(items, limit, fn) {

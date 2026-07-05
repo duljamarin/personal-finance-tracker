@@ -1,5 +1,6 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
+import { checkRecurringNotifications } from '../finance/recurringAlerts';
 
 export function calculateNextDate(currentDate, frequency, intervalCount) {
   const date = new Date(currentDate);
@@ -240,9 +241,13 @@ export async function processRecurringTransactions() {
       return { generated: 0, transactions: [] };
     }
 
+    // Decrypt templates first — amount/base_amount are E2E-encrypted text and
+    // base_amount is recomputed below, so we need real numbers here.
+    const decryptedRecurrings = await decryptRows('recurring_transactions', dueRecurrings);
+
     const generatedTransactions = [];
 
-    for (const recurring of dueRecurrings) {
+    for (const recurring of decryptedRecurrings) {
       let currentNextRun = recurring.next_run_at;
       let instancesCreated = 0;
       let loopAdvanced = false;
@@ -274,23 +279,25 @@ export async function processRecurringTransactions() {
           .maybeSingle();
 
         if (!existing) {
-          const baseAmount = recurring.amount * (recurring.exchange_rate || 1.0);
+          const baseAmount = Number(recurring.amount) * (Number(recurring.exchange_rate) || 1.0);
+
+          const insertRow = await encryptRow('transactions', {
+            title: recurring.title,
+            amount: recurring.amount,
+            date: transactionDate,
+            type: recurring.type,
+            category_id: recurring.category_id,
+            tags: recurring.tags || [],
+            currency_code: recurring.currency_code,
+            exchange_rate: recurring.exchange_rate,
+            base_amount: baseAmount,
+            user_id: user.id,
+            source_recurring_id: recurring.id,
+          });
 
           const { data: newTx, error: insertError } = await supabase
             .from('transactions')
-            .insert([{
-              title: recurring.title,
-              amount: recurring.amount,
-              date: transactionDate,
-              type: recurring.type,
-              category_id: recurring.category_id,
-              tags: recurring.tags || [],
-              currency_code: recurring.currency_code,
-              exchange_rate: recurring.exchange_rate,
-              base_amount: baseAmount,
-              user_id: user.id,
-              source_recurring_id: recurring.id,
-            }])
+            .insert([insertRow])
             .select(`
               *,
               category:categories(id, name)
@@ -333,9 +340,9 @@ export async function processRecurringTransactions() {
       }
     }
 
-    // Fire recurring due notification check after processing (non-blocking)
-    supabase.rpc('check_recurring_notifications', { p_user_id: user.id })
-      .then(() => {}).catch(() => {});
+    // Fire recurring due notification check after processing (non-blocking).
+    // Ported client-side — amounts are E2E-encrypted.
+    checkRecurringNotifications(user.id).catch(() => {});
 
     // Note: the insert above copies recurring.title/tags verbatim (may be
     // ciphertext) — correct, since it's re-encrypted under the same DEK.

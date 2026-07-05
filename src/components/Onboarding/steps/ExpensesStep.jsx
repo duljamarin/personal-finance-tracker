@@ -6,7 +6,17 @@ import { CategoryIconSvg } from '../../UI/CategoryIconSvg';
 import CustomSelect from '../../UI/CustomSelect';
 import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
-const MAX_EXPENSES = 3;
+const MAX_EXPENSES = 6;
+
+// Preset bill chips → matched against category names to pre-select a category.
+const BILL_PRESETS = [
+  { key: 'rent', match: /(rent|hous|qira|banes|apartment)/i },
+  { key: 'food', match: /(food|groc|ushqim|market)/i },
+  { key: 'transport', match: /(transport|fuel|car|udhet|makin)/i },
+  { key: 'utilities', match: /(util|electric|water|energ|fatur)/i },
+  { key: 'phone', match: /(phone|internet|telefon|mobile)/i },
+  { key: 'subscriptions', match: /(subscri|abonim|netflix|spotify)/i },
+];
 
 export default function ExpensesStep({ expenses, onChange, categories, currency }) {
   const { t } = useTranslation();
@@ -30,6 +40,19 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
     onChange(expenses.filter((_, i) => i !== index));
   }
 
+  // Add a bill row pre-filled with the best-matching category for a preset.
+  function addPreset(preset) {
+    if (expenses.length >= MAX_EXPENSES) return;
+    const matched = categories.find((c) => preset.match.test(c.name));
+    const firstEmpty = expenses.findIndex((e) => !e.amount && !e.categoryId);
+    const row = { categoryId: matched?.id || '' };
+    if (firstEmpty >= 0) {
+      updateExpense(firstEmpty, 'categoryId', row.categoryId);
+    } else {
+      onChange([...expenses, { id: crypto.randomUUID(), amount: '', ...row }]);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -39,6 +62,21 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
         <p className="text-ink-muted dark:text-white mt-2">
           {t('onboarding.expenses.subtitle')}
         </p>
+      </div>
+
+      {/* Preset quick-pick chips */}
+      <div className="max-w-md mx-auto flex flex-wrap justify-center gap-2">
+        {BILL_PRESETS.map((preset) => (
+          <button
+            key={preset.key}
+            type="button"
+            onClick={() => addPreset(preset)}
+            disabled={expenses.length >= MAX_EXPENSES}
+            className="px-3 py-1.5 text-sm rounded-full border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            + {t(`onboarding.expenses.presets.${preset.key}`)}
+          </button>
+        ))}
       </div>
 
       <div className="max-w-md mx-auto space-y-4">

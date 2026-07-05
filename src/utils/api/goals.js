@@ -1,5 +1,6 @@
 import { withAuth, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
+import { syncGoalProgress } from '../finance/goalProgress';
 
 export async function fetchGoals(filters = {}) {
   return withAuth(async (user) => {
@@ -152,10 +153,14 @@ export async function addContribution(goalId, contributionData) {
       .single();
 
     if (error) throw error;
-    supabase.rpc('check_goal_milestone_notifications', {
-      p_user_id: user.id,
-      p_goal_id: goalId,
-    }).then(() => {}).catch(() => {});
+    // The DB trigger that maintained goals.current_amount + milestone
+    // completion is gone (amounts are encrypted). Recompute client-side; this
+    // also fires percentage-milestone notifications.
+    try {
+      await syncGoalProgress(user.id, goalId);
+    } catch (e) {
+      console.error('goal progress sync failed:', e);
+    }
     return decryptRow('goal_contributions', data);
   });
 }
@@ -163,6 +168,16 @@ export async function addContribution(goalId, contributionData) {
 export async function deleteContribution(contributionId) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+
+    // Need the goal_id to resync progress after delete (the trigger that used
+    // to do this on DELETE is gone).
+    const { data: existing } = await supabase
+      .from('goal_contributions')
+      .select('goal_id')
+      .eq('id', contributionId)
+      .eq('user_id', user.id)
+      .single();
+
     const { error } = await supabase
       .from('goal_contributions')
       .delete()
@@ -170,6 +185,14 @@ export async function deleteContribution(contributionId) {
       .eq('user_id', user.id);
 
     if (error) throw error;
+
+    if (existing?.goal_id) {
+      try {
+        await syncGoalProgress(user.id, existing.goal_id);
+      } catch (e) {
+        console.error('goal progress sync failed:', e);
+      }
+    }
     return true;
   });
 }
@@ -177,13 +200,15 @@ export async function deleteContribution(contributionId) {
 export async function fetchGoalsStats() {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
-    const { data: goals, error } = await supabase
+    const { data: goalsRaw, error } = await supabase
       .from('goals')
       .select('target_amount, current_amount, is_completed, is_active')
       .eq('user_id', user.id);
 
     if (error) throw error;
 
+    // target_amount / current_amount are E2E-encrypted text — decrypt to numbers.
+    const goals = await decryptRows('goals', goalsRaw || []);
     const activeGoals = goals.filter(g => g.is_active && !g.is_completed);
     const completedGoals = goals.filter(g => g.is_completed);
     const totalTarget = activeGoals.reduce((sum, g) => sum + Number(g.target_amount), 0);

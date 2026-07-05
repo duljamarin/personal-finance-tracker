@@ -6,16 +6,20 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { trackEvent } from '../../lib/analytics';
 import { supabase } from '../../utils/supabaseClient';
-import { fetchCategories, addCategory, addTransaction } from '../../utils/api';
+import { fetchCategories, addCategory, addTransaction, addRecurringTransaction, createBudget } from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { computeSnapshot } from '../../utils/reveal/computeSnapshot';
 import Button from '../UI/Button';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ProgressBar from './ProgressBar';
 import CurrencyStep from './steps/CurrencyStep';
+import IncomeStep from './steps/IncomeStep';
 import ExpensesStep from './steps/ExpensesStep';
 import CurrencyArt from './art/CurrencyArt';
+import IncomeArt from './art/IncomeArt';
 import ExpensesArt from './art/ExpensesArt';
+import FinancialReveal from './Reveal/FinancialReveal';
 
 export default function OnboardingWizard() {
   const { t } = useTranslation();
@@ -24,8 +28,8 @@ export default function OnboardingWizard() {
   const { addToast } = useToast();
   const { reloadTransactions, reloadCategories } = useTransactions();
 
-  // Step sequence: currency, then starting expenses.
-  const steps = ['currency', 'expenses'];
+  // Step sequence: currency, monthly income, then fixed monthly bills.
+  const steps = ['currency', 'income', 'expenses'];
   const TOTAL_STEPS = steps.length;
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -34,10 +38,13 @@ export default function OnboardingWizard() {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isFetchingRate, setIsFetchingRate] = useState(false);
+  const [reveal, setReveal] = useState(null); // { snapshot, seededSummary } | null
 
   const [wizardData, setWizardData] = useState({
     currency: 'EUR',
     exchangeRate: 1.0,
+    income: '',
+    payday: '',
     expenses: [{ id: crypto.randomUUID(), amount: '', categoryId: '' }],
   });
 
@@ -86,50 +93,128 @@ export default function OnboardingWizard() {
   async function handleFinish() {
     setSubmitting(true);
     try {
-      const { currency, exchangeRate, expenses } = wizardData;
+      const { currency, exchangeRate, income, payday, expenses } = wizardData;
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+
+      // Start-of-next-month date (YYYY-MM-DD) for recurring templates so the
+      // processor doesn't double-create this month's instance we add directly.
+      const nextRun = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      const nextRunStr = nextRun.toISOString().split('T')[0];
 
       let localCategories = categories;
-
+      const incomeNum = income ? Number(income) : 0;
       const validExpenses = expenses.filter((e) => e.amount && Number(e.amount) > 0);
-      if (validExpenses.length > 0) {
-        const needsUncategorized = validExpenses.some((e) => !e.categoryId);
-        let uncategorizedCategory = null;
 
-        if (needsUncategorized) {
-          uncategorizedCategory = localCategories.find(
-            (c) => c.name.toLowerCase() === 'uncategorized'
-          );
-          if (!uncategorizedCategory) {
-            uncategorizedCategory = await addCategory({ name: 'Uncategorized' });
-            localCategories = [...localCategories, uncategorizedCategory];
-            setCategories(localCategories);
+      let seededRecurring = 0;
+      let seededBudgets = 0;
+
+      // --- Ensure an Uncategorized fallback if any bill lacks a category ---
+      const needsUncategorized = validExpenses.some((e) => !e.categoryId);
+      let uncategorizedCategory = null;
+      if (needsUncategorized) {
+        uncategorizedCategory = localCategories.find((c) => c.name.toLowerCase() === 'uncategorized');
+        if (!uncategorizedCategory) {
+          uncategorizedCategory = await addCategory({ name: 'Uncategorized' });
+          localCategories = [...localCategories, uncategorizedCategory];
+          setCategories(localCategories);
+        }
+      }
+      const categoryById = new Map(localCategories.map((c) => [c.id, c]));
+
+      // --- Income: this-month transaction + monthly recurring template ---
+      if (incomeNum > 0) {
+        await addTransaction({
+          title: t('onboarding.reveal.salaryTitle'),
+          amount: incomeNum,
+          type: 'income',
+          categoryId: null,
+          date: todayStr,
+          currencyCode: currency,
+          exchangeRate: rate,
+        });
+        try {
+          await addRecurringTransaction({
+            title: t('onboarding.reveal.salaryTitle'),
+            amount: incomeNum,
+            type: 'income',
+            categoryId: null,
+            currencyCode: currency,
+            exchangeRate: rate,
+            frequency: 'monthly',
+            intervalCount: 1,
+            startDate: nextRunStr,
+          });
+          seededRecurring += 1;
+        } catch (e) {
+          console.error('income recurring seed failed:', e);
+        }
+      }
+
+      // --- Bills: this-month transaction + monthly recurring + suggested budget ---
+      const billsForSnapshot = [];
+      for (const expense of validExpenses) {
+        const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
+        const cat = categoryById.get(resolvedCategoryId);
+        const title = cat?.name ? translateCategoryName(cat.name) : t('transactions.expense');
+        const amountNum = Number(expense.amount);
+
+        await addTransaction({
+          title,
+          amount: amountNum,
+          type: 'expense',
+          categoryId: resolvedCategoryId,
+          date: todayStr,
+          currencyCode: currency,
+          exchangeRate: rate,
+        });
+
+        try {
+          await addRecurringTransaction({
+            title,
+            amount: amountNum,
+            type: 'expense',
+            categoryId: resolvedCategoryId,
+            currencyCode: currency,
+            exchangeRate: rate,
+            frequency: 'monthly',
+            intervalCount: 1,
+            startDate: nextRunStr,
+          });
+          seededRecurring += 1;
+        } catch (e) {
+          console.error('bill recurring seed failed:', e);
+        }
+
+        // Suggested budget = bill + 10% headroom (base currency).
+        if (resolvedCategoryId) {
+          try {
+            await createBudget({
+              categoryId: resolvedCategoryId,
+              year,
+              month,
+              amount: Math.round(amountNum * rate * 1.1 * 100) / 100,
+            });
+            seededBudgets += 1;
+          } catch (e) {
+            console.error('budget seed failed:', e);
           }
         }
 
-        const categoryById = new Map(localCategories.map((c) => [c.id, c]));
-
-        await Promise.all(
-          validExpenses.map((expense) => {
-            const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
-            const cat = categoryById.get(resolvedCategoryId);
-            return addTransaction({
-              title: cat?.name ? translateCategoryName(cat.name) : t('transactions.expense'),
-              amount: Number(expense.amount),
-              type: 'expense',
-              categoryId: resolvedCategoryId,
-              date: todayStr,
-              currencyCode: currency,
-              exchangeRate: rate,
-            });
-          })
-        );
+        billsForSnapshot.push({ amount: amountNum * rate, categoryName: cat?.name || '' });
       }
 
-      // Update onboarding flag after all data is written, then reload everything once.
-      // Doing this last avoids the race where refreshUser triggers TransactionContext's
-      // auth-change useEffect which re-fetches and overwrites our freshly imported data.
+      // --- Compute the in-memory snapshot (base currency / EUR) ---
+      const snapshot = computeSnapshot({
+        income: incomeNum * rate,
+        bills: billsForSnapshot,
+        payday: payday ? Number(payday) : null,
+      });
+
+      // Finalize onboarding flag last (avoids the refreshUser → context refetch race).
       await supabase.auth.updateUser({
         data: { onboarding_completed: true, preferred_currency: currency },
       });
@@ -137,10 +222,19 @@ export default function OnboardingWizard() {
       await Promise.all([reloadTransactions(), reloadCategories()]);
 
       trackEvent('OnboardingComplete');
-      setShowSuccess(true);
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 1800);
+
+      const canReveal = incomeNum > 0 || validExpenses.length > 0;
+      if (canReveal) {
+        setReveal({
+          snapshot,
+          currency,
+          seededSummary: { recurring: seededRecurring, budgets: seededBudgets },
+        });
+      } else {
+        // Nothing entered — keep the original lightweight success screen.
+        setShowSuccess(true);
+        setTimeout(() => navigate('/dashboard', { replace: true }), 1800);
+      }
     } catch (err) {
       console.error('Onboarding error:', err);
       addToast(t('messages.error'), 'error');
@@ -154,6 +248,17 @@ export default function OnboardingWizard() {
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner size="md" />
       </div>
+    );
+  }
+
+  if (reveal) {
+    return (
+      <FinancialReveal
+        snapshot={reveal.snapshot}
+        currency={reveal.currency}
+        seededSummary={reveal.seededSummary}
+        onDone={() => navigate('/dashboard', { replace: true })}
+      />
     );
   }
 
@@ -184,11 +289,12 @@ export default function OnboardingWizard() {
 
   const StepArt = {
     currency: CurrencyArt,
+    income: IncomeArt,
     expenses: ExpensesArt,
   }[stepKey];
 
-  // The expenses (last) step can be skipped if the user has no starting expenses.
-  const canSkip = !isLastStep || stepKey === 'expenses';
+  // Income and the final expenses step are both skippable.
+  const canSkip = stepKey === 'income' || stepKey === 'expenses';
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
@@ -232,6 +338,15 @@ export default function OnboardingWizard() {
                   isFetchingRate={isFetchingRate}
                   onCurrencyChange={(val) => updateData('currency', val)}
                   onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val))}
+                />
+              )}
+              {stepKey === 'income' && (
+                <IncomeStep
+                  income={wizardData.income}
+                  payday={wizardData.payday}
+                  currency={wizardData.currency}
+                  onIncomeChange={(val) => updateData('income', val)}
+                  onPaydayChange={(val) => updateData('payday', val)}
                 />
               )}
               {stepKey === 'expenses' && (

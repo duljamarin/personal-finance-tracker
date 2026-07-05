@@ -1157,7 +1157,8 @@
       "2": "Income",
       "3": "Expenses",
       "currency": "Currency",
-      "expenses": "Expenses"
+      "income": "Income",
+      "expenses": "Bills"
     },
     "currency": {
       "title": "Select your currency",
@@ -1169,20 +1170,55 @@
     },
     "income": {
       "title": "What's your monthly income?",
-      "subtitle": "We'll create a Salary transaction to get you started",
+      "subtitle": "We'll set up your salary so your dashboard works from day one",
       "label": "Monthly income",
-      "placeholder": "e.g., 3000"
+      "placeholder": "e.g., 3000",
+      "paydayLabel": "Payday",
+      "paydayPlaceholder": "Day of month",
+      "optional": "(optional)"
     },
     "expenses": {
-      "title": "Add a few recent expenses",
-      "subtitle": "Add 1-3 expenses to start building your financial picture",
+      "title": "Your fixed monthly bills",
+      "subtitle": "Add the ones you pay every month — rent, food, transport. We'll turn them into recurring transactions and budgets.",
       "amountLabel": "Amount",
       "categoryLabel": "Category",
       "selectCategory": "Select a category",
-      "addAnother": "Add another expense",
+      "addAnother": "Add another bill",
       "remove": "Remove",
       "amountPlaceholder": "e.g., 50",
-      "categoryRequired": "Please select a category for this expense"
+      "categoryRequired": "Please select a category for this expense",
+      "presets": {
+        "rent": "Rent",
+        "food": "Food",
+        "transport": "Transport",
+        "utilities": "Utilities",
+        "phone": "Phone & internet",
+        "subscriptions": "Subscriptions",
+        "housing": "Housing"
+      }
+    },
+    "reveal": {
+      "salaryTitle": "Salary",
+      "continue": "Continue",
+      "goToDashboard": "Go to my dashboard",
+      "scoreEyebrow": "Your starting score",
+      "scoreTitle": "This is your financial starting point",
+      "scoreSubtitle": "It rises as you save more and keep your fixed costs in check.",
+      "scoreSubtitleNoIncome": "Add your income anytime to unlock your full picture.",
+      "projectionEyebrow": "At this pace, in one year",
+      "projectionTitlePositive": "You could save this much",
+      "projectionTitleNegative": "Here's where we start",
+      "projectionSubPositive": "That's {{amount}} set aside every month. Small changes add up fast.",
+      "projectionSubNegative": "You're spending a little more than you earn right now — we'll help you close the gap.",
+      "benchmarkEyebrow": "Your biggest opportunity",
+      "you": "You",
+      "typical": "Typical",
+      "benchmarkOpportunity": "Trimming this toward the typical share could free up about {{amount}} a year.",
+      "readyTitle": "Your dashboard is already working for you",
+      "safeToSpend": "You can safely spend about {{amount}} per day until payday.",
+      "seededRecurring": "{{count}} recurring transactions created",
+      "seededBudgets": "{{count}} budgets set up",
+      "seededForecast": "Your cash-flow forecast is ready"
     }
   },
   "shortcuts": {

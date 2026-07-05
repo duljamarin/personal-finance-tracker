@@ -1,6 +1,17 @@
-import { encryptField, decryptField, isEncrypted } from './cipher';
-import { FIELD_MAP, NESTED_RELATIONS } from './fieldMap';
+import { encryptField, decryptField, isEncrypted, LOCKED_PLACEHOLDER } from './cipher';
+import { FIELD_MAP, NESTED_RELATIONS, isNumericField } from './fieldMap';
 import { getDEK, getStatus } from './keyring';
+
+// Coerce a decrypted/plaintext value back to a number. Tolerates the locked
+// placeholder (returns null so the UI shows an empty amount rather than NaN)
+// and already-numeric values. Arrays are coerced element-wise.
+function coerceNumeric(value) {
+  if (Array.isArray(value)) return value.map(coerceNumeric);
+  if (value === null || value === undefined) return value;
+  if (value === LOCKED_PLACEHOLDER) return null;
+  const n = Number(value);
+  return Number.isNaN(n) ? null : n;
+}
 
 async function encryptValue(dek, value) {
   if (Array.isArray(value)) {
@@ -48,6 +59,11 @@ async function decryptPlainRow(table, row, dek) {
   for (const field of fields) {
     if (out[field] === undefined || out[field] === null) continue;
     out[field] = await decryptValue(dek, out[field]);
+    // Numeric fields are stored as text (encrypted or plaintext-numeric-string)
+    // and must round-trip back to Number for the UI/aggregation layers.
+    if (isNumericField(table, field)) {
+      out[field] = coerceNumeric(out[field]);
+    }
   }
   const nested = NESTED_RELATIONS[table];
   if (nested) {

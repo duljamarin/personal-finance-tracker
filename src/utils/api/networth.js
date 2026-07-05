@@ -1,5 +1,6 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
+import { upsertNetWorthSnapshot } from '../finance/netWorth';
 
 export async function fetchAssets() {
   return withAuthOrEmpty(async (user) => {
@@ -32,7 +33,7 @@ export async function addAsset(asset) {
 
     if (error) throw error;
 
-    await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
+    await upsertNetWorthSnapshot(user.id);
 
     return decryptRow('assets', data);
   });
@@ -52,7 +53,7 @@ export async function updateAsset(id, asset) {
 
     if (error) throw error;
 
-    await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
+    await upsertNetWorthSnapshot(user.id);
 
     return decryptRow('assets', data);
   });
@@ -69,7 +70,7 @@ export async function deleteAsset(id) {
 
     if (error) throw error;
 
-    await supabase.rpc('upsert_net_worth_snapshot', { p_user_id: user.id });
+    await upsertNetWorthSnapshot(user.id);
 
     return 'OK';
   });
@@ -86,6 +87,7 @@ export async function fetchNetWorthHistory() {
       .limit(24);
 
     if (error) throw error;
-    return data || [];
+    // total_assets / total_liabilities / net_worth are E2E-encrypted text.
+    return decryptRows('net_worth_snapshots', data || []);
   });
 }

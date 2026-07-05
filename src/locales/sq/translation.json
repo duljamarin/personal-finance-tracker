@@ -1157,7 +1157,8 @@
       "2": "Të ardhurat",
       "3": "Shpenzimet",
       "currency": "Valuta",
-      "expenses": "Shpenzimet"
+      "income": "Të ardhurat",
+      "expenses": "Faturat"
     },
     "currency": {
       "title": "Zgjidhni monedhën tuaj",
@@ -1169,20 +1170,55 @@
     },
     "income": {
       "title": "Sa janë të ardhurat tuaja mujore?",
-      "subtitle": "Do të krijojmë një transaksion Page për të filluar",
+      "subtitle": "Do ta rregullojmë pagën tënde që paneli të punojë që nga dita e parë",
       "label": "Të ardhurat mujore",
-      "placeholder": "p.sh., 3000"
+      "placeholder": "p.sh., 3000",
+      "paydayLabel": "Dita e pagës",
+      "paydayPlaceholder": "Dita e muajit",
+      "optional": "(opsionale)"
     },
     "expenses": {
-      "title": "Shtoni disa shpenzime të fundit",
-      "subtitle": "Shtoni 1-3 shpenzime për të filluar ndërtimin e pamjes suaj financiare",
+      "title": "Faturat e tua mujore fikse",
+      "subtitle": "Shto ato që i paguan çdo muaj — qira, ushqim, transport. Ne i kthejmë në transaksione të përsëritura dhe buxhete.",
       "amountLabel": "Shuma",
       "categoryLabel": "Kategoria",
       "selectCategory": "Zgjidhni një kategori",
-      "addAnother": "Shto shpenzim tjetër",
+      "addAnother": "Shto faturë tjetër",
       "remove": "Hiq",
       "amountPlaceholder": "p.sh., 50",
-      "categoryRequired": "Ju lutemi zgjidhni një kategori për këtë shpenzim"
+      "categoryRequired": "Ju lutemi zgjidhni një kategori për këtë shpenzim",
+      "presets": {
+        "rent": "Qiraja",
+        "food": "Ushqimi",
+        "transport": "Transporti",
+        "utilities": "Faturat",
+        "phone": "Telefoni & interneti",
+        "subscriptions": "Abonimet",
+        "housing": "Banesa"
+      }
+    },
+    "reveal": {
+      "salaryTitle": "Paga",
+      "continue": "Vazhdo",
+      "goToDashboard": "Shko te paneli im",
+      "scoreEyebrow": "Pikët e tua fillestare",
+      "scoreTitle": "Kjo është pikënisja jote financiare",
+      "scoreSubtitle": "Rritet sa më shumë të kursesh dhe t'i mbash shpenzimet fikse nën kontroll.",
+      "scoreSubtitleNoIncome": "Shto të ardhurat kur të duash për të parë pamjen e plotë.",
+      "projectionEyebrow": "Me këtë ritëm, për një vit",
+      "projectionTitlePositive": "Mund të kursesh kaq",
+      "projectionTitleNegative": "Ja ku fillojmë",
+      "projectionSubPositive": "Kjo do të thotë {{amount}} të vëna mënjanë çdo muaj. Ndryshimet e vogla mblidhen shpejt.",
+      "projectionSubNegative": "Për momentin po shpenzon pak më shumë se sa fiton — do të të ndihmojmë ta mbyllësh diferencën.",
+      "benchmarkEyebrow": "Mundësia jote më e madhe",
+      "you": "Ti",
+      "typical": "Mesatarja",
+      "benchmarkOpportunity": "Duke e ulur drejt normës mesatare mund të lirosh rreth {{amount}} në vit.",
+      "readyTitle": "Paneli yt tashmë po punon për ty",
+      "safeToSpend": "Mund të shpenzosh me siguri rreth {{amount}} në ditë deri në pagë.",
+      "seededRecurring": "{{count}} transaksione të përsëritura u krijuan",
+      "seededBudgets": "{{count}} buxhete u vendosën",
+      "seededForecast": "Parashikimi yt i rrjedhës së parasë është gati"
     }
   },
   "shortcuts": {

@@ -1,7 +1,47 @@
 // Declarative table -> encrypted-column map. categories.name is intentionally
 // excluded (UNIQUE(user_id, name) constraint + server SQL functions read it
 // directly for budget/health/benchmark logic). auth.users is out of scope.
-export const FIELD_MAP = {
+//
+// NUMERIC_FIELDS lists the subset of each table's encrypted fields that hold
+// numbers rather than free text. They are stringified before encryption and
+// coerced back to Number on read (see rowCodec). Amounts are only present in
+// FIELD_MAP once ENCRYPT_AMOUNTS is on (Phase 0 Step C) — until the DB columns
+// are retyped from NUMERIC to text, encrypting them would break inserts.
+export const ENCRYPT_AMOUNTS = true;
+
+const AMOUNT_FIELDS = ENCRYPT_AMOUNTS
+  ? {
+      transactions: ['amount', 'base_amount'],
+      transaction_splits: ['amount', 'percentage'],
+      recurring_transactions: ['amount'],
+      budgets: ['amount'],
+      goals: ['target_amount', 'current_amount'],
+      goal_milestones: ['target_amount'],
+      goal_contributions: ['amount'],
+      assets: ['current_value'],
+      net_worth_snapshots: ['total_assets', 'total_liabilities', 'net_worth'],
+      financial_health_scores: ['total_income', 'total_expenses', 'savings_amount'],
+    }
+  : {};
+
+// Numeric encrypted fields per table — used by rowCodec to stringify on write
+// and Number()-coerce on read. Always defined (independent of ENCRYPT_AMOUNTS)
+// so coercion is stable, but only matters once these fields also live in
+// FIELD_MAP.
+export const NUMERIC_FIELDS = {
+  transactions: ['amount', 'base_amount'],
+  transaction_splits: ['amount', 'percentage'],
+  recurring_transactions: ['amount'],
+  budgets: ['amount'],
+  goals: ['target_amount', 'current_amount'],
+  goal_milestones: ['target_amount'],
+  goal_contributions: ['amount'],
+  assets: ['current_value'],
+  net_worth_snapshots: ['total_assets', 'total_liabilities', 'net_worth'],
+  financial_health_scores: ['total_income', 'total_expenses', 'savings_amount'],
+};
+
+const TEXT_FIELD_MAP = {
   transactions: ['title', 'tags'],
   recurring_transactions: ['title', 'tags'],
   goals: ['name', 'description'],
@@ -9,7 +49,18 @@ export const FIELD_MAP = {
   goal_contributions: ['note'],
   assets: ['name', 'notes'],
   transaction_splits: ['notes'],
+  // Client-generated financial notifications embed amounts in their text.
+  // Server-created rows (pre-migration) stay plaintext — decryptRow tolerates
+  // mixed rows, so reads never break.
+  notifications: ENCRYPT_AMOUNTS ? ['title', 'message'] : [],
 };
+
+// Merge text + amount fields into the effective encryption map.
+export const FIELD_MAP = Object.fromEntries(
+  [...new Set([...Object.keys(TEXT_FIELD_MAP), ...Object.keys(AMOUNT_FIELDS)])].map(
+    (table) => [table, [...(TEXT_FIELD_MAP[table] || []), ...(AMOUNT_FIELDS[table] || [])]]
+  )
+);
 
 // Nested relations returned by a select() that also need decrypting.
 // e.g. fetchGoalById() embeds goal_milestones rows under this key.
@@ -18,3 +69,9 @@ export const NESTED_RELATIONS = {
 };
 
 export const ENCRYPTED_TABLES = Object.keys(FIELD_MAP);
+
+// Whether a given field on a table should be coerced back to Number on read.
+export function isNumericField(table, field) {
+  const list = NUMERIC_FIELDS[table];
+  return !!list && list.includes(field);
+}

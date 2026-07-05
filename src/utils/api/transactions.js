@@ -1,5 +1,6 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
+import { checkBudgetNotifications } from '../finance/budgetAlerts';
 
 export async function fetchTransactions({ type } = {}) {
   return withAuthOrEmpty(async (user) => {
@@ -85,11 +86,11 @@ export async function addTransaction(transaction) {
       .single();
 
     if (error) throw error;
-    try {
-      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
-    } catch (e) {
-      console.error('budget notification check failed:', e);
-    }
+    // Fire-and-forget: budget alerts are a side effect and now run as several
+    // client round-trips (amounts are encrypted), so we don't block the add.
+    checkBudgetNotifications(user.id).catch((e) =>
+      console.error('budget notification check failed:', e)
+    );
     return decryptRow('transactions', data);
   });
 }
@@ -144,11 +145,11 @@ export async function updateTransaction(id, transaction) {
       .single();
 
     if (error) throw error;
-    try {
-      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
-    } catch (e) {
-      console.error('budget notification check failed:', e);
-    }
+    // Fire-and-forget: budget alerts are a side effect and now run as several
+    // client round-trips (amounts are encrypted), so we don't block the add.
+    checkBudgetNotifications(user.id).catch((e) =>
+      console.error('budget notification check failed:', e)
+    );
     return decryptRow('transactions', data);
   });
 }
@@ -206,11 +207,12 @@ export async function fetchTransactionSplits(transactionId) {
         category:categories(id, name)
       `)
       .eq('transaction_id', transactionId)
-      .eq('user_id', user.id)
-      .order('amount', { ascending: false });
+      .eq('user_id', user.id);
 
     if (error) throw error;
-    return decryptRows('transaction_splits', data || []);
+    // amount is encrypted text server-side — sort after decryption.
+    const decrypted = await decryptRows('transaction_splits', data || []);
+    return decrypted.sort((a, b) => Number(b.amount) - Number(a.amount));
   });
 }
 
@@ -271,7 +273,7 @@ export async function addTransactionWithSplits(transaction, splits) {
     }
 
     try {
-      await supabase.rpc('check_budget_notifications', { p_user_id: user.id });
+      await checkBudgetNotifications(user.id);
     } catch (e) {
       console.error('budget notification check failed:', e);
     }

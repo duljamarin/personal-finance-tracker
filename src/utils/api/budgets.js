@@ -1,4 +1,5 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
+import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 
 export async function fetchBudgets(year, month) {
   return withAuthOrEmpty(async (user) => {
@@ -15,22 +16,23 @@ export async function fetchBudgets(year, month) {
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+    return decryptRows('budgets', data || []);
   });
 }
 
 export async function createBudget({ categoryId, year, month, amount }) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    const insertData = await encryptRow('budgets', {
+      user_id: user.id,
+      category_id: categoryId,
+      year: year,
+      month: month,
+      amount: amount,
+    });
     const { data, error } = await supabase
       .from('budgets')
-      .insert({
-        user_id: user.id,
-        category_id: categoryId,
-        year: year,
-        month: month,
-        amount: amount,
-      })
+      .insert(insertData)
       .select(`
         *,
         category:categories(id, name)
@@ -38,19 +40,18 @@ export async function createBudget({ categoryId, year, month, amount }) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('budgets', data);
   });
 }
 
 export async function updateBudget(id, { amount }) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    const updateData = await encryptRow('budgets', { amount });
+    updateData.updated_at = new Date().toISOString();
     const { data, error } = await supabase
       .from('budgets')
-      .update({
-        amount: amount,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', id)
       .eq('user_id', user.id)
       .select(`
@@ -60,7 +61,7 @@ export async function updateBudget(id, { amount }) {
       .single();
 
     if (error) throw error;
-    return data;
+    return decryptRow('budgets', data);
   });
 }
 
@@ -96,7 +97,8 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
 
     if (txError) throw txError;
 
-    const allTx = txData || [];
+    // base_amount is E2E-encrypted text server-side — decrypt before summing.
+    const allTx = await decryptRows('transactions', txData || []);
     const splitParentIds = [];
     const totals = {};
 
@@ -121,7 +123,8 @@ export async function fetchMonthlyExpensesByCategory(year, month) {
 
       if (splitError) throw splitError;
 
-      for (const split of (splitData || [])) {
+      const splits = await decryptRows('transaction_splits', splitData || []);
+      for (const split of splits) {
         if (!split.category_id) continue;
         const rate = rateMap[split.transaction_id] || 1.0;
         totals[split.category_id] = (totals[split.category_id] || 0) + Number(split.amount) * rate;
