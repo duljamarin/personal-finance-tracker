@@ -813,6 +813,7 @@
     "startDate": "Data e Fillimit",
     "lastRun": "Ekzekutimi i Fundit",
     "nextRun": "Ekzekutimi i Ardhshëm",
+    "timesRun": "Herë të Kryera",
     "endsLabel": "Përfundon",
     "afterCount": "Pas {{count}} përsëritjeve",
     "addBtn": "Shto Transaksion Përsëritës",

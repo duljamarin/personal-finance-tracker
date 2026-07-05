@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { trackEvent } from '../../lib/analytics';
 import { supabase } from '../../utils/supabaseClient';
-import { fetchCategories, addCategory, addTransaction, addRecurringTransaction, createBudget } from '../../utils/api';
+import { fetchCategories, addCategory, addTransaction, addRecurringTransaction } from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { computeSnapshot } from '../../utils/reveal/computeSnapshot';
@@ -97,8 +97,6 @@ export default function OnboardingWizard() {
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
       const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
 
       // Start-of-next-month date (YYYY-MM-DD) for recurring templates so the
       // processor doesn't double-create this month's instance we add directly.
@@ -110,7 +108,6 @@ export default function OnboardingWizard() {
       const validExpenses = expenses.filter((e) => e.amount && Number(e.amount) > 0);
 
       let seededRecurring = 0;
-      let seededBudgets = 0;
 
       // --- Ensure an Uncategorized fallback if any bill lacks a category ---
       const needsUncategorized = validExpenses.some((e) => !e.categoryId);
@@ -154,7 +151,7 @@ export default function OnboardingWizard() {
         }
       }
 
-      // --- Bills: this-month transaction + monthly recurring + suggested budget ---
+      // --- Bills: this-month transaction + monthly recurring template ---
       const billsForSnapshot = [];
       for (const expense of validExpenses) {
         const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
@@ -189,22 +186,10 @@ export default function OnboardingWizard() {
           console.error('bill recurring seed failed:', e);
         }
 
-        // Suggested budget = exactly the bill amount (base currency). Using the
-        // bill as-is keeps it intuitive: a €300 bill shows a €300 budget, not
-        // €330 the user never chose.
-        if (resolvedCategoryId) {
-          try {
-            await createBudget({
-              categoryId: resolvedCategoryId,
-              year,
-              month,
-              amount: Math.round(amountNum * rate * 100) / 100,
-            });
-            seededBudgets += 1;
-          } catch (e) {
-            console.error('budget seed failed:', e);
-          }
-        }
+        // No auto budgets: seeding a budget equal to a same-day transaction made
+        // every category read 100% spent (red) on the fresh dashboard, which
+        // looked alarming. Users set budgets themselves later; the dashboard
+        // still comes alive via the transactions + recurring templates above.
 
         billsForSnapshot.push({ amount: amountNum * rate, categoryName: cat?.name || '' });
       }
@@ -230,7 +215,7 @@ export default function OnboardingWizard() {
         setReveal({
           snapshot,
           currency,
-          seededSummary: { recurring: seededRecurring, budgets: seededBudgets },
+          seededSummary: { recurring: seededRecurring, budgets: 0 },
         });
       } else {
         // Nothing entered — keep the original lightweight success screen.

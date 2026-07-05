@@ -191,25 +191,25 @@ export default function RecurringPage() {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-sm">
-                <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1">{t('recurring.startDate')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white">{fmtDate(recurring.start_date)}</div>
+                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
+                  <div className="eyebrow mb-1 truncate">{t('recurring.startDate')}</div>
+                  <div className="font-semibold text-ink-primary dark:text-white truncate">{fmtDate(recurring.start_date)}</div>
                 </div>
-                <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1">{t('recurring.lastRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white">
+                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
+                  <div className="eyebrow mb-1 truncate">{t('recurring.lastRun')}</div>
+                  <div className="font-semibold text-ink-primary dark:text-white truncate">
                     {fmtDate(recurring.last_run_at)}
                   </div>
                 </div>
-                <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1">{t('recurring.nextRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white">
+                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
+                  <div className="eyebrow mb-1 truncate">{t('recurring.nextRun')}</div>
+                  <div className="font-semibold text-ink-primary dark:text-white truncate">
                     {fmtDate(recurring.next_run_at)}
                   </div>
                 </div>
-                <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1">{t('recurring.created')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white">
+                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
+                  <div className="eyebrow mb-1 truncate">{t('recurring.timesRun')}</div>
+                  <div className="font-semibold text-ink-primary dark:text-white truncate">
                     {recurring.occurrences_created || 0}
                     {recurring.occurrences_limit && ` / ${recurring.occurrences_limit}`}
                   </div>

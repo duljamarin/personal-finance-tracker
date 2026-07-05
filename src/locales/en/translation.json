@@ -813,6 +813,7 @@
     "startDate": "Start Date",
     "lastRun": "Last Run",
     "nextRun": "Next Run",
+    "timesRun": "Times Run",
     "endsLabel": "Ends",
     "afterCount": "After {{count}} occurrences",
     "addBtn": "Add Recurring",
