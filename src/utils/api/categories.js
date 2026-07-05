@@ -80,18 +80,3 @@ export async function deleteCategory(id) {
     return 'OK';
   });
 }
-
-export async function getCategory(id) {
-  return withAuth(async (user) => {
-    const supabase = await getSupabase();
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .single();
-
-    if (error) throw error;
-    return data;
-  });
-}

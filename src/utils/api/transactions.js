@@ -179,24 +179,6 @@ export async function deleteTransaction(id, options = {}) {
   });
 }
 
-export async function getTransaction(id) {
-  return withAuth(async (user) => {
-    const supabase = await getSupabase();
-    const { data, error } = await supabase
-      .from('transactions')
-      .select(`
-        *,
-        category:categories(id, name)
-      `)
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .single();
-
-    if (error) throw error;
-    return decryptRow('transactions', data);
-  });
-}
-
 export async function fetchTransactionSplits(transactionId) {
   return withAuthOrEmpty(async (user) => {
     const supabase = await getSupabase();

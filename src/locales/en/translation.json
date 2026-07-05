@@ -591,7 +591,8 @@
         "reports": "Detailed reports",
         "notifications": "Alerts for budget overruns and goal milestones",
         "csvImport": "CSV import and export",
-        "categories": "Custom categories with icons"
+        "categories": "Custom categories with icons",
+        "encryption": "End-to-end encryption, the key stays only with you"
       }
     },
     "privacy": {
@@ -604,8 +605,8 @@
           "desc": "Export everything as CSV any time. Delete your account and all data is gone - permanently, not archived."
         },
         "encryption": {
-          "title": "Encrypted at rest and in transit",
-          "desc": "All data is stored in a PostgreSQL database with enterprise-grade encryption. Transport is TLS-only."
+          "title": "End-to-end encryption you control",
+          "desc": "Turn on encryption and your transaction titles, tags, goal names, notes, and asset details are encrypted on your device with a key only you hold. We store ciphertext we cannot read, not even our team."
         },
         "noSell": {
           "title": "We never sell your data",

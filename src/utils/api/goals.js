@@ -119,21 +119,6 @@ export async function deleteGoal(goalId) {
   });
 }
 
-export async function fetchContributions(goalId) {
-  return withAuth(async (user) => {
-    const supabase = await getSupabase();
-    const { data, error } = await supabase
-      .from('goal_contributions')
-      .select('*')
-      .eq('goal_id', goalId)
-      .eq('user_id', user.id)
-      .order('contribution_date', { ascending: false });
-
-    if (error) throw error;
-    return decryptRows('goal_contributions', data);
-  });
-}
-
 export async function addContribution(goalId, contributionData) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
@@ -162,38 +147,6 @@ export async function addContribution(goalId, contributionData) {
       console.error('goal progress sync failed:', e);
     }
     return decryptRow('goal_contributions', data);
-  });
-}
-
-export async function deleteContribution(contributionId) {
-  return withAuth(async (user) => {
-    const supabase = await getSupabase();
-
-    // Need the goal_id to resync progress after delete (the trigger that used
-    // to do this on DELETE is gone).
-    const { data: existing } = await supabase
-      .from('goal_contributions')
-      .select('goal_id')
-      .eq('id', contributionId)
-      .eq('user_id', user.id)
-      .single();
-
-    const { error } = await supabase
-      .from('goal_contributions')
-      .delete()
-      .eq('id', contributionId)
-      .eq('user_id', user.id);
-
-    if (error) throw error;
-
-    if (existing?.goal_id) {
-      try {
-        await syncGoalProgress(user.id, existing.goal_id);
-      } catch (e) {
-        console.error('goal progress sync failed:', e);
-      }
-    }
-    return true;
   });
 }
 

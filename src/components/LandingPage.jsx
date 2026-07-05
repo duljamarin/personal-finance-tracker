@@ -35,24 +35,32 @@ const INCOME_BARS  = [3200,3200,3400,3200,3600,3200,3500,3200,3400,3200,3600,380
 const EXPENSE_BARS = [1600,1900,1500,2100,1700,1400,1800,1500,1650,1300,1750,1400];
 const BAR_MAX = 4000;
 
+// A month is "heavy" when expenses eat a large share of that month's income
+// (>52%). Those income bars render in the app's expense-red to flag high-spend
+// months at a glance; lighter months stay brand-teal.
+const HEAVY_SPEND_RATIO = 0.52;
+
 function MiniBarChart() {
   return (
     <div className="flex items-end gap-[3px] sm:gap-1 h-24 w-full">
-      {MONTHS_SHORT.map((m, i) => (
-        <div key={m} className="flex-1 flex flex-col items-center gap-[2px]">
-          <div className="w-full flex flex-col gap-[2px] items-stretch">
-            <div
-              className="w-full rounded-t-[2px] bg-brand-600/80"
-              style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 72}px` }}
-            />
-            <div
-              className="w-full rounded-t-[2px] bg-expense/75"
-              style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 72}px` }}
-            />
+      {MONTHS_SHORT.map((m, i) => {
+        const heavy = EXPENSE_BARS[i] / INCOME_BARS[i] >= HEAVY_SPEND_RATIO;
+        return (
+          <div key={m} className="flex-1 flex flex-col items-center gap-[2px]">
+            <div className="w-full flex flex-col gap-[2px] items-stretch">
+              <div
+                className={`w-full rounded-t-[2px] ${heavy ? 'bg-expense/80' : 'bg-brand-600/80'}`}
+                style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 72}px` }}
+              />
+              <div
+                className="w-full rounded-t-[2px] bg-expense/75"
+                style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 72}px` }}
+              />
+            </div>
+            <span className="text-[8px] text-ink-muted dark:text-white hidden sm:block">{m}</span>
           </div>
-          <span className="text-[8px] text-ink-muted dark:text-white hidden sm:block">{m}</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -431,6 +439,7 @@ function SecondaryFeaturesSection({ t }) {
     { icon: Bell,       key: 'notifications' },
     { icon: Download,   key: 'csvImport' },
     { icon: Tag,        key: 'categories' },
+    { icon: Lock,       key: 'encryption' },
   ];
   return (
     <section className="py-16 sm:py-20 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">

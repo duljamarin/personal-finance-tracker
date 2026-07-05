@@ -591,7 +591,8 @@
         "reports": "Raporte të detajuara",
         "notifications": "Alarme për tejkalimin e buxhetit dhe arritjet e qëllimeve",
         "csvImport": "Import dhe eksport CSV",
-        "categories": "Kategori të personalizuara me ikona"
+        "categories": "Kategori të personalizuara me ikona",
+        "encryption": "Enkriptim nga skaji në skaj, çelësi mbahet vetëm nga ju"
       }
     },
     "privacy": {
@@ -604,8 +605,8 @@
           "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të gjitha të dhënat zhduken - përgjithmonë, jo të arkivuara."
         },
         "encryption": {
-          "title": "Të enkriptuara në ruajtje dhe transit",
-          "desc": "Të gjitha të dhënat ruhen në një bazë të dhënash PostgreSQL me enkriptim të nivelit të lartë. Transporti është vetëm TLS."
+          "title": "Enkriptim nga skaji në skaj që e kontrolloni ju",
+          "desc": "Aktivizoni enkriptimin dhe titujt e transaksioneve, etiketat, emrat e objektivave, shënimet dhe të dhënat e aseteve enkriptohen në pajisjen tuaj me një çelës që e mban vetëm ju. Ne ruajmë tekst të enkriptuar që nuk mund ta lexojmë, as ekipi ynë."
         },
         "noSell": {
           "title": "Nuk i shesim kurrë të dhënat tuaja",

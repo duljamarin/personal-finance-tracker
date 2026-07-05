@@ -78,14 +78,6 @@ export function getCategoryIcon(cat) {
   return null; // null = user-created category, caller should show initial
 }
 
-/** @deprecated Use getCategoryIcon + CATEGORY_ICONS instead */
-export const EMOJI_PALETTE = ICON_PALETTE;
-
-/** @deprecated Use getCategoryIcon instead */
-export function getCategoryEmoji(cat) {
-  return getCategoryIcon(cat) || 'Shopping';
-}
-
 /**
  * Translates a category name if it's a default category.
  * Returns original name for user-created categories.
