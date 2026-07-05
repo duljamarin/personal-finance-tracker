@@ -35,28 +35,24 @@ const INCOME_BARS  = [3200,3200,3400,3200,3600,3200,3500,3200,3400,3200,3600,380
 const EXPENSE_BARS = [1600,1900,1500,2100,1700,1400,1800,1500,1650,1300,1750,1400];
 const BAR_MAX = 4000;
 
-// A month is "heavy" when expenses eat a large share of that month's income
-// (>52%). Those income bars render in the app's expense-red to flag high-spend
-// months at a glance; lighter months stay brand-teal.
+// One bar per month, sized by that month's income. A month is "heavy" when
+// expenses eat a large share of income (>=52%): those bars render in the app's
+// expense-red to flag high-spend months at a glance; lighter months stay
+// brand-teal. Single bars (not stacked) keep every column inside the fixed
+// height, so the red heavy-months are always visible.
 const HEAVY_SPEND_RATIO = 0.52;
 
 function MiniBarChart() {
   return (
-    <div className="flex items-end gap-[3px] sm:gap-1 h-24 w-full">
+    <div className="flex items-end gap-[3px] sm:gap-1 h-20 w-full">
       {MONTHS_SHORT.map((m, i) => {
         const heavy = EXPENSE_BARS[i] / INCOME_BARS[i] >= HEAVY_SPEND_RATIO;
         return (
-          <div key={m} className="flex-1 flex flex-col items-center gap-[2px]">
-            <div className="w-full flex flex-col gap-[2px] items-stretch">
-              <div
-                className={`w-full rounded-t-[2px] ${heavy ? 'bg-expense/80' : 'bg-brand-600/80'}`}
-                style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 72}px` }}
-              />
-              <div
-                className="w-full rounded-t-[2px] bg-expense/75"
-                style={{ height: `${(EXPENSE_BARS[i] / BAR_MAX) * 72}px` }}
-              />
-            </div>
+          <div key={m} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <div
+              className={`w-full rounded-t-[2px] ${heavy ? 'bg-expense' : 'bg-brand-600'}`}
+              style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 100}%` }}
+            />
             <span className="text-[8px] text-ink-muted dark:text-white hidden sm:block">{m}</span>
           </div>
         );
@@ -376,8 +372,8 @@ function HeroFeaturesSection({ t }) {
                 <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
                   <span>2025 - Year to date</span>
                   <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />Income</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block bg-expense" />Expenses</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />On track</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block bg-expense" />High spend</span>
                   </div>
                 </div>
                 <MiniBarChart />
