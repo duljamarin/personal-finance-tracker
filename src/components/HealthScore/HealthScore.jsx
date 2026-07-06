@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { fetchHealthScore, fetchHealthScoreHistory } from '../../utils/api';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useAsyncData } from '../../hooks/useAsyncData';
+import { formatCurrency } from '../../utils/formatCurrency';
 import Card from '../UI/Card';
 
 export default function HealthScore({ onReloadTrigger, compact = false }) {
@@ -293,19 +294,19 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.income')}</p>
                 <p className="text-sm font-semibold tabular-nums text-brand-600 dark:text-brand-400">
-                  €{score.totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {formatCurrency(score.totalIncome)}
                 </p>
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.expenses')}</p>
                 <p className="text-sm font-semibold tabular-nums text-expense dark:text-expense">
-                  €{score.totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {formatCurrency(score.totalExpenses)}
                 </p>
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.saved')}</p>
                 <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense dark:text-expense'}`}>
-                  €{score.savingsAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {formatCurrency(score.savingsAmount)}
                 </p>
               </div>
             </div>

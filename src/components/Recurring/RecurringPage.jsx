@@ -6,7 +6,7 @@ import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction, processRecurringTransactions } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
-import { CURRENCY_SYMBOLS } from '../../utils/constants';
+import { formatCurrency } from '../../utils/formatCurrency';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useCrypto } from '../../context/CryptoContext';
@@ -177,8 +177,7 @@ export default function RecurringPage() {
                       recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-expense'
                     }`}
                   >
-                    {CURRENCY_SYMBOLS[recurring.currency_code || 'EUR']}
-                    {Number(recurring.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    {formatCurrency(Number(recurring.amount), recurring.currency_code || 'EUR')}
                   </div>
                   <span
                     className={`eyebrow ${

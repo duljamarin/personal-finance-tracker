@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import { EXPENSE_COLOR } from '../../utils/chartColors';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 function formatAmount(amount) {
-  return `€${Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return formatCurrency(Math.abs(amount));
 }
 
 function ChangeIndicator({ current, previous }) {

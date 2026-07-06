@@ -30,7 +30,7 @@ A full-featured personal finance web app built with React, Tailwind CSS, Vite, a
 - Session-cached unlock (IndexedDB) so users aren't re-prompted every page load; explicit unlock modal on new devices/sessions
 
 ### Subscription & Freemium
-- Free tier: 30 transactions/month, 3 budgets, 3 recurring rules, 1 goal
+- Free tier: 100 transactions/month, 30 budgets, 30 recurring rules, 40 goals
 - Premium: unlimited everything, net worth, health score details, benchmarks, transaction splits
 - Payments via Paddle (monthly & yearly plans) with 5-day free trial
 - In-app notifications: budget overruns, recurring due, goal milestones, trial expiring - with per-type, per-threshold notification settings

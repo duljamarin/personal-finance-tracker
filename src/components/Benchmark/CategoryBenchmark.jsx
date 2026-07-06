@@ -4,6 +4,7 @@ import { fetchCategoryBenchmarks } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useAsyncData } from '../../hooks/useAsyncData';
+import { formatCurrency } from '../../utils/formatCurrency';
 import Card from '../UI/Card';
 
 // Status -> design token color map (CSS vars; see chartColors / index.css).
@@ -274,7 +275,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                         </div>
                         <div className="flex items-baseline gap-2 mt-1">
                           <span className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
-                            €{Number(benchmark.current_month_spending).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            {formatCurrency(Number(benchmark.current_month_spending))}
                           </span>
                         </div>
                       </div>
@@ -297,13 +298,13 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                             <div>
                               <span className="eyebrow block mb-0.5">{t('benchmark.typical')}</span>
                               <span className="font-semibold tracking-tight text-ink-secondary dark:text-white">
-                                €{Number(benchmark.lower_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} - €{Number(benchmark.upper_threshold).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                {formatCurrency(Number(benchmark.lower_threshold), 'EUR', { compact: true })} - {formatCurrency(Number(benchmark.upper_threshold), 'EUR', { compact: true })}
                               </span>
                             </div>
                             <div className="text-right">
                               <span className="eyebrow block mb-0.5">{t('benchmark.average')}</span>
                               <span className="font-semibold tracking-tight text-ink-secondary dark:text-white">
-                                €{Number(benchmark.avg_monthly_spending).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}/{t('benchmark.month')}
+                                {formatCurrency(Number(benchmark.avg_monthly_spending), 'EUR', { compact: true })}/{t('benchmark.month')}
                               </span>
                             </div>
                           </div>

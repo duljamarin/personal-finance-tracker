@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import useDarkMode from '../../hooks/useDarkMode';
 import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 // Month name mapping for translation
 const MONTH_MAP = {
@@ -61,11 +62,6 @@ function CombinedMonthTooltip({ active, payload, label }) {
 
   const incomeValue = incomeEntry ? incomeEntry.value : 0;
   const expenseValue = expenseEntry ? expenseEntry.value : 0;
-
-  const formatCurrency = (value) => `€${value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })}`;
 
   return (
     <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md text-sm">

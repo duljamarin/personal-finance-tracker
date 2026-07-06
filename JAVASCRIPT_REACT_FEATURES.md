@@ -66,6 +66,10 @@ A comprehensive reference of every JavaScript (ES6+) and React feature used in t
 58. [PapaParse - CSV Parsing](#58-papaparse--csv-parsing)
 59. [Recharts - Data Visualization](#59-recharts--data-visualization)
 60. [Vite - Build Configuration](#60-vite--build-configuration)
+61. [Web Crypto API (SubtleCrypto)](#61-web-crypto-api-subtlecrypto)
+62. [IndexedDB](#62-indexeddb)
+63. [Publish-Subscribe Pattern](#63-publish-subscribe-pattern)
+64. [Typed Arrays & Base64 Encoding](#64-typed-arrays--base64-encoding)
 
 ---
 
@@ -507,11 +511,9 @@ setError(err.message || 'Invalid login credentials');
 **Conditional CSS classes**:
 ```js
 // src/components/UI/Input.jsx
-className={`... ${
-  error
-    ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20'
-    : 'border-gray-200 dark:border-zinc-700'
-} ${className}`}
+const borderState = error
+  ? 'border-expense focus:border-expense focus:ring-expense/20'
+  : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40';
 ```
 
 **Conditional rendering**:
@@ -1654,20 +1656,22 @@ const pollTimerRef = useRef(null);
 
 ### How It Is Used in This Project
 
-The app uses **five nested context providers**:
+The app uses **six nested context providers**:
 
 ```jsx
 // src/App.jsx
 <AuthProvider>
   <ToastProvider>
     <ThemeProvider>
-      <SubscriptionProvider>
-        <TransactionProvider>
-          <Router>
-            <InnerAppContent />
-          </Router>
-        </TransactionProvider>
-      </SubscriptionProvider>
+      <CryptoProvider>
+        <SubscriptionProvider>
+          <TransactionProvider>
+            <Router>
+              <InnerAppContent />
+            </Router>
+          </TransactionProvider>
+        </SubscriptionProvider>
+      </CryptoProvider>
     </ThemeProvider>
   </ToastProvider>
 </AuthProvider>
@@ -1699,6 +1703,7 @@ export function useTransactions() {
 | `AuthContext` | User session, login, logout, register |
 | `ToastContext` | Toast notification queue |
 | `ThemeContext` | Dark/light mode toggle |
+| `CryptoContext` | End-to-end encryption keyring state, unlock/migration status |
 | `SubscriptionContext` | Premium status, trial info |
 | `TransactionContext` | Transaction list, CRUD, categories |
 
@@ -1793,6 +1798,32 @@ export function usePaddle() {
 }
 ```
 
+**`useAsyncData`** - collapses the repeated `data` + `loading` + `error` + `useEffect` fetch pattern into one hook:
+```js
+// src/hooks/useAsyncData.js
+export function useAsyncData(fetchFn, deps = [], initialData = null) {
+  const [data, setData] = useState(initialData);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // ...runs fetchFn on mount and when deps change; exposes reload() for background refresh
+  return { data, loading, error, reload, setData };
+}
+```
+
+**`useFormModal`** - standard add/edit modal state (open flag + item being edited):
+```js
+// src/hooks/useFormModal.js
+export function useFormModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const openAdd = useCallback(() => { setEditingItem(null); setIsOpen(true); }, []);
+  const openEdit = useCallback((item) => { setEditingItem(item); setIsOpen(true); }, []);
+  return { isOpen, editingItem, openAdd, openEdit, close };
+}
+```
+
+Other custom hooks in the project: **`useMetaTags`** (per-route document `<title>`/meta management for SEO), **`useCountUp`** (animated number transitions), **`useAsyncAction`** (async op + toast, above), **`useDarkMode`**, and **`useKeyboardShortcuts`**.
+
 ---
 
 ## 39. React - Conditional Rendering
@@ -1825,10 +1856,8 @@ return accessToken ? children : <Navigate to="/login" replace />;
 **Ternary** - choose between two elements:
 ```js
 // src/components/UI/Input.jsx
-{error
-  ? <p className="text-red-500">{error}</p>
-  : helperText && <p className="text-gray-500">{helperText}</p>
-}
+{error && <p className="mt-2 text-xs text-expense ...">{error}</p>}
+{helperText && !error && <p className="mt-2 text-xs text-ink-muted dark:text-white">{helperText}</p>}
 ```
 
 ---
@@ -2068,14 +2097,14 @@ window.addEventListener('paddle-event', handlePaddleEvent);
 ```jsx
 // src/components/UI/Button.jsx
 <button
-  className={`rounded-lg font-medium ... ${variants[variant]} ${sizes[size]} ${className}`}
+  className={`rounded-md font-medium ... ${variants[variant]} ${sizes[size]} ${className}`}
   {...props}
 >
   {children}
 </button>
 
 // src/components/UI/Input.jsx
-<input className={`w-full px-3.5 py-2.5 ...`} {...props} />
+<input className={`${inputBase} ${borderState} ${padding} ${className}`} {...props} />
 ```
 
 **Test handler spreading**:
@@ -2103,7 +2132,7 @@ Components receive their nested JSX via the `children` prop. This is the foundat
 // src/components/UI/Card.jsx
 export default function Card({ children, className = '', variant = 'default', padding = 'md' }) {
   return (
-    <div className={`${variants[variant]} ${paddings[padding]} rounded-xl shadow-sm ${className}`}>
+    <div className={`${variants[variant]} ${paddings[padding]} rounded-container ${className}`}>
       {children}
     </div>
   );
@@ -2154,12 +2183,17 @@ export function AuthProvider({ children }) {
 </Routes>
 ```
 
-**Protected route pattern**:
+**Protected route pattern** — `PrivateRoute` guards authenticated routes and also
+redirects users who haven't finished onboarding. `OnboardingRoute` is the inverse
+(sends already-onboarded users to the dashboard):
 ```jsx
+// src/App.jsx
 function PrivateRoute({ children }) {
-  const { accessToken, loading } = useAuth();
-  if (loading) return <LoadingSpinner />;
-  return accessToken ? children : <Navigate to="/login" replace />;
+  const { accessToken, user, loading } = useAuth();
+  if (loading) return <LoadingSpinner size="md" className="min-h-screen" />;
+  if (!accessToken) return <Navigate to="/login" replace />;
+  if (!user?.user_metadata?.onboarding_completed) return <Navigate to="/onboarding" replace />;
+  return children;
 }
 ```
 
@@ -2232,20 +2266,40 @@ import { Link, useNavigate } from 'react-router-dom';
 
 ### How It Is Used in This Project
 
-**Setup** - language detector + React integration:
+**Setup** - language detector + React integration. Only the active language's
+bundle is loaded at init (via dynamic `import()`); the other language is fetched
+on demand on `languageChanged`. `useSuspense: false` lets the app render before
+the bundle resolves (a Core Web Vitals requirement — see CLAUDE.md):
 ```js
 // src/i18n.js
-i18n
+async function loadTranslation(lang) {
+  const mod = lang === 'sq'
+    ? await import('./locales/sq/translation.json')
+    : await import('./locales/en/translation.json');
+  return mod.default;
+}
+
+const translation = await loadTranslation(pathLang);
+await i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      en: { translation: enTranslation },
-      sq: { translation: sqTranslation }
-    },
-    fallbackLng: 'sq',
-    interpolation: { escapeValue: false }
+    resources: { [pathLang]: { translation } },  // only the active language
+    lng: pathLang,
+    supportedLngs: ['en', 'sq'],
+    fallbackLng: 'en',
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
+    detection: { order: ['path', 'localStorage', 'navigator'], caches: ['localStorage'] },
   });
+
+// The other language bundle is added lazily when the user switches:
+i18n.on('languageChanged', async (lang) => {
+  if (i18n.hasResourceBundle(lang, 'translation')) return;
+  const translation = await loadTranslation(lang);
+  i18n.addResourceBundle(lang, 'translation', translation, true, true);
+  await i18n.changeLanguage(lang);
+});
 ```
 
 **Translation with interpolation**:
@@ -2414,16 +2468,19 @@ if (dark) document.documentElement.classList.add('dark');
 else document.documentElement.classList.remove('dark');
 ```
 
-**Usage in components** - every component uses `dark:` prefixed classes:
+**Usage in components** - every component uses `dark:` prefixed classes. All dark-mode
+text is white (design-system rule — never `dark:text-gray-*`); surfaces and borders use
+semantic tokens (`surface-dark-card`, `surface-dark-hairline`), not raw `gray-*`/`zinc-*`:
 ```jsx
-// src/components/UI/Button.jsx
-'bg-white dark:bg-surface-dark-elevated border border-gray-200 dark:border-zinc-700'
+// src/components/UI/Button.jsx (primary)
+'bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white border border-transparent'
 
-// src/components/UI/Card.jsx
-'bg-white dark:bg-surface-dark-tertiary border border-gray-200/80 dark:border-zinc-800'
+// src/components/UI/Card.jsx (default)
+'bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline'
 
 // src/components/UI/Input.jsx
-'bg-white dark:bg-surface-dark-elevated dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500'
+'bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ' +
+'placeholder:text-ink-muted/40 dark:placeholder:text-white/40'
 ```
 
 **Responsive + dark mode combined**:
@@ -2574,22 +2631,235 @@ Vite uses native ES modules during development (no bundling) for instant HMR. Fo
 // vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import Critters from 'critters';
 
 export default defineConfig({
-  plugins: [react()],
+  // resourceHintsPlugin injects modulepreload for the locale + LandingPage chunks;
+  // criticalCssPlugin inlines above-the-fold CSS (via critters) and loads the rest async.
+  plugins: [react(), resourceHintsPlugin(), criticalCssPlugin()],
+  esbuild: {
+    // Strip noisy console calls from production; keep console.error for triage.
+    pure: ['console.log', 'console.warn', 'console.debug', 'console.info'],
+  },
   build: {
     rollupOptions: {
-      input: {
-        main: 'index.html',
-        en: 'en.html',
-        sq: 'sq.html'
+      input: { main: 'index.html', en: 'en.html', sq: 'sq.html' },
+      output: {
+        // Split vendors into cacheable chunks so a code change doesn't bust recharts/supabase.
+        manualChunks(id) {
+          if (id.includes('@supabase') || id.includes('supabaseClient')) return 'supabase';
+          if (id.includes('recharts') || id.includes('d3-')) return 'recharts';
+          if (id.includes('papaparse')) return 'csv';
+          if (id.includes('react-router') || /[\\/]react(-dom)?[\\/]/.test(id)) return 'react';
+          if (id.includes('i18next')) return 'i18n';
+          if (id.includes('locales/en/translation')) return 'locale-en';
+          if (id.includes('locales/sq/translation')) return 'locale-sq';
+        },
       },
     },
   },
 });
 ```
 
-Multiple HTML entry points (`main`, `en`, `sq`) enable standalone landing pages per language.
+Key production concerns baked into the config (all Core Web Vitals driven — see CLAUDE.md):
+- **Multiple HTML entry points** (`main`, `en`, `sq`) — standalone landing pages per language.
+- **`manualChunks`** — pins heavy vendors (Recharts, Supabase, PapaParse) into their own
+  long-lived cache chunks and keeps them off the landing-page critical path.
+- **`criticalCssPlugin`** (critters) — inlines above-the-fold CSS, loads the rest async to
+  remove render-blocking CSS.
+- **`resourceHintsPlugin`** — injects `modulepreload` hints per HTML entry.
+- **`esbuild.pure`** — drops `console.log/warn/debug/info` from production bundles.
+
+---
+
+## 61. Web Crypto API (SubtleCrypto)
+
+### How It Works
+The browser's built-in `crypto` object exposes `crypto.getRandomValues()` for cryptographically secure random bytes and `crypto.subtle` (SubtleCrypto) for low-level primitives: key derivation, key import, and AES-GCM encryption/decryption. All `subtle` methods are async and return Promises.
+
+### Why It Is Useful
+- True end-to-end encryption — sensitive fields are encrypted in the browser, so plaintext never reaches the server
+- Native, audited implementation — no third-party crypto library in the bundle
+- Non-extractable `CryptoKey` objects — the raw key material can't be read back out of JavaScript
+
+### How It Is Used in This Project
+
+The app encrypts sensitive transaction fields (amounts, titles) client-side. A password-derived **KEK** (key-encryption-key) wraps a random **DEK** (data-encryption-key); only the DEK encrypts data. See `src/utils/crypto/cipher.js`.
+
+**Secure random bytes** — salts, IVs, and the raw DEK:
+```js
+// src/utils/crypto/cipher.js
+export function generateRawDEK() {
+  return crypto.getRandomValues(new Uint8Array(32));   // 256-bit key
+}
+const iv = crypto.getRandomValues(new Uint8Array(12)); // GCM nonce
+```
+
+**PBKDF2 key derivation** — stretch a password/recovery code into an AES key:
+```js
+export async function deriveKEK(secret, saltB64, iterations = 600000) {
+  const baseKey = await crypto.subtle.importKey('raw', te.encode(secret), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: fromBase64(saltB64), iterations, hash: 'SHA-256' },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    false,                    // non-extractable
+    ['encrypt', 'decrypt']
+  );
+}
+```
+
+**AES-GCM encrypt/decrypt** — authenticated encryption (a wrong key throws on decrypt, which the app uses as password verification):
+```js
+const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, bytes);
+const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+```
+
+The self-describing ciphertext format `enc:v1:<base64 iv>:<base64 ct>` lets readers tolerate a mix of plaintext and ciphertext during background migration.
+
+---
+
+## 62. IndexedDB
+
+### How It Works
+IndexedDB is an asynchronous, transactional in-browser database. You open a database (with a version and an `onupgradeneeded` handler that creates object stores), then run `readonly`/`readwrite` transactions that resolve via request/transaction events.
+
+### Why It Is Useful
+- Persists structured data — including non-serializable objects like `CryptoKey` — across page loads
+- Larger and more durable than `localStorage`
+- Lets a restored session decrypt data without re-prompting for the password
+
+### How It Is Used in This Project
+
+The unlocked (non-extractable) DEK `CryptoKey` is cached in IndexedDB so users aren't re-prompted every page load. It fails soft — if IndexedDB is unavailable (private browsing), everything resolves to `null` and the user simply unlocks each session. See `src/utils/crypto/keyStore.js`.
+
+**Opening the database with a store**:
+```js
+// src/utils/crypto/keyStore.js
+function openDB() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') return reject(new Error('IndexedDB unavailable'));
+    const req = indexedDB.open('pft-e2ee', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('keys');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+```
+
+**A transaction helper** wrapping the event-based API in a Promise:
+```js
+async function tx(mode, fn) {
+  const db = await openDB();
+  try {
+    return await new Promise((resolve, reject) => {
+      const t = db.transaction('keys', mode);
+      const req = fn(t.objectStore('keys'));
+      t.oncomplete = () => resolve(req ? req.result : undefined);
+      t.onerror = () => reject(t.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+
+export async function putKey(userId, cryptoKey) {
+  try { await tx('readwrite', (s) => s.put(cryptoKey, `dek:${userId}`)); return true; }
+  catch { return false; }   // fail soft
+}
+```
+
+---
+
+## 63. Publish-Subscribe Pattern
+
+### How It Works
+A module keeps a `Set` of listener callbacks. Consumers `subscribe(fn)` (getting back an unsubscribe function), and the module calls every listener on state change. It's the observer pattern implemented with a plain closure — no library.
+
+### Why It Is Useful
+- Bridges non-React code (the plain-function API/crypto layer) with React state
+- One source of truth that both hooks and imperative code can read
+- The returned unsubscribe function plugs directly into a `useEffect` cleanup
+
+### How It Is Used in This Project
+
+The crypto **keyring** is a module-level singleton holding the unlocked DEK and status, so the plain-function API layer can encrypt/decrypt without hooks. `CryptoProvider` subscribes to mirror the status into React state. See `src/utils/crypto/keyring.js`.
+
+```js
+// src/utils/crypto/keyring.js
+let listeners = new Set();
+
+export function subscribe(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);   // unsubscribe
+}
+function notify() {
+  listeners.forEach((fn) => fn(status));
+}
+export function setUnlocked(cryptoKey) {
+  dek = cryptoKey;
+  status = 'unlocked';
+  notify();                            // push new status to all subscribers
+}
+```
+
+```js
+// src/context/CryptoContext.jsx — React mirrors keyring status
+useEffect(() => keyring.subscribe(setStatus), []);
+```
+
+**Promise-based waiter queue** — callers can `await` until the loading state settles:
+```js
+let waiters = [];
+export async function getDEK() {
+  if (status === 'loading') await new Promise((resolve) => waiters.push(resolve));
+  return dek;
+}
+function settle() { const w = waiters; waiters = []; w.forEach((resolve) => resolve()); }
+```
+
+---
+
+## 64. Typed Arrays & Base64 Encoding
+
+### How It Works
+Typed arrays (`Uint8Array`) are fixed-length views over raw binary buffers. `btoa`/`atob` convert between binary strings and Base64. `TextEncoder`/`TextDecoder` convert between JavaScript strings and UTF-8 bytes.
+
+### Why It Is Useful
+- The Web Crypto API operates on bytes, not strings — typed arrays are the required interchange format
+- Base64 turns binary ciphertext into a string safe to store in a text database column
+- Chunked conversion avoids call-stack overflow on large buffers
+
+### How It Is Used in This Project
+
+```js
+// src/utils/crypto/cipher.js
+const te = new TextEncoder();      // string → UTF-8 bytes
+const td = new TextDecoder();      // bytes → string
+
+// Chunked Base64 encode — avoids "Maximum call stack" on big arrays
+function toBase64(bytes) {
+  let bin = '';
+  const arr = new Uint8Array(bytes);
+  for (let i = 0; i < arr.length; i += 0x8000) {
+    bin += String.fromCharCode.apply(null, arr.subarray(i, i + 0x8000));
+  }
+  return btoa(bin);
+}
+
+function fromBase64(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+// Encrypting a field: string → bytes → ciphertext
+export async function encryptField(dek, str) {
+  if (str === null || str === undefined || str === '') return str;
+  return encryptBytes(dek, te.encode(String(str)));
+}
+```
 
 ---
 
@@ -2657,3 +2927,7 @@ Multiple HTML entry points (`main`, `en`, `sq`) enable standalone landing pages 
 | 58 | PapaParse | Library | CSV file parsing |
 | 59 | Recharts | Library | Chart data visualization |
 | 60 | Vite Config | Build Tool | Development server and production builds |
+| 61 | Web Crypto (SubtleCrypto) | Web API | Client-side end-to-end encryption |
+| 62 | IndexedDB | Web API | Persisting the unlocked crypto key across sessions |
+| 63 | Publish-Subscribe | JS Pattern | Bridging non-React code with React state |
+| 64 | Typed Arrays & Base64 | Web API | Binary/text interchange for crypto |

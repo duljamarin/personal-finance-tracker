@@ -14,7 +14,8 @@ import { processRecurringTransactions, addRecurringTransaction, updateRecurringT
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
-import { CURRENCY_SYMBOLS, RECURRING_FILTERS } from '../../utils/constants';
+import { RECURRING_FILTERS } from '../../utils/constants';
+import { formatCurrency } from '../../utils/formatCurrency';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { CATEGORY_PALETTE as CAT_PALETTE } from '../../utils/chartColors';
 
@@ -367,8 +368,7 @@ export default function Transactions() {
               {visibleItems.map(item => {
                 const catName = item.category?.name || '';
                 const dotColor = colorFromName(catName || item.title || 'x');
-                const currencySym = CURRENCY_SYMBOLS[item.currency_code || item.currencyCode || 'EUR'] || '';
-                const amountStr = Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                const amountStr = formatCurrency(Number(item.amount), item.currency_code || item.currencyCode || 'EUR');
 
                 return (
                   <li
@@ -439,7 +439,7 @@ export default function Transactions() {
                         <span
                           className={`text-base sm:text-lg font-semibold tabular-nums ${item.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-white'}`}
                         >
-                          {item.type === 'income' ? '+' : '−'}{currencySym}{amountStr}
+                          {item.type === 'income' ? '+' : '−'}{amountStr}
                         </span>
                       </div>
                       <button

@@ -11,7 +11,7 @@ import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { CryptoProvider, useCrypto } from './context/CryptoContext';
 import { TransactionProvider } from './context/TransactionContext';
-import { SubscriptionProvider, useSubscription } from './context/SubscriptionContext';
+import { SubscriptionProvider } from './context/SubscriptionContext';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
 
 const UnlockModal = lazy(() => import('./components/Encryption/UnlockModal.jsx'));
@@ -80,19 +80,6 @@ function OnboardingRoute({ children }) {
   );
   if (!accessToken) return <Navigate to="/login" replace />;
   if (user?.user_metadata?.onboarding_completed) return <Navigate to="/dashboard" replace />;
-  return children;
-}
-
-function PremiumRoute({ children }) {
-  const { t } = useTranslation();
-  const { accessToken, loading: authLoading } = useAuth();
-  const { isPremium, loading: subLoading } = useSubscription();
-
-  if (authLoading || subLoading) return (
-    <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
-  );
-  if (!accessToken) return <Navigate to="/login" replace />;
-  if (!isPremium) return <Navigate to="/pricing" replace />;
   return children;
 }
 
