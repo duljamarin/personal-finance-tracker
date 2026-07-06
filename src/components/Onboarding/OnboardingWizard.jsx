@@ -201,17 +201,16 @@ export default function OnboardingWizard() {
         payday: payday ? Number(payday) : null,
       });
 
-      // Finalize onboarding flag last (avoids the refreshUser → context refetch race).
-      await supabase.auth.updateUser({
-        data: { onboarding_completed: true, preferred_currency: currency },
-      });
-      await refreshUser();
       await Promise.all([reloadTransactions(), reloadCategories()]);
 
       trackEvent('OnboardingComplete');
 
       const canReveal = incomeNum > 0 || validExpenses.length > 0;
       if (canReveal) {
+        // Show the reveal FIRST. onboarding_completed is flipped only when the
+        // user finishes the reveal (finalizeOnboarding on onDone) — flipping it
+        // here would make OnboardingRoute redirect to /dashboard and unmount
+        // this wizard before the reveal ever paints.
         setReveal({
           snapshot,
           currency,
@@ -219,6 +218,7 @@ export default function OnboardingWizard() {
         });
       } else {
         // Nothing entered — keep the original lightweight success screen.
+        await finalizeOnboarding(currency);
         setShowSuccess(true);
         setTimeout(() => navigate('/dashboard', { replace: true }), 1800);
       }
@@ -228,6 +228,17 @@ export default function OnboardingWizard() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // Persist the onboarding_completed flag + preferred currency, then refresh the
+  // auth user so the app routes into the authenticated shell. Called when the
+  // user leaves onboarding (after the reveal, or after the success screen) so
+  // OnboardingRoute's redirect never fires while the reveal is still on screen.
+  async function finalizeOnboarding(currency) {
+    await supabase.auth.updateUser({
+      data: { onboarding_completed: true, preferred_currency: currency },
+    });
+    await refreshUser();
   }
 
   if (loadingCategories) {
@@ -244,7 +255,17 @@ export default function OnboardingWizard() {
         snapshot={reveal.snapshot}
         currency={reveal.currency}
         seededSummary={reveal.seededSummary}
-        onDone={() => navigate('/dashboard', { replace: true })}
+        onDone={async () => {
+          // Flip onboarding_completed now (user is leaving the reveal), then
+          // navigate. Finalizing here — not in handleFinish — is what keeps the
+          // reveal on screen instead of being redirected away immediately.
+          try {
+            await finalizeOnboarding(reveal.currency);
+          } catch (err) {
+            console.error('Onboarding finalize error:', err);
+          }
+          navigate('/dashboard', { replace: true });
+        }}
       />
     );
   }
