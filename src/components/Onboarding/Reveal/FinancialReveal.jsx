@@ -7,7 +7,7 @@ import Button from '../../UI/Button';
 import ScoreGauge from './ScoreGauge';
 import { useCountUp } from '../../../hooks/useCountUp';
 
-const SLIDE_MS = 5200;
+const SLIDE_MS = 6000;
 
 // Which slides to show depends on available data (income → projection/benchmark).
 function buildSlides(snapshot) {
