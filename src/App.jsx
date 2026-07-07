@@ -83,7 +83,7 @@ function OnboardingRoute({ children }) {
   return children;
 }
 
-function AuthGlobalUI() {
+function AuthGlobalUI({ showLoadingOverlay = true }) {
   const { error: authError, loading: authLoading, clearError } = useAuth();
   const { t, i18n } = useTranslation();
   const dismissTimer = useRef(null);
@@ -148,7 +148,10 @@ function AuthGlobalUI() {
           </button>
         </div>
       )}
-      {authLoading && (
+      {/* Only show the full-screen auth overlay on public routes (login/register
+          submit). On authenticated routes, PrivateRoute/OnboardingRoute already
+          render their own loading spinner — showing this too would double up. */}
+      {showLoadingOverlay && authLoading && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-surface-dark-tertiary rounded-container p-8 shadow-lg">
             <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
@@ -266,7 +269,7 @@ function InnerAppContent() {
 
   return (
     <ErrorBoundary>
-      <AuthGlobalUI />
+      <AuthGlobalUI showLoadingOverlay={isPublicRoute} />
       {isOnboardingRoute ? (
         <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
           <Routes>
