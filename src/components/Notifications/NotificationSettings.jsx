@@ -64,6 +64,22 @@ export default function NotificationSettings() {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  // Clamp numeric fields to their DB CHECK-constraint ranges on blur so a typed
+  // out-of-range value (input min/max don't block typing) can't 400 on save.
+  const clampRanges = {
+    budget_threshold: [0, 100],
+    recurring_advance_days: [0, 7],
+    goal_milestone_percentage: [10, 50],
+  };
+  const handleNumberBlur = (key) => {
+    const range = clampRanges[key];
+    if (!range) return;
+    const [min, max] = range;
+    const n = Number(settings[key]);
+    const clamped = Number.isNaN(n) ? min : Math.min(max, Math.max(min, n));
+    if (clamped !== settings[key]) handleChange(key, clamped);
+  };
+
   if (loading) {
     return <div className="text-ink-muted dark:text-white">{t('messages.loading')}</div>;
   }
@@ -94,11 +110,12 @@ export default function NotificationSettings() {
                     </label>
                     <input
                       type="number"
-                      min="50"
+                      min="0"
                       max="100"
                       step="5"
                       value={settings.budget_threshold}
                       onChange={(e) => handleChange('budget_threshold', Number(e.target.value))}
+                      onBlur={() => handleNumberBlur('budget_threshold')}
                       className={numberInputClass}
                       disabled={!settings.email_enabled}
                     />
@@ -137,6 +154,7 @@ export default function NotificationSettings() {
                       max="7"
                       value={settings.recurring_advance_days}
                       onChange={(e) => handleChange('recurring_advance_days', Number(e.target.value))}
+                      onBlur={() => handleNumberBlur('recurring_advance_days')}
                       className={numberInputClass}
                     />
                     <span className="ml-1 text-xs text-ink-muted dark:text-white">
@@ -176,6 +194,7 @@ export default function NotificationSettings() {
                       step="5"
                       value={settings.goal_milestone_percentage}
                       onChange={(e) => handleChange('goal_milestone_percentage', Number(e.target.value))}
+                      onBlur={() => handleNumberBlur('goal_milestone_percentage')}
                       className={numberInputClass}
                     />
                     <span className="ml-1 text-xs text-ink-muted dark:text-white">%</span>
