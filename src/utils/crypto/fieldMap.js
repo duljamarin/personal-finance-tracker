@@ -1,6 +1,9 @@
-// Declarative table -> encrypted-column map. categories.name is intentionally
-// excluded (UNIQUE(user_id, name) constraint + server SQL functions read it
-// directly for budget/health/benchmark logic). auth.users is out of scope.
+// Declarative table -> encrypted-column map. categories.name uses DETERMINISTIC
+// encryption (see DETERMINISTIC_FIELDS) so the UNIQUE(user_id, name) constraint
+// and the duplicate-name equality lookups still work over ciphertext. The
+// server SQL functions that used to read category names directly were dropped
+// in 20260705055049_encrypt_amounts (logic moved client-side), which is what
+// made encrypting name possible. auth.users is out of scope.
 //
 // NUMERIC_FIELDS lists the subset of each table's encrypted fields that hold
 // numbers rather than free text. They are stringified before encryption and
@@ -76,6 +79,15 @@ export const JSON_FIELDS = {
   financial_health_scores: ['insights'],
 };
 
+// Deterministic-IV encrypted fields — same plaintext yields the same ciphertext
+// under the user's DEK, so a UNIQUE constraint / equality lookup survives
+// encryption. Only for low-cardinality labels: reveals equality between rows,
+// not the plaintext. categories.name has UNIQUE(user_id, name) and is looked up
+// by equality in the add/update duplicate check (see api/categories.js).
+export const DETERMINISTIC_FIELDS = {
+  categories: ['name'],
+};
+
 const TEXT_FIELD_MAP = {
   transactions: ['title', 'tags'],
   recurring_transactions: ['title', 'tags'],
@@ -84,19 +96,23 @@ const TEXT_FIELD_MAP = {
   goal_contributions: ['note'],
   assets: ['name', 'notes'],
   transaction_splits: ['notes'],
+  // emoji is an icon KEY (e.g. 'Food & Dining') that leaks the category kind;
+  // encrypt it with the normal random-IV scheme (no constraint on it).
+  categories: ['emoji'],
   // Client-generated financial notifications embed amounts in their text.
   // Server-created rows (pre-migration) stay plaintext — decryptRow tolerates
   // mixed rows, so reads never break.
   notifications: ENCRYPT_AMOUNTS ? ['title', 'message'] : [],
 };
 
-// Merge text + amount + json fields into the effective encryption map.
+// Merge text + amount + json + deterministic fields into the effective map.
 export const FIELD_MAP = Object.fromEntries(
   [
     ...new Set([
       ...Object.keys(TEXT_FIELD_MAP),
       ...Object.keys(AMOUNT_FIELDS),
       ...Object.keys(JSON_FIELDS),
+      ...Object.keys(DETERMINISTIC_FIELDS),
     ]),
   ].map((table) => [
     table,
@@ -104,14 +120,26 @@ export const FIELD_MAP = Object.fromEntries(
       ...(TEXT_FIELD_MAP[table] || []),
       ...(AMOUNT_FIELDS[table] || []),
       ...(JSON_FIELDS[table] || []),
+      ...(DETERMINISTIC_FIELDS[table] || []),
     ],
   ])
 );
 
 // Nested relations returned by a select() that also need decrypting.
 // e.g. fetchGoalById() embeds goal_milestones rows under this key.
+// `single: true` marks a to-one embed (an object, not an array) — used for the
+// `category:categories(id, name)` join present on most money tables, whose
+// name/emoji are encrypted on the categories table.
+const CATEGORY_EMBED = { key: 'category', table: 'categories', single: true };
+// fetchTransactionsForReport uses the default alias `categories(name)` instead
+// of the `category:` alias, so decrypt both possible embed keys.
+const CATEGORIES_EMBED = { key: 'categories', table: 'categories', single: true };
 export const NESTED_RELATIONS = {
   goals: [{ key: 'goal_milestones', table: 'goal_milestones' }],
+  transactions: [CATEGORY_EMBED, CATEGORIES_EMBED],
+  recurring_transactions: [CATEGORY_EMBED],
+  budgets: [CATEGORY_EMBED],
+  transaction_splits: [CATEGORY_EMBED],
 };
 
 export const ENCRYPTED_TABLES = Object.keys(FIELD_MAP);
@@ -126,5 +154,11 @@ export function isNumericField(table, field) {
 // parsed back on read).
 export function isJsonField(table, field) {
   const list = JSON_FIELDS[table];
+  return !!list && list.includes(field);
+}
+
+// Whether a given field uses deterministic-IV encryption (equality-preserving).
+export function isDeterministicField(table, field) {
+  const list = DETERMINISTIC_FIELDS[table];
   return !!list && list.includes(field);
 }

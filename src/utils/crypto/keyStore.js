@@ -32,9 +32,12 @@ async function tx(mode, fn) {
   }
 }
 
-export async function putKey(userId, cryptoKey) {
+export async function putKey(userId, cryptoKey, macKey = null) {
   try {
-    await tx('readwrite', (store) => store.put(cryptoKey, `dek:${userId}`));
+    await tx('readwrite', (store) => {
+      store.put(cryptoKey, `dek:${userId}`);
+      if (macKey) store.put(macKey, `mac:${userId}`);
+    });
     return true;
   } catch {
     return false;
@@ -44,6 +47,14 @@ export async function putKey(userId, cryptoKey) {
 export async function getKey(userId) {
   try {
     return (await tx('readonly', (store) => store.get(`dek:${userId}`))) || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getMacKey(userId) {
+  try {
+    return (await tx('readonly', (store) => store.get(`mac:${userId}`))) || null;
   } catch {
     return null;
   }

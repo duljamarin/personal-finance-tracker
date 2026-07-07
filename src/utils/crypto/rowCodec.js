@@ -1,6 +1,18 @@
-import { encryptField, decryptField, isEncrypted, LOCKED_PLACEHOLDER } from './cipher';
-import { FIELD_MAP, NESTED_RELATIONS, isNumericField, isJsonField } from './fieldMap';
-import { getDEK, getStatus } from './keyring';
+import {
+  encryptField,
+  encryptFieldDeterministic,
+  decryptField,
+  isEncrypted,
+  LOCKED_PLACEHOLDER,
+} from './cipher';
+import {
+  FIELD_MAP,
+  NESTED_RELATIONS,
+  isNumericField,
+  isJsonField,
+  isDeterministicField,
+} from './fieldMap';
+import { getDEK, getMacKey, getStatus } from './keyring';
 
 // Coerce a decrypted/plaintext value back to a number. Tolerates the locked
 // placeholder (returns null so the UI shows an empty amount rather than NaN)
@@ -79,13 +91,36 @@ export async function encryptRow(table, payload) {
 
   const dek = await getDEK();
   if (!dek) return normalized; // resolved to 'off' after loading
+  const macKey = await getMacKey();
 
   const out = { ...normalized };
   for (const field of fields) {
     if (out[field] === undefined || out[field] === null) continue;
+    // Deterministic fields (categories.name) need equality-preserving
+    // ciphertext. Falls back to plaintext when macKey is missing (a session
+    // cached before this feature) — decrypt tolerates the mix.
+    if (isDeterministicField(table, field)) {
+      out[field] = macKey
+        ? await encryptFieldDeterministic(dek, macKey, out[field])
+        : out[field];
+      continue;
+    }
     out[field] = await encryptValue(dek, out[field]);
   }
   return out;
+}
+
+// Compute the deterministic ciphertext for a single value (e.g. to match a
+// category name in an equality lookup). Returns the plaintext unchanged when
+// encryption is off/locked/unavailable so callers can query either form.
+export async function deterministicCiphertext(table, field, value) {
+  if (value === null || value === undefined || value === '') return value;
+  if (!isDeterministicField(table, field)) return value;
+  if (getStatus() !== 'unlocked') return value;
+  const dek = await getDEK();
+  const macKey = await getMacKey();
+  if (!dek || !macKey) return value;
+  return encryptFieldDeterministic(dek, macKey, value);
 }
 
 async function decryptPlainRow(table, row, dek) {
@@ -114,10 +149,16 @@ async function decryptPlainRow(table, row, dek) {
   const nested = NESTED_RELATIONS[table];
   if (nested) {
     for (const rel of nested) {
-      if (Array.isArray(out[rel.key])) {
+      const value = out[rel.key];
+      if (Array.isArray(value)) {
         out[rel.key] = await Promise.all(
-          out[rel.key].map((r) => decryptPlainRow(rel.table, r, dek))
+          value.map((r) => decryptPlainRow(rel.table, r, dek))
         );
+      } else if (rel.single && value && typeof value === 'object') {
+        // Embedded single-object relation (e.g. category:categories(id, name))
+        // whose fields are encrypted on their own table — decrypt in place so
+        // every join call site gets plaintext without extra work.
+        out[rel.key] = await decryptPlainRow(rel.table, value, dek);
       }
     }
   }

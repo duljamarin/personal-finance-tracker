@@ -11,6 +11,7 @@
 //                encrypted-field mutations must fail loudly
 
 let dek = null;
+let macKey = null; // derived HMAC key for deterministic-IV fields (categories.name)
 let status = 'loading';
 let waiters = [];
 let listeners = new Set();
@@ -39,8 +40,20 @@ export async function getDEK() {
   return dek;
 }
 
-export function setUnlocked(cryptoKey) {
+// Derived HMAC key for deterministic-IV fields. Resolves after loading like
+// getDEK; null when 'off'/'locked' or when no macKey was provided (older
+// cached sessions before the deterministic-fields feature — callers fall back
+// to leaving the value plaintext, which reads/writes remain tolerant of).
+export async function getMacKey() {
+  if (status === 'loading') {
+    await new Promise((resolve) => waiters.push(resolve));
+  }
+  return macKey;
+}
+
+export function setUnlocked(cryptoKey, derivedMacKey = null) {
   dek = cryptoKey;
+  macKey = derivedMacKey;
   status = 'unlocked';
   settle();
   notify();
@@ -48,6 +61,7 @@ export function setUnlocked(cryptoKey) {
 
 export function setOff() {
   dek = null;
+  macKey = null;
   status = 'off';
   settle();
   notify();
@@ -55,6 +69,7 @@ export function setOff() {
 
 export function setLocked() {
   dek = null;
+  macKey = null;
   status = 'locked';
   settle();
   notify();
@@ -62,6 +77,7 @@ export function setLocked() {
 
 export function clear() {
   dek = null;
+  macKey = null;
   status = 'loading';
   notify();
 }

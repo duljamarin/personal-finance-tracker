@@ -10,6 +10,7 @@ import {
   wrapDEK,
   unwrapDEK,
   importDEK,
+  deriveMacKey,
   generateRawDEK,
   generateSalt,
 } from './cipher';
@@ -25,8 +26,9 @@ let currentUserId = null;
 
 async function unlockAndCache(userId, rawDek) {
   const cryptoKey = await importDEK(rawDek);
-  keyring.setUnlocked(cryptoKey);
-  await keyStore.putKey(userId, cryptoKey);
+  const macKey = await deriveMacKey(rawDek);
+  keyring.setUnlocked(cryptoKey, macKey);
+  await keyStore.putKey(userId, cryptoKey, macKey);
 }
 
 // Called after Supabase session resolves (login, register, or restored
@@ -47,7 +49,11 @@ export async function initForUser(userId) {
 
   const cached = await keyStore.getKey(userId);
   if (cached) {
-    keyring.setUnlocked(cached);
+    // macKey may be absent for sessions cached before deterministic fields
+    // existed; deterministic-field encryption then no-ops until next full
+    // unlock re-derives and caches it.
+    const cachedMac = await keyStore.getMacKey(userId);
+    keyring.setUnlocked(cached, cachedMac);
     return;
   }
 

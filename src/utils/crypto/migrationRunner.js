@@ -5,9 +5,14 @@
 // already encrypt/decrypt correctly regardless of migration progress.
 import { getSupabase } from '../api/_auth';
 import { updateUserKeys } from '../api/userKeys';
-import { getDEK } from './keyring';
-import { encryptField, decryptField, isEncrypted } from './cipher';
-import { FIELD_MAP, isJsonField } from './fieldMap';
+import { getDEK, getMacKey } from './keyring';
+import {
+  encryptField,
+  encryptFieldDeterministic,
+  decryptField,
+  isEncrypted,
+} from './cipher';
+import { FIELD_MAP, isJsonField, isDeterministicField } from './fieldMap';
 
 const BATCH_SIZE = 500;
 const CONCURRENCY = 5;
@@ -15,8 +20,10 @@ const CONCURRENCY = 5;
 // Recurring templates first: processRecurringTransactions() copies
 // title/tags verbatim into new transactions, so templates must already be in
 // their final (encrypted or decrypted) form before any transaction it
-// generates mid-migration.
+// generates mid-migration. categories first too: its name/emoji feed the
+// embedded category joins other tables return.
 const TABLE_ORDER = [
+  'categories',
   'recurring_transactions',
   'transactions',
   'transaction_splits',
@@ -61,13 +68,21 @@ async function transformJsonValue(direction, dek, value) {
   }
 }
 
-async function transformValue(direction, dek, value, isJson) {
+async function transformValue(direction, dek, value, opts = {}) {
+  const { isJson = false, deterministic = false, macKey = null } = opts;
   if (isJson) return transformJsonValue(direction, dek, value);
   if (Array.isArray(value)) {
-    return Promise.all(value.map((v) => transformValue(direction, dek, v, false)));
+    return Promise.all(value.map((v) => transformValue(direction, dek, v, opts)));
   }
   if (direction === 'encrypt') {
     if (isEncrypted(value)) return value; // already migrated
+    // Deterministic fields (categories.name) must re-encrypt equal plaintexts
+    // to equal ciphertext so the UNIQUE constraint holds. Needs the macKey; if
+    // it is unavailable this session, skip (leave plaintext) rather than write
+    // a random-IV ciphertext that would break equality.
+    if (deterministic) {
+      return macKey ? encryptFieldDeterministic(dek, macKey, value) : value;
+    }
     return encryptField(dek, value);
   }
   // decrypt direction: only touch encrypted values, leave plaintext as-is
@@ -116,7 +131,7 @@ async function fetchBatch(supabase, table, userId, cursor, goalIds) {
   return data || [];
 }
 
-async function migrateTable(direction, supabase, table, userId, dek, cursor, goalIds, onProgress) {
+async function migrateTable(direction, supabase, table, userId, dek, macKey, cursor, goalIds, onProgress) {
   const fields = FIELD_MAP[table];
   let lastId = cursor && cursor !== 'done' ? cursor : null;
 
@@ -130,7 +145,11 @@ async function migrateTable(direction, supabase, table, userId, dek, cursor, goa
       const patch = {};
       for (const field of fields) {
         if (row[field] === null || row[field] === undefined) continue;
-        patch[field] = await transformValue(direction, dek, row[field], isJsonField(table, field));
+        patch[field] = await transformValue(direction, dek, row[field], {
+          isJson: isJsonField(table, field),
+          deterministic: isDeterministicField(table, field),
+          macKey,
+        });
       }
       const { error } = await supabase.from(table).update(patch).eq('id', row.id);
       if (error) throw error;
@@ -150,6 +169,7 @@ export async function runMigration(userId, encryptionStatus, onProgress) {
   const supabase = await getSupabase();
   const dek = await getDEK();
   if (!dek) return; // locked — nothing we can do this session
+  const macKey = await getMacKey(); // for deterministic fields (categories.name)
 
   let lockRelease = null;
   if (typeof navigator !== 'undefined' && navigator.locks) {
@@ -185,6 +205,7 @@ export async function runMigration(userId, encryptionStatus, onProgress) {
         table,
         userId,
         dek,
+        macKey,
         cursor[table],
         goalIds,
         (t, lastId) => {

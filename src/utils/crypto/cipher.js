@@ -60,6 +60,51 @@ async function encryptBytes(key, bytes) {
   return ENC_PREFIX + toBase64(iv) + ':' + toBase64(ct);
 }
 
+// Deterministic variant: same plaintext -> same ciphertext under the same DEK,
+// by deriving the 12-byte IV from HMAC-SHA256(macKey, plaintext) instead of
+// random. Needed only for columns with a UNIQUE constraint or an equality dedup
+// lookup (categories.name). Slightly weaker than random-IV AES-GCM: it reveals
+// which rows share the same plaintext (but not the plaintext itself). Never use
+// it for high-entropy secrets — only low-cardinality labels where equality must
+// survive encryption.
+//
+// macKey is a separate HMAC CryptoKey derived from the DEK (see deriveMacKey),
+// kept alongside the AES key in the keyring. Both are non-extractable.
+async function encryptBytesDeterministic(macKey, aesKey, bytes) {
+  const mac = new Uint8Array(await crypto.subtle.sign('HMAC', macKey, bytes));
+  const iv = mac.subarray(0, 12); // deterministic IV
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, bytes);
+  return ENC_PREFIX + toBase64(iv) + ':' + toBase64(ct);
+}
+
+// Derive a stable, non-extractable HMAC key from the raw DEK, domain-separated
+// with a fixed label so it is independent of the AES-GCM data key. Called once
+// at unlock; the result is cached in the keyring (and IndexedDB) like the AES
+// key, so restored sessions get the same deterministic IVs.
+export async function deriveMacKey(rawDek) {
+  const base = await crypto.subtle.importKey('raw', rawDek, 'HKDF', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {
+      name: 'HKDF',
+      hash: 'SHA-256',
+      salt: new Uint8Array(0),
+      info: te.encode('e2ee-deterministic-iv-v1'),
+    },
+    base,
+    { name: 'HMAC', hash: 'SHA-256', length: 256 },
+    false,
+    ['sign']
+  );
+}
+
+// Public deterministic field encryptor. Mirrors encryptField but keyed by both
+// the AES data key and the derived MAC key.
+export async function encryptFieldDeterministic(aesKey, macKey, str) {
+  if (str === null || str === undefined || str === '') return str;
+  if (!aesKey || !macKey) return str;
+  return encryptBytesDeterministic(macKey, aesKey, te.encode(String(str)));
+}
+
 async function decryptBytes(key, wrapped) {
   const parts = wrapped.slice(ENC_PREFIX.length).split(':');
   if (parts.length !== 2) throw new Error('Malformed ciphertext');
