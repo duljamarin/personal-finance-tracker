@@ -27,12 +27,13 @@ export async function computeCategoryBenchmarks(userId, pMonths = 6) {
   if (tErr) throw tErr;
   const txs = await decryptRows('transactions', txRaw || []);
 
-  // Category names.
-  const { data: cats, error: cErr } = await supabase
+  // Category names (name is E2E-encrypted — must decrypt before use).
+  const { data: catsRaw, error: cErr } = await supabase
     .from('categories')
     .select('id, name')
     .eq('user_id', userId);
   if (cErr) throw cErr;
+  const cats = await decryptRows('categories', catsRaw || []);
   const nameById = Object.fromEntries((cats || []).map((c) => [c.id, c.name]));
 
   // Bucket monthly sums per category. Past months (< current) feed the
