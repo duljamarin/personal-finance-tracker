@@ -7,7 +7,7 @@ import { getSupabase } from '../api/_auth';
 import { updateUserKeys } from '../api/userKeys';
 import { getDEK } from './keyring';
 import { encryptField, decryptField, isEncrypted } from './cipher';
-import { FIELD_MAP } from './fieldMap';
+import { FIELD_MAP, isJsonField } from './fieldMap';
 
 const BATCH_SIZE = 500;
 const CONCURRENCY = 5;
@@ -43,9 +43,28 @@ async function withPool(items, limit, fn) {
   return results;
 }
 
-async function transformValue(direction, dek, value) {
+// JSON fields (e.g. financial_health_scores.insights) are a single value
+// serialized to one ciphertext string — NOT encrypted element-wise. Encrypt =
+// JSON.stringify then encrypt; decrypt = decrypt then JSON.parse. Plaintext
+// jsonb comes back already-parsed, so isEncrypted() gates both directions.
+async function transformJsonValue(direction, dek, value) {
+  if (direction === 'encrypt') {
+    if (isEncrypted(value)) return value; // already migrated
+    return encryptField(dek, JSON.stringify(value));
+  }
+  if (!isEncrypted(value)) return value;
+  const decrypted = await decryptField(dek, value);
+  try {
+    return JSON.parse(decrypted);
+  } catch {
+    return value; // leave as-is on parse failure rather than corrupt the row
+  }
+}
+
+async function transformValue(direction, dek, value, isJson) {
+  if (isJson) return transformJsonValue(direction, dek, value);
   if (Array.isArray(value)) {
-    return Promise.all(value.map((v) => transformValue(direction, dek, v)));
+    return Promise.all(value.map((v) => transformValue(direction, dek, v, false)));
   }
   if (direction === 'encrypt') {
     if (isEncrypted(value)) return value; // already migrated
@@ -56,15 +75,21 @@ async function transformValue(direction, dek, value) {
   return decryptField(dek, value);
 }
 
-function needsWork(direction, row, fields) {
-  return fields.some((f) => {
-    const v = row[f];
-    if (v === null || v === undefined) return false;
-    const values = Array.isArray(v) ? v : [v];
-    return direction === 'encrypt'
-      ? values.some((x) => !isEncrypted(x))
-      : values.some((x) => isEncrypted(x));
-  });
+function fieldNeedsWork(direction, table, field, v) {
+  if (v === null || v === undefined) return false;
+  // JSON fields hold one value: plaintext (object/array, not a string) needs
+  // encrypting; a ciphertext string needs decrypting. Never inspect elements.
+  if (isJsonField(table, field)) {
+    return direction === 'encrypt' ? !isEncrypted(v) : isEncrypted(v);
+  }
+  const values = Array.isArray(v) ? v : [v];
+  return direction === 'encrypt'
+    ? values.some((x) => !isEncrypted(x))
+    : values.some((x) => isEncrypted(x));
+}
+
+function needsWork(direction, table, row, fields) {
+  return fields.some((f) => fieldNeedsWork(direction, table, f, row[f]));
 }
 
 async function fetchGoalIds(supabase, userId) {
@@ -99,13 +124,13 @@ async function migrateTable(direction, supabase, table, userId, dek, cursor, goa
     const batch = await fetchBatch(supabase, table, userId, lastId, goalIds);
     if (batch.length === 0) break;
 
-    const toUpdate = batch.filter((row) => needsWork(direction, row, fields));
+    const toUpdate = batch.filter((row) => needsWork(direction, table, row, fields));
 
     await withPool(toUpdate, CONCURRENCY, async (row) => {
       const patch = {};
       for (const field of fields) {
         if (row[field] === null || row[field] === undefined) continue;
-        patch[field] = await transformValue(direction, dek, row[field]);
+        patch[field] = await transformValue(direction, dek, row[field], isJsonField(table, field));
       }
       const { error } = await supabase.from(table).update(patch).eq('id', row.id);
       if (error) throw error;

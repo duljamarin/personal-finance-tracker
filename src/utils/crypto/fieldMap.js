@@ -20,7 +20,22 @@ const AMOUNT_FIELDS = ENCRYPT_AMOUNTS
       goal_contributions: ['amount'],
       assets: ['current_value'],
       net_worth_snapshots: ['total_assets', 'total_liabilities', 'net_worth'],
-      financial_health_scores: ['total_income', 'total_expenses', 'savings_amount'],
+      financial_health_scores: [
+        'total_income',
+        'total_expenses',
+        'savings_amount',
+        // Derived scores (0-100) and category counts. Computed entirely
+        // client-side (see finance/healthScore.js) and only ever stored/read
+        // back by user_id + month_date — no query filters/sorts on their
+        // values — so they are safe to encrypt.
+        'total_score',
+        'budget_adherence_score',
+        'income_expense_ratio_score',
+        'spending_volatility_score',
+        'savings_consistency_score',
+        'categories_over_budget',
+        'categories_within_budget',
+      ],
     }
   : {};
 
@@ -38,7 +53,27 @@ export const NUMERIC_FIELDS = {
   goal_contributions: ['amount'],
   assets: ['current_value'],
   net_worth_snapshots: ['total_assets', 'total_liabilities', 'net_worth'],
-  financial_health_scores: ['total_income', 'total_expenses', 'savings_amount'],
+  financial_health_scores: [
+    'total_income',
+    'total_expenses',
+    'savings_amount',
+    'total_score',
+    'budget_adherence_score',
+    'income_expense_ratio_score',
+    'spending_volatility_score',
+    'savings_consistency_score',
+    'categories_over_budget',
+    'categories_within_budget',
+  ],
+};
+
+// JSON encrypted fields per table — object/array-of-object values that are
+// JSON.stringify'd into a single ciphertext string on write and JSON.parse'd
+// back on read (see rowCodec). Only meaningful once the field also lives in
+// FIELD_MAP. financial_health_scores.insights embeds raw money figures
+// (savings / overspent amounts), so it must be encrypted like an amount.
+export const JSON_FIELDS = {
+  financial_health_scores: ['insights'],
 };
 
 const TEXT_FIELD_MAP = {
@@ -55,11 +90,22 @@ const TEXT_FIELD_MAP = {
   notifications: ENCRYPT_AMOUNTS ? ['title', 'message'] : [],
 };
 
-// Merge text + amount fields into the effective encryption map.
+// Merge text + amount + json fields into the effective encryption map.
 export const FIELD_MAP = Object.fromEntries(
-  [...new Set([...Object.keys(TEXT_FIELD_MAP), ...Object.keys(AMOUNT_FIELDS)])].map(
-    (table) => [table, [...(TEXT_FIELD_MAP[table] || []), ...(AMOUNT_FIELDS[table] || [])]]
-  )
+  [
+    ...new Set([
+      ...Object.keys(TEXT_FIELD_MAP),
+      ...Object.keys(AMOUNT_FIELDS),
+      ...Object.keys(JSON_FIELDS),
+    ]),
+  ].map((table) => [
+    table,
+    [
+      ...(TEXT_FIELD_MAP[table] || []),
+      ...(AMOUNT_FIELDS[table] || []),
+      ...(JSON_FIELDS[table] || []),
+    ],
+  ])
 );
 
 // Nested relations returned by a select() that also need decrypting.
@@ -73,5 +119,12 @@ export const ENCRYPTED_TABLES = Object.keys(FIELD_MAP);
 // Whether a given field on a table should be coerced back to Number on read.
 export function isNumericField(table, field) {
   const list = NUMERIC_FIELDS[table];
+  return !!list && list.includes(field);
+}
+
+// Whether a given field is a JSON value (stringified before encryption,
+// parsed back on read).
+export function isJsonField(table, field) {
+  const list = JSON_FIELDS[table];
   return !!list && list.includes(field);
 }
