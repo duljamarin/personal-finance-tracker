@@ -13,6 +13,24 @@ import { decryptRows, decryptRow, encryptRow } from '../crypto/rowCodec';
 import { round2 } from './shared';
 import { createNotificationDeduped } from './notify';
 
+// Re-run syncGoalProgress for every goal the user owns. Used after a
+// notification-settings change (e.g. milestone step % changed) so already-
+// reached milestones fire immediately instead of only on the next
+// contribution. Runs sequentially to keep it simple; goal counts are small.
+export async function syncAllGoalsProgress(userId) {
+  const supabase = await getSupabase();
+  const { data: goals, error } = await supabase
+    .from('goals')
+    .select('id')
+    .eq('user_id', userId);
+  if (error) throw error;
+  for (const g of goals || []) {
+    await syncGoalProgress(userId, g.id).catch((e) =>
+      console.error('syncGoalProgress failed for goal', g.id, e)
+    );
+  }
+}
+
 export async function syncGoalProgress(userId, goalId) {
   const supabase = await getSupabase();
 

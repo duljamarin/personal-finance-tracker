@@ -101,6 +101,14 @@ export async function updateGoal(goalId, updates) {
       .single();
 
     if (error) throw error;
+    // Changing target_amount shifts the milestone percentages, so a milestone
+    // may now be reached (or completion status flips). Recompute so the
+    // notification/completion fires without waiting for the next contribution.
+    if (updates.targetAmount !== undefined) {
+      syncGoalProgress(user.id, goalId).catch((e) =>
+        console.error('goal progress sync failed:', e)
+      );
+    }
     return decryptRow('goals', data);
   });
 }

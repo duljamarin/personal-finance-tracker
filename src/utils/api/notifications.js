@@ -2,6 +2,9 @@ import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { decryptField, isEncrypted } from '../crypto/cipher';
 import { getDEK } from '../crypto/keyring';
 import { decryptRows } from '../crypto/rowCodec';
+import { checkBudgetNotifications } from '../finance/budgetAlerts';
+import { checkRecurringNotifications } from '../finance/recurringAlerts';
+import { syncAllGoalsProgress } from '../finance/goalProgress';
 
 // check_recurring_notifications / check_goal_milestone_notifications (server
 // SQL) copy recurring.title / goal.name verbatim into these metadata params —
@@ -162,6 +165,17 @@ export async function updateNotificationSettings(settings) {
       .single();
 
     if (error) throw error;
+
+    // Re-evaluate notifications against the NEW settings so a threshold/step
+    // change fires alerts immediately for already-crossed conditions, instead
+    // of waiting for the next transaction/contribution. Best-effort and
+    // non-blocking — a failure here must not fail the settings save.
+    Promise.allSettled([
+      checkBudgetNotifications(user.id),
+      checkRecurringNotifications(user.id),
+      syncAllGoalsProgress(user.id),
+    ]).catch(() => {});
+
     return data;
   });
 }

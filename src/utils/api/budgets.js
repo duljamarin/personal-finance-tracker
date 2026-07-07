@@ -1,5 +1,6 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
+import { checkBudgetNotifications } from '../finance/budgetAlerts';
 
 export async function fetchBudgets(year, month) {
   return withAuthOrEmpty(async (user) => {
@@ -40,6 +41,8 @@ export async function createBudget({ categoryId, year, month, amount }) {
       .single();
 
     if (error) throw error;
+    // New budget may already be over threshold given existing spend.
+    checkBudgetNotifications(user.id).catch(() => {});
     return decryptRow('budgets', data);
   });
 }
@@ -61,6 +64,8 @@ export async function updateBudget(id, { amount }) {
       .single();
 
     if (error) throw error;
+    // Lowering the budget may push existing spend past the threshold.
+    checkBudgetNotifications(user.id).catch(() => {});
     return decryptRow('budgets', data);
   });
 }
