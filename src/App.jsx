@@ -62,10 +62,13 @@ const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const { accessToken, user, loading } = useAuth();
+  // `ready` guards against showing the raw key ("dashboard.loadingDashboard")
+  // when i18n hasn't finished loading its bundle yet — main.jsx renders before
+  // initPromise resolves (perf), so t() can return the key on first paint.
   if (loading) return (
-    <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
+    <LoadingSpinner size="md" text={ready ? t('dashboard.loadingDashboard') : ''} className="min-h-screen" />
   );
   if (!accessToken) return <Navigate to="/login" replace />;
   if (!user?.user_metadata?.onboarding_completed) return <Navigate to="/onboarding" replace />;
@@ -73,10 +76,10 @@ function PrivateRoute({ children }) {
 }
 
 function OnboardingRoute({ children }) {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const { accessToken, user, loading } = useAuth();
   if (loading) return (
-    <LoadingSpinner size="md" text={t('dashboard.loadingDashboard')} className="min-h-screen" />
+    <LoadingSpinner size="md" text={ready ? t('dashboard.loadingDashboard') : ''} className="min-h-screen" />
   );
   if (!accessToken) return <Navigate to="/login" replace />;
   if (user?.user_metadata?.onboarding_completed) return <Navigate to="/dashboard" replace />;
@@ -85,7 +88,7 @@ function OnboardingRoute({ children }) {
 
 function AuthGlobalUI({ showLoadingOverlay = true }) {
   const { error: authError, loading: authLoading, clearError } = useAuth();
-  const { t, i18n } = useTranslation();
+  const { t, i18n, ready } = useTranslation();
   const dismissTimer = useRef(null);
 
   useMetaTags({
@@ -155,7 +158,7 @@ function AuthGlobalUI({ showLoadingOverlay = true }) {
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-surface-dark-tertiary rounded-container p-8 shadow-lg">
             <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-ink-muted dark:text-white font-medium text-sm text-center">{t('dashboard.processing')}</p>
+            <p className="text-ink-muted dark:text-white font-medium text-sm text-center">{ready ? t('dashboard.processing') : ''}</p>
           </div>
         </div>
       )}
