@@ -49,12 +49,17 @@ export async function initForUser(userId) {
 
   const cached = await keyStore.getKey(userId);
   if (cached) {
-    // macKey may be absent for sessions cached before deterministic fields
-    // existed; deterministic-field encryption then no-ops until next full
-    // unlock re-derives and caches it.
     const cachedMac = await keyStore.getMacKey(userId);
-    keyring.setUnlocked(cached, cachedMac);
-    return;
+    if (cachedMac) {
+      keyring.setUnlocked(cached, cachedMac);
+      return;
+    }
+    // Session was cached before deterministic fields existed, so no macKey is
+    // stored and it cannot be re-derived from the non-extractable AES key.
+    // Fall through to 'locked' so UnlockModal prompts for the password once;
+    // unlockWithPassword -> unlockAndCache then derives AND caches the macKey,
+    // after which deterministic-field encryption (categories.name) works and
+    // the lazy migration can encrypt it. One-time prompt per device.
   }
 
   keyring.setLocked();
