@@ -43,10 +43,26 @@ export default function NotificationSettings() {
     }
   };
 
+  const clampRanges = {
+    budget_threshold: [0, 100],
+    recurring_advance_days: [0, 7],
+    goal_milestone_percentage: [10, 50],
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
-      await updateNotificationSettings(settings);
+      // Normalize numeric fields: an empty/invalid value (from clearing an
+      // input) is clamped to its range so we never send '' to an integer column.
+      const normalized = { ...settings };
+      for (const [key, [min, max]] of Object.entries(clampRanges)) {
+        const n = Number(normalized[key]);
+        normalized[key] = normalized[key] === '' || Number.isNaN(n)
+          ? min
+          : Math.min(max, Math.max(min, n));
+      }
+      setSettings(normalized);
+      await updateNotificationSettings(normalized);
       addToast(t('notifications.settingsSaved'), 'success');
     } catch (error) {
       console.error('Error saving notification settings:', error);
@@ -64,19 +80,24 @@ export default function NotificationSettings() {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-  // Clamp numeric fields to their DB CHECK-constraint ranges on blur so a typed
-  // out-of-range value (input min/max don't block typing) can't 400 on save.
-  const clampRanges = {
-    budget_threshold: [0, 100],
-    recurring_advance_days: [0, 7],
-    goal_milestone_percentage: [10, 50],
+  // Keep the raw string in state while typing so the field can be cleared (an
+  // empty value would otherwise coerce to 0 immediately, blocking edits). It is
+  // normalized+clamped on blur; the save handler also coerces, so a transient
+  // '' never reaches the DB.
+  const handleNumberChange = (key, raw) => {
+    handleChange(key, raw === '' ? '' : Number(raw));
   };
+
+  // Clamp numeric fields to their DB CHECK-constraint ranges on blur so a typed
+  // or empty value (input min/max don't block typing) can't 400 on save.
   const handleNumberBlur = (key) => {
     const range = clampRanges[key];
     if (!range) return;
     const [min, max] = range;
     const n = Number(settings[key]);
-    const clamped = Number.isNaN(n) ? min : Math.min(max, Math.max(min, n));
+    const clamped = settings[key] === '' || Number.isNaN(n)
+      ? min
+      : Math.min(max, Math.max(min, n));
     if (clamped !== settings[key]) handleChange(key, clamped);
   };
 
@@ -114,7 +135,7 @@ export default function NotificationSettings() {
                       max="100"
                       step="5"
                       value={settings.budget_threshold}
-                      onChange={(e) => handleChange('budget_threshold', Number(e.target.value))}
+                      onChange={(e) => handleNumberChange('budget_threshold', e.target.value)}
                       onBlur={() => handleNumberBlur('budget_threshold')}
                       className={numberInputClass}
                       disabled={!settings.email_enabled}
@@ -153,7 +174,7 @@ export default function NotificationSettings() {
                       min="0"
                       max="7"
                       value={settings.recurring_advance_days}
-                      onChange={(e) => handleChange('recurring_advance_days', Number(e.target.value))}
+                      onChange={(e) => handleNumberChange('recurring_advance_days', e.target.value)}
                       onBlur={() => handleNumberBlur('recurring_advance_days')}
                       className={numberInputClass}
                     />
@@ -193,7 +214,7 @@ export default function NotificationSettings() {
                       max="50"
                       step="5"
                       value={settings.goal_milestone_percentage}
-                      onChange={(e) => handleChange('goal_milestone_percentage', Number(e.target.value))}
+                      onChange={(e) => handleNumberChange('goal_milestone_percentage', e.target.value)}
                       onBlur={() => handleNumberBlur('goal_milestone_percentage')}
                       className={numberInputClass}
                     />
