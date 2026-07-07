@@ -55,5 +55,14 @@ export async function createNotificationDeduped(
     .single();
 
   if (error) throw error;
+
+  // Signal the sidebar unread badge to refetch immediately. Realtime postgres
+  // changes also cover this, but the event fires synchronously in-tab so the
+  // count updates without waiting for the realtime round-trip (or when
+  // realtime replication isn't active for this table).
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('notifications:changed'));
+  }
+
   return data?.id ?? null;
 }
