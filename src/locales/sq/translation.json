@@ -1485,6 +1485,7 @@
     "budgetThreshold": "Pragu i buxhetit",
     "advanceDays": "Njofto paraprakisht",
     "daysLabel": "ditë",
+    "sameDay": "Po atë ditë",
     "milestoneInterval": "Intervali i etapave",
     "goalMilestoneTitle": "🎯 {{percent}}% arritur - {{name}}",
     "goalMilestoneMessage": "Keni arritur {{percent}}% të objektivit \"{{name}}\" ({{current}} / {{target}}).",

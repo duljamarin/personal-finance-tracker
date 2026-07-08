@@ -46,8 +46,11 @@ export default function NotificationSettings() {
   const clampRanges = {
     budget_threshold: [0, 100],
     recurring_advance_days: [0, 7],
-    goal_milestone_percentage: [10, 50],
+    goal_milestone_percentage: [1, 100],
   };
+
+  // Preselected advance-day options for the recurring reminder (0 = same day).
+  const advanceDayOptions = [0, 1, 2, 3, 5, 7];
 
   const handleSave = async () => {
     setSaving(true);
@@ -166,21 +169,36 @@ export default function NotificationSettings() {
                 </div>
                 {settings.recurring_due_enabled && (
                   <div className="mt-2">
-                    <label className="text-xs text-ink-muted dark:text-white">
+                    <div className="text-xs text-ink-muted dark:text-white mb-1.5">
                       {t('notifications.advanceDays')}:
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="7"
-                      value={settings.recurring_advance_days}
-                      onChange={(e) => handleNumberChange('recurring_advance_days', e.target.value)}
-                      onBlur={() => handleNumberBlur('recurring_advance_days')}
-                      className={numberInputClass}
-                    />
-                    <span className="ml-1 text-xs text-ink-muted dark:text-white">
-                      {t('notifications.daysLabel')}
-                    </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5" role="radiogroup">
+                      {advanceDayOptions.map((days) => {
+                        const active = Number(settings.recurring_advance_days) === days;
+                        return (
+                          <button
+                            key={days}
+                            type="button"
+                            role="radio"
+                            aria-checked={active}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleChange('recurring_advance_days', days);
+                            }}
+                            className={
+                              'min-w-[3rem] px-2.5 py-1 text-xs rounded-md border tabular-nums transition ' +
+                              (active
+                                ? 'border-brand-500 bg-brand-500/10 text-brand-700 dark:text-white font-medium'
+                                : 'border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-brand-500/50')
+                            }
+                          >
+                            {days === 0
+                              ? t('notifications.sameDay')
+                              : `${days} ${t('notifications.daysLabel')}`}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -210,9 +228,9 @@ export default function NotificationSettings() {
                     </label>
                     <input
                       type="number"
-                      min="10"
-                      max="50"
-                      step="5"
+                      min="1"
+                      max="100"
+                      step="1"
                       value={settings.goal_milestone_percentage}
                       onChange={(e) => handleNumberChange('goal_milestone_percentage', e.target.value)}
                       onBlur={() => handleNumberBlur('goal_milestone_percentage')}

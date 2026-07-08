@@ -1485,6 +1485,7 @@
     "budgetThreshold": "Budget threshold",
     "advanceDays": "Notify in advance",
     "daysLabel": "days",
+    "sameDay": "Same day",
     "milestoneInterval": "Milestone interval",
     "budgetAlertTitle": "Budget Alert: {{category}}",
     "budgetAlertMessage": "You have spent €{{spent}} of your €{{budget}} budget ({{percent}}%) for {{category}}",
