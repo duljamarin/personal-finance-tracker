@@ -19,7 +19,7 @@ export default function ScoreGauge({ score = 0, start = true, size = 200 }) {
 
   // Band color: <40 expense red, <70 amber, else brand green.
   const color =
-    clamped < 40 ? '#e8394d' : clamped < 70 ? '#e0a417' : '#168b78';
+    clamped < 40 ? '#DC2626' : clamped < 70 ? '#B45309' : '#0B5D3B';
 
   const polar = (angleDeg) => {
     const a = ((angleDeg - 90) * Math.PI) / 180;

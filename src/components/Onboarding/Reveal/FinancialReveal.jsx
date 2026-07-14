@@ -127,7 +127,7 @@ function SlideProjection({ snapshot, currency, t }) {
       <p className="eyebrow">{t('onboarding.reveal.projectionEyebrow')}</p>
       <div
         className="font-display font-bold tracking-tight leading-none"
-        style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: positive ? '#168b78' : '#e8394d' }}
+        style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: positive ? '#0B5D3B' : '#DC2626' }}
       >
         <CountCurrency value={amount} currency={currency} decimals={0} start />
       </div>
@@ -160,8 +160,8 @@ function SlideBenchmark({ snapshot, currency, t }) {
       </h2>
 
       <div className="space-y-3 text-left">
-        <BenchmarkBar label={t('onboarding.reveal.you')} pct={yourPct} maxPct={maxPct} color="#e8394d" />
-        <BenchmarkBar label={t('onboarding.reveal.typical')} pct={refPct} maxPct={maxPct} color="#168b78" />
+        <BenchmarkBar label={t('onboarding.reveal.you')} pct={yourPct} maxPct={maxPct} color="#DC2626" />
+        <BenchmarkBar label={t('onboarding.reveal.typical')} pct={refPct} maxPct={maxPct} color="#0B5D3B" />
       </div>
 
       <p className="text-ink-muted dark:text-white/70">

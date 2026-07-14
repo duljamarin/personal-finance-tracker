@@ -38,11 +38,27 @@ export function computeSnapshot({ income = 0, bills = [], payday = null } = {}) 
   const projectedAnnual = monthlySavings * 12;
 
   // Starting score 0-100 (heuristic; NOT the history-based health RPC).
-  // 60% weight on savings rate (clamped 0..0.5 → 0..100), 40% on keeping
-  // fixed costs reasonable (<=0.5 of income is ideal).
-  const savingsComponent = income > 0 ? Math.max(0, Math.min(1, savingsRate / 0.5)) : 0;
-  const fixedComponent = income > 0 ? Math.max(0, Math.min(1, (1 - fixedCostRatio) / 0.5)) : 0;
-  const score = Math.round((savingsComponent * 0.6 + fixedComponent * 0.4) * 100);
+  // 60% weight on savings rate, 40% on keeping fixed costs reasonable.
+  //
+  // A 20% savings rate earns full marks on the savings component (a realistic
+  // "excellent" target — not 50%, which almost nobody hits). Likewise fixed
+  // costs at/below 50% of income earn full marks on that component.
+  //
+  // Guard: if the user entered income but NO bills, we can't assess health from
+  // income alone — savingsRate would be 100% and every component would max out,
+  // producing a bogus perfect 100. Cap that case at a neutral baseline so the
+  // reveal reflects "not enough data yet", not "flawless finances".
+  const hasBillsData = totalBills > 0;
+  const savingsComponent = income > 0 ? Math.max(0, Math.min(1, savingsRate / 0.2)) : 0;
+  const fixedComponent = income > 0 && hasBillsData
+    ? Math.max(0, Math.min(1, (1 - fixedCostRatio) / 0.5))
+    : 0;
+  let score = Math.round((savingsComponent * 0.6 + fixedComponent * 0.4) * 100);
+  if (income > 0 && !hasBillsData) {
+    // Income-only: no expense signal. Show an encouraging-but-honest baseline
+    // rather than a perfect score the numbers don't support.
+    score = 60;
+  }
 
   // Per-category comparison vs reference share of income; surface the single
   // biggest "opportunity" (category most over its reference share).

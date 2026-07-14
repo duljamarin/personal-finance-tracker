@@ -63,6 +63,26 @@ describe('computeSnapshot', () => {
     expect(s.savingsRate).toBe(0);
   });
 
+  it('does NOT award a perfect score for income with no bills entered', () => {
+    // Regression: a fresh user who sets income but skips expenses used to score
+    // 100 (savingsRate=100% maxed every component). We now cap at a baseline.
+    const s = computeSnapshot({ income: 3000, bills: [] });
+    expect(s.hasIncome).toBe(true);
+    expect(s.totalBills).toBe(0);
+    expect(s.score).toBeLessThan(100);
+    expect(s.score).toBe(60);
+  });
+
+  it('rewards a healthy savings rate with a strong (but earned) score', () => {
+    // 25% savings, fixed costs 75% of income.
+    const s = computeSnapshot({
+      income: 4000,
+      bills: [{ amount: 3000, categoryName: 'Rent' }],
+    });
+    expect(s.score).toBeGreaterThan(0);
+    expect(s.score).toBeLessThanOrEqual(100);
+  });
+
   it('computes a positive safe-to-spend per day with a payday', () => {
     const s = computeSnapshot({
       income: 3000,
