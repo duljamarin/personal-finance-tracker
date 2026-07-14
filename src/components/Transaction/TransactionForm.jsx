@@ -300,27 +300,24 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			<div className="flex flex-col gap-3 sm:gap-5">
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
-					<div className="bg-data-violet/[0.08] dark:bg-data-violet/[0.12] border border-data-violet/30 rounded-container p-2 sm:p-4">
-						<div className="flex items-center gap-2 mb-2">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-data-violet" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-data-violet rounded-container p-3 sm:p-4">
+						<div className="flex items-center gap-2 mb-1.5">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-data-violet flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 							</svg>
-							<span className="text-xs sm:text-sm font-semibold text-data-violet">
+							<span className="text-xs sm:text-sm font-semibold text-ink-primary dark:text-white">
 								{t('recurring.generatedFromRule')}
 							</span>
 						</div>
-						<p className="text-xs text-data-violet flex items-start gap-2">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							<span>{t('recurring.editInstanceNote')}</span>
+						<p className="text-xs text-ink-muted dark:text-white/70 leading-relaxed">
+							{t('recurring.editInstanceNote')}
 						</p>
 					</div>
 				)}
 				
 				{/* Title */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
+					<label className="text-sm font-medium text-ink-primary dark:text-white">
 						{t('transactions.titleLabel')}
 					</label>
 					<Input
@@ -344,8 +341,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
 									</svg>
 								),
-								activeClass: 'bg-expense-bg border-expense text-expense dark:text-expense',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-expense/50',
+								activeClass: 'bg-expense border-expense text-white',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-expense/50',
 							},
 							{
 								value: 'income',
@@ -355,8 +352,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										<path d="M3 17 L9 11 L13 14 L21 6" /><path d="M14 6 L21 6 L21 13" />
 									</svg>
 								),
-								activeClass: 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-600 dark:text-brand-400',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-brand-300',
+								activeClass: 'bg-brand-600 border-brand-600 text-white',
+								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-brand-400',
 							},
 						].map(opt => (
 							<button
@@ -376,7 +373,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 					{/* Amount */}
 					<div className="flex flex-col gap-1.5">
-						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
+						<label className="text-sm font-medium text-ink-primary dark:text-white">
 							{t('transactions.amountLabel')}
 						</label>
 						<Input
@@ -392,7 +389,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				{/* Currency Fields */}
 				<div className="grid grid-cols-[1fr_1fr] gap-3 items-start">
 					<div className="flex flex-col gap-1.5">
-						<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
+						<label className="text-sm font-medium text-ink-primary dark:text-white">
 							{t('currency.code')}
 						</label>
 						<CustomSelect
@@ -413,7 +410,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					</div>
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-baseline gap-1.5">
-							<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white whitespace-nowrap">
+							<label className="text-sm font-medium text-ink-primary dark:text-white whitespace-nowrap">
 								{t('currency.exchangeRate')}
 							</label>
 							{isFetchingRate
@@ -486,7 +483,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										value: cat.id,
 										label: translateCategoryName(cat.name),
 										leading: (
-											<span className="w-6 h-6 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+											<span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
 												<CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
 											</span>
 										),
@@ -520,7 +517,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 							</label>
 							<div className="flex flex-col sm:flex-row gap-2 sm:items-center">
 								<div className="flex items-center gap-2 flex-1 min-w-0">
-									<span className="w-9 h-9 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+									<span className="w-9 h-9 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
 										{CATEGORY_ICONS[proposedCategoryEmoji] && (
 											<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
 												<path d={CATEGORY_ICONS[proposedCategoryEmoji]} />
@@ -531,7 +528,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 										placeholder={t('categoryProposal.proposedNamePlaceholder')}
 										value={proposedCategoryName}
 										onChange={e => setProposedCategoryName(e.target.value)}
-										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 border-surface-hairline dark:border-surface-dark-hairline min-w-0"
+										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 border-surface-outline dark:border-surface-dark-outline min-w-0"
 									/>
 								</div>
 								<Button
@@ -557,7 +554,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 											className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
 												proposedCategoryEmoji === key
 													? 'bg-brand-600 text-white'
-													: 'text-ink-muted dark:text-white hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
+													: 'text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle hover:text-brand-600 dark:hover:text-brand-400'
 											}`}
 										>
 											{CATEGORY_ICONS[key] && (
@@ -582,7 +579,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Tags */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
+					<label className="text-sm font-medium text-ink-primary dark:text-white">
 						{t('transactions.tagsLabel')}
 						<span className="text-xs text-ink-muted dark:text-white font-normal ml-1">
 							{t('transactions.tagsOptional')}
@@ -617,7 +614,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 				{/* Date */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-xs sm:text-sm font-semibold text-ink-secondary dark:text-white">
+					<label className="text-sm font-medium text-ink-primary dark:text-white">
 						{t('transactions.dateLabel')}
 					</label>
 					<Input

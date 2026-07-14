@@ -219,10 +219,10 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         {/* Premium upsell */}
         {!isPaid && (
           <div className="mt-6">
-            <Link to="/pricing" className="flex items-center justify-between px-4 py-3 rounded-lg bg-brand-50 dark:bg-brand-950/30 border border-brand-200/60 dark:border-brand-800/30 hover:border-brand-400 dark:hover:border-brand-600 transition-all group">
+            <Link to="/pricing" className="flex items-center justify-between px-4 py-3 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 hover:border-l-brand-700 transition-colors group">
               <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-md bg-brand-100 dark:bg-brand-950/50 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <span className="w-8 h-8 rounded-md bg-brand-600 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </span>
@@ -254,17 +254,17 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           {showExplainer && (
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { color: 'bg-data-violet/10 border-data-violet/30 text-data-violet', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
-                { color: 'bg-data-blue/10 border-data-blue/30 text-data-blue',   label: t('healthScore.incomeRatio'),      weight: 30, desc: t('healthScore.pillarRatioDesc') },
-                { color: 'bg-warning/10 dark:bg-warning/15 border-warning/30 text-warning', label: t('healthScore.consistency'), weight: 20, desc: t('healthScore.pillarStabilityDesc') },
-                { color: 'bg-brand-50 dark:bg-brand-950/20 border-brand-200/60 dark:border-brand-800/30 text-brand-600 dark:text-brand-400', label: t('healthScore.savings'),      weight: 10, desc: t('healthScore.pillarSavingsDesc') },
-              ].map(({ color, label, weight, desc }) => (
-                <div key={label} className={`p-3.5 rounded-lg border ${color} bg-opacity-30`}>
+                { rail: 'border-l-data-violet', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
+                { rail: 'border-l-data-blue',   label: t('healthScore.incomeRatio'),      weight: 30, desc: t('healthScore.pillarRatioDesc') },
+                { rail: 'border-l-warning',     label: t('healthScore.consistency'),      weight: 20, desc: t('healthScore.pillarStabilityDesc') },
+                { rail: 'border-l-brand-600',   label: t('healthScore.savings'),          weight: 10, desc: t('healthScore.pillarSavingsDesc') },
+              ].map(({ rail, label, weight, desc }) => (
+                <div key={label} className={`p-3.5 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 ${rail}`}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-semibold">{label}</span>
-                    <span className="text-[10px] font-medium opacity-70">{t('healthScore.pillarWeight', { weight })}</span>
+                    <span className="text-sm font-semibold text-ink-primary dark:text-white">{label}</span>
+                    <span className="text-[10px] font-semibold text-ink-muted dark:text-white/60 tabular-nums">{t('healthScore.pillarWeight', { weight })}</span>
                   </div>
-                  <p className="text-xs text-ink-muted dark:text-white leading-relaxed">{desc}</p>
+                  <p className="text-xs text-ink-muted dark:text-white/70 leading-relaxed">{desc}</p>
                 </div>
               ))}
               <p className="col-span-full text-[10px] text-ink-muted/70 dark:text-white/70 text-center">{t('healthScore.howItWorksSummary')}</p>

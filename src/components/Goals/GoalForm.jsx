@@ -123,7 +123,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder={t('goals.form.descriptionPlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           />
         </div>
 
@@ -157,13 +157,13 @@ export default function GoalForm({ goal, onSave, onClose }) {
                 key={type}
                 type="button"
                 onClick={() => setFormData({ ...formData, goalType: type })}
-                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border font-medium text-sm transition-colors ${
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-md border font-medium text-sm transition-colors ${
                   formData.goalType === type
-                    ? 'bg-brand-50 dark:bg-brand-950/30 border-brand-500 text-brand-700 dark:text-brand-300'
-                    : 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline text-ink-secondary dark:text-white hover:border-brand-300 dark:hover:border-brand-700'
+                    ? 'bg-brand-600 border-brand-600 text-white'
+                    : 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-secondary dark:text-white hover:border-brand-400 dark:hover:border-brand-600'
                 }`}
               >
-                <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted dark:text-white'}`}>
+                <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-white' : 'text-ink-muted dark:text-white'}`}>
                   {GOAL_TYPE_ICONS[type]}
                 </span>
                 {t(`goals.types.${type}`)}
@@ -179,7 +179,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
           <select
             value={formData.priority}
             onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md appearance-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md appearance-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           >
             {priorities.map(p => (
               <option key={p.value} value={p.value}>

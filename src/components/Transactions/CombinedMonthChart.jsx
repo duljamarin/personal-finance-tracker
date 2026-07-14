@@ -143,13 +143,13 @@ export default function CombinedMonthChart({ transactions }) {
     <div style={{ minHeight: 320 }}>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.5} />
+          <CartesianGrid vertical={false} stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.6} />
           <XAxis
             dataKey="month"
-            tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#1f2937' }}
+            tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#6b7280' }}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#1f2937' }}
+            tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#6b7280' }}
           />
           <Tooltip content={<CombinedMonthTooltip />} />
           <Legend

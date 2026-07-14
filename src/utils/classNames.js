@@ -17,10 +17,10 @@ export const cardClasses = {
 
 // Common input styling classes
 export const inputClasses = {
-  base: "border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-lg sm:w-full bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white focus:outline-none focus:ring-1 transition",
-  focus: "focus:ring-brand-500/20 focus:border-brand-500",
+  base: "border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-md sm:w-full bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white focus:outline-none focus:ring-2 transition",
+  focus: "focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40",
   error: "border-expense focus:ring-expense",
-  normal: "border-surface-hairline dark:border-surface-dark-hairline",
+  normal: "border-surface-outline dark:border-surface-dark-outline",
 };
 
 // Button variant classes
@@ -34,8 +34,8 @@ export const buttonClasses = {
 
 // Badge/tag classes for transaction types
 export const badgeClasses = {
-  income: "bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400 dark:border dark:border-brand-600",
-  expense: "bg-expense-bg text-expense dark:bg-expense-tint dark:text-expense dark:border dark:border-expense/40",
+  income: "bg-surface-subtle text-brand-600 font-semibold dark:bg-surface-dark-subtle dark:text-brand-400",
+  expense: "bg-surface-subtle text-expense font-semibold dark:bg-surface-dark-subtle dark:text-expense",
   recurring: "bg-data-violet/10 text-data-violet dark:bg-data-violet/20 dark:text-data-violet dark:border dark:border-data-violet/40",
   scheduled: "bg-data-blue/10 text-data-blue dark:bg-data-blue/20 dark:text-data-blue dark:border dark:border-data-blue/40",
 };

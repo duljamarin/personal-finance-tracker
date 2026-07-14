@@ -185,7 +185,7 @@ export default function GoalsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
+          <h1 className="font-display font-bold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
             <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
             </svg>
@@ -208,8 +208,8 @@ export default function GoalsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && !canAdd && (
-        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-surface-hairline dark:border-surface-dark-hairline rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-brand-700 dark:text-brand-500">
+        <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
+          <p className="text-sm text-ink-muted dark:text-white/70">
             {t('limits.goalLimitReached', { limit: goalLimit })}
           </p>
           <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-500 hover:underline whitespace-nowrap">

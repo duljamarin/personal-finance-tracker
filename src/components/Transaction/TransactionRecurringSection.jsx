@@ -22,7 +22,7 @@ export default function TransactionRecurringSection({
 	const { t } = useTranslation()
 
 	return (
-		<div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 bg-data-violet/[0.08] dark:bg-data-violet/[0.12] border border-data-violet/30 rounded-container">
+		<div className="flex flex-col gap-3 sm:gap-4 p-3 sm:p-4 bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-data-violet rounded-container">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-data-violet" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,7 +50,7 @@ export default function TransactionRecurringSection({
 			</div>
 
 			{isRecurring && (
-				<div className="flex flex-col gap-3 sm:gap-4 pt-2 border-t border-data-violet/30">
+				<div className="flex flex-col gap-3 sm:gap-4 pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline">
 					{/* Frequency & Interval */}
 					<div className="grid grid-cols-2 gap-2 sm:gap-3">
 						<div className="flex flex-col gap-1 sm:gap-2">
@@ -154,9 +154,9 @@ export default function TransactionRecurringSection({
 
 					{/* Recurring Summary */}
 					{!errors.intervalCount && !errors.endDate && !errors.occurrencesLimit && (
-						<div className="text-xs text-data-violet bg-data-violet/10 dark:bg-data-violet/20 p-2 sm:p-3 rounded-control">
-							<span className="inline-flex items-center gap-2 font-medium">
-								{t('recurring.summary')} : 
+						<div className="text-xs text-ink-muted dark:text-white/70 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline p-2.5 sm:p-3 rounded-control">
+							<span className="inline-flex items-center gap-2 font-semibold text-ink-primary dark:text-white">
+								{t('recurring.summary')} :
 							</span>
 							  {" " + t('recurring.summaryText', {
 								frequency: t(`recurring.${frequency}Summary`),

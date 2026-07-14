@@ -38,7 +38,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
           // under-budget pill
           pillClass: 'bg-data-blue/10 dark:bg-data-blue/[0.18] text-data-blue',
           // card border
-          borderClass: 'border-data-blue/40',
+          borderClass: 'border-l-2 border-l-data-blue',
           // soft tinted card surface
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
           progressColor: 'var(--c-data-blue)',
@@ -52,7 +52,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         return {
           label: t('benchmark.statusAbove'),
           pillClass: 'bg-expense-bg dark:bg-expense-tint text-expense',
-          borderClass: 'border-expense/40',
+          borderClass: 'border-l-2 border-l-expense',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
           progressColor: 'var(--c-expense)',
           icon: (
@@ -65,7 +65,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         return {
           label: t('benchmark.statusNew'),
           pillClass: 'bg-expense-bg dark:bg-expense-tint text-expense',
-          borderClass: 'border-expense/40',
+          borderClass: 'border-l-2 border-l-expense',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
           progressColor: 'var(--c-expense)',
           icon: (
@@ -77,8 +77,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
       default:
         return {
           label: t('benchmark.statusWithin'),
-          pillClass: 'bg-brand-50 dark:bg-brand-950/20 text-brand-700 dark:text-brand-300',
-          borderClass: 'border-brand-500/40',
+          pillClass: 'bg-surface-subtle dark:bg-surface-dark-subtle text-brand-600 dark:text-brand-400',
+          borderClass: 'border-l-2 border-l-brand-600',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
           progressColor: 'var(--c-brand-accent)',
           icon: (
@@ -128,10 +128,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
   }
 
   const periodButtonBase =
-    'px-4 py-2 rounded-lg font-medium text-sm transition-all';
-  const periodActive = 'bg-brand-600 text-white shadow-sm';
+    'px-4 py-2 rounded-md font-medium text-sm transition-colors';
+  const periodActive = 'bg-brand-600 text-white';
   const periodInactive =
-    'bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-tertiary';
+    'bg-white dark:bg-surface-dark-elevated border border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle';
 
   return (
     <Card className="mt-4 sm:mt-6">
@@ -187,8 +187,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
           if (benchmarks.length === 0) {
             return (
               <div className="text-center py-12">
-                <div className="w-20 h-20 bg-brand-50 dark:bg-brand-950/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-brand-500 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="w-16 h-16 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-ink-muted dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
@@ -204,29 +204,29 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
 
           if (currentMonthOnly) {
             return (
-              <div className="rounded-container border border-brand-200 dark:border-brand-800/50 bg-brand-50 dark:bg-brand-950/20 p-5">
+              <div className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 bg-white dark:bg-surface-dark-card p-5">
                 <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-md bg-brand-600 flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-brand-700 dark:text-brand-300 mb-1">
+                    <p className="text-sm font-semibold text-ink-primary dark:text-white mb-1">
                       {t('benchmark.buildingBaseline')}
                     </p>
-                    <p className="text-sm text-brand-600/80 dark:text-brand-400/80 leading-relaxed">
+                    <p className="text-sm text-ink-muted dark:text-white/70 leading-relaxed">
                       {t('benchmark.buildingBaselineDesc')}
                     </p>
                     <div className="mt-4">
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-medium text-brand-600 dark:text-brand-400">
+                        <span className="text-xs font-medium text-ink-muted dark:text-white/70">
                           {t('benchmark.buildingBaselineProgress')}
                         </span>
-                        <span className="text-xs text-brand-500">50%</span>
+                        <span className="text-xs font-semibold text-brand-600 dark:text-brand-400">50%</span>
                       </div>
-                      <div className="h-2 bg-brand-100 dark:bg-brand-900/40 rounded-full overflow-hidden">
-                        <div className="h-full w-1/2 bg-brand-500 dark:bg-brand-400 rounded-full" />
+                      <div className="h-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-full overflow-hidden">
+                        <div className="h-full w-1/2 bg-brand-600 dark:bg-brand-400 rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                   return (
                     <div
                       key={benchmark.category_id}
-                      className={`rounded-container border ${config.borderClass} ${config.cardBgClass} p-4 transition-colors`}
+                      className={`rounded-container border border-surface-hairline dark:border-surface-dark-hairline ${config.borderClass} ${config.cardBgClass} p-4 transition-colors`}
                     >
                       {/* Category header */}
                       <div className="flex items-start justify-between mb-3 gap-3">

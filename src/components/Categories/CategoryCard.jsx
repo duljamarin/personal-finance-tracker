@@ -30,7 +30,7 @@ export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, de
       <div className="absolute inset-0 rounded-[10px] flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-ink-primary/50 dark:bg-black/60 pointer-events-none group-hover:pointer-events-auto">
         <button
           onClick={e => { e.stopPropagation(); onEdit(); }}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:bg-brand-50 dark:hover:bg-brand-950/40 hover:text-brand-700 dark:hover:text-brand-300 shadow-sm transition-colors"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle hover:text-brand-600 dark:hover:text-brand-400 shadow-sm transition-colors"
           title={editLabel}
           aria-label={editLabel}
         >

@@ -80,7 +80,7 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder={isAppPassword ? t('encryption.enterAppPassword') : t('encryption.enterPassword')}
               autoComplete="current-password"
-              className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
             />
             {error && <p className="text-sm text-expense">{error}</p>}
             <Button type="submit" disabled={busy || !password}>
@@ -103,7 +103,7 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
               value={recoveryCode}
               onChange={(e) => setRecoveryCode(e.target.value)}
               placeholder={t('encryption.enterRecoveryCode')}
-              className="w-full border rounded-md px-4 py-3 font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border rounded-md px-4 py-3 font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
             />
             {error && <p className="text-sm text-expense">{error}</p>}
             <Button type="submit" disabled={busy || !recoveryCode}>
@@ -169,7 +169,7 @@ function LostCodeConfirm({ onBack, onConfirm, busy, isAppPassword }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder={isAppPassword ? t('encryption.createAppPassword') : t('encryption.enterPassword')}
           autoComplete={isAppPassword ? 'new-password' : 'current-password'}
-          className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+          className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
         />
       )}
       <Button

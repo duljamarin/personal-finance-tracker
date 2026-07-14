@@ -162,7 +162,7 @@ export default function PricingPage() {
     <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="font-semibold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-white mb-3">
+        <h1 className="font-display font-bold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-white mb-3">
           {t('pricing.title')}
         </h1>
         <p className="text-lg text-ink-muted dark:text-white max-w-xl mx-auto">
@@ -175,7 +175,7 @@ export default function PricingPage() {
         <div className={`mb-8 p-4 rounded-container text-center ${
           subscription?.subscription_cancel_at
             ? 'bg-warning-bg dark:bg-warning/15 border border-warning/40'
-            : 'bg-brand-50 dark:bg-surface-dark-elevated border border-brand-500 dark:border-brand-600'
+            : 'bg-white dark:bg-surface-dark-card border border-brand-600/50 ring-1 ring-brand-600/20'
         }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
@@ -213,7 +213,7 @@ export default function PricingPage() {
       {/* Savings callout banner */}
       {!isPremium && (
         <div className="mb-8 flex items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 text-sm font-medium px-4 py-1.5 rounded-full border border-brand-200 dark:border-brand-700">
+          <span className="inline-flex items-center gap-1.5 bg-surface-subtle dark:bg-surface-dark-subtle text-brand-700 dark:text-brand-400 text-sm font-semibold px-4 py-1.5 rounded-full border border-surface-hairline dark:border-surface-dark-hairline">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>

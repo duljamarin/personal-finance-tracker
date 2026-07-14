@@ -8,12 +8,12 @@ import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recur
 import { EXPENSE_COLOR } from '../../utils/chartColors';
 
 const inputBaseClass =
-  'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
 const inputErrorClass = 'border-[color:var(--err)]';
 const inputNormalClass = 'border-surface-hairline dark:border-surface-dark-hairline';
 
 const selectClass =
-  'appearance-none w-full pl-3 pr-9 py-2.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'appearance-none w-full pl-3 pr-9 py-2.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
 
 export default function RecurringForm({ onSubmit, onCancel, initial }) {
   const { t } = useTranslation();
@@ -137,52 +137,21 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
 
       <div className="flex flex-col gap-3 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
         {/* Transaction Info (read-only) */}
-        <div className="bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-3 sm:p-4">
-          <h3 className="font-semibold tracking-tight text-sm sm:text-base text-ink-primary dark:text-white mb-1 sm:mb-2">
-            {initial?.title}
-          </h3>
-          <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-ink-muted dark:text-white">
-            <span className="inline-flex items-center gap-1.5 font-semibold">
-              {initial?.type === 'income' ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4 text-brand-600 dark:text-brand-400"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
-                </svg>
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ color: EXPENSE_COLOR }}
-                >
-                  <path d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 5.527m0 0 .776-2.898m-.776 2.898-2.898-.776" />
-                </svg>
-              )}
-              <span
-                style={
-                  initial?.type === 'expense'
-                    ? { color: EXPENSE_COLOR }
-                    : undefined
-                }
-                className={initial?.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''}
-              >
-                €{Number(initial?.amount).toFixed(2)}
-              </span>
+        <div className="bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="font-semibold tracking-tight text-sm sm:text-base text-ink-primary dark:text-white truncate">
+              {initial?.title}
+            </h3>
+            <span
+              className={`font-semibold tabular-nums text-base sm:text-lg flex-shrink-0 ${initial?.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''}`}
+              style={initial?.type === 'expense' ? { color: EXPENSE_COLOR } : undefined}
+            >
+              {initial?.type === 'expense' ? '-' : '+'}€{Number(initial?.amount).toFixed(2)}
             </span>
-            <span className="text-ink-muted dark:text-white">·</span>
-            <span>{t('recurring.readOnlyNote')}</span>
           </div>
+          <p className="mt-2 pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white/60">
+            {t('recurring.readOnlyNote')}
+          </p>
         </div>
 
         {/* Frequency & Interval */}

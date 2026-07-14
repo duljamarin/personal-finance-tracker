@@ -97,8 +97,8 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
               className={
                 'px-3 py-1.5 text-sm rounded-full border inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ' +
                 (selected
-                  ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300 font-medium'
-                  : 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
+                  ? 'border-brand-600 bg-brand-600 text-white font-medium'
+                  : 'border-surface-outline dark:border-surface-dark-outline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
               }
             >
               {selected ? (
@@ -143,7 +143,7 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
                       value: cat.id,
                       label: translateCategoryName(cat.name),
                       leading: (
-                        <span className="w-6 h-6 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+                        <span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
                           <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
                         </span>
                       ),

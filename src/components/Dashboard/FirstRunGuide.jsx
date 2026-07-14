@@ -11,7 +11,7 @@ export default function FirstRunGuide({ onAddTransaction }) {
           {/* Illustration */}
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center">
                 <svg viewBox="0 0 48 48" className="w-10 h-10" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="24" cy="24" r="18" className="stroke-brand-300 dark:stroke-brand-700" />
                   <path d="M24 14v10l6 4" className="stroke-brand-500" strokeWidth="2" />
@@ -57,7 +57,7 @@ export default function FirstRunGuide({ onAddTransaction }) {
               { step: '3', icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />, titleKey: 'dashboard.firstRun.step3Title', descKey: 'dashboard.firstRun.step3Desc' },
             ].map(({ step, icon, titleKey, descKey }) => (
               <div key={step} className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-brand-100 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 flex items-center justify-center text-xs font-bold tabular-nums">{step}</span>
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold tabular-nums">{step}</span>
                 <div>
                   <p className="text-sm font-semibold text-ink-primary dark:text-white mb-0.5">{t(titleKey)}</p>
                   <p className="text-xs text-ink-muted dark:text-white leading-relaxed">{t(descKey)}</p>

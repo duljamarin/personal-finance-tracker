@@ -224,7 +224,7 @@ export default function BudgetsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
+          <h1 className="font-display font-bold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
             <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
@@ -238,7 +238,7 @@ export default function BudgetsPage() {
             disabled={!canCreateBudget(budgets.length)}
             className={`px-4 py-2 text-sm font-medium border rounded-md transition ${
               canCreateBudget(budgets.length)
-                ? 'text-brand-700 dark:text-brand-500 bg-brand-50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/30 border-surface-hairline dark:border-surface-dark-hairline'
+                ? 'text-brand-700 dark:text-brand-400 font-semibold bg-surface-subtle dark:bg-surface-dark-subtle hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline border-surface-outline dark:border-surface-dark-outline'
                 : 'text-ink-muted dark:text-white bg-surface-subtle dark:bg-surface-dark-subtle border-surface-hairline dark:border-surface-dark-hairline cursor-not-allowed'
             }`}
           >
@@ -283,7 +283,7 @@ export default function BudgetsPage() {
           </svg>
         </button>
         {isCurrentMonth && (
-          <span className="ml-2 text-xs font-medium text-brand-600 dark:text-brand-500 bg-brand-50 dark:bg-brand-900/20 px-2 py-0.5 rounded-full">
+          <span className="ml-2 text-xs font-semibold text-brand-600 dark:text-brand-400 bg-surface-subtle dark:bg-surface-dark-subtle px-2 py-0.5 rounded-full">
             {t('budgets.currentMonth')}
           </span>
         )}
@@ -291,8 +291,8 @@ export default function BudgetsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && budgets.length >= budgetLimit && (
-        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-surface-hairline dark:border-surface-dark-hairline rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-brand-700 dark:text-brand-500">
+        <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
+          <p className="text-sm text-ink-muted dark:text-white/70">
             {t('limits.budgetLimitReached', { limit: budgetLimit })}
           </p>
           <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-500 hover:underline whitespace-nowrap">

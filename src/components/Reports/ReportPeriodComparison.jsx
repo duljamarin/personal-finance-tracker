@@ -113,7 +113,7 @@ export default function ReportPeriodComparison({
         {/* Bar chart */}
         <div className="flex-1 overflow-x-auto">
           <BarChart width={500} height={240} data={chartData} barGap={4} barCategoryGap="35%">
-            <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} />
+            <CartesianGrid vertical={false} stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.6} />
             <XAxis
               dataKey="name"
               tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#6b7280' }}

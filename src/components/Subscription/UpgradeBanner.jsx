@@ -63,11 +63,11 @@ export default function UpgradeBanner() {
   const usagePercent = Math.min((monthlyTransactionCount / transactionLimit) * 100, 100);
 
   return (
-    <div className="mb-6 relative rounded-container bg-brand-50 dark:bg-brand-950/20 border border-brand-500/20 p-6">
+    <div className="mb-6 relative rounded-container bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 p-6">
       {/* Close button */}
       <button
         onClick={handleDismiss}
-        className="absolute top-2 right-2 p-1 rounded-md text-ink-muted dark:text-white hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
+        className="absolute top-2 right-2 p-1 rounded-md text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle transition-colors"
         aria-label={t('upgrade.dismiss')}
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,16 +79,16 @@ export default function UpgradeBanner() {
         // Cancelled subscription
         <>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/40 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-brand-700 dark:text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-11 h-11 bg-brand-600 rounded-md flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-1">
                 {t('subscription.cancelled')}
               </h3>
-              <p className="text-sm text-brand-700/80 dark:text-brand-300/80">
+              <p className="text-sm text-ink-muted dark:text-white/70">
                 {t('subscription.accessEndsOn', { date: new Date(subscription.period_end).toLocaleDateString() })}
               </p>
             </div>
@@ -104,23 +104,23 @@ export default function UpgradeBanner() {
         // Trial variant
         <>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/40 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-brand-700 dark:text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-11 h-11 bg-brand-600 rounded-md flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-1">
                 {trialTimeLabel}
               </h3>
-              <p className="text-sm text-brand-700/80 dark:text-brand-300/80">
+              <p className="text-sm text-ink-muted dark:text-white/70">
                 {t('subscription.enjoyingPremium')}
               </p>
             </div>
           </div>
           {/* Progress bar */}
           <div>
-            <div className="w-full bg-white/60 dark:bg-surface-dark-card/60 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-surface-subtle dark:bg-surface-dark-subtle rounded-full h-2 overflow-hidden">
               <div
                 className="bg-brand-600 dark:bg-brand-500 h-full rounded-md transition-all duration-300"
                 style={{ width: `${trialDaysLeft === 0 && trialEndsAt
@@ -128,7 +128,7 @@ export default function UpgradeBanner() {
                   : Math.max(5, (trialDaysLeft / APP_CONFIG.TRIAL_DAYS) * 100)}%` }}
               />
             </div>
-            <p className="text-xs text-brand-700/80 dark:text-brand-300/80 mt-1">
+            <p className="text-xs text-ink-muted dark:text-white/70 mt-1">
               {trialDaysLeft === 0 && trialEndsAt ? trialTimeLabel : t('subscription.trialDaysRemaining', { count: trialDaysLeft })}
             </p>
           </div>
@@ -137,16 +137,16 @@ export default function UpgradeBanner() {
         // Trial expired
         <>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/40 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-brand-700 dark:text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-11 h-11 bg-brand-600 rounded-md flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-brand-300 mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-1">
                 {t('subscription.trialEnded')}
               </h3>
-              <p className="text-sm text-brand-700/80 dark:text-brand-300/80">
+              <p className="text-sm text-ink-muted dark:text-white/70">
                 {t('subscription.trialEndedDesc')}
               </p>
             </div>
@@ -162,23 +162,23 @@ export default function UpgradeBanner() {
         // Free tier usage variant
         <>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/40 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-brand-700 dark:text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-11 h-11 bg-brand-600 rounded-md flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold tracking-tight text-lg text-brand-700 dark:text-white mb-1">
+              <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-1">
                 {t('upgrade.bannerFreeLimit', { used: monthlyTransactionCount, limit: transactionLimit })}
               </h3>
-              <p className="text-sm text-brand-700/80 dark:text-white">
+              <p className="text-sm text-ink-muted dark:text-white/70">
                 {t('upgrade.bannerSubtitle')}
               </p>
             </div>
           </div>
           {/* Usage bar */}
           <div className="mb-4">
-            <div className="w-full bg-white/60 dark:bg-surface-dark-card/60 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-surface-subtle dark:bg-surface-dark-subtle rounded-full h-2 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-300"
                 style={{
@@ -191,7 +191,7 @@ export default function UpgradeBanner() {
                 )}
               </div>
             </div>
-            <p className="text-xs text-brand-700/80 dark:text-brand-300/80 mt-1">
+            <p className="text-xs text-ink-muted dark:text-white/70 mt-1">
               {t('upgrade.usageCount', { used: monthlyTransactionCount, limit: transactionLimit })}
             </p>
           </div>

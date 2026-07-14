@@ -137,7 +137,7 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-lg mx-auto py-8 px-4 flex flex-col gap-6">
-      <h1 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">{t('account.title')}</h1>
+      <h1 className="font-display font-bold tracking-tight text-2xl text-ink-primary dark:text-white">{t('account.title')}</h1>
 
       {/* Display Name Section */}
       <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
@@ -151,7 +151,7 @@ export default function AccountPage() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder={t('account.displayNamePlaceholder')}
-              className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
             />
           </div>
           <button
@@ -192,7 +192,7 @@ export default function AccountPage() {
                 autoComplete="current-password"
                 show={showPassword}
                 onToggle={() => setShowPassword(v => !v)}
-                className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+                className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
               />
             </div>
           )}
@@ -210,7 +210,7 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           <div>
@@ -227,7 +227,7 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           {passwordError && (
@@ -303,7 +303,7 @@ export default function AccountPage() {
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline font-mono tracking-widest"
+                className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline font-mono tracking-widest"
               />
             </div>
 

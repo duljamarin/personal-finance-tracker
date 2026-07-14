@@ -25,7 +25,7 @@ const navItems = [
 
 function BrandMark({ compact = false }) {
   return (
-    <span className={`inline-flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-10 h-10'} bg-brand-600 rounded-md shadow-sm shadow-brand-500/25 flex-shrink-0`}>
+    <span className={`inline-flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-10 h-10'} bg-brand-600 rounded-md flex-shrink-0`}>
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
@@ -43,16 +43,13 @@ function NavItem({ item, isActive, collapsed, onClick }) {
       onClick={onClick}
       className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
         isActive
-          ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300'
+          ? 'bg-brand-600 text-white'
           : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
       } ${collapsed ? 'justify-center' : ''}`}
       title={collapsed ? t(item.labelKey) : undefined}
     >
-      {isActive && !collapsed && (
-        <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-brand-500 rounded-r-full" />
-      )}
       <NavIcon
-        className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
+        className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
         strokeWidth={1.75}
       />
       {!collapsed && <span>{t(item.labelKey)}</span>}
@@ -167,16 +164,13 @@ export default function Sidebar() {
           onClick={() => setMobileOpen(false)}
           className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
             notifActive
-              ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300'
+              ? 'bg-brand-600 text-white'
               : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
           } ${collapsed ? 'justify-center' : ''}`}
         >
-          {notifActive && !collapsed && (
-            <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-brand-500 rounded-r-full" />
-          )}
           <span className="relative">
             <Bell
-              className={`w-5 h-5 ${notifActive ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
+              className={`w-5 h-5 ${notifActive ? 'text-white' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
               strokeWidth={1.75}
             />
             {unreadCount > 0 && (
@@ -195,13 +189,13 @@ export default function Sidebar() {
           {showUpgrade ? (
             <Link
               to="/pricing"
-              className="block w-full rounded-container border border-brand-200/60 dark:border-brand-800/40 bg-brand-50 dark:bg-brand-950/30 p-3"
+              className="block w-full rounded-container border border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle p-3"
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <Rocket className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
-                <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">{t('upgrade.proPlan')}</span>
+                <span className="text-xs font-semibold text-ink-primary dark:text-white">{t('upgrade.proPlan')}</span>
               </div>
-              <p className="text-xs text-brand-600/70 dark:text-brand-400/70 mb-2.5 leading-relaxed">
+              <p className="text-xs text-ink-muted dark:text-white/70 mb-2.5 leading-relaxed">
                 {t('upgrade.unlockAll')}
               </p>
               <span className="flex items-center justify-center w-full px-3 py-1.5 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors">
@@ -211,9 +205,9 @@ export default function Sidebar() {
           ) : (
             <Link
               to="/pricing"
-              className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/30 hover:bg-brand-100 dark:hover:bg-brand-950/50 rounded-md transition-colors border border-brand-200/60 dark:border-brand-800/30"
+              className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white bg-surface-subtle dark:bg-surface-dark-subtle hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline rounded-md transition-colors border border-surface-hairline dark:border-surface-dark-hairline"
             >
-              <CreditCard className="w-4 h-4" strokeWidth={1.75} />
+              <CreditCard className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
               {t('pricing.managePlan')}
             </Link>
           )}
@@ -242,7 +236,7 @@ export default function Sidebar() {
             onClick={() => setProfileOpen(p => !p)}
             className={`w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors ${collapsed ? 'justify-center' : ''}`}
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-sm font-semibold shrink-0 shadow-sm shadow-brand-500/20">
+            <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
               {(user?.user_metadata?.username || user?.email || '?')[0].toUpperCase()}
             </div>
             {!collapsed && (
@@ -251,7 +245,7 @@ export default function Sidebar() {
                   {user?.user_metadata?.username || user?.email}
                 </p>
                 {showProBadge && (
-                  <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40 rounded">PRO</span>
+                  <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white bg-brand-600 rounded">PRO</span>
                 )}
               </div>
             )}

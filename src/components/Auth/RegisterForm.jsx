@@ -228,7 +228,7 @@ export default function RegisterForm() {
               <select
                 value={language}
                 onChange={e => setLanguage(e.target.value)}
-                className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white transition-colors"
+                className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white transition-colors"
               >
                 <option value="en">{t('languages.english', 'English')}</option>
                 <option value="sq">{t('languages.albanian', 'Shqip (Albanian)')}</option>
@@ -291,7 +291,7 @@ export default function RegisterForm() {
             )}
 
             {successMessage && (
-              <div className="bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-center text-sm p-3 rounded-md animate-fade-out">
+              <div className="bg-brand-500/10 dark:bg-brand-500/15 border-l-2 border-l-brand-600 dark:border-l-brand-400 text-brand-700 dark:text-brand-300 text-center text-sm p-3 rounded-md animate-fade-out">
                 {t(successMessage)}
               </div>
             )}

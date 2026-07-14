@@ -11,10 +11,10 @@ export default function Input({
     'w-full py-3 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ' +
     'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
     'border transition-colors duration-150 rounded-md focus:outline-none ' +
-    'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500';
+    'focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40';
   const borderState = error
     ? 'border-expense focus:border-expense focus:ring-expense/20'
-    : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20';
+    : 'border-surface-outline dark:border-surface-dark-outline hover:border-ink-muted/40 dark:hover:border-white/20';
   const padding = leadingIcon ? 'pl-11 pr-3.5' : 'px-3.5';
 
   return (

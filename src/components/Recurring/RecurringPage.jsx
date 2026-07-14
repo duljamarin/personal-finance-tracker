@@ -109,8 +109,8 @@ export default function RecurringPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && recurrings.filter(r => r.is_active).length >= recurringLimit && (
-        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-brand-700 dark:text-brand-300">
+        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
+          <p className="text-sm text-ink-muted dark:text-white/70">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}
           </p>
           <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
@@ -121,8 +121,8 @@ export default function RecurringPage() {
 
       {recurrings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-brand-50 dark:bg-brand-900/20 rounded-full flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10 text-ink-muted dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </div>
@@ -215,9 +215,9 @@ export default function RecurringPage() {
                 </div>
               </div>
 
-              <div className="bg-brand-50 dark:bg-brand-900/20 rounded-lg p-3 mb-4 border border-brand-200 dark:border-brand-800">
-                <div className="eyebrow mb-1 text-brand-700 dark:text-brand-300">{t('recurring.endsLabel')}</div>
-                <div className="font-semibold text-brand-700 dark:text-brand-300">
+              <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-md p-3 mb-4 border border-surface-hairline dark:border-surface-dark-hairline">
+                <div className="eyebrow mb-1 text-brand-600 dark:text-brand-400">{t('recurring.endsLabel')}</div>
+                <div className="font-semibold text-ink-primary dark:text-white">
                   {recurring.end_date ? fmtDate(recurring.end_date) : (recurring.occurrences_limit ? t('recurring.afterCount', { count: recurring.occurrences_limit }) : t('recurring.endNever'))}
                 </div>
               </div>

@@ -225,10 +225,10 @@ export default function CashFlowForecast() {
           </p>
         </div>
         {delta !== 0 && (
-          <div className={`text-xs font-medium px-2 py-1 rounded-full ${
+          <div className={`text-xs font-semibold px-2 py-1 rounded-full bg-surface-subtle dark:bg-surface-dark-subtle ${
             delta >= 0
-              ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400'
-              : 'bg-expense-bg text-expense'
+              ? 'text-brand-600 dark:text-brand-400'
+              : 'text-expense'
           }`}>
             {delta > 0 ? '+' : ''}{fmtCurrency(delta, 'EUR', { compact: true })}
           </div>

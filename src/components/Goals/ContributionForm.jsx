@@ -108,7 +108,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onChange={(e) => setNote(e.target.value)}
             placeholder={t('goals.contributions.notePlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
+            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
           />
         </div>
 

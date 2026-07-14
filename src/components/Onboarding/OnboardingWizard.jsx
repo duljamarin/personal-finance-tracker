@@ -333,7 +333,7 @@ export default function OnboardingWizard() {
         <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline shadow-sm">
           <div className="grid lg:grid-cols-[5fr_7fr]">
             {/* Illustration column */}
-            <div className="hidden lg:flex items-center justify-center p-8 bg-brand-50/30 dark:bg-brand-950/10 border-r border-surface-hairline dark:border-surface-dark-hairline rounded-l-xl overflow-hidden">
+            <div className="hidden lg:flex items-center justify-center p-8 bg-surface-subtle dark:bg-surface-dark-subtle border-r border-surface-hairline dark:border-surface-dark-hairline rounded-l-xl overflow-hidden">
               <div className="w-full max-w-[320px]">{StepArt && <StepArt />}</div>
             </div>
 

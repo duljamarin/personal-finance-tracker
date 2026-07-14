@@ -211,17 +211,29 @@ Full reference: `.claude/design-system.md`
 - `.eyebrow` utility: `text-[12px] font-medium text-ink-muted` — no uppercase, no wide tracking.
 - **Numbers are the hero**: all currency/percent/count values use `tabular-nums`; focal numbers ≥600 weight, tight tracking. See `.claude/design-system.md` for the full type/metric scale.
 
-### Brand Colors
+### Brand Colors (forest green — repainted 2026-07)
 ```
-brand-500  #168b78   (accent, active states)
-brand-600  #0f6b5e   (primary button fill)
-brand-700  #0b5449   (button hover)
+brand-400  #2E9E6B   (dark-mode accent / --c-brand-accent)
+brand-500  #17804F   (active rails, focus signals, progress)
+brand-600  #0B5D3B   (primary button fill; base of the ramp)
+brand-700  #084C30   (button hover)
 ```
 Primary buttons use `bg-brand-600 hover:bg-brand-700` and `rounded-md` (never `rounded-full`).
+Never the old teal `#168b78`/`#0f6b5e`/`#0b5449` — replaced globally.
+
+**De-pastelization rule**: solid brand/red fills are reserved for (a) primary
+actions + active/selected controls, (b) status badges that must pop (PRO, unread).
+Everything informational uses neutral `bg-surface-subtle` + colored text/icon, or a
+`border-l-2 border-l-brand-600` rail on a white card. Do NOT reintroduce `bg-brand-50`
+tint washes as large fills.
+
+**Input focus is neutral, not brand**: form controls focus to
+`ring-ink-primary/10 dark:ring-white/15` + `border-ink-muted/50 dark:border-white/40`
+— the border must NOT turn green on focus.
 
 ### Expense / Negative Color
-Use `#e8394d` everywhere for expense amounts, negative values, over-budget indicators.
-Never `#e05c6b` or `#f08090` — those were removed globally.
+Use `#DC2626` (hover/deep `#B91C1C`) everywhere for expense amounts, negative values,
+over-budget indicators. Never the old `#e8394d`, `#e05c6b`, or `#f08090`.
 
 ### Dark Mode Text — Critical Rules
 All dark mode text is white. `src/index.css` forces this with `!important` outside `@layer` blocks.
@@ -232,7 +244,7 @@ All dark mode text is white. `src/index.css` forces this with `!important` outsi
 - Chart/SVG tick fills: JS-computed hex `dark ? '#FFFFFF' : '#6b7280'` — Tailwind classes don't apply to SVG
 
 ### Over-budget Hierarchy
-Avoid unicolor red: keep percentage red (`#e8394d`), supporting text muted (`dark:text-white/60`), progress bar carries the color signal.
+Avoid unicolor red: keep percentage red (`#DC2626`), supporting text muted (`dark:text-white/60`), progress bar carries the color signal.
 
 ## Notes for AI Assistants
 

@@ -17,7 +17,7 @@ export default function PasswordInput({ value, onChange, className, placeholder,
     'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
     `border ${borderState} ` +
     'rounded-md transition-colors duration-150 focus:outline-none ' +
-    'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500';
+    'focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40';
 
   return (
     <div className="relative">

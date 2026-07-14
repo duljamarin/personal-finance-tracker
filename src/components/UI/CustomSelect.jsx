@@ -51,10 +51,10 @@ export default function CustomSelect({
   const selected = options.find(o => String(o.value) === String(value));
 
   const baseTrigger =
-    'w-full px-3.5 py-3 text-base rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition flex items-center justify-between gap-2';
+    'w-full px-3.5 py-3 text-base rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition flex items-center justify-between gap-2';
   const borderClass = error
     ? 'border-expense'
-    : 'border-surface-hairline dark:border-surface-dark-hairline';
+    : 'border-surface-outline dark:border-surface-dark-outline';
   const disabledClass = disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer';
 
   return (
@@ -121,14 +121,14 @@ export default function CustomSelect({
                       : 'cursor-pointer hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
                   } ${
                     isSelected
-                      ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 font-medium'
+                      ? 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white font-semibold'
                       : 'text-ink-primary dark:text-white'
                   }`}
                 >
                   {opt.leading}
                   <span className="truncate flex-1">{opt.label}</span>
                   {isSelected && (
-                    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-4 h-4 flex-shrink-0 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}

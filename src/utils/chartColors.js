@@ -29,11 +29,11 @@ export function progressColor(ratio) {
 // Hex fallbacks for the rare case a raw hex is unavoidable (e.g. computing a
 // derived rgba). These mirror :root in index.css.
 export const HEX = {
-  income: '#168b78',
-  incomeDark: '#22AD93',
-  expense: '#e8394d',
-  warning: '#C98A2B',
-  brandLight: '#43c5aa',
+  income: '#0B5D3B',
+  incomeDark: '#2E9E6B',
+  expense: '#DC2626',
+  warning: '#B45309',
+  brandLight: '#57B98A',
 };
 
 /**
@@ -42,12 +42,12 @@ export const HEX = {
  * "varied, harmonious, premium" ladder from the original CHART_PALETTE.
  */
 export const CHART_PALETTE = [
-  'var(--c-income)',       // brand teal (primary)
-  'var(--c-data-blue)',    // muted indigo-blue
+  'var(--c-income)',       // forest green (primary)
+  'var(--c-data-blue)',    // indigo-blue
   'var(--c-data-sand)',    // warm amber-sand
-  'var(--c-data-violet)',  // muted purple
-  'var(--c-data-rose)',    // muted rose
-  'var(--c-data-sage)',    // sage green (was #43c5aa light teal slot — keep variety)
+  'var(--c-data-violet)',  // purple
+  'var(--c-data-rose)',    // rose
+  'var(--c-data-sage)',    // teal-sage
   'var(--c-data-gold)',    // golden amber
   'var(--c-data-stone)',   // warm stone grey
   'var(--c-data-blue-deep)', // steel blue
@@ -60,14 +60,14 @@ export const CHART_PALETTE = [
  * their color. brand.accent and brand-400 slots use their CSS vars.
  */
 export const CATEGORY_PALETTE = [
-  'var(--c-brand-accent)', // #22ad93
-  'var(--c-income)',       // #168b78
-  'var(--c-data-sand)',    // #C9A87C
-  'var(--c-data-blue)',    // #6A8FC4
-  'var(--c-data-rose)',    // #C46A75
-  'var(--c-data-gold)',    // #D0A96A
-  '#8A8A85',               // warm grey (no semantic token — categorical filler)
-  '#43c5aa',               // brand-400 light teal
-  'var(--c-data-stone)',   // #7A756A
-  'var(--c-data-violet)',  // #9B7EB3
+  'var(--c-brand-accent)', // #2E9E6B
+  'var(--c-income)',       // #0B5D3B
+  'var(--c-data-sand)',    // #BE8A45
+  'var(--c-data-blue)',    // #3E6DB5
+  'var(--c-data-rose)',    // #C64B65
+  'var(--c-data-gold)',    // #D9A628
+  '#7E7A70',               // warm grey (no semantic token — categorical filler)
+  '#57B98A',               // light forest green
+  'var(--c-data-stone)',   // #6E6A5E
+  'var(--c-data-violet)',  // #7D5BA6
 ];

@@ -95,7 +95,7 @@ export default function Dashboard() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-ink-primary dark:text-white tracking-tight">
+          <h1 className="text-2xl font-display font-bold text-ink-primary dark:text-white tracking-tight">
             {username ? `${getTimeGreeting(t)}, ${username}` : t('dashboard.title')}
           </h1>
           <p className="text-sm text-ink-muted dark:text-white mt-0.5">
@@ -174,7 +174,8 @@ export default function Dashboard() {
                 <h3 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
                   {t('transactions.incomes')} {t('chart.byCategory')}
                 </h3>
-                <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 rounded">
+                <span className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-white/70">
+                  <span className="w-2 h-2 rounded-full bg-brand-600 dark:bg-brand-400" />
                   {t('transactions.incomes')}
                 </span>
               </div>
@@ -187,7 +188,8 @@ export default function Dashboard() {
                 <h3 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
                   {t('transactions.expenses')} {t('chart.byCategory')}
                 </h3>
-                <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] bg-surface-hairline dark:bg-surface-dark-hairline text-ink-muted dark:text-white rounded">
+                <span className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-white/70">
+                  <span className="w-2 h-2 rounded-full bg-expense" />
                   {t('transactions.expenses')}
                 </span>
               </div>

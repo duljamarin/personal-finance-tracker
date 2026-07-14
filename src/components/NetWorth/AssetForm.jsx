@@ -5,7 +5,7 @@ import Button from '../UI/Button';
 import CustomSelect from '../UI/CustomSelect';
 
 const inputBaseClass =
-  'w-full px-3 py-2 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'w-full px-3 py-2 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
 
 const TYPE_ICONS = {
   cash: ['M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'],
@@ -164,7 +164,7 @@ export default function AssetForm({ initial, onSubmit, onCancel }) {
             value: typeKey,
             label: t(`networth.${type === 'asset' ? 'assetTypes' : 'liabilityTypes'}.${typeKey}`),
             leading: (
-              <span className="w-6 h-6 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+              <span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
                 <TypeIcon typeKey={typeKey} />
               </span>
             ),

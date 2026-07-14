@@ -131,7 +131,7 @@ export default function CategoriesPage() {
           placeholder={t('categories.searchPlaceholder')}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"
+          className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"
         />
         <Button
           onClick={openAddModal}
@@ -176,7 +176,7 @@ export default function CategoriesPage() {
                 {t('categories.emojiLabel')}
               </label>
               <div className="flex items-center gap-3 mb-1">
-                <span className="w-10 h-10 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                <span className="w-10 h-10 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400">
                   <CategoryIconSvg iconKey={editIconKey} className="w-5 h-5" />
                 </span>
                 <span className="text-xs text-ink-muted dark:text-white">{t('categories.emoji')}</span>
@@ -191,7 +191,7 @@ export default function CategoriesPage() {
                     className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
                       editIconKey === key
                         ? 'bg-brand-600 text-white shadow-sm'
-                        : 'text-ink-muted dark:text-white hover:bg-brand-50 dark:hover:bg-brand-950/30 hover:text-brand-600 dark:hover:text-brand-400'
+                        : 'text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle hover:text-brand-600 dark:hover:text-brand-400'
                     }`}
                   >
                     <CategoryIconSvg iconKey={key} className="w-4.5 h-4.5" />
@@ -209,7 +209,7 @@ export default function CategoriesPage() {
                 type="text"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
-                className={`border p-3 text-base rounded-md w-full bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ${
+                className={`border p-3 text-base rounded-md w-full bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors ${
                   modalError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
                 }`}
                 autoFocus

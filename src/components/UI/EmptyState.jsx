@@ -26,21 +26,11 @@ export default function EmptyState({
     <div
       className={`relative bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-[10px] overflow-hidden ${className}`}
     >
-      {/* subtle emerald corner accent — branded frame */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-px -left-px w-20 h-20 border-t border-l border-brand-500/25 rounded-tl-[10px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-px -right-px w-20 h-20 border-b border-r border-brand-500/25 rounded-br-[10px]"
-      />
-
       <div className="relative text-center px-6 py-14 sm:py-16">
         {illustration ? (
           <div className="flex justify-center mb-5">{illustration}</div>
         ) : (
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400 mb-5">
+          <div className="inline-flex items-center justify-center w-11 h-11 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white/70 mb-5">
             {icon}
           </div>
         )}
@@ -64,10 +54,7 @@ export default function EmptyState({
         {(action || secondaryAction) && (
           <div className="mt-7 flex items-center justify-center gap-3 flex-wrap">
             {action && (
-              <Button
-                onClick={action}
-                className="shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30"
-              >
+              <Button onClick={action}>
                 {actionLabel}
               </Button>
             )}

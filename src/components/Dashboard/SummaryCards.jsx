@@ -50,12 +50,12 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
     return 'text-ink-primary dark:text-white';
   };
   const iconTone = (tone) => {
-    if (tone === 'income' || tone === 'positive') return 'bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400';
-    if (tone === 'expense' || tone === 'negative') return 'bg-expense-bg text-expense dark:bg-expense-tint dark:text-expense';
-    return 'bg-surface-page text-ink-muted dark:bg-surface-dark-page dark:text-white';
+    if (tone === 'income' || tone === 'positive') return 'text-brand-600 dark:text-brand-400';
+    if (tone === 'expense' || tone === 'negative') return 'text-expense dark:text-expense';
+    return 'text-ink-muted dark:text-white/70';
   };
   const borderTone = (tone) => {
-    if (tone === 'income' || tone === 'positive') return 'border-l-2 border-l-brand-500';
+    if (tone === 'income' || tone === 'positive') return 'border-l-2 border-l-brand-600';
     if (tone === 'negative' || tone === 'expense') return 'border-l-2 border-l-expense';
     return 'border-l-2 border-l-surface-hairline';
   };
@@ -68,11 +68,9 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
             key={i}
             className={`relative bg-white dark:bg-surface-dark-card rounded-[10px] p-6 border border-surface-hairline dark:border-surface-dark-hairline ${borderTone(card.tone)}`}
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-2 mb-4">
+              <span className={iconTone(card.tone)}>{card.icon}</span>
               <p className="eyebrow text-[10px]">{card.label}</p>
-              <span className={`inline-flex items-center justify-center w-7 h-7 rounded-md ${iconTone(card.tone)}`}>
-                {card.icon}
-              </span>
             </div>
             {showSkeleton ? (
               <div className="h-9 bg-surface-hairline dark:bg-surface-dark-hairline rounded-md w-2/3 animate-pulse" />
@@ -81,14 +79,14 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
                 {formatCurrency(card.value)}
               </p>
             )}
-            <p className="text-xs mt-3 text-ink-muted dark:text-white">{t('currency.baseCurrency')}</p>
           </div>
         ))}
       </div>
+      <p className="mt-3 text-xs text-ink-muted dark:text-white/70">{t('currency.baseCurrency')}</p>
 
       {hasMixedCurrencies && (
-        <div className="mt-4 p-3 bg-brand-50/60 dark:bg-brand-950/20 border border-brand-200/60 dark:border-brand-800/30 rounded-md flex items-center gap-2.5 text-sm text-brand-700 dark:text-brand-300">
-          <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+        <div className="mt-4 p-3 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-md flex items-center gap-2.5 text-sm text-ink-muted dark:text-white/70">
+          <svg className="w-4 h-4 flex-shrink-0 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>{t('currency.mixedCurrencies')}</span>

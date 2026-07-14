@@ -288,10 +288,10 @@ export default function CSVImport({ categories, onImportComplete }) {
                     <tr key={i} className="text-ink-primary dark:text-white">
                       <td className="px-2 py-1">{row.title}</td>
                       <td className="px-2 py-1">
-                        <span className={`inline-block px-1.5 py-0.5 rounded text-xs ${
+                        <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold bg-surface-subtle dark:bg-surface-dark-subtle ${
                           row.type === 'income'
-                            ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300'
-                            : 'bg-expense-bg text-expense'
+                            ? 'text-brand-600 dark:text-brand-400'
+                            : 'text-expense'
                         }`}>
                           {row.type === 'income' ? t('transactions.income') : t('transactions.expense')}
                         </span>

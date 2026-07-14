@@ -5,7 +5,7 @@ import { useToast } from '../../context/ToastContext';
 import { fetchNotificationSettings, updateNotificationSettings } from '../../utils/api';
 
 const numberInputClass =
-  'ml-2 w-20 px-2 py-1 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition';
+  'ml-2 w-20 px-2 py-1 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
 
 const toggleClass =
   'w-5 h-5 rounded accent-brand-600 focus:ring-2 focus:ring-brand-500/20 disabled:opacity-50';
@@ -188,8 +188,8 @@ export default function NotificationSettings() {
                             className={
                               'min-w-[3rem] px-2.5 py-1 text-xs rounded-md border tabular-nums transition ' +
                               (active
-                                ? 'border-brand-500 bg-brand-500/10 text-brand-700 dark:text-white font-medium'
-                                : 'border-surface-hairline dark:border-surface-dark-hairline text-ink-muted dark:text-white hover:border-brand-500/50')
+                                ? 'border-brand-600 bg-brand-600 text-white font-medium'
+                                : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-brand-500/50')
                             }
                           >
                             {days === 0

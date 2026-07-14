@@ -14,7 +14,7 @@ import {
 } from '../../utils/crypto/keyLifecycle';
 import RecoveryCodeModal from './RecoveryCodeModal';
 
-const inputClass = 'w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline';
+const inputClass = 'w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline';
 
 // AccountPage section: opt-in setup for existing users, and reversal
 // ("Disable encryption") for users who already have it on. Rendered only

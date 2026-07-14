@@ -127,7 +127,7 @@ export default function TransactionSplitForm({
                   'w-full py-3 px-3.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card ' +
                   'text-ink-primary dark:text-white ' +
                   'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
-                  'focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors ' +
+                  'focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors ' +
                   (errors[`split_${index}_amount`]
                     ? 'border-expense'
                     : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40')

@@ -86,7 +86,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                   <stop offset="95%" stopColor={EXPENSE_COLOR} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={dark ? '#1F1F22' : '#EDEDE8'} />
+              <CartesianGrid vertical={false} stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.6} />
               <XAxis
                 dataKey="label"
                 tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}

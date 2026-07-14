@@ -83,7 +83,7 @@ export default function BudgetForm({ budget, availableCategories, onSave, onClos
                   value: cat.id,
                   label: translateCategoryName(cat.name),
                   leading: (
-                    <span className="w-6 h-6 rounded-md bg-brand-50 dark:bg-brand-950/20 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+                    <span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
                       <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
                     </span>
                   ),

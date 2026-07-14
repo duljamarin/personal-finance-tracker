@@ -72,7 +72,7 @@ function MiniHealthScore() {
     <div className="flex flex-col items-center justify-center gap-3 py-4">
       <div className="relative w-28 h-28">
         <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-          <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" strokeWidth="8" className="text-brand-100 dark:text-brand-950/60" />
+          <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" strokeWidth="8" className="text-surface-hairline dark:text-surface-dark-hairline" />
           <circle
             cx="50" cy="50" r={radius} fill="none"
             stroke="var(--c-brand-accent)" strokeWidth="8"
@@ -119,7 +119,7 @@ function MiniBudgets() {
                 €{spent}<span className="opacity-50">/€{limit}</span>
               </span>
             </div>
-            <div className="h-1.5 rounded-full bg-brand-100 dark:bg-brand-950/50 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
                 style={{ width: `${pct}%`, backgroundColor: over ? 'var(--c-expense)' : 'var(--c-brand-accent)' }}
@@ -230,14 +230,14 @@ function FaqItem({ q, a }) {
 
 function Eyebrow({ children }) {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600 dark:text-brand-400 mb-4">{children}</p>
+    <p className="text-sm font-semibold text-brand-700 dark:text-brand-300 mb-4">{children}</p>
   );
 }
 
 // ── Section heading ───────────────────────────────────────────────────────────
 function SectionHeading({ children, className = '' }) {
   return (
-    <h2 className={`font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-ink-primary dark:text-white leading-[1.05] ${className}`}>
+    <h2 className={`font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-bold text-ink-primary dark:text-white leading-[1.03] tracking-[-0.03em] ${className}`}>
       {children}
     </h2>
   );
@@ -269,47 +269,41 @@ export default function LandingPage() {
       <section
         className="relative overflow-hidden bg-surface-page dark:bg-surface-dark-page"
       >
-        {/* Subtle teal tint blob — CSS only, no libraries */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-[0.07] dark:opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, var(--c-brand-accent) 0%, transparent 70%)' }}
-        />
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
           {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
           <div className="max-w-3xl mx-auto text-center">
             <h1
-              className="font-display text-[3.25rem] sm:text-6xl lg:text-[4.25rem] font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-6"
-              style={{ animationDelay: '60ms' }}
+              className="animate-hero-in font-display text-[3.25rem] sm:text-6xl lg:text-[4.5rem] font-bold text-ink-primary dark:text-white leading-[0.98] tracking-[-0.035em] mb-6"
+              style={{ animationDelay: '40ms' }}
             >
               {t('landing.hero.titleLine1')}{' '}
               <span className="text-brand-600 dark:text-brand-accent">{t('landing.hero.titleAccent')}</span>
             </h1>
 
             <p
-              className="text-lg sm:text-xl text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl mx-auto"
-              style={{ animationDelay: '120ms' }}
+              className="animate-hero-in text-lg sm:text-xl text-ink-muted dark:text-white/80 leading-relaxed mb-8 max-w-xl mx-auto"
+              style={{ animationDelay: '140ms' }}
             >
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '180ms' }}>
+            <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '240ms' }}>
               <Link
                 to="/register"
-                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-all text-base shadow-md shadow-brand-600/25 hover:shadow-lg hover:shadow-brand-600/30"
+                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-base"
               >
                 {t('landing.hero.getStarted')}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
               <Link
                 to="/login"
-                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-semibold rounded-md border border-surface-hairline dark:border-surface-dark-hairline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
+                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-semibold rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white" style={{ animationDelay: '240ms' }}>
+            <div className="animate-hero-in flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white/70" style={{ animationDelay: '340ms' }}>
               {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
                 <span key={label} className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
@@ -383,15 +377,15 @@ function HeroFeaturesSection({ t }) {
                 <MiniBarChart />
                 <div className="flex gap-5 mt-5 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">{t('landing.demo.income')}</p>
+                    <p className="text-[11px] font-medium text-ink-muted dark:text-white mb-0.5">{t('landing.demo.income')}</p>
                     <p className="text-xl font-bold text-brand-600 dark:text-brand-400 tabular-nums">€{(INCOME_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">{t('landing.demo.expenses')}</p>
+                    <p className="text-[11px] font-medium text-ink-muted dark:text-white mb-0.5">{t('landing.demo.expenses')}</p>
                     <p className="text-xl font-bold tabular-nums text-expense">€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-ink-muted dark:text-white mb-0.5">{t('landing.demo.saved')}</p>
+                    <p className="text-[11px] font-medium text-ink-muted dark:text-white mb-0.5">{t('landing.demo.saved')}</p>
                     <p className="text-xl font-bold text-ink-primary dark:text-white tabular-nums">+€{((INCOME_BARS.reduce((s,v)=>s+v,0) - EXPENSE_BARS.reduce((s,v)=>s+v,0))/1000).toFixed(1)}k</p>
                   </div>
                 </div>
@@ -481,15 +475,11 @@ function HowItWorksSection({ t }) {
           <Eyebrow>{t('landing.howItWorks.title')}</Eyebrow>
           <SectionHeading>{t('landing.howItWorks.subtitle')}</SectionHeading>
         </div>
-        <div className="grid md:grid-cols-3 gap-10 relative">
-          {/* Connector line */}
-          <div aria-hidden="true" className="hidden md:block absolute top-5 left-[12%] right-[12%] h-px border-t-2 border-dashed border-brand-500/25" />
+        <div className="grid md:grid-cols-3 gap-10">
           {steps.map(({ num, key }) => (
-            <div key={key} className="relative">
-              <div className="relative z-10 inline-flex w-10 h-10 rounded-md bg-brand-600 text-white items-center justify-center text-sm font-bold mb-5 shadow-lg shadow-brand-600/25">
-                {num}
-              </div>
+            <div key={key} className="pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
               <h3 className="font-display text-xl font-bold text-ink-primary dark:text-white mb-2">
+                <span className="text-brand-600 dark:text-brand-400 tabular-nums mr-2">{num}.</span>
                 {t(`landing.howItWorks.${key}.title`)}
               </h3>
               <p className="text-base text-ink-muted dark:text-white leading-relaxed">
@@ -560,7 +550,7 @@ function PricingPreviewSection({ t }) {
           {/* Free */}
           <div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-8">
             <div className="flex items-center gap-2 mb-6">
-              <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 text-xs font-semibold">
+              <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white text-xs font-semibold">
                 {t('landing.pricingPreview.free.label')}
               </span>
             </div>
@@ -575,11 +565,6 @@ function PricingPreviewSection({ t }) {
           </div>
           {/* Premium */}
           <div className="rounded-[10px] border border-brand-600/50 ring-1 ring-brand-600/20 bg-white dark:bg-surface-dark-card p-8 relative overflow-hidden">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none opacity-[0.04]"
-              style={{ background: 'radial-gradient(ellipse at top right, var(--c-brand-accent), transparent 60%)' }}
-            />
             <div className="flex items-center gap-2 mb-6">
               <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold">
                 {t('landing.pricingPreview.premium.label')}
@@ -598,7 +583,7 @@ function PricingPreviewSection({ t }) {
         <div className="text-center">
           <Link
             to="/pricing"
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-sm shadow-sm shadow-brand-600/20"
+            className="group inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-sm"
           >
             {t('landing.pricingPreview.cta')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
@@ -668,47 +653,33 @@ function FaqSection({ t }) {
 function FinalCtaSection({ t }) {
   const [ref, visible] = useReveal(0.1);
   return (
-    <section className="relative overflow-hidden bg-surface-dark-deep py-28 sm:py-36">
-      {/* Dot grid */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage: 'radial-gradient(circle, rgba(34,173,147,0.22) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-      {/* Glow */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="w-[800px] h-[500px] rounded-full blur-[140px]" style={{ background: 'radial-gradient(ellipse, rgba(34,173,147,0.12) 0%, transparent 70%)' }} />
-      </div>
-
+    <section className="relative overflow-hidden bg-white dark:bg-surface-dark-card border-t border-surface-hairline dark:border-surface-dark-hairline py-28 sm:py-36">
       <div
         ref={ref}
         className={`relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
-        <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.0] tracking-[-0.02em] mb-5">
+        <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-5">
           {t('landing.finalCta.title')}
         </h2>
-        <p className="text-lg text-white leading-relaxed max-w-lg mx-auto mb-10">
+        <p className="text-lg text-ink-muted dark:text-white/80 leading-relaxed max-w-lg mx-auto mb-10">
           {t('landing.finalCta.desc')}
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
           <Link
             to="/register"
-            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-md transition-all text-base shadow-xl shadow-brand-600/25 hover:shadow-2xl hover:shadow-brand-500/30"
+            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-base"
           >
             {t('landing.finalCta.button')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
           </Link>
           <Link
             to="/pricing"
-            className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-8 py-3.5 rounded-md border border-white/20 text-white hover:border-white/50 font-medium text-base transition-all"
+            className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-8 py-3.5 rounded-md border border-surface-outline dark:border-white/20 text-ink-primary dark:text-white hover:border-ink-muted/50 dark:hover:border-white/50 font-medium text-base transition-colors"
           >
             {t('landing.finalCta.secondary')}
           </Link>
         </div>
-        <p className="text-sm text-white">{t('landing.finalCta.trustLine')}</p>
+        <p className="text-sm text-ink-muted dark:text-white/70">{t('landing.finalCta.trustLine')}</p>
       </div>
     </section>
   );

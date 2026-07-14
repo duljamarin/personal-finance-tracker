@@ -21,7 +21,7 @@
 |------|------|----------|-------|
 | **Display** | Hanken Grotesk | `font-display` | Headlines, hero, section headings, big section titles. |
 | **UI / body** | Inter Tight | `font-sans` (default) | All body, labels, controls, dense data. |
-| **Numeric / mono** | Geist Mono | `font-mono` | IDs, code, raw amounts where a mono face is explicitly wanted. Currency in the UI uses `font-sans` + `tabular-nums`, NOT `font-mono`. |
+| **Numeric / mono** | ui-monospace stack (`font-mono`) | `font-mono` | Recovery codes / raw code only. No custom mono font ships (Geist Mono was configured but never loaded). Currency in the UI uses `font-sans` + `tabular-nums`, NOT `font-mono`. |
 
 All three are already defined in `tailwind.config.cjs` and loaded via `src/fonts.css`. Do not remove any.
 
@@ -62,20 +62,22 @@ Do not introduce new uppercase tracked labels.
 
 ## 2. Color usage rules
 
-Keep the existing palette. The teal ramp, warm paper light bg, layered dark
-surfaces, `#e8394d` expense red, and whisper shadows are all intentional. **The
-redesign changes composition, not palette.**
+Brand is **forest green** (base `#0B5D3B` at the `brand-600` slot), repainted from
+the old teal in 2026-07. Expense red is solid `#DC2626`. Warm paper light bg and
+layered dark surfaces are unchanged.
 
-### When teal is permitted
+### When brand green is permitted
 
-Teal (`brand-*`) earns attention — it is NOT a default card accent. Use it only for:
-- Primary actions (buttons, primary CTA)
-- Active/selected states (nav active, selected tab, focused control ring)
+Solid `brand-*` fills earn attention — NOT a default card accent. Use them only for:
+- Primary actions (buttons, primary CTA, the dashboard Add-Transaction card)
+- Active/selected states (nav active = solid `bg-brand-600 text-white`, selected toggle/tab)
 - Positive financial emphasis (income amounts, on-track budget, positive net)
-- The single "recommended" plan accent on pricing
+- Status badges that must pop (PRO, unread count, "recommended" plan)
 
-**Stop** sprinkling teal on every card header, every icon chip, every eyebrow. Most
-of the UI is warm neutral; color is the exception that signals meaning.
+**De-pastelization rule:** informational surfaces use neutral `bg-surface-subtle`
++ colored text/icon, or a white card with a `border-l-2 border-l-brand-600` rail —
+NOT `bg-brand-50` tint washes. **Focus rings on inputs are neutral**
+(`ring-ink-primary/10 dark:ring-white/15`, `border-ink-muted/50`), never brand green.
 
 ### Neutral ramp (surfaces & text)
 
@@ -93,8 +95,8 @@ ink.muted         #2F2F2C      #FFFFFF @ opacity (white/70, white/60)
 
 | Meaning | Color | Token |
 |---------|-------|-------|
-| Income / positive / on-track | `#168b78` | `brand-600` (light), `brand-400` dark |
-| Expense / negative / over-budget | `#e8394d` | `expense.DEFAULT` |
+| Income / positive / on-track | `#0B5D3B` | `brand-600` (light), `brand-400` dark |
+| Expense / negative / over-budget | `#DC2626` | `expense.DEFAULT` |
 | Neutral number (e.g. balance ≥0) | ink primary | `text-ink-primary dark:text-white` |
 
 Never `#e05c6b` / `#f08090`. Over-budget hierarchy: the key percentage red, supporting
@@ -212,7 +214,8 @@ shared primitives and removes the remaining defaults.
 - **Axes:** muted tabular figures, `fontSize: 12`, fill `dark ? '#FFFFFF' : '#6b7280'`,
   `tickLine={false}` `axisLine={false}`. Drop the default legend — use the existing
   inline custom legend or contextual inline labels.
-- **Bars:** rounded top caps `radius={[6,6,0,0]}`; income `#168b78`, expense `#e8394d`.
+- **Bars:** rounded top caps `radius={[6,6,0,0]}`; income `#0B5D3B`, expense `#DC2626`.
+- **Gridlines:** horizontal-only (`vertical={false}`), solid faint stroke — never dashed.
 - **Area/line:** thin smooth lines; area fill = subtle brand gradient via
   `<defs><linearGradient>` (brand-500 ~0.18 → transparent). No hard fills.
 - **Pie → donut:** keep the `innerRadius`/`outerRadius` donut; **center-label it with
@@ -228,7 +231,7 @@ shared primitives and removes the remaining defaults.
 ### Button (`UI/Button.jsx` — keep, codify)
 - Radius `rounded-md`. Sizes `sm/md/lg` as-is. Focus ring `ring-brand-500/40`.
 - `primary` `bg-brand-600 hover:bg-brand-700`; `secondary` outline; `ghost` subtle;
-  `danger` outline `#e8394d`. Hit target ≥40px at `md` (`py-2` + text = ~40px; use `lg` where touch matters).
+  `danger` outline `#DC2626`. Hit target ≥40px at `md` (`py-2` + text = ~40px; use `lg` where touch matters).
 
 ### Input / Select (`UI/Input.jsx`, `UI/CustomSelect.jsx` — keep)
 - `rounded-md`, hairline border, focus `ring-brand-500/20 border-brand-500`.
