@@ -130,6 +130,10 @@ serve(async (req: Request) => {
       }
       url.searchParams.set("token_hash", emailData.token_hash);
       url.searchParams.set("type", emailData.email_action_type);
+      // Carry the user's chosen language so the confirmation/reset page renders
+      // in the right language even when the email is opened on another device
+      // or browser (where localStorage i18nextLng isn't set).
+      url.searchParams.set("lang", language);
       actionUrl = url.toString();
     } catch (e) {
       console.error("Error building action URL", e);

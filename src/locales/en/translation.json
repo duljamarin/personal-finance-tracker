@@ -1170,6 +1170,7 @@
       "skipAndFinish": "Skip & finish",
       "finish": "Get started",
       "submitting": "Setting up...",
+      "seedWarning": "We couldn't save some of your starting data, but you can add it anytime from your dashboard.",
       "successTitle": "You're all set!",
       "successSubtitle": "Your financial journey starts now."
     },

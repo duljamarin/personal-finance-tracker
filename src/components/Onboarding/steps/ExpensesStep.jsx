@@ -118,16 +118,6 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
         {expenses.map((expense, index) => (
           <div key={expense.id} className="flex items-start gap-3">
             <div className="flex-1 space-y-3">
-              <Input
-                label={t('onboarding.expenses.amountLabel')}
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder={placeholder}
-                value={expense.amount}
-                onChange={(e) => updateExpense(index, 'amount', e.target.value)}
-                leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
-              />
               <div>
                 <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
                   {t('onboarding.expenses.categoryLabel')}
@@ -151,6 +141,16 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
                   })}
                 />
               </div>
+              <Input
+                label={t('onboarding.expenses.amountLabel')}
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder={placeholder}
+                value={expense.amount}
+                onChange={(e) => updateExpense(index, 'amount', e.target.value)}
+                leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
+              />
             </div>
             {expenses.length > 1 && (
               <button

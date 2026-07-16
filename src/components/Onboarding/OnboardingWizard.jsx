@@ -122,9 +122,27 @@ export default function OnboardingWizard() {
       }
       const categoryById = new Map(localCategories.map((c) => [c.id, c]));
 
+      // Seeding is best-effort: the reveal snapshot is computed purely in
+      // memory from the wizard inputs, so a single failed insert (e.g. a
+      // transient DB/RLS error, or the monthly free-tier transaction limit
+      // being hit) must NOT trap the user on the onboarding screen with a
+      // generic error. Each seed is isolated; failures are logged with their
+      // real reason and the flow still reaches the reveal/dashboard.
+      let seedFailed = false;
+      const seed = async (label, fn) => {
+        try {
+          await fn();
+          return true;
+        } catch (e) {
+          console.error(`onboarding seed failed (${label}):`, e);
+          seedFailed = true;
+          return false;
+        }
+      };
+
       // --- Income: this-month transaction + monthly recurring template ---
       if (incomeNum > 0) {
-        await addTransaction({
+        await seed('income transaction', () => addTransaction({
           title: t('onboarding.reveal.salaryTitle'),
           amount: incomeNum,
           type: 'income',
@@ -132,23 +150,19 @@ export default function OnboardingWizard() {
           date: todayStr,
           currencyCode: currency,
           exchangeRate: rate,
-        });
-        try {
-          await addRecurringTransaction({
-            title: t('onboarding.reveal.salaryTitle'),
-            amount: incomeNum,
-            type: 'income',
-            categoryId: null,
-            currencyCode: currency,
-            exchangeRate: rate,
-            frequency: 'monthly',
-            intervalCount: 1,
-            startDate: nextRunStr,
-          });
-          seededRecurring += 1;
-        } catch (e) {
-          console.error('income recurring seed failed:', e);
-        }
+        }));
+        const ok = await seed('income recurring', () => addRecurringTransaction({
+          title: t('onboarding.reveal.salaryTitle'),
+          amount: incomeNum,
+          type: 'income',
+          categoryId: null,
+          currencyCode: currency,
+          exchangeRate: rate,
+          frequency: 'monthly',
+          intervalCount: 1,
+          startDate: nextRunStr,
+        }));
+        if (ok) seededRecurring += 1;
       }
 
       // --- Bills: this-month transaction + monthly recurring template ---
@@ -159,7 +173,7 @@ export default function OnboardingWizard() {
         const title = cat?.name ? translateCategoryName(cat.name) : t('transactions.expense');
         const amountNum = Number(expense.amount);
 
-        await addTransaction({
+        await seed('bill transaction', () => addTransaction({
           title,
           amount: amountNum,
           type: 'expense',
@@ -167,24 +181,20 @@ export default function OnboardingWizard() {
           date: todayStr,
           currencyCode: currency,
           exchangeRate: rate,
-        });
+        }));
 
-        try {
-          await addRecurringTransaction({
-            title,
-            amount: amountNum,
-            type: 'expense',
-            categoryId: resolvedCategoryId,
-            currencyCode: currency,
-            exchangeRate: rate,
-            frequency: 'monthly',
-            intervalCount: 1,
-            startDate: nextRunStr,
-          });
-          seededRecurring += 1;
-        } catch (e) {
-          console.error('bill recurring seed failed:', e);
-        }
+        const ok = await seed('bill recurring', () => addRecurringTransaction({
+          title,
+          amount: amountNum,
+          type: 'expense',
+          categoryId: resolvedCategoryId,
+          currencyCode: currency,
+          exchangeRate: rate,
+          frequency: 'monthly',
+          intervalCount: 1,
+          startDate: nextRunStr,
+        }));
+        if (ok) seededRecurring += 1;
 
         // No auto budgets: seeding a budget equal to a same-day transaction made
         // every category read 100% spent (red) on the fresh dashboard, which
@@ -192,6 +202,11 @@ export default function OnboardingWizard() {
         // still comes alive via the transactions + recurring templates above.
 
         billsForSnapshot.push({ amount: amountNum * rate, categoryName: cat?.name || '' });
+      }
+
+      if (seedFailed) {
+        // Surface a soft warning but keep going — the user can add data later.
+        addToast(t('onboarding.wizard.seedWarning'), 'warning');
       }
 
       // --- Compute the in-memory snapshot (base currency / EUR) ---

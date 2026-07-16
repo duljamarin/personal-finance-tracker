@@ -4,11 +4,21 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../utils/supabaseClient';
 
 export default function EmailConfirmed() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [status, setStatus] = useState('verifying'); // 'verifying' | 'success' | 'error'
+
+  // Honor the ?lang= the confirmation email carries, so this page renders in the
+  // language the user chose at signup even on a fresh device/browser with no
+  // persisted i18nextLng.
+  useEffect(() => {
+    const lang = searchParams.get('lang');
+    if ((lang === 'sq' || lang === 'en') && i18n.language !== lang && typeof i18n.changeLanguage === 'function') {
+      i18n.changeLanguage(lang);
+    }
+  }, [searchParams, i18n]);
 
   useEffect(() => {
     const tokenHash = searchParams.get('token_hash');

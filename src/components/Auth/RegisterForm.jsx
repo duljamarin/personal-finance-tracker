@@ -227,7 +227,15 @@ export default function RegisterForm() {
               <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">{t('auth.preferredLanguage')}</label>
               <select
                 value={language}
-                onChange={e => setLanguage(e.target.value)}
+                onChange={e => {
+                  const lng = e.target.value;
+                  setLanguage(lng);
+                  // Switch the UI immediately AND persist to localStorage
+                  // (i18nextLng), so the email-confirmation page — which loads
+                  // fresh at /auth/confirmed with no user session — picks up the
+                  // chosen language instead of falling back to English.
+                  if (typeof i18n.changeLanguage === 'function') i18n.changeLanguage(lng);
+                }}
                 className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white transition-colors"
               >
                 <option value="en">{t('languages.english', 'English')}</option>

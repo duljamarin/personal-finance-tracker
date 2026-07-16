@@ -1170,6 +1170,7 @@
       "skipAndFinish": "Kalo & përfundo",
       "finish": "Fillo",
       "submitting": "Duke konfiguruar...",
+      "seedWarning": "Nuk arritëm të ruajmë disa nga të dhënat tuaja fillestare, por mund t'i shtoni në çdo kohë nga paneli juaj.",
       "successTitle": "Jeni gati!",
       "successSubtitle": "Udhëtimi juaj financiar fillon tani."
     },
