@@ -95,7 +95,8 @@ export default function CustomSelect({
       {open && (
         <ul
           role="listbox"
-          className="absolute z-50 mt-1 min-w-full max-h-64 overflow-y-auto rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card shadow-lg py-1 scrollbar-thin"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+          className="absolute z-50 mt-1 min-w-full max-h-64 overflow-y-auto overscroll-contain rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card shadow-lg py-1 scrollbar-thin"
         >
           {options.length === 0 ? (
             <li className="px-3 py-2 text-sm text-ink-muted dark:text-white">

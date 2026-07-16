@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import Input from '../../UI/Input';
-import CustomSelect from '../../UI/CustomSelect';
 import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
 // Monthly income + optional payday. Both feed the reveal (projection +
@@ -10,10 +9,20 @@ export default function IncomeStep({ income, payday, onIncomeChange, onPaydayCha
   const symbol = CURRENCY_SYMBOLS[currency] || currency;
   const placeholder = currency === 'ALL' || currency === 'JPY' ? '150000' : '3000';
 
-  const dayOptions = Array.from({ length: 31 }, (_, i) => ({
-    value: String(i + 1),
-    label: String(i + 1),
-  }));
+  // Payday is a plain 1-31 number. A native numeric input beats a 31-item
+  // dropdown on mobile: it opens the numeric keypad and has no scroll-trap
+  // (the old CustomSelect list capped at max-h-64 clipped ~day 28 on small
+  // screens, so 29-31 were unreachable). Clamp on change so out-of-range
+  // typing can't leak through.
+  function handlePaydayChange(e) {
+    const raw = e.target.value;
+    if (raw === '') {
+      onPaydayChange('');
+      return;
+    }
+    const n = Math.max(1, Math.min(31, Math.floor(Number(raw))));
+    onPaydayChange(Number.isNaN(n) ? '' : String(n));
+  }
 
   return (
     <div className="space-y-6">
@@ -45,12 +54,16 @@ export default function IncomeStep({ income, payday, onIncomeChange, onPaydayCha
               {t('onboarding.income.optional')}
             </span>
           </label>
-          <CustomSelect
-            value={payday ? String(payday) : ''}
-            onChange={(val) => onPaydayChange(val)}
+          <Input
+            type="number"
+            min="1"
+            max="31"
+            step="1"
+            inputMode="numeric"
             placeholder={t('onboarding.income.paydayPlaceholder')}
-            ariaLabel={t('onboarding.income.paydayLabel')}
-            options={dayOptions}
+            value={payday ? String(payday) : ''}
+            onChange={handlePaydayChange}
+            aria-label={t('onboarding.income.paydayLabel')}
           />
         </div>
       </div>
