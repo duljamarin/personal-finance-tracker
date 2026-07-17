@@ -33,7 +33,7 @@ export function SubscriptionProvider({ children }) {
 
       // Silently check if we need to fire trial-expiring notifications
       if (sub?.subscription_status === 'trialing') {
-        checkTrialExpiringNotifications().catch(() => {});
+        checkTrialExpiringNotifications().then(() => window.dispatchEvent(new Event('notifications:changed'))).catch(() => {});
       }
     } catch (e) {
       console.error('Error loading subscription:', e);
