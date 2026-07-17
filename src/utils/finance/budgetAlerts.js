@@ -13,15 +13,18 @@ import { createNotificationDeduped } from './notify';
 export async function checkBudgetNotifications(userId) {
   const supabase = await getSupabase();
 
-  // 1. Settings gate (defaults mirror the SQL: overrun on, threshold column
-  //    default). If no row, SQL returned early (NOT FOUND) — do the same.
+  // 1. Settings gate. A brand-new account has no notification_settings row
+  //    until it saves the settings page once; treat that absence as the
+  //    defaults (overrun on, threshold 90 — mirrors the column defaults and
+  //    the settings UI) so budget alerts work out of the box. Only an
+  //    existing row that explicitly disables overrun suppresses the check.
   const { data: settings } = await supabase
     .from('notification_settings')
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();
-  if (!settings || !settings.budget_overrun_enabled) return;
-  const threshold = settings.budget_threshold ?? 80;
+  if (settings && !settings.budget_overrun_enabled) return;
+  const threshold = settings?.budget_threshold ?? 90;
 
   const now = new Date();
   const year = now.getFullYear();
