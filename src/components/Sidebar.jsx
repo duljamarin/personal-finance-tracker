@@ -92,7 +92,7 @@ export default function Sidebar() {
       channel = supabase
         .channel('sidebar-notifications-' + user.id)
         .on('postgres_changes', {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
           table: 'notifications',
           filter: `user_id=eq.${user.id}`
@@ -101,7 +101,7 @@ export default function Sidebar() {
             .then(count => setUnreadCount(count || 0))
             .catch(() => {});
         })
-        .subscribe();
+        .subscribe((status) => console.log('notifications channel:', status));
     });
 
     return () => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
@@ -17,7 +17,6 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
 import { Link } from 'react-router-dom';
-import { getSupabase } from '../../utils/api/_auth';
 
 export default function BudgetsPage() {
   const { t } = useTranslation();
@@ -78,39 +77,9 @@ export default function BudgetsPage() {
     }
   };
 
-  // Re-fetch only expenses (cheap) - called by realtime subscription
-  const refreshExpenses = useCallback(async () => {
-    try {
-      const fresh = await fetchMonthlyExpensesByCategory(selectedYear, selectedMonth);
-      setExpensesByCategory(fresh);
-    } catch (e) {
-      console.error('Error refreshing expenses:', e);
-    }
-  }, [selectedYear, selectedMonth]);
-
   useEffect(() => {
     loadData();
   }, [selectedYear, selectedMonth]);
-
-  // Realtime: refresh spent amounts instantly when transactions change
-  useEffect(() => {
-    if (!user) return;
-    let channel = null;
-    getSupabase().then(supabase => {
-      channel = supabase
-        .channel(`budgets-live-${user.id}-${selectedYear}-${selectedMonth}`)
-        .on('postgres_changes', {
-          event: '*', schema: 'public', table: 'transactions',
-          filter: `user_id=eq.${user.id}`
-        }, refreshExpenses)
-        .on('postgres_changes', {
-          event: '*', schema: 'public', table: 'transaction_splits',
-          filter: `user_id=eq.${user.id}`
-        }, refreshExpenses)
-        .subscribe();
-    });
-    return () => getSupabase().then(supabase => { if (channel) supabase.removeChannel(channel); });
-  }, [user, selectedYear, selectedMonth, refreshExpenses]);
 
   // Month navigator
   const goToPrevMonth = () => {
