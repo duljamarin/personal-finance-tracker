@@ -174,7 +174,7 @@ function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = fal
       <div className={`p-8 sm:p-10 flex flex-col justify-center ${flip ? 'lg:order-2' : ''}`}>
         <p className="text-[13px] font-medium text-ink-muted dark:text-white/70 mb-3">{eyebrow}</p>
         <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink-primary dark:text-white leading-tight mb-4">{title}</h3>
-        <p className="text-base text-ink-muted dark:text-white leading-relaxed">{desc}</p>
+        <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">{desc}</p>
       </div>
       <div className={`border-t lg:border-t-0 ${flip ? 'lg:order-1 lg:border-r' : 'lg:border-l'} border-surface-hairline dark:border-surface-dark-hairline bg-surface-page dark:bg-surface-dark-page p-8 flex flex-col justify-center`}>
         {preview}
@@ -223,7 +223,7 @@ function FaqItem({ q, a }) {
         }
       </button>
       {open && (
-        <p className="pb-5 text-base text-ink-muted dark:text-white leading-relaxed">{a}</p>
+        <p className="pb-5 text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">{a}</p>
       )}
     </div>
   );
@@ -282,7 +282,7 @@ export default function LandingPage() {
             </h1>
 
             <p
-              className="animate-hero-in text-lg sm:text-xl text-ink-muted dark:text-white/80 leading-relaxed mb-8 max-w-xl mx-auto"
+              className="animate-hero-in text-lg sm:text-xl font-normal text-ink-secondary dark:text-white/70 leading-relaxed mb-8 max-w-xl mx-auto"
               style={{ animationDelay: '140ms' }}
             >
               {t('landing.hero.subtitle')}
@@ -486,7 +486,7 @@ function HowItWorksSection({ t }) {
                 <span className="text-brand-600 dark:text-brand-400 tabular-nums mr-2">{num}.</span>
                 {t(`landing.howItWorks.${key}.title`)}
               </h3>
-              <p className="text-base text-ink-muted dark:text-white leading-relaxed">
+              <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">
                 {t(`landing.howItWorks.${key}.desc`)}
               </p>
             </div>
@@ -517,7 +517,7 @@ function PrivacySection({ t }) {
           <div className="lg:sticky lg:top-24">
             <Eyebrow>{t('landing.privacy.eyebrow')}</Eyebrow>
             <SectionHeading className="mb-5">{t('landing.privacy.title')}</SectionHeading>
-            <p className="text-base text-ink-muted dark:text-white leading-relaxed">
+            <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">
               {t('landing.privacy.desc')}
             </p>
           </div>
@@ -665,7 +665,7 @@ function ToolsSection({ t }) {
       >
         <Eyebrow>{t('landing.tools.eyebrow')}</Eyebrow>
         <SectionHeading className="mb-5">{t('landing.tools.title')}</SectionHeading>
-        <p className="text-base text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl">
+        <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed mb-8 max-w-xl">
           {t('landing.tools.desc')}
         </p>
         {/* Maps over TOOLS so a new tool appears here with no edit to this file.
