@@ -16,3 +16,24 @@ export const TOOLS = [
     labelKey: 'nav.tools.freelancerCalculator',
   },
 ];
+
+/**
+ * Build a tool URL for a given language.
+ *
+ * Albanian gets an explicit `/sq` prefix so a shared link opens in Albanian for
+ * the recipient, regardless of their browser language or localStorage. Without
+ * the prefix, i18n's path detector reads the first segment ("tools"), fails to
+ * match a language, and falls back to English — which is exactly what happened
+ * to links sent over WhatsApp.
+ *
+ * English stays unprefixed because it is the fallback language and `/` is the
+ * canonical English landing route.
+ */
+export function toolPath(path, lang) {
+  return String(lang || '').toLowerCase().startsWith('sq') ? `/sq${path}` : path;
+}
+
+/** Every routable variant of a tool path — used to register routes. */
+export function toolPathVariants(path) {
+  return [path, `/sq${path}`];
+}

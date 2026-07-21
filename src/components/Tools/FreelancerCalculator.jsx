@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
-import { TOOLS } from '../../lib/tools';
+import { TOOLS, toolPath } from '../../lib/tools';
 import {
   determineTreatment,
   zeroRegimeMonthly,
@@ -134,7 +134,7 @@ function Row({ label, value, sign, emphasis = false }) {
 }
 
 export default function FreelancerCalculator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [income, setIncome] = useState(INITIAL_INCOME);
   const [admin, setAdmin] = useState(INITIAL_ADMIN);
@@ -148,11 +148,12 @@ export default function FreelancerCalculator() {
   const config = getConfig(year);
   const currency = t('freelancerCalc.currency');
   const salaryToolPath = TOOLS.find((x) => x.labelKey.endsWith('salaryCalculator'))?.path;
+  const salaryToolHref = salaryToolPath ? toolPath(salaryToolPath, i18n.language) : null;
 
   useMetaTags({
     title: `${t('freelancerCalc.metaTitle', { year: config.YEAR })} | Personal Finances`,
     description: t('freelancerCalc.metaDescription', { year: config.YEAR }),
-    canonical: 'https://personal-finances.app/tools/self-employed-calculator',
+    canonical: `https://personal-finances.app${toolPath('/tools/self-employed-calculator', i18n.language)}`,
   });
 
   // Annual follows monthly until the user edits it directly (seasonal earners).
@@ -358,9 +359,9 @@ export default function FreelancerCalculator() {
             </p>
           </div>
 
-          {salaryToolPath && (
+          {salaryToolHref && (
             <Link
-              to={salaryToolPath}
+              to={salaryToolHref}
               className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
             >
               {t('freelancerCalc.reclassified.cta')}

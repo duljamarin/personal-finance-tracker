@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { TOOLS } from '../lib/tools';
+import { TOOLS, toolPath } from '../lib/tools';
 
 /**
  * Albanian flag — signals that the tool is Albania-specific, so nobody expects
@@ -34,7 +34,9 @@ function FlagAL({ className = '' }) {
  * and Escape. Adding a tool to lib/tools.js flips this automatically.
  */
 export default function ToolsNav({ className = '', onNavigate }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Links carry the active language so a shared URL opens in that language.
+  const hrefFor = (p) => toolPath(p, i18n.language);
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
@@ -64,7 +66,7 @@ export default function ToolsNav({ className = '', onNavigate }) {
   // Single tool → direct link, no dropdown.
   if (TOOLS.length === 1) {
     return (
-      <Link to={TOOLS[0].path} className={`${className} inline-flex items-center gap-2`} onClick={onNavigate}>
+      <Link to={hrefFor(TOOLS[0].path)} className={`${className} inline-flex items-center gap-2`} onClick={onNavigate}>
         <FlagAL className="w-5 h-[14px] rounded-[2px] flex-shrink-0 shadow-xs" />
         {t(TOOLS[0].labelKey)}
       </Link>
@@ -116,7 +118,7 @@ export default function ToolsNav({ className = '', onNavigate }) {
           {TOOLS.map((tool, i) => (
             <Link
               key={tool.path}
-              to={tool.path}
+              to={hrefFor(tool.path)}
               role="menuitem"
               ref={(el) => { itemRefs.current[i] = el; }}
               onKeyDown={(e) => onItemKeyDown(e, i)}

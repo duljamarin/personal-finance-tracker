@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
+import { toolPath } from '../../lib/tools';
 import {
   fromGross,
   grossFromNet,
@@ -269,7 +270,7 @@ function WhenToUse({ t }) {
 }
 
 export default function SalaryCalculator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [mode, setMode] = useState('grossToNet');
   const [amount, setAmount] = useState(INITIAL_AMOUNT); // prefilled: never an empty panel
@@ -280,7 +281,7 @@ export default function SalaryCalculator() {
   useMetaTags({
     title: `${t('salaryCalc.metaTitle', { year: config.YEAR })} | Personal Finances`,
     description: t('salaryCalc.metaDescription', { year: config.YEAR }),
-    canonical: 'https://personal-finances.app/tools/salary-calculator',
+    canonical: `https://personal-finances.app${toolPath('/tools/salary-calculator', i18n.language)}`,
   });
 
   /**

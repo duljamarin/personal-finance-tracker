@@ -2,7 +2,7 @@ import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
-import { TOOLS } from '../lib/tools';
+import { TOOLS, toolPath } from '../lib/tools';
 import {
   TrendingUp, Target, PieChart, Activity, RefreshCw,
   Globe, BarChart3, Bell, Tag, FileText, Heart,
@@ -655,6 +655,7 @@ function FaqSection({ t }) {
 }
 
 function ToolsSection({ t }) {
+  const { i18n } = useTranslation();
   const [ref, visible] = useReveal(0.1);
   return (
     <section className="py-20 sm:py-24 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
@@ -672,7 +673,7 @@ function ToolsSection({ t }) {
           {TOOLS.map(tool => (
             <Link
               key={tool.path}
-              to={tool.path}
+              to={toolPath(tool.path, i18n.language)}
               className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
             >
               {t(tool.labelKey)}
