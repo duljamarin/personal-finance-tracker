@@ -25,7 +25,12 @@
     "account": "Account",
     "myProfile": "My Profile",
     "subscription": "Subscription",
-    "more": "More"
+    "more": "More",
+    "tools": {
+      "label": "Tools",
+      "salaryCalculator": "Salary calculator",
+      "freelancerCalculator": "Self-employed calculator"
+    }
   },
   "common": {
     "cancel": "Cancel",
@@ -105,8 +110,8 @@
     "import": "Import CSV",
     "description": "Description",
     "income": "Income",
-     "incomes" : "Incomes",
-    "expenses" : "Expenses",
+    "incomes": "Incomes",
+    "expenses": "Expenses",
     "expense": "Expense",
     "edit": "Edit",
     "noTransactions": "No transactions found",
@@ -387,6 +392,138 @@
       "nov": "Nov",
       "dec": "Dec"
     }
+  },
+  "freelancerCalc": {
+    "eyebrow": "Tools",
+    "title": "Self-Employed Tax Calculator (Albania {{year}})",
+    "intro": "What do you actually keep as a freelancer in Albania? Contributions are fixed amounts, not a percentage of income, and profit tax is 0% until {{until}} if you meet the conditions.",
+    "metaTitle": "Self-Employed Tax Calculator (Albania {{year}})",
+    "metaDescription": "Self-employed calculator for Albania {{year}}. Work out your take-home with the 0% freelancer profit tax, the fixed monthly contributions and the VAT threshold.",
+    "currency": "ALL",
+    "incomeLabel": "Monthly income",
+    "annualLabel": "Annual turnover",
+    "annualHint": "Calculated as monthly x 12. If your work is seasonal, enter the annual figure directly.",
+    "adminLabel": "Monthly admin costs",
+    "adminHint": "Your own estimate: accountant, fiscalisation, bank. Not a statutory figure.",
+    "taxYear": "Tax year",
+    "taxYearWithValue": "Tax year {{year}}",
+    "questions": {
+      "title": "Questions about your legal treatment",
+      "foreign": "Are all your clients outside Albania (non-resident, with no permanent establishment)?",
+      "singleClient": "Does a single client give you 80% or more of your income?",
+      "twoClients": "Do two or fewer clients give you 90% or more of your income?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "zero": {
+      "headline": "You keep per month",
+      "badge": "0% profit tax",
+      "rows": {
+        "income": "Income",
+        "social": "Social insurance ({{rate}} of {{base}})",
+        "health": "Health insurance ({{rate}} of {{base}})",
+        "admin": "Admin costs",
+        "net": "You keep"
+      },
+      "effectiveRate": "Effective deduction rate:",
+      "positive": "Profit tax is 0% until {{until}}, so you pay no profit tax on this income. Contributions are a fixed {{contrib}} ALL per month, however much you earn."
+    },
+    "reclassified": {
+      "title": "Your income is treated as employment income",
+      "explain": "Under Article 12/1/ç of Law 29/2023, when a single client gives you 80% or more, or two clients give you 90% or more, the income is reclassified as employment income. That means you lose the 0% rate and are taxed at progressive rates under Article 24.",
+      "estimate": "Indicative monthly tax on {{income}} ALL:",
+      "estimateNote": "This figure comes from the same engine as the salary calculator, but how contributions are treated in this case should be confirmed with an accountant.",
+      "cta": "Calculate it in the salary calculator",
+      "accountant": "You are strongly advised to consult an accountant about your specific situation."
+    },
+    "overTurnover": {
+      "title": "Turnover exceeds the {{limit}} ALL ceiling",
+      "explain": "Above this ceiling the 0% profit tax rate does not apply. The rules above the threshold are more complex and disputed, so this tool does not compute a figure for that case.",
+      "accountant": "Consult an accountant to determine the correct treatment."
+    },
+    "vat": {
+      "title": "You must register for VAT",
+      "desc": "Annual turnover exceeds the {{threshold}} ALL threshold. B2B services exported to foreign clients are zero-rated, so VAT is not a cost out of pocket, but it is a filing obligation."
+    },
+    "example": {
+      "title": "Example: {{income}} ALL per month, all clients outside Albania",
+      "p1": "With annual turnover below {{ceiling}} ALL and only foreign clients, the 0% rate is kept, so profit tax is {{tax}} ALL.",
+      "p2": "Contributions are fixed: {{social}} ALL social insurance plus {{health}} ALL health, {{contrib}} ALL per month in total.",
+      "p3": "With {{admin}} ALL of admin costs, you keep {{net}} ALL out of {{income}} ALL, an effective rate of just {{rate}}."
+    },
+    "disclaimer": "This result is indicative only. Please verify it with an accountant. Based on Albanian law for {{year}}."
+  },
+  "salaryCalc": {
+    "eyebrow": "Tools",
+    "title": "Net/Gross Salary Calculator (Albania {{year}})",
+    "intro": "Work out net pay from gross, convert net back to gross, or find the full cost to the employer. Rates follow Albanian law for {{year}}.",
+    "metaTitle": "Net/Gross Salary Calculator (Albania {{year}})",
+    "metaDescription": "Albanian salary calculator for {{year}}. Work out net pay from gross, gross from net, and the total employer cost, including income tax and social and health insurance.",
+    "currency": "ALL",
+    "modeLabel": "Calculation mode",
+    "modes": {
+      "grossToNet": "Gross → Net",
+      "netToGross": "Net → Gross",
+      "costToGross": "Cost → Gross"
+    },
+    "amountLabel": {
+      "grossToNet": "Monthly gross salary",
+      "netToGross": "Monthly net salary",
+      "costToGross": "Total monthly cost (employer)"
+    },
+    "headlineLabel": {
+      "grossToNet": "Monthly net salary",
+      "netToGross": "Monthly gross salary",
+      "costToGross": "Monthly gross salary"
+    },
+    "taxYear": "Tax year",
+    "taxYearWithValue": "Tax year {{year}}",
+    "belowMinimum": "This amount falls below the minimum insurance base ({{amount}} ALL). Contributions are charged on that minimum base, so the result does not represent a normal salary.",
+    "rows": {
+      "gross": "Gross salary",
+      "incomeTax": "Income tax (TAP)",
+      "social": "Social insurance ({{rate}})",
+      "health": "Health insurance ({{rate}})",
+      "net": "Net salary",
+      "employerContrib": "Employer contributions ({{rate}})",
+      "employerCost": "Total employer cost"
+    },
+    "effectiveRate": "Effective deduction rate:",
+    "legend": {
+      "net": "Net",
+      "tax": "Tax",
+      "contrib": "Contributions"
+    },
+    "whenToUse": {
+      "title": "When do you use this calculator?",
+      "knowGrossTitle": "When you know the gross salary",
+      "knowGrossDesc": "The figure in a contract or job offer is usually gross. Use Gross → Net to see what actually reaches your hand each month, after tax and contributions.",
+      "knowNetTitle": "When you know the net salary",
+      "knowNetDesc": "If you agreed on a take-home amount, or you know it from your payslip, use Net → Gross to find the matching gross salary. Useful when negotiating or comparing two offers.",
+      "knowCostTitle": "When you are the employer",
+      "knowCostDesc": "The real cost of an employee is higher than the gross salary, because the employer pays additional contributions. Use Cost → Gross to plan from the total budget you have available."
+    },
+    "table": {
+      "title": "Gross to net table for common salaries",
+      "desc": "Monthly values in ALL, using {{year}} rates. Click a row to load it into the calculator.",
+      "gross": "Gross",
+      "tax": "Tax",
+      "contrib": "Contributions",
+      "net": "Net",
+      "employerCost": "Employer cost",
+      "srUse": "Use this value"
+    },
+    "example": {
+      "title": "How is it calculated? Example for a gross salary of {{gross}} ALL",
+      "p1": "Income tax is charged on the gross salary, not on pay after contributions. For {{gross}} ALL gross, the tax is {{tax}} ALL.",
+      "p2": "Employee contributions are then deducted: social insurance {{socialRate}} or {{social}} ALL, and health insurance {{healthRate}} or {{health}} ALL, {{contribTotal}} ALL in total.",
+      "p3": "Net salary is {{gross}} minus {{tax}} minus {{contribTotal}}, that is {{net}} ALL.",
+      "p4": "On top of that the employer pays {{employerContrib}} ALL in contributions, so the total cost of this salary to them is {{employerCost}} ALL.",
+      "capNote": "Social insurance stops growing above the maximum base of {{cap}} ALL, while health insurance is charged on the whole salary, with no cap."
+    },
+    "disclaimer": "This result is indicative only. Please verify it against your payslip. Based on Albanian tax rates for {{year}}.",
+    "ctaText": "Want to track your monthly spending too, not just your salary?",
+    "ctaButton": "Create a free account"
   },
   "landing": {
     "hero": {
@@ -679,6 +816,12 @@
       "quote": "I built this because I was tired of managing my money in spreadsheets. Not because spreadsheets are bad - they're actually great - but because I wanted something that would just show me the picture without me having to paint it first. Every feature in here exists because I needed it myself.",
       "name": "Marin Dulja",
       "role": "Builder & sole developer"
+    },
+    "tools": {
+      "eyebrow": "Free tools",
+      "title": "Free tools for Albania",
+      "desc": "Accurate calculators based on Albanian law: net and gross salary, and what you keep as a freelancer. No signup, no limits.",
+      "cta": "Open the salary calculator"
     },
     "faq": {
       "eyebrow": "Questions",

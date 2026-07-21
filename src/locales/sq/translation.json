@@ -2,7 +2,7 @@
   "languages": {
     "english": "Anglisht",
     "albanian": "Shqip"
-  },  
+  },
   "app": {
     "name": "Gjurmues i Financave Personale",
     "shortName": "Financat e Mia"
@@ -25,7 +25,12 @@
     "account": "Llogaria",
     "myProfile": "Profili Im",
     "subscription": "Abonimi",
-    "more": "Më shumë"
+    "more": "Më shumë",
+    "tools": {
+      "label": "Mjete",
+      "salaryCalculator": "Kalkulator i pagës",
+      "freelancerCalculator": "Kalkulator për të vetëpunësuarit"
+    }
   },
   "common": {
     "cancel": "Anulo",
@@ -106,8 +111,8 @@
     "description": "Përshkrimi",
     "income": "E ardhur",
     "expense": "Shpenzim",
-    "incomes" : "Të Ardhurat",
-    "expenses" : "Shpenzimet",
+    "incomes": "Të Ardhurat",
+    "expenses": "Shpenzimet",
     "edit": "Modifiko",
     "noTransactions": "Nuk u gjetën transaksione",
     "showAll": "Shfaq Të Gjitha Transaksionet ({{count}})",
@@ -387,6 +392,138 @@
       "nov": "Nën",
       "dec": "Dhj"
     }
+  },
+  "freelancerCalc": {
+    "eyebrow": "Mjete",
+    "title": "Kalkulator për të Vetëpunësuarit (Shqipëri {{year}})",
+    "intro": "Sa të mbetet realisht si i vetëpunësuar në Shqipëri? Kontributet janë shuma fikse, jo përqindje e të ardhurave, dhe tatimi mbi fitimin është 0% deri në {{until}} nëse plotëson kushtet.",
+    "metaTitle": "Kalkulator për të Vetëpunësuarit (Shqipëri {{year}})",
+    "metaDescription": "Kalkulator për të vetëpunësuarit në Shqipëri {{year}}. Llogarit sa të mbetet neto me tatimin 0% për freelancer, kontributet fikse mujore dhe pragun e TVSH-së.",
+    "currency": "Lekë",
+    "incomeLabel": "Të ardhurat mujore",
+    "annualLabel": "Xhiro vjetore",
+    "annualHint": "Llogaritur si mujore x 12. Nëse punon me sezone, shkruaje vjetoren direkt.",
+    "adminLabel": "Shpenzime administrative mujore",
+    "adminHint": "Vlerësim i yti: kontabilisti, fiskalizimi, banka. Nuk është shifër ligjore.",
+    "taxYear": "Viti tatimor",
+    "taxYearWithValue": "Viti tatimor {{year}}",
+    "questions": {
+      "title": "Pyetje për trajtimin ligjor",
+      "foreign": "A janë të gjithë klientët e tu jashtë Shqipërisë (jorezidentë, pa seli të përhershme)?",
+      "singleClient": "A të jep një klient i vetëm 80% ose më shumë të të ardhurave?",
+      "twoClients": "A të japin dy ose më pak klientë 90% ose më shumë të të ardhurave?",
+      "yes": "Po",
+      "no": "Jo"
+    },
+    "zero": {
+      "headline": "Të mbeten në muaj",
+      "badge": "Tatim mbi fitimin 0%",
+      "rows": {
+        "income": "Të ardhurat",
+        "social": "Sigurime shoqërore ({{rate}} e {{base}})",
+        "health": "Sigurime shëndetësore ({{rate}} e {{base}})",
+        "admin": "Shpenzime administrative",
+        "net": "Të mbeten neto"
+      },
+      "effectiveRate": "Norma efektive e zbritjeve:",
+      "positive": "Tatimi mbi fitimin është 0% deri më {{until}}, pra nga të ardhurat e tua nuk paguan tatim fitimi. Kontributet janë shuma fikse prej {{contrib}} Lekë në muaj, sado të fitosh."
+    },
+    "reclassified": {
+      "title": "Të ardhurat e tua trajtohen si pagë",
+      "explain": "Sipas nenit 12/1/ç të ligjit 29/2023, kur një klient i vetëm të jep 80% ose më shumë, ose dy klientë të japin 90% ose më shumë, të ardhurat riklasifikohen si të ardhura nga punësimi. Kjo do të thotë se humbet normën 0% dhe tatohesh me shkallë progresive sipas nenit 24.",
+      "estimate": "Tatim mujor orientues për {{income}} Lekë:",
+      "estimateNote": "Kjo shifër vjen nga i njëjti motor si kalkulatori i pagës, por trajtimi i kontributeve në këtë rast duhet konfirmuar me një kontabilist.",
+      "cta": "Llogarite te kalkulatori i pagës",
+      "accountant": "Rekomandohet fort të konsultohesh me një kontabilist për situatën tënde konkrete."
+    },
+    "overTurnover": {
+      "title": "Xhiroja kalon pragun e {{limit}} Lekë",
+      "explain": "Mbi këtë prag nuk zbatohet norma 0% e tatimit mbi fitimin. Rregullat mbi pragun janë më komplekse dhe të diskutueshme, prandaj ky mjet nuk llogarit një shifër për këtë rast.",
+      "accountant": "Konsultohu me një kontabilist për të përcaktuar trajtimin e saktë."
+    },
+    "vat": {
+      "title": "Duhet të regjistrohesh për TVSH",
+      "desc": "Xhiroja vjetore kalon pragun prej {{threshold}} Lekë. Shërbimet B2B të eksportuara për klientë të huaj janë me normë zero, pra TVSH-ja nuk është kosto nga xhepi, por detyrim deklarimi."
+    },
+    "example": {
+      "title": "Shembull: {{income}} Lekë në muaj, të gjithë klientët jashtë Shqipërisë",
+      "p1": "Me xhiro vjetore nën {{ceiling}} Lekë dhe klientë vetëm jashtë vendit, ruhet norma 0%, pra tatimi mbi fitimin është {{tax}} Lekë.",
+      "p2": "Kontributet janë fikse: {{social}} Lekë sigurime shoqërore plus {{health}} Lekë shëndetësore, gjithsej {{contrib}} Lekë në muaj.",
+      "p3": "Me {{admin}} Lekë shpenzime administrative, të mbeten {{net}} Lekë nga {{income}} Lekë, domethënë një normë efektive prej vetëm {{rate}}."
+    },
+    "disclaimer": "Rezultati është vetëm orientues. Verifikojeni me një kontabilist. Bazuar në ligjin shqiptar për vitin {{year}}."
+  },
+  "salaryCalc": {
+    "eyebrow": "Mjete",
+    "title": "Kalkulator i Pagës Neto/Bruto (Shqipëri {{year}})",
+    "intro": "Llogarit pagën neto nga bruto, kthe neton në bruto, ose gjej koston totale që i takon punëdhënësit. Normat janë sipas legjislacionit shqiptar për vitin {{year}}.",
+    "metaTitle": "Kalkulator i Pagës Neto/Bruto (Shqipëri {{year}})",
+    "metaDescription": "Kalkulator page për Shqipërinë {{year}}. Llogarit pagën neto nga bruto, neto në bruto dhe koston totale të punëdhënësit, me tatimin mbi të ardhurat dhe sigurimet shoqërore e shëndetësore.",
+    "currency": "Lekë",
+    "modeLabel": "Mënyra e llogaritjes",
+    "modes": {
+      "grossToNet": "Bruto → Neto",
+      "netToGross": "Neto → Bruto",
+      "costToGross": "Kosto → Bruto"
+    },
+    "amountLabel": {
+      "grossToNet": "Paga bruto mujore",
+      "netToGross": "Paga neto mujore",
+      "costToGross": "Kosto totale mujore (punëdhënësi)"
+    },
+    "headlineLabel": {
+      "grossToNet": "Paga neto mujore",
+      "netToGross": "Paga bruto mujore",
+      "costToGross": "Paga bruto mujore"
+    },
+    "taxYear": "Viti tatimor",
+    "taxYearWithValue": "Viti tatimor {{year}}",
+    "belowMinimum": "Kjo shumë bie nën pagën minimale për efekt sigurimesh ({{amount}} Lekë). Sigurimet llogariten mbi këtë bazë minimale, prandaj rezultati nuk përfaqëson një pagë të zakonshme.",
+    "rows": {
+      "gross": "Paga bruto",
+      "incomeTax": "Tatimi mbi të ardhurat (TAP)",
+      "social": "Sigurime shoqërore ({{rate}})",
+      "health": "Sigurime shëndetësore ({{rate}})",
+      "net": "Paga neto",
+      "employerContrib": "Sigurime të punëdhënësit ({{rate}})",
+      "employerCost": "Kosto totale e punëdhënësit"
+    },
+    "effectiveRate": "Norma efektive e zbritjeve:",
+    "legend": {
+      "net": "Neto",
+      "tax": "TAP",
+      "contrib": "Sigurime"
+    },
+    "whenToUse": {
+      "title": "Kur përdoret ky kalkulator?",
+      "knowGrossTitle": "Kur dini pagën bruto",
+      "knowGrossDesc": "Shifra në kontratë ose në ofertën e punës është zakonisht bruto. Përdorni mënyrën Bruto → Neto për të parë sa ju mbetet realisht në dorë çdo muaj, pas tatimit dhe sigurimeve.",
+      "knowNetTitle": "Kur dini pagën neto",
+      "knowNetDesc": "Nëse jeni marrë vesh për shumën që merrni në dorë, ose e dini nga listëpagesa, përdorni Neto → Bruto për të gjetur pagën bruto që i korrespondon. E dobishme kur negocioni ose kur krahasoni dy oferta.",
+      "knowCostTitle": "Kur jeni punëdhënës",
+      "knowCostDesc": "Kostoja reale e një punonjësi është më e lartë se paga bruto, sepse punëdhënësi paguan sigurime shtesë. Përdorni Kosto → Bruto për të planifikuar buxhetin nga shuma totale që keni në dispozicion."
+    },
+    "table": {
+      "title": "Tabela bruto, neto për paga të zakonshme",
+      "desc": "Vlerat mujore në Lekë, sipas normave të vitit {{year}}. Kliko një rresht për ta ngarkuar në kalkulator.",
+      "gross": "Bruto",
+      "tax": "Tatimi",
+      "contrib": "Sigurime",
+      "net": "Neto",
+      "employerCost": "Kosto e punëdhënësit",
+      "srUse": "Përdore këtë vlerë"
+    },
+    "example": {
+      "title": "Si llogaritet? Shembull për një pagë bruto prej {{gross}} Lekë",
+      "p1": "Tatimi mbi të ardhurat llogaritet mbi pagën bruto, jo mbi pagën pas sigurimeve. Për {{gross}} Lekë bruto, tatimi është {{tax}} Lekë.",
+      "p2": "Më pas zbriten sigurimet e punëmarrësit: sigurimet shoqërore {{socialRate}} ose {{social}} Lekë, dhe sigurimet shëndetësore {{healthRate}} ose {{health}} Lekë, gjithsej {{contribTotal}} Lekë.",
+      "p3": "Paga neto është {{gross}} minus {{tax}} minus {{contribTotal}}, domethënë {{net}} Lekë.",
+      "p4": "Punëdhënësi paguan veç kësaj {{employerContrib}} Lekë sigurime, kështu që kostoja totale e kësaj page për të është {{employerCost}} Lekë.",
+      "capNote": "Sigurimet shoqërore ndalojnë së rrituri mbi bazën maksimale prej {{cap}} Lekë, ndërsa sigurimet shëndetësore llogariten mbi të gjithë pagën, pa tavan."
+    },
+    "disclaimer": "Rezultati është vetëm orientues. Verifikojeni me listëpagesën tuaj. Bazuar në normat tatimore shqiptare për vitin {{year}}.",
+    "ctaText": "Doni të ndiqni edhe shpenzimet tuaja mujore, jo vetëm pagën?",
+    "ctaButton": "Krijo një llogari falas"
   },
   "landing": {
     "hero": {
@@ -680,6 +817,12 @@
       "name": "Marin Dulja",
       "role": "Ndërtues & zhvillues i vetëm"
     },
+    "tools": {
+      "eyebrow": "Mjete falas",
+      "title": "Mjete falas për Shqipërinë",
+      "desc": "Kalkulatorë të saktë sipas ligjit shqiptar: paga neto dhe bruto, dhe sa të mbetet si i vetëpunësuar. Pa regjistrim dhe pa kufizim.",
+      "cta": "Hap kalkulatorin e pagës"
+    },
     "faq": {
       "eyebrow": "Pyetje",
       "title": "Përgjigje të ndershme",
@@ -811,7 +954,7 @@
     "createError": "Krijimi i transaksionit të përsëritur dështoi",
     "generatedToast": "{{count}} transaksion(e) të planifikuar u krijuan nga rregullat e përsëritjes",
     "intervalError": "Intervali duhet të jetë të paktën 1",
-    "endDateError": "Data e përfundimit është e detyrueshme", 
+    "endDateError": "Data e përfundimit është e detyrueshme",
     "endDatePastError": "Data e përfundimit nuk mund të jetë në të kaluarën",
     "endDateTooSoonError": "Data e përfundimit duhet të jetë të paktën një periudhë intervali pas datës së fillimit për të lejuar instanca të përsëritura",
     "occurrencesError": "Numri i përsëritjeve duhet të jetë të paktën 1",

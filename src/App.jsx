@@ -4,6 +4,7 @@ import { useMetaTags } from './hooks/useMetaTags';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
+import { TOOLS } from './lib/tools';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -59,6 +60,8 @@ const PrivacyPolicy = lazy(() => import('./components/Legal/PrivacyPolicy.jsx'))
 const PricingPage = lazy(() => import('./components/Pricing/PricingPage.jsx'));
 const ReportsPage = lazy(() => import('./components/Reports/ReportsPage.jsx'));
 const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
+const SalaryCalculator = lazy(() => import('./components/Tools/SalaryCalculator.jsx'));
+const FreelancerCalculator = lazy(() => import('./components/Tools/FreelancerCalculator.jsx'));
 const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {
@@ -251,7 +254,8 @@ function InnerAppContent() {
   }, [location.pathname, i18n]);
 
   useEffect(() => {
-    const indexablePaths = ['/', '/sq', '/pricing', '/terms', '/privacy'];
+    // Tools are public marketing/SEO surfaces — they must stay indexable.
+    const indexablePaths = ['/', '/sq', '/pricing', '/terms', '/privacy', ...TOOLS.map(tool => tool.path)];
     const indexable = indexablePaths.includes(location.pathname);
     let robots = document.querySelector('meta[name="robots"]');
     if (!robots) {
@@ -263,7 +267,7 @@ function InnerAppContent() {
   }, [location.pathname]);
 
   // Public routes that use the public layout (header + footer, no sidebar)
-  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy'];
+  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy', ...TOOLS.map(tool => tool.path)];
   const isOnboardingRoute = location.pathname === '/onboarding';
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
@@ -300,6 +304,8 @@ function InnerAppContent() {
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
+              <Route path="/tools/self-employed-calculator" element={<FreelancerCalculator />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/sq" element={<LandingPage />} />
               <Route path="*" element={<CatchAllRedirect />} />
@@ -338,6 +344,12 @@ function InnerAppContent() {
                 <PrivateRoute><Dashboard /></PrivateRoute>
               } />
               <Route path="/pricing" element={<PricingPage />} />
+              {/* Public tool, but also reachable while logged in — renders inside
+                  the authenticated shell rather than 404ing for signed-in users. */}
+              {/* Public tool, but also reachable while logged in — renders inside
+                  the authenticated shell rather than redirecting signed-in users. */}
+              <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
+              <Route path="/tools/self-employed-calculator" element={<FreelancerCalculator />} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<CatchAllRedirect />} />
             </Routes>

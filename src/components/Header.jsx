@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
+import ToolsNav from './ToolsNav.jsx';
 
 function BrandMark() {
   return (
@@ -40,6 +41,7 @@ export default function Header() {
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
+          <ToolsNav className={navLink} />
           {!accessToken && (
             <>
               {location.pathname !== '/pricing' && (
@@ -90,6 +92,10 @@ export default function Header() {
       {menuOpen && (
         <div className="md:hidden border-t border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card animate-in">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
+            <ToolsNav
+              className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
+              onNavigate={() => setMenuOpen(false)}
+            />
             {!accessToken ? (
               <>
                 <Link

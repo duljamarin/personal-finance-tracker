@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
+import { TOOLS } from '../lib/tools';
 import {
   TrendingUp, Target, PieChart, Activity, RefreshCw,
   Globe, BarChart3, Bell, Tag, FileText, Heart,
@@ -336,6 +337,9 @@ export default function LandingPage() {
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <FaqSection t={t} />
 
+      {/* ── FREE TOOLS ───────────────────────────────────────────────────────── */}
+      <ToolsSection t={t} />
+
       {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
       <FinalCtaSection t={t} />
 
@@ -643,6 +647,37 @@ function FaqSection({ t }) {
               q={t(`landing.faq.items.${key}.q`)}
               a={t(`landing.faq.items.${key}.a`)}
             />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ToolsSection({ t }) {
+  const [ref, visible] = useReveal(0.1);
+  return (
+    <section className="py-20 sm:py-24 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
+      <div
+        ref={ref}
+        className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+      >
+        <Eyebrow>{t('landing.tools.eyebrow')}</Eyebrow>
+        <SectionHeading className="mb-5">{t('landing.tools.title')}</SectionHeading>
+        <p className="text-base text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl">
+          {t('landing.tools.desc')}
+        </p>
+        {/* Maps over TOOLS so a new tool appears here with no edit to this file. */}
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          {TOOLS.map(tool => (
+            <Link
+              key={tool.path}
+              to={tool.path}
+              className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
+            >
+              {t(tool.labelKey)}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
+            </Link>
           ))}
         </div>
       </div>
