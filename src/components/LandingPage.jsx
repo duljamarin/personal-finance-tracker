@@ -668,13 +668,20 @@ function ToolsSection({ t }) {
         <p className="text-base text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl">
           {t('landing.tools.desc')}
         </p>
-        {/* Maps over TOOLS so a new tool appears here with no edit to this file. */}
+        {/* Maps over TOOLS so a new tool appears here with no edit to this file.
+            The first tool is the primary action (brand fill); the rest stay
+            secondary/outlined so the pair reads as a hierarchy rather than two
+            buttons competing for the same attention. */}
         <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-          {TOOLS.map(tool => (
+          {TOOLS.map((tool, i) => (
             <Link
               key={tool.path}
               to={toolPath(tool.path, i18n.language)}
-              className="group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
+              className={`group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-md transition-colors ${
+                i === 0
+                  ? 'bg-brand-600 hover:bg-brand-700 text-white'
+                  : 'border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
+              }`}
             >
               {t(tool.labelKey)}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
