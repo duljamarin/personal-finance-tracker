@@ -23,7 +23,13 @@ This document captures patterns to avoid when adding new UI to the landing page 
 - `dark:text-white/50`, `dark:text-white/55`, `dark:text-white/60`, `dark:text-white/65`, `dark:text-white/70`, `dark:text-white/75`
 - These render as gray and create the impression of a low-effort dark mode
 
-**Rule:** All text in dark mode should be `dark:text-white`. Use font-weight and size for hierarchy, not opacity. Exception: placeholder text in inputs (`dark:placeholder:text-white/40`) where lower contrast is intentional UX.
+**Rule:** All text in dark mode should be `dark:text-white`. Use font-weight and size for hierarchy, not opacity.
+
+**Scope — this rule is about TEXT.** Two intentional exceptions:
+- Input placeholders (`dark:placeholder:text-white/40`) — lower contrast is correct UX there.
+- Decorative/supporting **icons** (`dark:text-white/60`), which should sit behind the label they accompany rather than compete with it.
+
+Neither exception licenses dimming a sentence a user has to read.
 
 ### 3b. Grey body text to "soften" hierarchy (light mode)
 - Swapping `text-ink-muted` (`#2F2F2C`) for `text-ink-secondary` (`#44443F`) on body copy
@@ -104,9 +110,25 @@ change with it.
 | `shadow-xl` on demo frame | `box-shadow: 0 2px 16px rgba(0,0,0,0.08)` |
 | macOS traffic light dots | Empty space — URL bar only |
 | `animate-pulse` on decorative elements | Nothing |
+| `text-ink-secondary` on body copy | `text-ink-muted` + lighter font-weight |
+| `font-semibold` on button/FAQ labels | `font-medium` |
+| A new class to beat `!important` | Re-read the rule you are fighting |
+| "Bank-level security" | The actual mechanism, stated plainly |
 
 ---
 
 ## General heuristic
 
 If an element exists only to signal "this is interactive" or "this is live" rather than to show actual data or enable an action, remove it. Real products don't announce themselves.
+
+## Before/after discipline
+
+Every rule above describes a change that *felt* like an improvement to whoever
+made it. That is exactly why they need a check:
+
+1. **Read this file before the first edit**, not after someone objects.
+2. **Screenshot before and after** at the same viewport and DPR for any change
+   argued on appearance. Identical images mean revert, not ship.
+3. **Prefer removing over adding.** Most fixes here were deletions: a dot, a
+   badge, a grey, a class. Reach for subtraction first.
+4. **When a global rule blocks you, suspect your intent**, not the rule.
