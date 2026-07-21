@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import ToolsNav from './ToolsNav.jsx';
+import { localizedPath } from '../lib/tools';
 
 function BrandMark() {
   return (
@@ -20,7 +21,7 @@ function BrandMark() {
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { accessToken } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
 
   const navLink = 'px-3 py-2 text-sm font-medium text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors';
@@ -44,8 +45,8 @@ export default function Header() {
           <ToolsNav className={navLink} />
           {!accessToken && (
             <>
-              {location.pathname !== '/pricing' && (
-                <Link to="/pricing" className={navLink}>{t('nav.pricing')}</Link>
+              {location.pathname !== '/pricing' && location.pathname !== '/sq/pricing' && (
+                <Link to={localizedPath('/pricing', i18n.language)} className={navLink}>{t('nav.pricing')}</Link>
               )}
               {location.pathname !== '/login' && (
                 <Link to="/login" className={navLink}>{t('auth.login')}</Link>
@@ -93,13 +94,14 @@ export default function Header() {
         <div className="md:hidden border-t border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card animate-in">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
             <ToolsNav
+              variant="inline"
               className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
               onNavigate={() => setMenuOpen(false)}
             />
             {!accessToken ? (
               <>
                 <Link
-                  to="/pricing"
+                  to={localizedPath('/pricing', i18n.language)}
                   className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >

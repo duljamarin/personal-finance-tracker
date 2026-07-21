@@ -1279,7 +1279,9 @@
     "bestValue": "Vlera Më e Mirë",
     "reactivate": "Riaktivizo Abonimin",
     "updatePayment": "Përditëso Metodën e Pagesës",
-    "resumePlan": "Rifillo Abonimin"
+    "resumePlan": "Rifillo Abonimin",
+    "metaTitle": "Çmimet",
+    "metaDescription": "Një plan me gjithçka të përfshirë. Provoni Personal Finances falas për 7 ditë, pa kartë krediti."
   },
   "subscription": {
     "active": "Aktiv",

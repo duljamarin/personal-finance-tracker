@@ -6,13 +6,25 @@ import { useSubscription } from '../../context/SubscriptionContext';
 import { usePaddle } from '../../hooks/usePaddle';
 import { useToast } from '../../context/ToastContext';
 import { trackEvent } from '../../lib/analytics';
+import { useMetaTags } from '../../hooks/useMetaTags';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
 
 const YEARLY_PRICE_ID = import.meta.env.VITE_PADDLE_YEARLY_PRICE_ID;
 
+/**
+ * Both language variants are registered routes, so each must canonicalise to
+ * ITSELF and declare the other as its alternate. Pointing both at /pricing would
+ * de-index the Albanian URL that the language switcher now produces and shares.
+ */
+const HREFLANGS = [
+  { lang: 'en', href: 'https://personal-finances.app/pricing' },
+  { lang: 'sq', href: 'https://personal-finances.app/sq/pricing' },
+  { lang: 'x-default', href: 'https://personal-finances.app/pricing' },
+];
+
 export default function PricingPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { accessToken, user } = useAuth();
   const { subscription, isPremium, isTrialing, trialDaysLeft, trialEndsAt, hasHadTrial, startTrial } = useSubscription();
   const paddle = usePaddle();
@@ -20,6 +32,14 @@ export default function PricingPage() {
   const { addToast } = useToast();
   const checkoutInitiatedRef = useRef(false);
   const [trialLoading, setTrialLoading] = useState(false);
+
+  const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
+  useMetaTags({
+    title: `${t('pricing.metaTitle')} | Personal Finances`,
+    description: t('pricing.metaDescription'),
+    canonical: `https://personal-finances.app${isSq ? '/sq/pricing' : '/pricing'}`,
+    hreflangs: HREFLANGS,
+  });
 
   const trialTimeLabel = (() => {
     if (trialDaysLeft === 0 && trialEndsAt) {

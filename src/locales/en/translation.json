@@ -1279,7 +1279,9 @@
     "bestValue": "Best Value",
     "reactivate": "Reactivate Subscription",
     "updatePayment": "Update Payment Method",
-    "resumePlan": "Resume Subscription"
+    "resumePlan": "Resume Subscription",
+    "metaTitle": "Pricing",
+    "metaDescription": "One plan with everything included. Try Personal Finances free for 7 days, no card required."
   },
   "subscription": {
     "active": "Active",

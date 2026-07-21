@@ -39,6 +39,17 @@ export function toolPathVariants(path) {
 }
 
 /**
+ * Paths that have a real `/sq` twin registered in App.jsx. Tool paths come from
+ * TOOLS so adding a tool stays a single-entry change; `/pricing` is listed
+ * explicitly because it is not a tool. The landing pair is handled separately
+ * since `/` -> `/sq` is not a prefix operation.
+ *
+ * Adding a path here WITHOUT registering `/sq<path>` in App.jsx sends the user
+ * to the catch-all and back to the landing page — keep the two in sync.
+ */
+const SQ_PREFIXABLE = [...TOOLS.map((tool) => tool.path), '/pricing'];
+
+/**
  * Translate the CURRENT pathname into its equivalent in another language.
  *
  * The language switcher must move the user across URLs, not just flip the i18n
@@ -46,9 +57,10 @@ export function toolPathVariants(path) {
  * would immediately force the language back to Albanian, so switching to English
  * without changing the URL silently does nothing.
  *
- * Handles the landing pair (`/` <-> `/sq`) and any `/sq`-prefixed route.
- * Unprefixed non-landing routes (`/pricing`, `/dashboard`) have no localised
- * variant, so they are returned unchanged and only the i18n state changes.
+ * Handles the landing pair (`/` <-> `/sq`) plus every path in SQ_PREFIXABLE.
+ * Anything else (`/terms`, `/dashboard`) has no localised variant, so it is
+ * returned unchanged and only the i18n state changes. Prefixing those would hit
+ * the `*` catch-all and redirect the user to the landing page.
  *
  * @param {string} pathname current location.pathname
  * @param {string} lang target language ("sq" | "en")
@@ -61,7 +73,13 @@ export function localizedPath(pathname, lang) {
   if (toSq) {
     if (isSqPath) return pathname;              // already Albanian
     if (pathname === '/') return '/sq';         // landing
-    return `/sq${pathname}`;
+    // Only routes that actually have a `/sq` twin may be prefixed. Anything else
+    // (/pricing, /terms, /dashboard) has no Albanian route, so prefixing it lands
+    // on the catch-all and bounces the user to the landing page.
+    if (SQ_PREFIXABLE.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+      return `/sq${pathname}`;
+    }
+    return pathname;                            // no localised variant
   }
 
   if (!isSqPath) return pathname;               // already English

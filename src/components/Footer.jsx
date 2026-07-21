@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { localizedPath } from '../lib/tools';
 
 function BrandMark() {
   return (
@@ -13,7 +14,7 @@ function BrandMark() {
 }
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const year = new Date().getFullYear();
 
   return (
@@ -43,7 +44,7 @@ export default function Footer() {
             </p>
             <ul className="space-y-3">
               <li>
-                <Link to="/pricing" className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to={localizedPath('/pricing', i18n.language)} className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.pricing')}
                 </Link>
               </li>

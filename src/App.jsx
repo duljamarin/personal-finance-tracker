@@ -256,7 +256,9 @@ function InnerAppContent() {
     // actually on (and the one they shared). Authenticated app routes are
     // unprefixed by design, so they keep following the stored preference.
     const isLocalizablePublicPath =
-      location.pathname === '/' || location.pathname.startsWith('/tools/');
+      location.pathname === '/'
+      || location.pathname.startsWith('/tools/')
+      || location.pathname === '/pricing';
     if (!urlLang && isLocalizablePublicPath) urlLang = 'en';
 
     if (urlLang && i18n.language !== urlLang && typeof i18n.changeLanguage === 'function') i18n.changeLanguage(urlLang);
@@ -265,7 +267,7 @@ function InnerAppContent() {
 
   useEffect(() => {
     // Tools are public marketing/SEO surfaces — they must stay indexable.
-    const indexablePaths = ['/', '/sq', '/pricing', '/terms', '/privacy', ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
+    const indexablePaths = ['/', '/sq', '/pricing', '/sq/pricing', '/terms', '/privacy', ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
     const indexable = indexablePaths.includes(location.pathname);
     let robots = document.querySelector('meta[name="robots"]');
     if (!robots) {
@@ -282,7 +284,8 @@ function InnerAppContent() {
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
     || (!accessToken && location.pathname === '/sq')
-    || (!accessToken && location.pathname === '/pricing');
+    || (!accessToken && location.pathname === '/pricing')
+    || (!accessToken && location.pathname === '/sq/pricing');
 
   return (
     <ErrorBoundary>
@@ -312,6 +315,7 @@ function InnerAppContent() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/auth/confirmed" element={<EmailConfirmed />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/sq/pricing" element={<PricingPage />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
@@ -356,6 +360,7 @@ function InnerAppContent() {
                 <PrivateRoute><Dashboard /></PrivateRoute>
               } />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/sq/pricing" element={<PricingPage />} />
               {/* Public tool, but also reachable while logged in — renders inside
                   the authenticated shell rather than 404ing for signed-in users. */}
               {/* Public tool, but also reachable while logged in — renders inside
