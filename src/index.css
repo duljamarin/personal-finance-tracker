@@ -180,6 +180,7 @@
 .dark input::placeholder,
 .dark textarea::placeholder    { color: rgba(255,255,255,0.4) !important; }
 
+
 /* ── Onboarding ProgressBar labels & step counter ──────────────────────────*/
 .progressbar-label--active      { color: #0B5D3B !important; }
 .progressbar-label--inactive    { color: rgba(47,47,44,0.5) !important; }

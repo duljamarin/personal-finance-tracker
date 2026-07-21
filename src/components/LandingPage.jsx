@@ -172,9 +172,9 @@ function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = fal
       className={`transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} grid lg:grid-cols-2 gap-0 rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden ${className}`}
     >
       <div className={`p-8 sm:p-10 flex flex-col justify-center ${flip ? 'lg:order-2' : ''}`}>
-        <p className="text-[13px] font-medium text-ink-muted dark:text-white/70 mb-3">{eyebrow}</p>
+        <p className="text-[13px] font-medium text-ink-muted dark:text-white mb-3">{eyebrow}</p>
         <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink-primary dark:text-white leading-tight mb-4">{title}</h3>
-        <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">{desc}</p>
+        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">{desc}</p>
       </div>
       <div className={`border-t lg:border-t-0 ${flip ? 'lg:order-1 lg:border-r' : 'lg:border-l'} border-surface-hairline dark:border-surface-dark-hairline bg-surface-page dark:bg-surface-dark-page p-8 flex flex-col justify-center`}>
         {preview}
@@ -223,7 +223,7 @@ function FaqItem({ q, a }) {
         }
       </button>
       {open && (
-        <p className="pb-5 text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">{a}</p>
+        <p className="pb-5 text-base font-normal text-ink-muted dark:text-white leading-relaxed">{a}</p>
       )}
     </div>
   );
@@ -282,7 +282,7 @@ export default function LandingPage() {
             </h1>
 
             <p
-              className="animate-hero-in text-lg sm:text-xl font-normal text-ink-secondary dark:text-white/70 leading-relaxed mb-8 max-w-xl mx-auto"
+              className="animate-hero-in text-lg sm:text-xl font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl mx-auto"
               style={{ animationDelay: '140ms' }}
             >
               {t('landing.hero.subtitle')}
@@ -304,7 +304,7 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            <div className="animate-hero-in flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white/70" style={{ animationDelay: '340ms' }}>
+            <div className="animate-hero-in flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white" style={{ animationDelay: '340ms' }}>
               {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
                 <span key={label} className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
@@ -489,7 +489,7 @@ function HowItWorksSection({ t }) {
                 <span className="text-brand-600 dark:text-brand-400 tabular-nums mr-2">{num}.</span>
                 {t(`landing.howItWorks.${key}.title`)}
               </h3>
-              <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">
+              <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">
                 {t(`landing.howItWorks.${key}.desc`)}
               </p>
             </div>
@@ -520,7 +520,7 @@ function PrivacySection({ t }) {
           <div className="lg:sticky lg:top-24">
             <Eyebrow>{t('landing.privacy.eyebrow')}</Eyebrow>
             <SectionHeading className="mb-5">{t('landing.privacy.title')}</SectionHeading>
-            <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">
+            <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">
               {t('landing.privacy.desc')}
             </p>
           </div>
@@ -678,7 +678,7 @@ function DataPrivacySection({ t }) {
       >
         <Eyebrow>{t('landing.dataPrivacy.eyebrow')}</Eyebrow>
         <SectionHeading className="mb-5 max-w-2xl">{t('landing.dataPrivacy.title')}</SectionHeading>
-        <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed mb-12 max-w-xl">
+        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed mb-12 max-w-xl">
           {t('landing.dataPrivacy.desc')}
         </p>
 
@@ -691,7 +691,7 @@ function DataPrivacySection({ t }) {
                 <h3 className="font-medium text-base text-ink-primary dark:text-white mb-1.5">
                   {t(`landing.dataPrivacy.points.${key}.title`)}
                 </h3>
-                <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">
+                <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">
                   {t(`landing.dataPrivacy.points.${key}.desc`)}
                 </p>
               </div>
@@ -714,7 +714,7 @@ function ToolsSection({ t }) {
       >
         <Eyebrow>{t('landing.tools.eyebrow')}</Eyebrow>
         <SectionHeading className="mb-5">{t('landing.tools.title')}</SectionHeading>
-        <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed mb-8 max-w-xl">
+        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl">
           {t('landing.tools.desc')}
         </p>
         {/* Maps over TOOLS so a new tool appears here with no edit to this file.
@@ -771,7 +771,7 @@ function FinalCtaSection({ t }) {
             {t('landing.finalCta.secondary')}
           </Link>
         </div>
-        <p className="text-sm text-ink-muted dark:text-white/70">{t('landing.finalCta.trustLine')}</p>
+        <p className="text-sm text-ink-muted dark:text-white">{t('landing.finalCta.trustLine')}</p>
       </div>
     </section>
   );
