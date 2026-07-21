@@ -6,7 +6,15 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // language persists across OAuth redirects that land back on '/'.
 const pathHasLang = window.location.pathname.startsWith('/sq');
 const storedLang = localStorage.getItem('i18nextLng');
-const pathLang = pathHasLang ? 'sq' : (storedLang === 'sq' ? 'sq' : 'en');
+// On a localizable public page (landing or a /tools/... page) the URL is
+// authoritative: no `/sq` prefix means English, even if localStorage says "sq".
+// Otherwise a shared English link would flip to Albanian for anyone who had
+// previously browsed the site in Albanian.
+const onLocalizablePublicPath =
+  window.location.pathname === '/' || window.location.pathname.startsWith('/tools/');
+const pathLang = pathHasLang
+  ? 'sq'
+  : (onLocalizablePublicPath ? 'en' : (storedLang === 'sq' ? 'sq' : 'en'));
 
 async function loadTranslation(lang) {
   if (lang === 'sq') {

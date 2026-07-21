@@ -248,7 +248,17 @@ function InnerAppContent() {
 
   useEffect(() => {
     const seg = location.pathname.split('/')[1];
-    const urlLang = seg === 'sq' ? 'sq' : seg === 'en' ? 'en' : null;
+    let urlLang = seg === 'sq' ? 'sq' : seg === 'en' ? 'en' : null;
+
+    // `/sq` is the canonical Albanian prefix, so on a PUBLIC page its absence
+    // positively means English — otherwise a stored "sq" in localStorage would
+    // survive a reload of /tools/... and quietly override the URL the user is
+    // actually on (and the one they shared). Authenticated app routes are
+    // unprefixed by design, so they keep following the stored preference.
+    const isLocalizablePublicPath =
+      location.pathname === '/' || location.pathname.startsWith('/tools/');
+    if (!urlLang && isLocalizablePublicPath) urlLang = 'en';
+
     if (urlLang && i18n.language !== urlLang && typeof i18n.changeLanguage === 'function') i18n.changeLanguage(urlLang);
     document.documentElement.lang = urlLang || (i18n.language || 'en').slice(0, 2);
   }, [location.pathname, i18n]);

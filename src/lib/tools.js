@@ -37,3 +37,34 @@ export function toolPath(path, lang) {
 export function toolPathVariants(path) {
   return [path, `/sq${path}`];
 }
+
+/**
+ * Translate the CURRENT pathname into its equivalent in another language.
+ *
+ * The language switcher must move the user across URLs, not just flip the i18n
+ * state: on `/sq/...` the App-level effect re-reads the path on every render and
+ * would immediately force the language back to Albanian, so switching to English
+ * without changing the URL silently does nothing.
+ *
+ * Handles the landing pair (`/` <-> `/sq`) and any `/sq`-prefixed route.
+ * Unprefixed non-landing routes (`/pricing`, `/dashboard`) have no localised
+ * variant, so they are returned unchanged and only the i18n state changes.
+ *
+ * @param {string} pathname current location.pathname
+ * @param {string} lang target language ("sq" | "en")
+ * @returns {string} pathname to navigate to
+ */
+export function localizedPath(pathname, lang) {
+  const toSq = String(lang || '').toLowerCase().startsWith('sq');
+  const isSqPath = pathname === '/sq' || pathname.startsWith('/sq/');
+
+  if (toSq) {
+    if (isSqPath) return pathname;              // already Albanian
+    if (pathname === '/') return '/sq';         // landing
+    return `/sq${pathname}`;
+  }
+
+  if (!isSqPath) return pathname;               // already English
+  const stripped = pathname.slice('/sq'.length); // "/sq/tools/x" -> "/tools/x"
+  return stripped || '/';                        // "/sq" -> "/"
+}
