@@ -216,7 +216,7 @@ function FaqItem({ q, a }) {
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
       >
-        <span className="font-semibold text-base text-ink-primary dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{q}</span>
+        <span className="font-medium text-base text-ink-primary dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{q}</span>
         {open
           ? <ChevronUp className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2} />
           : <ChevronDown className="w-4 h-4 text-ink-muted dark:text-white flex-shrink-0" strokeWidth={2} />
@@ -291,14 +291,14 @@ export default function LandingPage() {
             <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '240ms' }}>
               <Link
                 to="/register"
-                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-base"
+                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.getStarted')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
               <Link
                 to="/login"
-                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-semibold rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
+                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
@@ -336,6 +336,9 @@ export default function LandingPage() {
 
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <FaqSection t={t} />
+
+      {/* ── DATA PRIVACY ─────────────────────────────────────────────────────── */}
+      <DataPrivacySection t={t} />
 
       {/* ── FREE TOOLS ───────────────────────────────────────────────────────── */}
       <ToolsSection t={t} />
@@ -587,7 +590,7 @@ function PricingPreviewSection({ t }) {
         <div className="text-center">
           <Link
             to="/pricing"
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-sm"
+            className="group inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-sm"
           >
             {t('landing.pricingPreview.cta')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
@@ -629,7 +632,7 @@ function FounderSection({ t }) {
 
 function FaqSection({ t }) {
   const [ref, visible] = useReveal(0.1);
-  const faqKeys = ['free','safe','currencies','cancel','advice','multidevice'];
+  const faqKeys = ['free','safe','encrypted','currencies','cancel','advice','multidevice'];
   return (
     <section className="py-24 sm:py-32 bg-surface-page dark:bg-surface-dark-page">
       <div
@@ -648,6 +651,52 @@ function FaqSection({ t }) {
               a={t(`landing.faq.items.${key}.a`)}
             />
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Data-privacy section.
+ *
+ * The claims here are load-bearing and must stay true to the implementation:
+ * amounts really are encrypted client-side (see utils/crypto/fieldMap.js,
+ * ENCRYPT_AMOUNTS) with a key held only by the user. If that ever changes,
+ * this copy has to change with it.
+ */
+function DataPrivacySection({ t }) {
+  const [ref, visible] = useReveal(0.1);
+  const points = ['device', 'noone', 'yours'];
+  const icons = { device: Lock, noone: Eye, yours: Download };
+
+  return (
+    <section className="py-20 sm:py-24 bg-surface-page dark:bg-surface-dark-page">
+      <div
+        ref={ref}
+        className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+      >
+        <Eyebrow>{t('landing.dataPrivacy.eyebrow')}</Eyebrow>
+        <SectionHeading className="mb-5 max-w-2xl">{t('landing.dataPrivacy.title')}</SectionHeading>
+        <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed mb-12 max-w-xl">
+          {t('landing.dataPrivacy.desc')}
+        </p>
+
+        <div className="grid gap-8 sm:grid-cols-3">
+          {points.map((key) => {
+            const Icon = icons[key];
+            return (
+              <div key={key} className="pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
+                <Icon className="w-5 h-5 text-brand-600 dark:text-brand-400 mb-3" strokeWidth={1.8} />
+                <h3 className="font-medium text-base text-ink-primary dark:text-white mb-1.5">
+                  {t(`landing.dataPrivacy.points.${key}.title`)}
+                </h3>
+                <p className="text-base font-normal text-ink-secondary dark:text-white/70 leading-relaxed">
+                  {t(`landing.dataPrivacy.points.${key}.desc`)}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -677,7 +726,7 @@ function ToolsSection({ t }) {
             <Link
               key={tool.path}
               to={toolPath(tool.path, i18n.language)}
-              className={`group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded-md transition-colors ${
+              className={`group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium rounded-md transition-colors ${
                 i === 0
                   ? 'bg-brand-600 hover:bg-brand-700 text-white'
                   : 'border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
@@ -710,7 +759,7 @@ function FinalCtaSection({ t }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
           <Link
             to="/register"
-            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-md transition-colors text-base"
+            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
           >
             {t('landing.finalCta.button')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />

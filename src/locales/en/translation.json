@@ -850,6 +850,10 @@
         "multidevice": {
           "q": "Does it work on mobile?",
           "a": "Yes, the app is fully responsive and works in any modern browser on phone, tablet, or desktop. There is no native app - it runs in your browser."
+        },
+        "encrypted": {
+          "q": "Can your staff see my amounts?",
+          "a": "No. Amounts, budgets, goals and net worth are encrypted on your device with a key only you hold. What reaches the server is encrypted text, so we cannot read it either. If you lose your key and your recovery code, we cannot restore the data either."
         }
       }
     },
@@ -860,6 +864,25 @@
       "button": "Create free account",
       "secondary": "See pricing",
       "trustLine": "Free forever plan · No credit card · Cancel paid plan anytime"
+    },
+    "dataPrivacy": {
+      "eyebrow": "Data privacy",
+      "title": "Nobody can read your numbers",
+      "desc": "Transaction amounts, budgets, goals and net worth are encrypted on your device before they ever leave it. The server only ever stores unreadable text.",
+      "points": {
+        "device": {
+          "title": "Encrypted on your device",
+          "desc": "The key is generated on your device and never leaves it. All we receive is ciphertext."
+        },
+        "noone": {
+          "title": "Not even we can see them",
+          "desc": "Without your key the data is unreadable, including to our own team. That is not a policy promise, it is maths."
+        },
+        "yours": {
+          "title": "Always yours",
+          "desc": "Export everything to CSV or delete it all, any time. No questions, no delays."
+        }
+      }
     }
   },
   "currency": {

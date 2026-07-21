@@ -850,6 +850,10 @@
         "multidevice": {
           "q": "A funksionon në celular?",
           "a": "Po, aplikacioni është plotësisht responsive dhe funksionon në çdo shfletues modern - celular, tablet ose desktop. Nuk ka aplikacion nativ - funksionon në shfletues."
+        },
+        "encrypted": {
+          "q": "A mund t'i shohë stafi juaj shumat e mia?",
+          "a": "Jo. Shumat, buxhetet, objektivat dhe pasuria neto enkriptohen në pajisjen tënde me një çelës që e mban vetëm ti. Te serveri mbërrin tekst i enkriptuar, ndaj as ne nuk mund ta lexojmë. Nëse humbet çelësin dhe kodin e rikuperimit, as ne nuk mund t'i rikthejmë."
         }
       }
     },
@@ -860,6 +864,25 @@
       "button": "Krijoni llogari falas",
       "secondary": "Shihni çmimet",
       "trustLine": "Plan falas përgjithmonë · Pa kartë krediti · Anuloni planin me pagesë kurdo"
+    },
+    "dataPrivacy": {
+      "eyebrow": "Privatësia e të dhënave",
+      "title": "Shifrat e tua nuk i lexon dot askush",
+      "desc": "Shumat e transaksioneve, buxhetet, objektivat dhe pasuria neto enkriptohen në pajisjen tënde përpara se të nisen. Serveri ruan vetëm tekst të palexueshëm.",
+      "points": {
+        "device": {
+          "title": "Enkriptohen te ti, jo te ne",
+          "desc": "Çelësi krijohet në pajisjen tënde dhe nuk largohet kurrë prej saj. Ne marrim vetëm ciphertext."
+        },
+        "noone": {
+          "title": "As ne nuk i shohim",
+          "desc": "Pa çelësin tënd, të dhënat janë të palexueshme edhe për ekipin tonë. Nuk është premtim politike, është matematikë."
+        },
+        "yours": {
+          "title": "Gjithmonë të tuat",
+          "desc": "Eksportoji në CSV ose fshiji të gjitha kurdo. Pa pyetje, pa vonesa."
+        }
+      }
     }
   },
   "currency": {
