@@ -25,6 +25,18 @@ This document captures patterns to avoid when adding new UI to the landing page 
 
 **Rule:** All text in dark mode should be `dark:text-white`. Use font-weight and size for hierarchy, not opacity. Exception: placeholder text in inputs (`dark:placeholder:text-white/40`) where lower contrast is intentional UX.
 
+### 3b. Grey body text to "soften" hierarchy (light mode)
+- Swapping `text-ink-muted` (`#2F2F2C`) for `text-ink-secondary` (`#44443F`) on body copy
+- Any mid-grey applied to running text so it "recedes" behind the heading
+
+This is the light-mode twin of rule 3. It looks like a considered choice and is
+not: the reader registers washed-out grey text, not hierarchy.
+
+**Rule:** Body copy stays `text-ink-muted` / `dark:text-white`. Build hierarchy
+with **font-weight, size, and spacing** — the heading is already 700 at 3.5rem;
+it does not need the paragraph dimmed to win. `ink-secondary` exists for
+non-text chrome, not for paragraphs.
+
 ### 4. Over-designed mockup frames
 - `shadow-xl`, `shadow-2xl`, heavy drop shadows on demo containers
 - Multiple stacked decorative borders or gradients around screenshots
@@ -36,6 +48,49 @@ This document captures patterns to avoid when adding new UI to the landing page 
 - Any "browser" bar element that doesn't show just the URL
 
 **Rule:** Minimal browser bar = URL text only, neutral background, no dots, no icons, no trailing labels.
+
+### 6. Semibold everywhere
+- `font-semibold` (600) on button labels, FAQ questions, table headers, list items
+- Inter Tight at 600 is heavy for UI controls; a screen where every label is 600
+  has no hierarchy left — everything shouts, so nothing does
+
+**Rule:** `font-medium` (500) for button labels, form labels, accordion
+questions, and table headers. Reserve 600+ for headings and focal numbers.
+
+### 7. Fighting `!important` with a new escape-hatch class
+- Inventing `.ink-soft`, `.text-override`, `.force-*` to defeat the dark-mode
+  `!important` block in `index.css`
+- Each one is a private exception that the next person will not know about
+
+**Rule:** If a global rule blocks what you want, that rule is usually right and
+the intent is usually wrong — re-read the principle before adding a bypass.
+Never add a class whose only purpose is to out-specify project CSS.
+
+### 8. Claiming a visual fix without comparing screenshots
+- Changing `font-smoothing`, letter-spacing, or a shadow and asserting it "fixes"
+  a rendering complaint
+- These often produce **zero** measurable difference; the change survives in the
+  codebase as cargo cult
+
+**Rule:** Any change justified by "it looks better" must be verified with a real
+before/after screenshot at the same viewport and DPR. If the two images are
+indistinguishable, revert it — do not ship it with a confident comment.
+
+### 9. Decorative icons that repeat the adjacent label
+- A lock icon next to "Encrypted", a chart icon next to "Reports"
+- Fine when it aids scanning in a grid; noise when it merely restates the text
+
+**Rule:** An icon must add recognition speed, not decoration. If removing it
+loses nothing, remove it.
+
+### 10. Copy that overstates what the product does
+- "Bank-level security", "AI-powered", "military-grade encryption"
+- Marketing superlatives that the implementation cannot back
+
+**Rule:** Describe the mechanism, not the adjective. "Encrypted on your device
+with a key only you hold" beats "bank-level security" — it is specific, true,
+and verifiable in `utils/crypto/fieldMap.js`. If a claim changes, the copy must
+change with it.
 
 ---
 
