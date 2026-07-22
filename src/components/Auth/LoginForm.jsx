@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { localizedPath } from '../../lib/tools';
 import { supabase } from '../../utils/supabaseClient';
 import PasswordInput from '../UI/PasswordInput';
 import Input from '../UI/Input';
@@ -195,7 +196,7 @@ export default function LoginForm() {
                 </span>
                 <span className="text-sm text-ink-primary dark:text-white">{t('auth.rememberMe')}</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
+              <Link to={localizedPath('/forgot-password', i18n.language)} className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
                 {t('auth.forgotPassword')}
               </Link>
             </div>
@@ -218,7 +219,7 @@ export default function LoginForm() {
 
         <p className="text-center text-sm text-ink-muted dark:text-white mt-8">
           {t('auth.noAccount')}{' '}
-          <Link to="/register" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.createAccount')}</Link>
+          <Link to={localizedPath('/register', i18n.language)} className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.createAccount')}</Link>
         </p>
       </div>
     </div>

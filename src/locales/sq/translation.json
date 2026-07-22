@@ -451,7 +451,9 @@
       "p2": "Kontributet janë fikse: {{social}} Lekë sigurime shoqërore plus {{health}} Lekë shëndetësore, gjithsej {{contrib}} Lekë në muaj.",
       "p3": "Me {{admin}} Lekë shpenzime administrative, të mbeten {{net}} Lekë nga {{income}} Lekë, domethënë një normë efektive prej vetëm {{rate}}."
     },
-    "disclaimer": "Rezultati është vetëm orientues. Verifikojeni me një kontabilist. Bazuar në ligjin shqiptar për vitin {{year}}."
+    "disclaimer": "Rezultati është vetëm orientues. Verifikojeni me një kontabilist. Bazuar në ligjin shqiptar për vitin {{year}}.",
+    "ctaText": "Doni të ndiqni të ardhurat dhe shpenzimet tuaja si i vetëpunësuar, të gjitha në një vend?",
+    "ctaButton": "Krijo një llogari falas"
   },
   "salaryCalc": {
     "eyebrow": "Mjete",

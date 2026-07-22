@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
-import { TOOLS, toolPath } from '../../lib/tools';
+import { TOOLS, toolPath, localizedPath } from '../../lib/tools';
 import {
   determineTreatment,
   zeroRegimeMonthly,
@@ -470,6 +470,18 @@ export default function FreelancerCalculator() {
           {t('freelancerCalc.disclaimer', { year: config.YEAR })}
         </p>
       </section>
+
+      <div className="mt-10 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
+        <p className="text-body text-ink-muted dark:text-white/80 mb-4">
+          {t('freelancerCalc.ctaText')}
+        </p>
+        <Link
+          to={localizedPath('/register', i18n.language)}
+          className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
+        >
+          {t('freelancerCalc.ctaButton')}
+        </Link>
+      </div>
     </div>
   );
 }

@@ -451,7 +451,9 @@
       "p2": "Contributions are fixed: {{social}} ALL social insurance plus {{health}} ALL health, {{contrib}} ALL per month in total.",
       "p3": "With {{admin}} ALL of admin costs, you keep {{net}} ALL out of {{income}} ALL, an effective rate of just {{rate}}."
     },
-    "disclaimer": "This result is indicative only. Please verify it with an accountant. Based on Albanian law for {{year}}."
+    "disclaimer": "This result is indicative only. Please verify it with an accountant. Based on Albanian law for {{year}}.",
+    "ctaText": "Want to track your income and expenses as a freelancer, all in one place?",
+    "ctaButton": "Create a free account"
   },
   "salaryCalc": {
     "eyebrow": "Tools",

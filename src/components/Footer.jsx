@@ -49,12 +49,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/register" className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to={localizedPath('/register', i18n.language)} className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.register')}
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to={localizedPath('/login', i18n.language)} className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.login')}
                 </Link>
               </li>

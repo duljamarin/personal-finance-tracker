@@ -47,7 +47,7 @@ export function toolPathVariants(path) {
  * Adding a path here WITHOUT registering `/sq<path>` in App.jsx sends the user
  * to the catch-all and back to the landing page — keep the two in sync.
  */
-const SQ_PREFIXABLE = [...TOOLS.map((tool) => tool.path), '/pricing'];
+const SQ_PREFIXABLE = [...TOOLS.map((tool) => tool.path), '/pricing', '/login', '/register', '/forgot-password'];
 
 /**
  * Translate the CURRENT pathname into its equivalent in another language.

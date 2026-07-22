@@ -2,7 +2,7 @@ import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
-import { TOOLS, toolPath } from '../lib/tools';
+import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import {
   TrendingUp, Target, PieChart, Activity, RefreshCw,
   Globe, BarChart3, Bell, Tag, FileText, Heart,
@@ -290,14 +290,14 @@ export default function LandingPage() {
 
             <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '240ms' }}>
               <Link
-                to="/register"
+                to={localizedPath('/register', i18n.language)}
                 className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.getStarted')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
               <Link
-                to="/login"
+                to={localizedPath('/login', i18n.language)}
                 className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
@@ -344,7 +344,7 @@ export default function LandingPage() {
       <ToolsSection t={t} />
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
-      <FinalCtaSection t={t} />
+      <FinalCtaSection t={t} lang={i18n.language} />
 
     </div>
   );
@@ -742,7 +742,7 @@ function ToolsSection({ t }) {
   );
 }
 
-function FinalCtaSection({ t }) {
+function FinalCtaSection({ t, lang }) {
   const [ref, visible] = useReveal(0.1);
   return (
     <section className="relative overflow-hidden bg-white dark:bg-surface-dark-card border-t border-surface-hairline dark:border-surface-dark-hairline py-28 sm:py-36">
@@ -758,14 +758,14 @@ function FinalCtaSection({ t }) {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
           <Link
-            to="/register"
+            to={localizedPath('/register', lang)}
             className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
           >
             {t('landing.finalCta.button')}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
           </Link>
           <Link
-            to="/pricing"
+            to={localizedPath('/pricing', lang)}
             className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-8 py-3.5 rounded-md border border-surface-outline dark:border-white/20 text-ink-primary dark:text-white hover:border-ink-muted/50 dark:hover:border-white/50 font-medium text-base transition-colors"
           >
             {t('landing.finalCta.secondary')}

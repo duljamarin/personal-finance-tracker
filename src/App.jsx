@@ -258,7 +258,10 @@ function InnerAppContent() {
     const isLocalizablePublicPath =
       location.pathname === '/'
       || location.pathname.startsWith('/tools/')
-      || location.pathname === '/pricing';
+      || location.pathname === '/pricing'
+      || location.pathname === '/login'
+      || location.pathname === '/register'
+      || location.pathname === '/forgot-password';
     if (!urlLang && isLocalizablePublicPath) urlLang = 'en';
 
     if (urlLang && i18n.language !== urlLang && typeof i18n.changeLanguage === 'function') i18n.changeLanguage(urlLang);
@@ -279,7 +282,7 @@ function InnerAppContent() {
   }, [location.pathname]);
 
   // Public routes that use the public layout (header + footer, no sidebar)
-  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy', ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
+  const publicRoutes = ['/login', '/sq/login', '/register', '/sq/register', '/forgot-password', '/sq/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy', ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
   const isOnboardingRoute = location.pathname === '/onboarding';
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
@@ -310,8 +313,11 @@ function InnerAppContent() {
           <Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[70vh]" />}>
             <Routes>
               <Route path="/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
+              <Route path="/sq/login" element={accessToken ? <Navigate to="/dashboard" replace /> : <LoginForm />} />
               <Route path="/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
+              <Route path="/sq/register" element={accessToken ? <Navigate to="/dashboard" replace /> : <RegisterForm />} />
               <Route path="/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
+              <Route path="/sq/forgot-password" element={accessToken ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/auth/confirmed" element={<EmailConfirmed />} />
               <Route path="/pricing" element={<PricingPage />} />

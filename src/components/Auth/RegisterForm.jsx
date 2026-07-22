@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useCrypto } from '../../context/CryptoContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { localizedPath } from '../../lib/tools';
 import { supabase } from '../../utils/supabaseClient';
 import PasswordInput from '../UI/PasswordInput';
 import Input from '../UI/Input';
@@ -316,7 +317,7 @@ export default function RegisterForm() {
 
         <p className="text-center text-sm text-ink-muted dark:text-white mt-8">
           {t('auth.hasAccount')}{' '}
-          <Link to="/login" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.signIn')}</Link>
+          <Link to={localizedPath('/login', i18n.language)} className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.signIn')}</Link>
         </p>
       </div>
 

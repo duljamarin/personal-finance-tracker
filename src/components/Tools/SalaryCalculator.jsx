@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
-import { toolPath } from '../../lib/tools';
+import { toolPath, localizedPath } from '../../lib/tools';
 import {
   fromGross,
   grossFromNet,
@@ -554,7 +554,7 @@ export default function SalaryCalculator() {
           {t('salaryCalc.ctaText')}
         </p>
         <Link
-          to="/register"
+          to={localizedPath('/register', i18n.language)}
           className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
         >
           {t('salaryCalc.ctaButton')}

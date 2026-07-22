@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
+import { localizedPath } from '../../lib/tools';
 import Input from '../UI/Input';
 
 // Defined outside the component: when it lived inside ForgotPassword(), a new
@@ -18,7 +19,7 @@ const Shell = ({ children }) => (
 );
 
 export default function ForgotPassword() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -69,7 +70,7 @@ export default function ForgotPassword() {
             {t('auth.resetEmailSent')}
           </p>
           <Link
-            to="/login"
+            to={localizedPath('/login', i18n.language)}
             className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

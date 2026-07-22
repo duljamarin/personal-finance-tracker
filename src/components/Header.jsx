@@ -48,12 +48,12 @@ export default function Header() {
               {location.pathname !== '/pricing' && location.pathname !== '/sq/pricing' && (
                 <Link to={localizedPath('/pricing', i18n.language)} className={navLink}>{t('nav.pricing')}</Link>
               )}
-              {location.pathname !== '/login' && (
-                <Link to="/login" className={navLink}>{t('auth.login')}</Link>
+              {location.pathname !== '/login' && location.pathname !== '/sq/login' && (
+                <Link to={localizedPath('/login', i18n.language)} className={navLink}>{t('auth.login')}</Link>
               )}
-              {location.pathname !== '/register' && (
+              {location.pathname !== '/register' && location.pathname !== '/sq/register' && (
                 <Link
-                  to="/register"
+                  to={localizedPath('/register', i18n.language)}
                   className="ml-1 px-5 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30"
                 >
                   {t('auth.register')}
@@ -108,14 +108,14 @@ export default function Header() {
                   {t('nav.pricing')}
                 </Link>
                 <Link
-                  to="/login"
+                  to={localizedPath('/login', i18n.language)}
                   className="px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {t('auth.login')}
                 </Link>
                 <Link
-                  to="/register"
+                  to={localizedPath('/register', i18n.language)}
                   className="mx-1 mt-1 px-3 py-2.5 text-sm font-medium text-center text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors shadow-sm shadow-brand-500/20"
                   onClick={() => setMenuOpen(false)}
                 >
