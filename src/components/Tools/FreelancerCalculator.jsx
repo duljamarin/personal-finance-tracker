@@ -173,7 +173,7 @@ export default function FreelancerCalculator() {
         inLanguage: i18n.language?.startsWith('sq') ? 'sq' : 'en',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
         isPartOf: {
-          '@type': 'WebApplication',
+          '@type': 'WebSite',
           name: 'Personal Finance Tracker',
           url: 'https://personal-finances.app/',
         },
