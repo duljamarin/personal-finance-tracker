@@ -30,7 +30,9 @@
       "label": "Tools",
       "salaryCalculator": "Salary calculator",
       "freelancerCalculator": "Self-employed calculator",
-      "loanCalculator": "Loan calculator"
+      "loanCalculator": "Loan calculator",
+      "allTools": "All tools",
+      "toggle": "Show tools menu"
     }
   },
   "common": {
@@ -393,6 +395,20 @@
       "nov": "Nov",
       "dec": "Dec"
     }
+  },
+  "toolsIndex": {
+    "eyebrow": "Free tools",
+    "title": "Free calculators for Albania",
+    "intro": "Accurate, free calculators built around Albanian rules. No signup, no limits. Pick the one you need.",
+    "metaTitle": "Free Financial Calculators for Albania",
+    "metaDescription": "Free calculators for Albania: net and gross salary, self-employed take-home, and loan and mortgage installments. No signup, no limits.",
+    "cards": {
+      "salary": "Net pay from gross, gross from net, and the full employer cost, with income tax and social and health insurance.",
+      "freelancer": "Your take-home as a freelancer, with the 0% profit tax, the fixed monthly contributions and the VAT threshold.",
+      "loan": "Monthly installment on a loan or mortgage, total interest, a fixed then variable rate, rate rises and early repayment."
+    },
+    "ctaText": "Want to track your income, spending and goals in one place, not just calculate them?",
+    "ctaButton": "Create a free account"
   },
   "freelancerCalc": {
     "eyebrow": "Tools",

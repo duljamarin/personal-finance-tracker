@@ -30,7 +30,9 @@
       "label": "Mjete",
       "salaryCalculator": "Kalkulator i pagës",
       "freelancerCalculator": "Kalkulator për të vetëpunësuarit",
-      "loanCalculator": "Kalkulator kredie"
+      "loanCalculator": "Kalkulator kredie",
+      "allTools": "Të gjitha mjetet",
+      "toggle": "Shfaq menunë e mjeteve"
     }
   },
   "common": {
@@ -393,6 +395,20 @@
       "nov": "Nën",
       "dec": "Dhj"
     }
+  },
+  "toolsIndex": {
+    "eyebrow": "Mjete falas",
+    "title": "Kalkulatorë falas për Shqipërinë",
+    "intro": "Kalkulatorë të saktë e falas, ndërtuar sipas rregullave shqiptare. Pa regjistrim, pa limite. Zgjidh atë që të duhet.",
+    "metaTitle": "Kalkulatorë Financiarë Falas për Shqipërinë",
+    "metaDescription": "Kalkulatorë falas për Shqipërinë: paga neto dhe bruto, të ardhurat e të vetëpunësuarve, dhe këstet e kredisë e hipotekës. Pa regjistrim, pa limite.",
+    "cards": {
+      "salary": "Paga neto nga bruto, bruto nga neto, dhe kostoja e plotë e punëdhënësit, me tatimin mbi të ardhurat dhe sigurimet.",
+      "freelancer": "Sa të mbetet si i vetëpunësuar, me tatimin 0% mbi fitimin, kontributet fikse mujore dhe pragun e TVSH-së.",
+      "loan": "Kësti mujor i kredisë ose hipotekës, interesi total, norma fikse pastaj e ndryshueshme, rritjet e normës dhe shlyerja para afatit."
+    },
+    "ctaText": "Doni t'i ndiqni të ardhurat, shpenzimet dhe qëllimet në një vend, jo vetëm t'i llogarisni?",
+    "ctaButton": "Krijo një llogari falas"
   },
   "freelancerCalc": {
     "eyebrow": "Mjete",

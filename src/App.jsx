@@ -4,7 +4,7 @@ import { useMetaTags } from './hooks/useMetaTags';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CatchAllRedirect from './components/CatchAllRedirect.jsx';
-import { TOOLS, toolPathVariants } from './lib/tools';
+import { TOOLS, TOOLS_INDEX_PATH, toolPathVariants } from './lib/tools';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -63,6 +63,7 @@ const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const SalaryCalculator = lazy(() => import('./components/Tools/SalaryCalculator.jsx'));
 const FreelancerCalculator = lazy(() => import('./components/Tools/FreelancerCalculator.jsx'));
 const LoanCalculator = lazy(() => import('./components/Tools/LoanCalculator.jsx'));
+const ToolsIndex = lazy(() => import('./components/Tools/ToolsIndex.jsx'));
 const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {
@@ -258,6 +259,7 @@ function InnerAppContent() {
     // unprefixed by design, so they keep following the stored preference.
     const isLocalizablePublicPath =
       location.pathname === '/'
+      || location.pathname === '/tools'
       || location.pathname.startsWith('/tools/')
       || location.pathname === '/pricing'
       || location.pathname === '/login'
@@ -271,7 +273,7 @@ function InnerAppContent() {
 
   useEffect(() => {
     // Tools are public marketing/SEO surfaces — they must stay indexable.
-    const indexablePaths = ['/', '/sq', '/pricing', '/sq/pricing', '/terms', '/privacy', ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
+    const indexablePaths = ['/', '/sq', '/pricing', '/sq/pricing', '/terms', '/privacy', ...toolPathVariants(TOOLS_INDEX_PATH), ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
     const indexable = indexablePaths.includes(location.pathname);
     let robots = document.querySelector('meta[name="robots"]');
     if (!robots) {
@@ -283,7 +285,7 @@ function InnerAppContent() {
   }, [location.pathname]);
 
   // Public routes that use the public layout (header + footer, no sidebar)
-  const publicRoutes = ['/login', '/sq/login', '/register', '/sq/register', '/forgot-password', '/sq/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy', ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
+  const publicRoutes = ['/login', '/sq/login', '/register', '/sq/register', '/forgot-password', '/sq/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy', ...toolPathVariants(TOOLS_INDEX_PATH), ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
   const isOnboardingRoute = location.pathname === '/onboarding';
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
@@ -325,6 +327,8 @@ function InnerAppContent() {
               <Route path="/sq/pricing" element={<PricingPage />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/tools" element={<ToolsIndex />} />
+              <Route path="/sq/tools" element={<ToolsIndex />} />
               <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/sq/tools/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/tools/self-employed-calculator" element={<FreelancerCalculator />} />
@@ -374,6 +378,8 @@ function InnerAppContent() {
                   the authenticated shell rather than 404ing for signed-in users. */}
               {/* Public tool, but also reachable while logged in — renders inside
                   the authenticated shell rather than redirecting signed-in users. */}
+              <Route path="/tools" element={<ToolsIndex />} />
+              <Route path="/sq/tools" element={<ToolsIndex />} />
               <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/sq/tools/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/tools/self-employed-calculator" element={<FreelancerCalculator />} />

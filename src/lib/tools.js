@@ -10,16 +10,22 @@ export const TOOLS = [
   {
     path: '/tools/salary-calculator',
     labelKey: 'nav.tools.salaryCalculator',
+    descKey: 'toolsIndex.cards.salary',
   },
   {
     path: '/tools/self-employed-calculator',
     labelKey: 'nav.tools.freelancerCalculator',
+    descKey: 'toolsIndex.cards.freelancer',
   },
   {
     path: '/tools/loan-calculator',
     labelKey: 'nav.tools.loanCalculator',
+    descKey: 'toolsIndex.cards.loan',
   },
 ];
+
+/** The tools index route (its own page listing every tool). */
+export const TOOLS_INDEX_PATH = '/tools';
 
 /**
  * Build a tool URL for a given language.
@@ -51,7 +57,7 @@ export function toolPathVariants(path) {
  * Adding a path here WITHOUT registering `/sq<path>` in App.jsx sends the user
  * to the catch-all and back to the landing page — keep the two in sync.
  */
-const SQ_PREFIXABLE = [...TOOLS.map((tool) => tool.path), '/pricing', '/login', '/register', '/forgot-password'];
+const SQ_PREFIXABLE = [TOOLS_INDEX_PATH, ...TOOLS.map((tool) => tool.path), '/pricing', '/login', '/register', '/forgot-password'];
 
 /**
  * Translate the CURRENT pathname into its equivalent in another language.

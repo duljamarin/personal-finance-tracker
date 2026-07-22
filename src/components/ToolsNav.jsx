@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { TOOLS, toolPath } from '../lib/tools';
+import { TOOLS, TOOLS_INDEX_PATH, toolPath } from '../lib/tools';
 
 /**
  * Albanian flag — signals that the tool is Albania-specific, so nobody expects
@@ -28,10 +28,15 @@ function FlagAL({ className = '' }) {
 /**
  * Navbar "Tools" entry.
  *
+ * Split control: the label is a real link to the /tools index page, and the
+ * chevron beside it toggles a dropdown of the individual tools. So a user can go
+ * straight to the overview, OR jump to one specific calculator — both are one
+ * click. The dropdown also ends with an "All tools" item for the same overview.
+ *
  * Graceful degradation: with exactly one tool this renders as a direct link to
  * that tool (a dropdown holding one item is pure friction). At two or more it
- * becomes an accessible dropdown — keyboard navigable, closes on outside click
- * and Escape. Adding a tool to lib/tools.js flips this automatically.
+ * becomes the split control — keyboard navigable, closes on outside click and
+ * Escape. Adding a tool to lib/tools.js flips this automatically.
  *
  * `variant` picks how the open list is positioned:
  *  - "dropdown" (default) — floating `absolute right-0` panel, for the desktop
@@ -93,33 +98,47 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
     }
   }
 
+  // Menu items are the TOOLS plus a trailing "All tools" link, so navigation
+  // wraps over TOOLS.length + 1 items.
   function onItemKeyDown(e, i) {
+    const count = TOOLS.length + 1;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      itemRefs.current[(i + 1) % TOOLS.length]?.focus();
+      itemRefs.current[(i + 1) % count]?.focus();
     }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      itemRefs.current[(i - 1 + TOOLS.length) % TOOLS.length]?.focus();
+      itemRefs.current[(i - 1 + count) % count]?.focus();
     }
   }
 
   return (
     <div ref={containerRef} className={isInline ? '' : 'relative'}>
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-        onKeyDown={onButtonKeyDown}
-        className={`${className} ${isInline ? 'flex w-full items-center justify-between' : 'inline-flex items-center gap-1'}`}
-      >
-        {t('nav.tools.label')}
-        <svg className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-        </svg>
-      </button>
+      <div className={isInline ? 'flex w-full items-center justify-between' : 'inline-flex items-center gap-0.5'}>
+        {/* Label → the /tools index page (one click to the overview). */}
+        <Link
+          to={hrefFor(TOOLS_INDEX_PATH)}
+          onClick={() => { setOpen(false); onNavigate?.(); }}
+          className={className}
+        >
+          {t('nav.tools.label')}
+        </Link>
+        {/* Chevron → toggle the dropdown of individual tools. */}
+        <button
+          ref={buttonRef}
+          type="button"
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={t('nav.tools.toggle')}
+          onClick={() => setOpen((o) => !o)}
+          onKeyDown={onButtonKeyDown}
+          className="inline-flex items-center p-1 -m-1 text-ink-muted dark:text-white/70 hover:text-ink-primary dark:hover:text-white rounded focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15"
+        >
+          <svg className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+      </div>
 
       {open && (
         <div
@@ -149,6 +168,22 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
               {t(tool.labelKey)}
             </Link>
           ))}
+
+          {/* "All tools" → the index page, for users who want the overview. */}
+          <Link
+            to={hrefFor(TOOLS_INDEX_PATH)}
+            role="menuitem"
+            ref={(el) => { itemRefs.current[TOOLS.length] = el; }}
+            onKeyDown={(e) => onItemKeyDown(e, TOOLS.length)}
+            onClick={() => { setOpen(false); onNavigate?.(); }}
+            className={`flex items-center gap-2 py-2.5 text-sm font-medium text-brand-600 dark:text-brand-400 transition-colors ${
+              isInline
+                ? 'px-3 mt-0.5 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10'
+                : 'px-4 mt-1 border-t border-surface-hairline dark:border-surface-dark-hairline pt-2.5 hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated'
+            }`}
+          >
+            {t('nav.tools.allTools')}
+          </Link>
         </div>
       )}
     </div>
