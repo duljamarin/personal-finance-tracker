@@ -760,6 +760,19 @@ export default function LoanCalculator() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-ink-muted dark:text-white/50 pointer-events-none">{cur}</span>
         </div>
 
+        {/* The required installment does not change — the extra is a voluntary
+            top-up. Spell out the new total so the extra isn't mistaken for a
+            higher base installment. */}
+        {extraMonthly > 0 && (
+          <p className="mt-2.5 text-label text-ink-muted dark:text-white/80 leading-relaxed max-w-lg">
+            {t('loanCalc.early.totalPayment', {
+              total: `${money(result.payment + extraMonthly)} ${cur}`,
+              base: `${money(result.payment)} ${cur}`,
+              extra: `${money(extraMonthly)} ${cur}`,
+            })}
+          </p>
+        )}
+
         {early ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
             <div className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5">

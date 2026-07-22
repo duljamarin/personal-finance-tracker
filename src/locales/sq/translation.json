@@ -604,7 +604,8 @@
       "monthsValue_other": "{{count}} muaj",
       "yearsMonths": "{{years}} vjet {{months}} muaj",
       "note": "Disa banka aplikojnë komision për shlyerjen para afatit. Kontrollo kontratën para se të mbështetesh te ky kursim.",
-      "none": "Vendos një shumë shtesë më sipër për të parë sa kohë dhe interes do të kurseje."
+      "none": "Vendos një shumë shtesë më sipër për të parë sa kohë dhe interes do të kurseje.",
+      "totalPayment": "Kësti yt i detyruar mbetet i njëjti. Në total do të paguaje {{total}} në muaj ({{base}} të detyruar plus {{extra}} shtesë), dhe pikërisht kjo e shkurton kredinë më poshtë."
     },
     "schedule": {
       "title": "Plani i amortizimit",

@@ -604,7 +604,8 @@
       "monthsValue_other": "{{count}} months",
       "yearsMonths": "{{years}} yr {{months}} mo",
       "note": "Some banks charge a fee for early repayment. Check your contract before counting on this saving.",
-      "none": "Enter an extra amount above to see how much time and interest you would save."
+      "none": "Enter an extra amount above to see how much time and interest you would save.",
+      "totalPayment": "Your required installment stays the same. You would pay {{total}} a month in total ({{base}} required plus {{extra}} extra), which is what shortens the loan below."
     },
     "schedule": {
       "title": "Amortization schedule",
