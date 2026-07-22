@@ -19,6 +19,11 @@ Personal Finance Tracker is a free-to-start web app that helps individuals take 
 - **CSV import/export**: Bulk import transactions from any bank export
 - **Multi-currency**: All amounts normalized to EUR via exchange rates
 
+## Free Tools (no account required)
+
+- **Albanian salary calculator**: Net from gross, gross from net, and total employer cost, including income tax and social/health insurance
+- **Albanian self-employed calculator**: Take-home pay with the 0% freelancer profit tax, fixed monthly contributions, and the VAT threshold
+
 ## Pricing
 
 - **Free**: 30 transactions/month, 3 budgets, 5 recurring rules, 3 goals, 7-day free trial
@@ -27,6 +32,8 @@ Personal Finance Tracker is a free-to-start web app that helps individuals take 
 ## Links
 
 - [Home](https://personal-finances.app/)
+- [Salary calculator](https://personal-finances.app/tools/salary-calculator)
+- [Self-employed calculator](https://personal-finances.app/tools/self-employed-calculator)
 - [Register](https://personal-finances.app/register)
 - [Pricing](https://personal-finances.app/pricing)
 - [Privacy Policy](https://personal-finances.app/privacy)

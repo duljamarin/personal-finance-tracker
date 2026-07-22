@@ -150,10 +150,48 @@ export default function FreelancerCalculator() {
   const salaryToolPath = TOOLS.find((x) => x.labelKey.endsWith('salaryCalculator'))?.path;
   const salaryToolHref = salaryToolPath ? toolPath(salaryToolPath, i18n.language) : null;
 
+  const metaTitle = `${t('freelancerCalc.metaTitle', { year: config.YEAR })} | Personal Finances`;
+  const metaDescription = t('freelancerCalc.metaDescription', { year: config.YEAR });
   useMetaTags({
-    title: `${t('freelancerCalc.metaTitle', { year: config.YEAR })} | Personal Finances`,
-    description: t('freelancerCalc.metaDescription', { year: config.YEAR }),
+    title: metaTitle,
+    description: metaDescription,
     canonical: `https://personal-finances.app${toolPath('/tools/self-employed-calculator', i18n.language)}`,
+    hreflangs: [
+      { lang: 'en', href: 'https://personal-finances.app/tools/self-employed-calculator' },
+      { lang: 'sq', href: 'https://personal-finances.app/sq/tools/self-employed-calculator' },
+      { lang: 'x-default', href: 'https://personal-finances.app/tools/self-employed-calculator' },
+    ],
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: t('freelancerCalc.metaTitle', { year: config.YEAR }),
+        url: `https://personal-finances.app${toolPath('/tools/self-employed-calculator', i18n.language)}`,
+        description: metaDescription,
+        applicationCategory: 'FinanceApplication',
+        operatingSystem: 'Web',
+        inLanguage: i18n.language?.startsWith('sq') ? 'sq' : 'en',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        isPartOf: {
+          '@type': 'WebApplication',
+          name: 'Personal Finance Tracker',
+          url: 'https://personal-finances.app/',
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Personal Finances', item: 'https://personal-finances.app/' },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: t('freelancerCalc.metaTitle', { year: config.YEAR }),
+            item: `https://personal-finances.app${toolPath('/tools/self-employed-calculator', i18n.language)}`,
+          },
+        ],
+      },
+    ],
   });
 
   // Annual follows monthly until the user edits it directly (seasonal earners).

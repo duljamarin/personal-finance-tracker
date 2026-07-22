@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function useMetaTags({ title, description, canonical, hreflangs } = {}) {
+export function useMetaTags({ title, description, canonical, hreflangs, jsonLd } = {}) {
   useEffect(() => {
     if (title) document.title = title;
 
@@ -51,5 +51,24 @@ export function useMetaTags({ title, description, canonical, hreflangs } = {}) {
         document.head.appendChild(link);
       });
     }
-  }, [title, description, canonical, hreflangs]);
+
+    // Route-specific JSON-LD. Tagged with data-route-jsonld so we manage only
+    // the scripts this hook injects — the static WebApplication/FAQPage blocks
+    // in index.html (which describe the app as a whole) are left untouched.
+    document.querySelectorAll('script[data-route-jsonld]').forEach(el => el.remove());
+    if (jsonLd) {
+      const blocks = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+      blocks.forEach(block => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-route-jsonld', '');
+        script.textContent = JSON.stringify(block);
+        document.head.appendChild(script);
+      });
+    }
+
+    return () => {
+      document.querySelectorAll('script[data-route-jsonld]').forEach(el => el.remove());
+    };
+  }, [title, description, canonical, hreflangs, jsonLd]);
 }

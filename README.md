@@ -23,6 +23,11 @@ A full-featured personal finance web app built with React, Tailwind CSS, Vite, a
 - Monthly budgets per category with real-time progress tracking
 - Financial Goals (savings, debt payoff, investment, purchase) with milestones and contribution tracking
 
+### Free Public Tools (no account required)
+- Albanian **salary calculator** (`/tools/salary-calculator`) - net from gross, gross from net, and total employer cost, including income tax and social/health insurance
+- Albanian **self-employed calculator** (`/tools/self-employed-calculator`) - take-home with the 0% freelancer profit tax, fixed monthly contributions, and the VAT threshold
+- Both are indexable SEO/marketing surfaces, bilingual (en + `/sq`), and shareable without login
+
 ### Security & Privacy
 - Client-side end-to-end encryption of sensitive transaction data - keys never leave the browser unencrypted
 - Password-derived key wrapping with recovery code fallback if the password is lost

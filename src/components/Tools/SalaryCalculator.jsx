@@ -278,10 +278,48 @@ export default function SalaryCalculator() {
   const config = getConfig(year);
   const currency = t('salaryCalc.currency');
 
+  const metaTitle = `${t('salaryCalc.metaTitle', { year: config.YEAR })} | Personal Finances`;
+  const metaDescription = t('salaryCalc.metaDescription', { year: config.YEAR });
   useMetaTags({
-    title: `${t('salaryCalc.metaTitle', { year: config.YEAR })} | Personal Finances`,
-    description: t('salaryCalc.metaDescription', { year: config.YEAR }),
+    title: metaTitle,
+    description: metaDescription,
     canonical: `https://personal-finances.app${toolPath('/tools/salary-calculator', i18n.language)}`,
+    hreflangs: [
+      { lang: 'en', href: 'https://personal-finances.app/tools/salary-calculator' },
+      { lang: 'sq', href: 'https://personal-finances.app/sq/tools/salary-calculator' },
+      { lang: 'x-default', href: 'https://personal-finances.app/tools/salary-calculator' },
+    ],
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: t('salaryCalc.metaTitle', { year: config.YEAR }),
+        url: `https://personal-finances.app${toolPath('/tools/salary-calculator', i18n.language)}`,
+        description: metaDescription,
+        applicationCategory: 'FinanceApplication',
+        operatingSystem: 'Web',
+        inLanguage: i18n.language?.startsWith('sq') ? 'sq' : 'en',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        isPartOf: {
+          '@type': 'WebApplication',
+          name: 'Personal Finance Tracker',
+          url: 'https://personal-finances.app/',
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Personal Finances', item: 'https://personal-finances.app/' },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: t('salaryCalc.metaTitle', { year: config.YEAR }),
+            item: `https://personal-finances.app${toolPath('/tools/salary-calculator', i18n.language)}`,
+          },
+        ],
+      },
+    ],
   });
 
   /**
