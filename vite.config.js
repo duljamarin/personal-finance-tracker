@@ -85,6 +85,16 @@ function criticalCssPlugin() {
 const SITE = 'https://personal-finances.app';
 const TOOL_SEO = [
   {
+    path: '/tools',
+    en: { title: 'Free Financial Calculators for Albania | Personal Finances', desc: 'Free calculators for Albania: net and gross salary, self-employed take-home, and loan and mortgage installments. No signup, no limits.' },
+    sq: { title: 'Kalkulatorë Financiarë Falas për Shqipërinë | Personal Finances', desc: 'Kalkulatorë falas për Shqipërinë: paga neto dhe bruto, të ardhurat e të vetëpunësuarve, dhe këstet e kredisë e hipotekës. Pa regjistrim, pa limite.' },
+  },
+  {
+    path: '/pricing',
+    en: { title: 'Pricing | Personal Finances', desc: 'Simple pricing for the personal finance tracker. Start free with no credit card, upgrade for unlimited transactions and premium features.' },
+    sq: { title: 'Çmimet | Personal Finances', desc: 'Çmime të thjeshta për gjurmuesin e financave personale. Nis falas pa kartë, përmirësoje për transaksione të pakufizuara dhe veçori premium.' },
+  },
+  {
     path: '/tools/salary-calculator',
     en: { title: 'Net/Gross Salary Calculator (Albania) | Personal Finances', desc: 'Albanian salary calculator: work out net pay from gross, gross from net, and the total employer cost, including income tax and social and health insurance.' },
     sq: { title: 'Kalkulator Page Neto/Bruto (Shqipëri) | Personal Finances', desc: 'Kalkulator page për Shqipërinë: llogarit pagën neto nga bruto, bruto nga neto dhe koston totale të punëdhënësit, përfshirë tatimin mbi të ardhurat dhe sigurimet.' },

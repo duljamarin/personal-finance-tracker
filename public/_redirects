@@ -1,10 +1,16 @@
-# Public tool routes get their OWN prerendered shell (self-referencing canonical),
-# so Google does not treat them as duplicates of the landing page. These MUST come
-# before the /sq/* and /* catch-alls below — Netlify uses the first match.
-# The files are emitted at build time by prerenderToolRoutesPlugin (vite.config.js).
+# Public tool + pricing routes get their OWN prerendered shell (self-referencing
+# canonical), so Google does not treat them as duplicates of the landing page.
+# These MUST come before the /sq/* and /* catch-alls below — Netlify uses the
+# first match. The files are emitted at build time by prerenderToolRoutesPlugin
+# (vite.config.js). All are exact paths, so order among them does not matter, only
+# that they all precede the catch-alls.
+/tools                             /tools.html                              200
+/pricing                           /pricing.html                            200
 /tools/salary-calculator           /tools/salary-calculator.html            200
 /tools/self-employed-calculator    /tools/self-employed-calculator.html     200
 /tools/loan-calculator             /tools/loan-calculator.html              200
+/sq/tools                          /sq/tools.html                           200
+/sq/pricing                        /sq/pricing.html                         200
 /sq/tools/salary-calculator        /sq/tools/salary-calculator.html         200
 /sq/tools/self-employed-calculator /sq/tools/self-employed-calculator.html  200
 /sq/tools/loan-calculator          /sq/tools/loan-calculator.html           200
