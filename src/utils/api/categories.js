@@ -87,3 +87,18 @@ export async function deleteCategory(id) {
     return 'OK';
   });
 }
+
+// Wipes all of the user's ENCRYPTED financial data (transactions, budgets,
+// goals, categories, health scores, net worth, notifications) while keeping the
+// account, subscription and notification_settings. Used only after an E2EE key
+// reset with a lost recovery code — the old ciphertext is undecryptable under
+// the new DEK, so the app starts clean. See migration
+// 20260722060000_wipe_financial_data_on_key_reset.sql.
+export async function wipeFinancialDataOnKeyReset() {
+  return withAuth(async () => {
+    const supabase = await getSupabase();
+    const { error } = await supabase.rpc('wipe_financial_data_on_key_reset');
+    if (error) throw error;
+    return 'OK';
+  });
+}

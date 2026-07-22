@@ -5,8 +5,9 @@ import { supabase } from '../../utils/supabaseClient';
 import { useToast } from '../../context/ToastContext';
 import PasswordInput from '../UI/PasswordInput';
 import { fetchUserKeys } from '../../utils/api/userKeys';
-import { rewrapAfterReset, resetWithNewKey } from '../../utils/crypto/keyLifecycle';
+import { rewrapAfterReset, resetWithNewKey, reseedAfterKeyReset } from '../../utils/crypto/keyLifecycle';
 import RecoveryCodeStep from './RecoveryCodeStep';
+import RecoveryCodeModal from '../Encryption/RecoveryCodeModal';
 
 const E2EE_ENABLED = import.meta.env.VITE_E2EE_ENABLED === 'true';
 
@@ -25,6 +26,9 @@ export default function ResetPassword() {
   const [step, setStep] = useState('password');
   const [userId, setUserId] = useState(null);
   const [newPasswordForRewrap, setNewPasswordForRewrap] = useState('');
+  // Set when the lost-recovery-code path generates a fresh code: we must show it
+  // for the user to save BEFORE signing out, or they'd be stuck again next time.
+  const [newRecoveryCode, setNewRecoveryCode] = useState(null);
 
   useEffect(() => {
     async function verifyRecoveryToken() {
@@ -168,6 +172,18 @@ export default function ResetPassword() {
     return null;
   }
 
+  // Lost-recovery-code path generated a fresh code — show it for saving, and
+  // only sign out once the user confirms. Also clears the now-undecryptable old
+  // data and re-seeds default categories (handled in onLostCode before this).
+  if (newRecoveryCode) {
+    return (
+      <RecoveryCodeModal
+        recoveryCode={newRecoveryCode}
+        onDone={finishAndSignOut}
+      />
+    );
+  }
+
   if (step === 'recovery') {
     return (
       <RecoveryCodeStep
@@ -176,8 +192,15 @@ export default function ResetPassword() {
           await finishAndSignOut();
         }}
         onLostCode={async () => {
-          await resetWithNewKey(userId, newPasswordForRewrap);
-          await finishAndSignOut();
+          // 1. Rotate to a brand-new DEK (old ciphertext becomes archived +
+          //    undecryptable) and get the fresh recovery code.
+          const { recoveryCode } = await resetWithNewKey(userId, newPasswordForRewrap);
+          // 2. Wipe the old undecryptable data and re-seed default categories
+          //    under the new key, so the app is usable immediately. Best-effort:
+          //    never blocks showing the code (which the user MUST save).
+          await reseedAfterKeyReset();
+          // 3. Show the code for saving; sign-out is deferred to onDone.
+          setNewRecoveryCode(recoveryCode);
         }}
       />
     );

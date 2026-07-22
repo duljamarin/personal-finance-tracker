@@ -21,6 +21,8 @@ import {
   updateUserKeys,
   deleteUserKeys,
 } from '../api/userKeys';
+import { wipeFinancialDataOnKeyReset, addCategory } from '../api/categories';
+import { DEFAULT_CATEGORIES } from '../defaultCategories';
 
 let currentUserId = null;
 
@@ -295,6 +297,33 @@ export async function resetWithNewKey(userId, newPassword) {
 
   await unlockAndCache(userId, rawDek);
   return { recoveryCode };
+}
+
+// After a lost-recovery-code reset (resetWithNewKey), the old ciphertext is
+// undecryptable under the fresh DEK. Rather than leave the app full of
+// unreadable categories/transactions, wipe the old financial data server-side
+// and re-seed the default categories under the NEW key.
+//
+// MUST be called only after resetWithNewKey has unlocked the new DEK (so
+// addCategory encrypts under it). Best-effort and resilient: a failure here must
+// never trap the user mid-reset — they can still sign in and add categories
+// manually. Failures are logged, mirroring the onboarding-seed philosophy.
+export async function reseedAfterKeyReset() {
+  try {
+    await wipeFinancialDataOnKeyReset();
+  } catch (e) {
+    console.error('key-reset wipe failed:', e);
+    return; // if the wipe didn't run, do NOT seed on top of stale data
+  }
+
+  for (const cat of DEFAULT_CATEGORIES) {
+    try {
+      await addCategory(cat);
+    } catch (e) {
+      // A single duplicate/failed insert must not abort the rest.
+      console.error(`key-reset re-seed failed (${cat.name}):`, e);
+    }
+  }
 }
 
 // Starts the reversal: CryptoContext's migration effect picks up
