@@ -18,7 +18,6 @@ import { RECURRING_FILTERS } from '../../utils/constants';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { CATEGORY_PALETTE as CAT_PALETTE } from '../../utils/chartColors';
-import { consumePendingLoanRecurring } from '../../lib/loan/prefill.js';
 
 // Category dot color — mirrors the CategoryCard hash-to-color function
 function colorFromName(name) {
@@ -176,26 +175,6 @@ export default function Transactions() {
     window.addEventListener('openAddTransaction', handleOpenAdd);
     return () => window.removeEventListener('openAddTransaction', handleOpenAdd);
   }, [handleAdd]);
-
-  // Deliver on the loan calculator's "Add it in the app" promise: if a pending
-  // installment was carried across the register/login journey, open the recurring
-  // form prefilled with it. consume* reads-and-clears so it fires exactly once.
-  useEffect(() => {
-    const pending = consumePendingLoanRecurring();
-    if (!pending) return;
-    setEditTx(null);
-    setPrefillData({
-      title: pending.title,
-      amount: pending.amount,
-      type: 'expense',
-      currency_code: pending.currency,
-      isRecurring: true,
-      frequency: 'monthly',
-      intervalCount: 1,
-    });
-    setShowModal(true);
-    addToast(t('loanCalc.cta.prefillReady'), 'success');
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
 
   const selectClass =
     'px-3 py-2.5 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ' +

@@ -634,9 +634,7 @@
     },
     "cta": {
       "text": "Add this installment as a recurring monthly expense and track it alongside the rest of your budget.",
-      "button": "Add it in the app",
-      "recurringTitle": "Loan installment",
-      "prefillReady": "We prefilled your loan installment. Review and save it to start tracking."
+      "button": "Add it in the app"
     }
   },
   "landing": {

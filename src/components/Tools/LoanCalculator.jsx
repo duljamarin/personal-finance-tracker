@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
 import { toolPath, localizedPath } from '../../lib/tools';
-import { savePendingLoanRecurring } from '../../lib/loan/prefill.js';
 import {
   DEFAULTS,
   monthlyPayment,
@@ -834,16 +833,6 @@ export default function LoanCalculator() {
         <p className="text-body text-ink-muted dark:text-white/80 mb-4 max-w-xl">{t('loanCalc.cta.text')}</p>
         <Link
           to={localizedPath('/register', i18n.language)}
-          onClick={() =>
-            // Carry the installment across the register/login journey so it lands
-            // as a prefilled recurring expense once the user is in the app. The
-            // installment is stored in its own currency; income tracking converts.
-            savePendingLoanRecurring({
-              amount: Math.round(result.payment),
-              currency,
-              title: t('loanCalc.cta.recurringTitle'),
-            })
-          }
           className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
         >
           {t('loanCalc.cta.button')}

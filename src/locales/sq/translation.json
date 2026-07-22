@@ -634,9 +634,7 @@
     },
     "cta": {
       "text": "Shtoje këtë këst si shpenzim mujor të përsëritur dhe ndiqe krahas pjesës tjetër të buxhetit.",
-      "button": "Shtoje në aplikacion",
-      "recurringTitle": "Kësti i kredisë",
-      "prefillReady": "E mbushëm këstin e kredisë. Shqyrtoje dhe ruaje për të nisur ndjekjen."
+      "button": "Shtoje në aplikacion"
     }
   },
   "landing": {
