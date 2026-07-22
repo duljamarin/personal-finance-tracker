@@ -540,7 +540,7 @@
       "rate": "Norma vjetore e interesit",
       "term": "Afati",
       "termYears": "{{count}} vit",
-      "termYears_other": "{{count}} vjet",
+      "termYears_other": "{{count}} vite",
       "currency": "Monedha",
       "exchangeRate": "Kursi i këmbimit (vlerësim)",
       "exchangeRateHint": "1 EUR në Lekë. Një vlerësim i ndryshueshëm, jo kurs i drejtpërdrejtë: vendos kursin që përdor banka jote.",
@@ -608,7 +608,7 @@
       "hint": "Shumica e hipotekave shqiptare e mbajnë normën fikse vitet e para, pastaj kalojnë në normë të ndryshueshme për pjesën tjetër të afatit. Prandaj bankat citojnë dy këste.",
       "fixedYears": "Periudha fikse",
       "variableRate": "Norma pas periudhës fikse",
-      "phase1Label": "{{years}} të parat",
+      "phase1Label": "{{years}} e para",
       "phase2Label": "Pas kësaj",
       "change": "Kësti ndryshon me {{sign}}{{amount}} {{currency}} në muaj, pra {{pct}}, kur mbaron periudha fikse."
     },
