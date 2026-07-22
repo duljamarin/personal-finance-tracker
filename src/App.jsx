@@ -62,6 +62,7 @@ const ReportsPage = lazy(() => import('./components/Reports/ReportsPage.jsx'));
 const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const SalaryCalculator = lazy(() => import('./components/Tools/SalaryCalculator.jsx'));
 const FreelancerCalculator = lazy(() => import('./components/Tools/FreelancerCalculator.jsx'));
+const LoanCalculator = lazy(() => import('./components/Tools/LoanCalculator.jsx'));
 const OnboardingWizard = lazy(() => import('./components/Onboarding/OnboardingWizard'));
 
 function PrivateRoute({ children }) {
@@ -328,6 +329,8 @@ function InnerAppContent() {
               <Route path="/sq/tools/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/tools/self-employed-calculator" element={<FreelancerCalculator />} />
               <Route path="/sq/tools/self-employed-calculator" element={<FreelancerCalculator />} />
+              <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
+              <Route path="/sq/tools/loan-calculator" element={<LoanCalculator />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/sq" element={<LandingPage />} />
               <Route path="*" element={<CatchAllRedirect />} />
@@ -375,6 +378,8 @@ function InnerAppContent() {
               <Route path="/sq/tools/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/tools/self-employed-calculator" element={<FreelancerCalculator />} />
               <Route path="/sq/tools/self-employed-calculator" element={<FreelancerCalculator />} />
+              <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
+              <Route path="/sq/tools/loan-calculator" element={<LoanCalculator />} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<CatchAllRedirect />} />
             </Routes>

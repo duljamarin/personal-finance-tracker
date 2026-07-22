@@ -29,7 +29,8 @@
     "tools": {
       "label": "Mjete",
       "salaryCalculator": "Kalkulator i pagës",
-      "freelancerCalculator": "Kalkulator për të vetëpunësuarit"
+      "freelancerCalculator": "Kalkulator për të vetëpunësuarit",
+      "loanCalculator": "Kalkulator kredie"
     }
   },
   "common": {
@@ -526,6 +527,116 @@
     "disclaimer": "Rezultati është vetëm orientues. Verifikojeni me listëpagesën tuaj. Bazuar në normat tatimore shqiptare për vitin {{year}}.",
     "ctaText": "Doni të ndiqni edhe shpenzimet tuaja mujore, jo vetëm pagën?",
     "ctaButton": "Krijo një llogari falas"
+  },
+  "loanCalc": {
+    "eyebrow": "Mjete",
+    "title": "Kalkulator i Kredisë (Shqipëri)",
+    "intro": "Llogarit këstin mujor të një kredie ose hipoteke, shiko sa nga kësti është interes, dhe testoje ndaj rritjes së normës, e për kreditë në euro, ndaj forcimit të euros.",
+    "metaTitle": "Kalkulator Kredie dhe Hipoteke (Shqipëri)",
+    "metaDescription": "Kalkulator falas kredie dhe hipoteke për Shqipërinë. Llogarit këstin mujor, interesin total, efektin e rritjes së normës, rrezikun e kursit të euros dhe sa kursen shlyerja e parakohshme.",
+    "inputs": {
+      "title": "Të dhënat e kredisë",
+      "amount": "Shuma e kredisë",
+      "rate": "Norma vjetore e interesit",
+      "term": "Afati",
+      "termYears": "{{count}} vit",
+      "termYears_other": "{{count}} vjet",
+      "currency": "Monedha",
+      "exchangeRate": "Kursi i këmbimit (vlerësim)",
+      "exchangeRateHint": "1 EUR në Lekë. Një vlerësim i ndryshueshëm, jo kurs i drejtpërdrejtë: vendos kursin që përdor banka jote.",
+      "moreOptions": "Komisione dhe sigurime (opsionale)",
+      "disbursementFee": "Komisioni i disbursimit",
+      "disbursementFeeHint": "Një komision një herë, i llogaritur si përqindje e shumës së kredisë.",
+      "annualInsurance": "Sigurimi vjetor",
+      "annualInsuranceHint": "Sigurimi i jetës ose i pronës që kërkon banka, në vit.",
+      "upfrontCosts": "Kosto të tjera fillestare",
+      "upfrontCostsHint": "Noteri, vlerësim, regjistrim dhe kosto të tjera një herë."
+    },
+    "headline": {
+      "label": "Kësti mujor",
+      "eurEquivalent": "Rreth {{amount}} Lekë në muaj me kursin e mësipërm"
+    },
+    "breakdown": {
+      "title": "Sa kushton kredia",
+      "totalPaid": "Totali i paguar gjatë afatit",
+      "totalInterest": "Interesi total",
+      "interestShare": "Interesi si përqindje e shumës së marrë hua",
+      "totalCost": "Kostoja totale e kredisë",
+      "totalCostHint": "Interesi plus komisionet, sigurimi dhe kostot fillestare. Kjo është një shumë absolute, jo normë efektive.",
+      "costRows": {
+        "interest": "Interesi",
+        "disbursement": "Komisioni i disbursimit",
+        "insurance": "Sigurimi gjatë afatit",
+        "upfront": "Kostot fillestare"
+      }
+    },
+    "dti": {
+      "title": "Kësti kundrejt të ardhurave",
+      "incomeLabel": "Të ardhurat neto mujore",
+      "incomeHint": "Opsionale. Përdoret vetëm për të treguar këstin si përqindje e të ardhurave.",
+      "ratio": "Kësti është {{ratio}} e të ardhurave neto.",
+      "levelOk": "Kjo është brenda intervalit që bankat zakonisht e konsiderojnë të rehatshëm.",
+      "levelWarn": "Kjo është rreth nivelit që bankat shpesh e trajtojnë si tavan.",
+      "levelHigh": "Kjo është mbi nivelin që bankat zakonisht pranojnë.",
+      "orientation": "Vetëm për orientim. Çdo bankë vendos sipas kritereve të veta; kjo nuk është miratim as premtim."
+    },
+    "rateShock": {
+      "title": "Nëse rritet norma e interesit",
+      "desc": "Shumica e hipotekave në Shqipëri kanë normë të ndryshueshme, ndaj kësti mund të lëvizë me tregun. Ja kësti nëse norma jote rritet.",
+      "colScenario": "Norma",
+      "colInstallment": "Kësti",
+      "colDelta": "Shtesë në muaj",
+      "plus": "+{{pp}}pp"
+    },
+    "fxShock": {
+      "title": "Nëse euro forcohet",
+      "desc": "Kredia jote është në euro, por të ardhurat ke gjasa t'i kesh në Lekë. Nëse euro forcohet, i njëjti këst në euro kushton më shumë në Lekë. Ky është rreziku për t'u ndjekur te një kredi në euro.",
+      "colScenario": "Euro më e fortë me",
+      "colInstallment": "Kësti në Lekë",
+      "colDelta": "Shtesë në muaj"
+    },
+    "early": {
+      "title": "Shlyerja para afatit",
+      "extraLabel": "Pagesë shtesë çdo muaj",
+      "monthsSaved": "Kohë e kursyer",
+      "interestSaved": "Interes i kursyer",
+      "monthsValue": "{{count}} muaj",
+      "monthsValue_other": "{{count}} muaj",
+      "yearsMonths": "{{years}} vjet {{months}} muaj",
+      "note": "Disa banka aplikojnë komision për shlyerjen para afatit. Kontrollo kontratën para se të mbështetesh te ky kursim.",
+      "none": "Vendos një shumë shtesë më sipër për të parë sa kohë dhe interes do të kurseje."
+    },
+    "schedule": {
+      "title": "Plani i amortizimit",
+      "show": "Shfaq planin",
+      "hide": "Fshih planin",
+      "desc": "Si ndahet çdo këst mes interesit dhe principalit me kalimin e kohës. Grupuar sipas vitit.",
+      "explainTitle": "Kësti mujor mbetet i njëjtë, por ajo që paguan me të ndryshon.",
+      "explainBody": "Interesi llogaritet mbi gjendjen që të ka mbetur për të shlyer, ndaj në fillim pjesa më e madhe e këstit është interes dhe vetëm pak ul kredinë. Ndërsa gjendja bie, interesi zvogëlohet dhe gjithnjë e më shumë nga çdo këst shkon te principali, derisa gjendja arrin në zero. Prandaj pagesa shtesë në vitet e para kursen më shumë: e ul gjendjen ndërsa interesi është ende i lartë.",
+      "year": "Viti {{year}}",
+      "colMonth": "Muaji",
+      "colPayment": "Kësti",
+      "colInterest": "Interesi",
+      "colPrincipal": "Principali",
+      "colBalance": "Gjendja",
+      "firstRow": "Kësti i parë",
+      "lastRow": "Kësti i fundit",
+      "yearInterest": "Interesi",
+      "yearPrincipal": "Principali",
+      "endBalance": "Gjendja në fund të vitit"
+    },
+    "example": {
+      "title": "Shembull i llogaritur: {{amount}} me {{rate}} për {{years}}",
+      "p1": "Një kredi {{amount}} me {{rate}} në vit për {{years}} jep një këst prej {{payment}} në muaj.",
+      "p2": "Gjatë gjithë afatit shlyen {{totalPaid}}, nga të cilat {{interest}} është interes. Kjo është {{share}} e shumës që more hua, e paguar mbi të.",
+      "disclaimer": "Rezultatet janë orientuese. Oferta, norma dhe komisionet e bankës tënde vendosin shifrën përfundimtare."
+    },
+    "cta": {
+      "text": "Shtoje këtë këst si shpenzim mujor të përsëritur dhe ndiqe krahas pjesës tjetër të buxhetit.",
+      "button": "Shtoje në aplikacion",
+      "recurringTitle": "Kësti i kredisë",
+      "prefillReady": "E mbushëm këstin e kredisë. Shqyrtoje dhe ruaje për të nisur ndjekjen."
+    }
   },
   "landing": {
     "hero": {

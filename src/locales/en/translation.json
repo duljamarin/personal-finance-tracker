@@ -29,7 +29,8 @@
     "tools": {
       "label": "Tools",
       "salaryCalculator": "Salary calculator",
-      "freelancerCalculator": "Self-employed calculator"
+      "freelancerCalculator": "Self-employed calculator",
+      "loanCalculator": "Loan calculator"
     }
   },
   "common": {
@@ -526,6 +527,116 @@
     "disclaimer": "This result is indicative only. Please verify it against your payslip. Based on Albanian tax rates for {{year}}.",
     "ctaText": "Want to track your monthly spending too, not just your salary?",
     "ctaButton": "Create a free account"
+  },
+  "loanCalc": {
+    "eyebrow": "Tools",
+    "title": "Loan / Mortgage Calculator (Albania)",
+    "intro": "Work out the monthly installment on a loan or mortgage, see how much of it is interest, and stress-test it against rate rises and, for euro loans, a stronger euro.",
+    "metaTitle": "Loan and Mortgage Calculator (Albania)",
+    "metaDescription": "Free loan and mortgage calculator for Albania. Work out the monthly installment, total interest, the effect of a rate rise, euro exchange-rate risk, and how much early repayment saves.",
+    "inputs": {
+      "title": "Loan details",
+      "amount": "Loan amount",
+      "rate": "Annual interest rate",
+      "term": "Term",
+      "termYears": "{{count}} year",
+      "termYears_other": "{{count}} years",
+      "currency": "Currency",
+      "exchangeRate": "Exchange rate (estimate)",
+      "exchangeRateHint": "1 EUR in ALL. An adjustable estimate, not a live rate: enter the rate your bank uses.",
+      "moreOptions": "Fees and insurance (optional)",
+      "disbursementFee": "Disbursement fee",
+      "disbursementFeeHint": "A one-off fee charged as a share of the loan amount.",
+      "annualInsurance": "Annual insurance",
+      "annualInsuranceHint": "Life or property insurance the bank requires, per year.",
+      "upfrontCosts": "Other upfront costs",
+      "upfrontCostsHint": "Notary, valuation, registration and similar one-off costs."
+    },
+    "headline": {
+      "label": "Monthly installment",
+      "eurEquivalent": "About {{amount}} ALL per month at the rate above"
+    },
+    "breakdown": {
+      "title": "What the loan costs",
+      "totalPaid": "Total paid over the term",
+      "totalInterest": "Total interest",
+      "interestShare": "Interest as a share of the amount borrowed",
+      "totalCost": "Total cost of credit",
+      "totalCostHint": "Interest plus fees, insurance and upfront costs. This is an absolute amount, not an APR.",
+      "costRows": {
+        "interest": "Interest",
+        "disbursement": "Disbursement fee",
+        "insurance": "Insurance over the term",
+        "upfront": "Upfront costs"
+      }
+    },
+    "dti": {
+      "title": "Installment vs your income",
+      "incomeLabel": "Your net monthly income",
+      "incomeHint": "Optional. Used only to show the installment as a share of your income.",
+      "ratio": "The installment is {{ratio}} of your net income.",
+      "levelOk": "This is within the range banks usually consider comfortable.",
+      "levelWarn": "This is around the level banks often treat as a ceiling.",
+      "levelHigh": "This is above the level banks usually accept.",
+      "orientation": "For orientation only. Each bank decides on its own criteria; this is not an approval or a promise."
+    },
+    "rateShock": {
+      "title": "If the interest rate rises",
+      "desc": "Most mortgages in Albania have a variable rate, so the installment can move with the market. Here is the installment if your rate rises.",
+      "colScenario": "Rate",
+      "colInstallment": "Installment",
+      "colDelta": "Extra per month",
+      "plus": "+{{pp}}pp"
+    },
+    "fxShock": {
+      "title": "If the euro gets stronger",
+      "desc": "Your loan is in euro but your income is likely in ALL. If the euro strengthens, the same euro installment costs more in ALL. This is the risk to watch on a euro loan.",
+      "colScenario": "Euro stronger by",
+      "colInstallment": "Installment in ALL",
+      "colDelta": "Extra per month"
+    },
+    "early": {
+      "title": "Paying off early",
+      "extraLabel": "Extra payment each month",
+      "monthsSaved": "Time saved",
+      "interestSaved": "Interest saved",
+      "monthsValue": "{{count}} month",
+      "monthsValue_other": "{{count}} months",
+      "yearsMonths": "{{years}} yr {{months}} mo",
+      "note": "Some banks charge a fee for early repayment. Check your contract before counting on this saving.",
+      "none": "Enter an extra amount above to see how much time and interest you would save."
+    },
+    "schedule": {
+      "title": "Amortization schedule",
+      "show": "Show schedule",
+      "hide": "Hide schedule",
+      "desc": "How each installment splits between interest and principal over time. Grouped by year.",
+      "explainTitle": "Your monthly installment stays the same, but what it pays for changes.",
+      "explainBody": "Interest is charged on the balance you still owe, so early on most of the installment is interest and only a little reduces the loan. As the balance falls the interest shrinks and more of each installment goes to the principal, until the balance reaches zero. That is why paying extra in the first years saves the most: it cuts into the balance while the interest is still high.",
+      "year": "Year {{year}}",
+      "colMonth": "Month",
+      "colPayment": "Payment",
+      "colInterest": "Interest",
+      "colPrincipal": "Principal",
+      "colBalance": "Balance",
+      "firstRow": "First installment",
+      "lastRow": "Last installment",
+      "yearInterest": "Interest",
+      "yearPrincipal": "Principal",
+      "endBalance": "Balance at year end"
+    },
+    "example": {
+      "title": "Worked example: {{amount}} at {{rate}} over {{years}}",
+      "p1": "A {{amount}} loan at {{rate}} a year over {{years}} works out to an installment of {{payment}} per month.",
+      "p2": "Over the whole term you repay {{totalPaid}}, of which {{interest}} is interest. That is {{share}} of the amount you borrowed, paid on top of it.",
+      "disclaimer": "Results are indicative. Your bank's own offer, rate and fees decide the final figure."
+    },
+    "cta": {
+      "text": "Add this installment as a recurring monthly expense and track it alongside the rest of your budget.",
+      "button": "Add it in the app",
+      "recurringTitle": "Loan installment",
+      "prefillReady": "We prefilled your loan installment. Review and save it to start tracking."
+    }
   },
   "landing": {
     "hero": {

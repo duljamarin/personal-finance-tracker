@@ -15,6 +15,10 @@ export const TOOLS = [
     path: '/tools/self-employed-calculator',
     labelKey: 'nav.tools.freelancerCalculator',
   },
+  {
+    path: '/tools/loan-calculator',
+    labelKey: 'nav.tools.loanCalculator',
+  },
 ];
 
 /**
