@@ -32,6 +32,34 @@ export const DEFAULTS = {
   DTI_WARN: 0.40,            // installment/net-income ratio banks typically cap around
   RATE_SHOCKS: [0.01, 0.02, 0.03],   // +1pp, +2pp, +3pp
   FX_SHOCKS: [0.05, 0.10, 0.15],     // EUR appreciation scenarios
+
+  // Albanian mortgage rate = reference index + bank margin, floored at the NMI
+  // (Norma Minimale e Interesit). Starting values only, editable in the UI, NOT
+  // authoritative: the real index moves and the margin/floor are per-contract.
+  // Loosely modelled on published 2026 KFS ranges (Raiffeisen, Intesa).
+  REFERENCE: {
+    ALL: { indexLabel: "tbill12m", index: 0.025, margin: 0.023, floor: 0.03 },
+    EUR: { indexLabel: "euribor",  index: 0.021, margin: 0.02,  floor: 0.04 },
+  },
+  // Reference-index shocks include a downward move so the floor becomes visible:
+  // when index + margin falls below the NMI, the rate stops falling. That is the
+  // whole point of modelling the floor.
+  REFERENCE_SHOCKS: [-0.01, 0.01, 0.02, 0.03],
+
+  // Banks apply the annual rate with a days/360 convention (per Intesa's KFS),
+  // which lands ~0.7% above the plain /12 annuity. This is an APPROXIMATION of
+  // that gap, off by default — the exact convention varies by bank and cannot be
+  // derived from a couple of published examples.
+  DAY_COUNT_ADJUSTMENT: 365 / 360,
+
+  // Loan-to-value comfort ceiling. Bank policy, not a statute: most banks finance
+  // up to roughly 70-80% of the property value.
+  LTV_WARN: 0.80,
+
+  // Two-phase mortgage starting values (fixed period, then variable).
+  FIXED_YEARS: 3,
+  FIXED_RATE: 0.035,
+  VARIABLE_RATE: 0.045,
 };
 
 /**
@@ -145,8 +173,6 @@ export function totalCost(principal, annualRate, months, fees = {}) {
  *
  *   n' = −ln(1 − P·i/A') / ln(1+i)     (valid only when A' > P·i)
  *
- * When A' <= P·i the extra payment never overtakes the interest accrual, so the
- * loan is not repaid in finite time — we return null rather than a bogus term.
  * The zero-interest case is the plain division P/A'. n' is rounded UP to a whole
  * month (you cannot make a fractional final payment schedule).
  *
@@ -159,11 +185,14 @@ export function termWithExtraPayment(principal, annualRate, months, extraMonthly
   const APrime = A + (extraMonthly > 0 ? extraMonthly : 0);
   if (APrime <= 0) return null;
 
+  // Note: no `A' <= P·i` guard here. A real annuity's A always exceeds P·i (that
+  // is what makes it amortize at all), so A' = A + extra does too — the guard
+  // would be dead code. The genuine degenerate cases (months <= 0, principal <= 0)
+  // are handled above.
   let newMonths;
   if (i === 0) {
     newMonths = Math.ceil(principal / APrime);
   } else {
-    if (APrime <= principal * i) return null; // never amortizes
     newMonths = Math.ceil(-Math.log(1 - (principal * i) / APrime) / Math.log(1 + i));
   }
   if (!Number.isFinite(newMonths) || newMonths <= 0) return null;
@@ -173,6 +202,12 @@ export function termWithExtraPayment(principal, annualRate, months, extraMonthly
   // Interest saved = old total interest − new total interest, where the new
   // interest is (installments actually paid − principal). Both terms come from
   // closed-form totals; nothing is accumulated.
+  //
+  // Conservative by design: newMonths is rounded UP (Math.ceil), but the real
+  // final payment would be partial, so newInterest here is a slight OVERestimate
+  // and interestSaved is UNDERstated by up to ~one installment. Erring toward a
+  // smaller advertised saving is the safe direction — do NOT "fix" this to use a
+  // fractional final month without understanding it understates on purpose.
   const oldInterest = A * months - principal;
   const newInterest = APrime * newMonths - principal;
   const interestSaved = oldInterest - newInterest;
@@ -192,6 +227,182 @@ export function rateShocks(principal, annualRate, months, shocks = []) {
     const payment = monthlyPayment(principal, annualRate + shock, months);
     return { shock, rate: annualRate + shock, payment, delta: payment - base };
   });
+}
+
+/**
+ * Effective annual rate under the Albanian bank convention:
+ *   rate = max(index + margin, floor)
+ * The floor (NMI, Norma Minimale e Interesit) is contractual: the bank never
+ * charges below it no matter how far the reference index falls. Omitting it makes
+ * downward rate scenarios produce rates that cannot occur.
+ */
+export function effectiveRate({ index = 0, margin = 0, floor = 0 } = {}) {
+  return Math.max(index + margin, floor);
+}
+
+/**
+ * Rate-shock scenarios under the reference-index model. Unlike rateShocks, the
+ * shock moves ONLY the reference index (the market part); the bank margin is
+ * fixed and the floor still applies. A negative shock large enough to push
+ * index + margin below the floor pins the rate at the floor — the payment then
+ * equals the base payment, which is exactly the behaviour that makes the floor
+ * visible.
+ *
+ * @param {{index:number, margin:number, floor:number}} reference
+ */
+export function referenceRateShocks(principal, reference, months, shocks = []) {
+  const baseRate = effectiveRate(reference);
+  const base = monthlyPayment(principal, baseRate, months);
+  return shocks.map((shock) => {
+    const rate = effectiveRate({ ...reference, index: reference.index + shock });
+    const payment = monthlyPayment(principal, rate, months);
+    return { shock, rate, payment, delta: payment - base };
+  });
+}
+
+/**
+ * Two-phase Albanian mortgage: a fixed-rate period followed by a variable one.
+ *
+ * Phase 1's installment is the annuity over the FULL term (that is how the bank
+ * quotes it), not over the fixed period. At the switch the outstanding balance is
+ * re-amortized over the remaining months at the new rate, which is why the second
+ * installment differs. A single-rate model cannot show that jump, and the jump is
+ * the main risk the borrower is taking.
+ *
+ * All closed form: phase 1 via monthlyPayment over totalMonths, the switch
+ * balance via balanceAfter, phase 2 via monthlyPayment over the remaining months.
+ * Nothing is accumulated.
+ *
+ * Degenerate cases: fixedMonths <= 0 or fixedMonths >= totalMonths collapse to a
+ * single-rate loan (phase2 null), never NaN.
+ *
+ * @returns {{
+ *   phase1: { rate:number, months:number, payment:number },
+ *   phase2: { rate:number, months:number, payment:number, openingBalance:number } | null,
+ *   balanceAtSwitch: number,
+ *   totalPaid: number, totalInterest: number,
+ *   paymentDelta: number, paymentDeltaPct: number
+ * }}
+ */
+export function twoPhaseLoan(principal, fixedRate, fixedMonths, variableRate, totalMonths) {
+  const n = Math.floor(totalMonths);
+  const fixedN = Math.floor(fixedMonths);
+  const phase1Payment = monthlyPayment(principal, fixedRate, n);
+
+  // Collapse to a single-rate loan when there is no distinct variable phase.
+  if (n <= 0 || principal <= 0 || fixedN <= 0 || fixedN >= n) {
+    const single = totals(principal, fixedRate, n);
+    return {
+      phase1: { rate: fixedRate, months: n > 0 ? n : 0, payment: phase1Payment },
+      phase2: null,
+      balanceAtSwitch: 0,
+      totalPaid: single.totalPaid,
+      totalInterest: single.totalInterest,
+      paymentDelta: 0,
+      paymentDeltaPct: 0,
+    };
+  }
+
+  const balanceAtSwitch = balanceAfter(principal, fixedRate, n, fixedN);
+  const remainingMonths = n - fixedN;
+  const phase2Payment = monthlyPayment(balanceAtSwitch, variableRate, remainingMonths);
+
+  // totalPaid derived from the two installment streams; totalInterest = paid − P.
+  // Never summed from a schedule, so it can't drift with per-row rounding.
+  const totalPaid = phase1Payment * fixedN + phase2Payment * remainingMonths;
+  const totalInterest = totalPaid - principal;
+
+  const paymentDelta = phase2Payment - phase1Payment;
+  const paymentDeltaPct = phase1Payment > 0 ? paymentDelta / phase1Payment : 0;
+
+  return {
+    phase1: { rate: fixedRate, months: fixedN, payment: phase1Payment },
+    phase2: {
+      rate: variableRate,
+      months: remainingMonths,
+      payment: phase2Payment,
+      openingBalance: balanceAtSwitch,
+    },
+    balanceAtSwitch,
+    totalPaid,
+    totalInterest,
+    paymentDelta,
+    paymentDeltaPct,
+  };
+}
+
+/**
+ * Amortization schedule for the two-phase mortgage. Rows up to fixedMonths come
+ * from the phase-1 loan (annuity over the full term at the fixed rate); rows
+ * after come from a FRESH closed-form amortization of the switch balance over the
+ * remaining months at the variable rate. Still Array.from, still no accumulation:
+ * each row derives from the two surrounding closed-form balances of its own
+ * phase.
+ *
+ * Falls back to the single-rate schedule() when the loan collapses (no distinct
+ * variable phase).
+ *
+ * @returns {{ month:number, phase:1|2, payment:number, interest:number, principal:number, balance:number }[]}
+ */
+export function twoPhaseSchedule(principal, fixedRate, fixedMonths, variableRate, totalMonths) {
+  const n = Math.floor(totalMonths);
+  const fixedN = Math.floor(fixedMonths);
+  if (n <= 0 || principal <= 0) return [];
+  if (fixedN <= 0 || fixedN >= n) {
+    return schedule(principal, fixedRate, n).map((r) => ({ ...r, phase: 1 }));
+  }
+
+  const balanceAtSwitch = balanceAfter(principal, fixedRate, n, fixedN);
+  const remainingMonths = n - fixedN;
+  const iFixed = fixedRate / 12;
+  const iVar = variableRate / 12;
+  const phase1Payment = monthlyPayment(principal, fixedRate, n);
+  const phase2Payment = monthlyPayment(balanceAtSwitch, variableRate, remainingMonths);
+
+  return Array.from({ length: n }, (_, idx) => {
+    const k = idx + 1;
+    if (k <= fixedN) {
+      const prev = balanceAfter(principal, fixedRate, n, k - 1);
+      const interest = prev * iFixed;
+      return {
+        month: k,
+        phase: 1,
+        payment: phase1Payment,
+        interest,
+        principal: phase1Payment - interest,
+        // Snap the very last row (only reachable if fixedN === n, already excluded)
+        balance: balanceAfter(principal, fixedRate, n, k),
+      };
+    }
+    // Phase 2 amortizes balanceAtSwitch over remainingMonths, indexed from 0.
+    const j = k - fixedN; // 1..remainingMonths
+    const prev = balanceAfter(balanceAtSwitch, variableRate, remainingMonths, j - 1);
+    const interest = prev * iVar;
+    const balance = k === n ? 0 : balanceAfter(balanceAtSwitch, variableRate, remainingMonths, j);
+    return {
+      month: k,
+      phase: 2,
+      payment: phase2Payment,
+      interest,
+      principal: phase2Payment - interest,
+      balance,
+    };
+  });
+}
+
+/**
+ * Property price and down payment → loan principal and loan-to-value ratio.
+ * Guards a zero price (ltv 0, not NaN). The principal can't go below zero even
+ * if the down payment exceeds the price.
+ */
+export function loanFromProperty(propertyPrice, downPayment) {
+  const principal = Math.max(propertyPrice - downPayment, 0);
+  const ltv = propertyPrice > 0 ? principal / propertyPrice : 0;
+  return {
+    principal,
+    ltv,
+    downPaymentPct: propertyPrice > 0 ? downPayment / propertyPrice : 0,
+  };
 }
 
 /**

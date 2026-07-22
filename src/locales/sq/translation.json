@@ -582,11 +582,49 @@
     },
     "rateShock": {
       "title": "Nëse rritet norma e interesit",
-      "desc": "Shumica e hipotekave në Shqipëri kanë normë të ndryshueshme, ndaj kësti mund të lëvizë me tregun. Ja kësti nëse norma jote rritet.",
+      "desc": "Shumica e hipotekave në Shqipëri kanë normë të ndryshueshme, ndaj kësti mund të lëvizë me tregun. Ja kësti nëse norma jote rritet, dhe nëse bie.",
+      "descBank": "Norma është indeksi i referencës plus marzhi i bankës, por s'bie kurrë nën dyshemenë. Ja kësti ndërsa indeksi i referencës lëviz, lart e poshtë.",
       "colScenario": "Norma",
       "colInstallment": "Kësti",
-      "colDelta": "Shtesë në muaj",
-      "plus": "+{{pp}}pp"
+      "colDelta": "Ndryshimi në muaj",
+      "plus": "+{{pp}}pp",
+      "minus": "−{{pp}}pp",
+      "now": "tani",
+      "floorTag": "në dysheme"
+    },
+    "bankRate": {
+      "useBank": "Përdor normën si e bankës",
+      "useSimple": "Përdor një normë të vetme",
+      "margin": "Marzhi i bankës",
+      "floor": "Norma minimale (dyshemeja)",
+      "applied": "Norma e aplikuar:",
+      "index": {
+        "tbill12m": "Bono Thesari (12-mujore)",
+        "euribor": "Euribor"
+      }
+    },
+    "twoPhase": {
+      "toggle": "Periudhë fikse, pastaj e ndryshueshme",
+      "hint": "Shumica e hipotekave shqiptare e mbajnë normën fikse vitet e para, pastaj kalojnë në normë të ndryshueshme për pjesën tjetër të afatit. Prandaj bankat citojnë dy këste.",
+      "fixedYears": "Periudha fikse",
+      "variableRate": "Norma pas periudhës fikse",
+      "phase1Label": "{{years}} të parat",
+      "phase2Label": "Pas kësaj",
+      "change": "Kësti ndryshon me {{sign}}{{amount}} {{currency}} në muaj, pra {{pct}}, kur mbaron periudha fikse."
+    },
+    "property": {
+      "priceLabel": "Çmimi i pronës",
+      "downLabel": "Parapagimi",
+      "useProperty": "Nis nga çmimi i pronës",
+      "useAmount": "Fut shumën e kredisë drejtpërdrejt",
+      "loanAmount": "Kredia e nevojshme:",
+      "ltv": "Kredia ndaj vlerës:",
+      "ltvWarn": "Shumica e bankave financojnë deri rreth 70 me 80% të vlerës së pronës, ndaj në këtë nivel mund të të duhet një parapagim më i madh."
+    },
+    "dayCount": {
+      "toggle": "Përafro konventën e bankës",
+      "hint": "Bankat e aplikojnë normën me konventën ditë/360, e cila del pak më e lartë se llogaritja standarde mujore. Kjo është një përafrim i asaj diference, jo formula e saktë e ndonjë banke.",
+      "note": "Ky rezultat është orientues dhe mund të ndryshojë nga oferta e bankës rreth 1%, sepse bankat aplikojnë konventën ditë/360. Nuk është një ofertë kontraktuale."
     },
     "fxShock": {
       "title": "Nëse euro forcohet",

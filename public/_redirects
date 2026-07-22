@@ -1,3 +1,14 @@
+# Public tool routes get their OWN prerendered shell (self-referencing canonical),
+# so Google does not treat them as duplicates of the landing page. These MUST come
+# before the /sq/* and /* catch-alls below — Netlify uses the first match.
+# The files are emitted at build time by prerenderToolRoutesPlugin (vite.config.js).
+/tools/salary-calculator           /tools/salary-calculator.html            200
+/tools/self-employed-calculator    /tools/self-employed-calculator.html     200
+/tools/loan-calculator             /tools/loan-calculator.html              200
+/sq/tools/salary-calculator        /sq/tools/salary-calculator.html         200
+/sq/tools/self-employed-calculator /sq/tools/self-employed-calculator.html  200
+/sq/tools/loan-calculator          /sq/tools/loan-calculator.html           200
+
 # Albanian language shell — must come BEFORE the SPA catch-all
 /sq        /sq.html     200
 /sq/*      /sq.html     200

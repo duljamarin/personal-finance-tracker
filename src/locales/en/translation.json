@@ -582,11 +582,49 @@
     },
     "rateShock": {
       "title": "If the interest rate rises",
-      "desc": "Most mortgages in Albania have a variable rate, so the installment can move with the market. Here is the installment if your rate rises.",
+      "desc": "Most mortgages in Albania have a variable rate, so the installment can move with the market. Here is the installment if your rate rises, and if it falls.",
+      "descBank": "The rate is the reference index plus your bank margin, but it never drops below the floor. Here is the installment as the reference index moves, up and down.",
       "colScenario": "Rate",
       "colInstallment": "Installment",
-      "colDelta": "Extra per month",
-      "plus": "+{{pp}}pp"
+      "colDelta": "Change per month",
+      "plus": "+{{pp}}pp",
+      "minus": "−{{pp}}pp",
+      "now": "now",
+      "floorTag": "at floor"
+    },
+    "bankRate": {
+      "useBank": "Use bank-style rate",
+      "useSimple": "Use a single rate",
+      "margin": "Bank margin",
+      "floor": "Minimum rate (floor)",
+      "applied": "Applied rate:",
+      "index": {
+        "tbill12m": "Treasury Bill (12-month)",
+        "euribor": "Euribor"
+      }
+    },
+    "twoPhase": {
+      "toggle": "Fixed period, then variable",
+      "hint": "Most Albanian mortgages fix the rate for the first years, then switch to a variable rate for the rest of the term. Banks quote two installments because of it.",
+      "fixedYears": "Fixed period",
+      "variableRate": "Rate after the fixed period",
+      "phase1Label": "First {{years}}",
+      "phase2Label": "After that",
+      "change": "The installment changes by {{sign}}{{amount}} {{currency}} a month, that is {{pct}}, when the fixed period ends."
+    },
+    "property": {
+      "priceLabel": "Property price",
+      "downLabel": "Down payment",
+      "useProperty": "Start from a property price",
+      "useAmount": "Enter the loan amount directly",
+      "loanAmount": "Loan needed:",
+      "ltv": "Loan to value:",
+      "ltvWarn": "Most banks finance up to about 70 to 80% of the property value, so at this level you may need a larger down payment."
+    },
+    "dayCount": {
+      "toggle": "Approximate the bank convention",
+      "hint": "Banks apply the rate with a days/360 convention, which lands slightly higher than the standard monthly calculation. This is an approximation of that gap, not any bank's exact formula.",
+      "note": "This result is indicative and may differ from a bank offer by roughly 1%, because banks apply a days/360 convention. It is not a contract quote."
     },
     "fxShock": {
       "title": "If the euro gets stronger",
