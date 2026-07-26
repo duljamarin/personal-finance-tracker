@@ -42,6 +42,10 @@ const initPromise = (async () => {
       debug: false,
       interpolation: { escapeValue: false },
       react: { useSuspense: false },
+      // Render immediately (no Suspense) for performance, but never paint a raw
+      // key during the brief window before init/bundle load finishes — resolve
+      // missing keys to an empty string instead of "some.key".
+      parseMissingKeyHandler: () => '',
       detection: {
         order: ['path', 'localStorage', 'navigator'],
         lookupFromPathIndex: 0,
