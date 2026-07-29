@@ -61,14 +61,15 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, logout } = useAuth();
-  const { isPremium, subscription } = useSubscription();
+  const { isPremium, isTrialing, subscription } = useSubscription();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef(null);
 
-  const isTrialing = subscription?.subscription_status === 'trialing';
+  // Use the isTrialing boolean from context, not the status string - the string
+  // can lag behind the actual trial state, the boolean is computed from trial_end.
   const showProBadge = isPremium && !isTrialing && subscription?.subscription_status !== 'none';
   const showUpgrade = !isPremium || isTrialing;
 
