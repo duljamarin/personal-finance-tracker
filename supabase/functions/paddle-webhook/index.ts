@@ -438,6 +438,34 @@ serve(async (req: Request) => {
         break;
       }
 
+      case "subscription.expired": {
+        // Terminal state after dunning is exhausted. Paddle sends this instead of
+        // subscription.canceled depending on the account's dunning setting, so
+        // without this case the row can stay 'active' after the sub is dead.
+        const { data: currentSub } = await supabase
+          .from("subscriptions")
+          .select("paddle_subscription_id")
+          .eq("user_id", userId)
+          .single();
+
+        if (currentSub?.paddle_subscription_id && currentSub.paddle_subscription_id !== data.id) {
+          console.warn(`Ignoring expiry for old subscription ${data.id}, current is ${currentSub.paddle_subscription_id}`);
+          break;
+        }
+
+        const updateData: Record<string, any> = { status: "expired" };
+        if (eventId) updateData.last_event_id = eventId;
+
+        const { error } = await supabase
+          .from("subscriptions")
+          .update(updateData)
+          .eq("user_id", userId);
+
+        if (error) throw error;
+        console.log(`Subscription expired for user ${userId}`);
+        break;
+      }
+
       case "transaction.completed": {
         const subscriptionId = data.subscription_id;
         if (subscriptionId) {
