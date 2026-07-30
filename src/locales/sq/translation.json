@@ -700,7 +700,7 @@
       "getStarted": "Filloni Falas",
       "signIn": "Identifikohu",
       "badge": "Filloni Falas · Pa kartë krediti",
-      "trustNote": "✓ Plan falas përgjithmonë  ·  ✓ 100 transaksione/muaj  ·  ✓ Përmirësoni kurdo",
+      "trustNote": "✓ Plan falas përgjithmonë  ·  ✓ 30 transaksione/muaj  ·  ✓ Përmirësoni kurdo",
       "trust1": "Plan falas përgjithmonë",
       "trust2": "Pa kartë krediti",
       "trust3": "Anuloni kurdo"
@@ -954,9 +954,9 @@
       "free": {
         "label": "Plani falas - përgjithmonë",
         "items": {
-          "tx": "100 transaksione / muaj",
-          "budgets": "30 buxhete mujore",
-          "goals": "40 qëllime aktive",
+          "tx": "30 transaksione / muaj",
+          "budgets": "10 buxhete mujore",
+          "goals": "10 objektiva aktive",
           "categories": "Kategori të personalizuara & transaksione të përsëritura",
           "reports": "Raporte financiare",
           "networth": "Ndjekja e pasurisë neto",
@@ -995,7 +995,7 @@
       "items": {
         "free": {
           "q": "A është me të vërtetë falas?",
-          "a": "Po. Plani falas është vërtet falas - pa kartë krediti, pa limit kohor. Merrni 100 transaksione/muaj, 30 buxhete dhe 40 qëllime. Plani me pagesë zhbllokon transaksione të pakufizuara dhe funksione premium."
+          "a": "Po. Plani falas është vërtet falas - pa kartë krediti, pa limit kohor. Merrni 30 transaksione/muaj, 10 buxhete dhe 10 objektiva. Plani me pagesë zhbllokon transaksione të pakufizuara dhe funksione premium."
         },
         "safe": {
           "q": "A janë të sigurta të dhënat e mia financiare?",
@@ -1419,12 +1419,12 @@
     "trustCancel": "Anulim në çdo kohë, akses deri në fund të periudhës",
     "trustPaddle": "Faturuar nga Paddle",
     "freeFeatures": {
-      "transactions": "100 transaksione/muaj",
+      "transactions": "30 transaksione/muaj",
       "categories": "Kategori të personalizuara",
       "dashboard": "Paneli bazik",
-      "budgets": "Deri në 30 kategori buxheti",
-      "recurring": "Deri në 30 transaksione të përsëritura",
-      "goals": "Deri në 40 objektiva financiare",
+      "budgets": "Deri në 10 kategori buxheti",
+      "recurring": "Deri në 20 transaksione të përsëritura",
+      "goals": "Deri në 10 objektiva financiare",
       "healthScoreBasic": "Rezultati bazë i shëndetit financiar",
       "benchmarksBasic": "Krahasime bazë të shpenzimeve",
       "netWorth": "Gjurmimi i vlerës neto",
@@ -1584,8 +1584,8 @@
       "benchmarkFallbackCategory": "Ky shpenzim"
     },
     "goals": {
-      "title": "Vendos një ose dy objektiva",
-      "subtitle": "Zgjidh diçka për të cilën po kursen. Mund ta ndryshosh ose të shtosh të tjera më vonë.",
+      "title": "Vendos objektivat e kursimit",
+      "subtitle": "Zgjidh deri në katër gjëra për të cilat po kursen. Mund ti ndryshosh ose të shtosh të tjera më vonë.",
       "nameLabel": "Emri i objektivit",
       "namePlaceholder": "si, Fondi i emergjencës",
       "amountLabel": "Shuma e synuar",
@@ -1597,12 +1597,14 @@
         "emergencyFund": "Fondi i emergjencës",
         "vacation": "Pushime",
         "newDevice": "Pajisje e re",
-        "debtFree": "Shlyerja e borxhit"
+        "debtFree": "Shlyerja e borxhit",
+        "home": "Depozita për shtëpi",
+        "car": "Makina"
       }
     },
     "budgets": {
       "title": "Vendos kufi për shpenzimet mujore",
-      "subtitle": "Vendos një kufi mujor për një ose dy kategori dhe ne të njoftojmë përpara se ta kalosh.",
+      "subtitle": "Vendos një kufi mujor për deri në katër kategori dhe ne të njoftojmë përpara se ta kalosh.",
       "categoryLabel": "Kategoria",
       "selectCategory": "Zgjidh një kategori",
       "amountLabel": "Kufiri mujor",

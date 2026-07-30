@@ -6,8 +6,8 @@ import { CategoryIconSvg } from '../../UI/CategoryIconSvg';
 import CustomSelect from '../../UI/CustomSelect';
 import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
-// Same reasoning as goals: cap at two so onboarding stays short.
-const MAX_BUDGETS = 2;
+// Same reasoning as goals: capped below the plan limit so onboarding stays short.
+const MAX_BUDGETS = 4;
 
 // Categories that make no sense as a spending cap.
 const EXCLUDED = new Set(['Salary', 'Freelance', 'Investments']);

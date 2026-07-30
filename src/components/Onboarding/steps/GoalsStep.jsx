@@ -3,9 +3,9 @@ import Input from '../../UI/Input';
 import Button from '../../UI/Button';
 import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
-// Two goals is the cap here on purpose: the free plan allows more, but the point
-// of onboarding is momentum, not a full setup. Users add the rest from /goals.
-const MAX_GOALS = 2;
+// Capped below the plan limit on purpose: onboarding is for momentum, not a
+// full setup. Users add the rest from /goals.
+const MAX_GOALS = 4;
 
 // Suggested starters. `key` is the i18n key for the label; `months` seeds a
 // target date so the goal shows real progress pacing straight away, and
@@ -15,6 +15,8 @@ const GOAL_PRESETS = [
   { key: 'vacation', months: 8, multiplier: 1 },
   { key: 'newDevice', months: 6, multiplier: 0.5 },
   { key: 'debtFree', months: 12, multiplier: 1.5 },
+  { key: 'home', months: 36, multiplier: 6 },
+  { key: 'car', months: 24, multiplier: 4 },
 ];
 
 // Round a suggested amount to something a human would actually type.

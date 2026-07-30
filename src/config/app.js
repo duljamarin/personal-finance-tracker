@@ -20,11 +20,15 @@ export const APP_CONFIG = {
   // Pagination
   DEFAULT_PAGE_SIZE: 20,
 
-  // Subscription
-  FREE_TRANSACTION_LIMIT: 100,
-  FREE_BUDGET_LIMIT: 30,
-  FREE_RECURRING_LIMIT: 30,
-  FREE_GOAL_LIMIT: 40,
+  // Subscription — free-tier caps.
+  // These are mirrored by the SQL limit triggers (see the latest
+  // supabase_migrations/*_free_tier_limits / *_limit_triggers_* migration).
+  // Changing a number here REQUIRES a matching migration, otherwise the client
+  // and the database disagree about what a free user may create.
+  FREE_TRANSACTION_LIMIT: 30,
+  FREE_BUDGET_LIMIT: 10,
+  FREE_RECURRING_LIMIT: 20,
+  FREE_GOAL_LIMIT: 10,
   GRACE_PERIOD_DAYS: 30,
   TRIAL_DAYS: 7,
 };

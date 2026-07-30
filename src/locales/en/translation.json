@@ -700,7 +700,7 @@
       "getStarted": "Get Started Free",
       "signIn": "Sign In",
       "badge": "Free to start · No credit card required",
-      "trustNote": "✓ Free forever plan  ·  ✓ 100 transactions/month  ·  ✓ Upgrade anytime",
+      "trustNote": "✓ Free forever plan  ·  ✓ 30 transactions/month  ·  ✓ Upgrade anytime",
       "trust1": "Free forever plan",
       "trust2": "No credit card required",
       "trust3": "Cancel anytime"
@@ -954,9 +954,9 @@
       "free": {
         "label": "Free plan - forever",
         "items": {
-          "tx": "100 transactions / month",
-          "budgets": "30 monthly budgets",
-          "goals": "40 active goals",
+          "tx": "30 transactions / month",
+          "budgets": "10 monthly budgets",
+          "goals": "10 active goals",
           "categories": "Custom categories & recurring transactions",
           "reports": "Financial reports",
           "networth": "Net worth tracking",
@@ -995,7 +995,7 @@
       "items": {
         "free": {
           "q": "Is it really free?",
-          "a": "Yes. The free plan is genuinely free - no credit card required, no time limit. You get 100 transactions/month, 30 budgets, and 40 goals. The paid plan unlocks unlimited transactions and premium features like health scores and cash flow forecasting."
+          "a": "Yes. The free plan is genuinely free - no credit card required, no time limit. You get 30 transactions/month, 10 budgets, and 10 goals. The paid plan unlocks unlimited transactions and premium features like health scores and cash flow forecasting."
         },
         "safe": {
           "q": "Is my financial data safe?",
@@ -1419,12 +1419,12 @@
     "trustCancel": "Cancel anytime, keep access till period ends",
     "trustPaddle": "Billed by Paddle",
     "freeFeatures": {
-      "transactions": "100 transactions/month",
+      "transactions": "30 transactions/month",
       "categories": "Custom categories",
       "dashboard": "Basic dashboard",
-      "budgets": "Up to 30 budget categories",
-      "recurring": "Up to 30 recurring transactions",
-      "goals": "Up to 40 financial goals",
+      "budgets": "Up to 10 budget categories",
+      "recurring": "Up to 20 recurring transactions",
+      "goals": "Up to 10 financial goals",
       "healthScoreBasic": "Basic health score (headline number)",
       "benchmarksBasic": "Basic spending benchmarks",
       "netWorth": "Net worth tracking",
@@ -1584,8 +1584,8 @@
       "benchmarkFallbackCategory": "This expense"
     },
     "goals": {
-      "title": "Set a goal or two",
-      "subtitle": "Pick something you are saving toward. You can change it or add more later.",
+      "title": "Set your savings goals",
+      "subtitle": "Pick up to four things you are saving toward. You can change them or add more later.",
       "nameLabel": "Goal name",
       "namePlaceholder": "e.g., Emergency fund",
       "amountLabel": "Target amount",
@@ -1597,12 +1597,14 @@
         "emergencyFund": "Emergency fund",
         "vacation": "Vacation",
         "newDevice": "New device",
-        "debtFree": "Pay off debt"
+        "debtFree": "Pay off debt",
+        "home": "Home deposit",
+        "car": "Car"
       }
     },
     "budgets": {
       "title": "Cap your monthly spending",
-      "subtitle": "Set a monthly limit for a category or two and we will warn you before you go over.",
+      "subtitle": "Set a monthly limit for up to four categories and we will warn you before you go over.",
       "categoryLabel": "Category",
       "selectCategory": "Select a category",
       "amountLabel": "Monthly limit",
