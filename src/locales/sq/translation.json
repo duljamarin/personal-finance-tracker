@@ -1532,7 +1532,7 @@
     },
     "income": {
       "title": "Sa janë të ardhurat tuaja mujore?",
-      "subtitle": "Do ta rregullojmë pagën tënde që paneli të punojë që nga dita e parë",
+      "subtitle": "Do ta vendosim pagën tënde që paneli të punojë që nga dita e parë",
       "label": "Të ardhurat mujore",
       "placeholder": "p.sh., 3000",
       "paydayLabel": "Dita e pagës",
