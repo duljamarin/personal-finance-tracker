@@ -1512,9 +1512,13 @@
       "1": "Currency",
       "2": "Income",
       "3": "Expenses",
+      "4": "Goals",
+      "5": "Budgets",
       "currency": "Currency",
       "income": "Income",
-      "expenses": "Bills"
+      "expenses": "Bills",
+      "goals": "Goals",
+      "budgets": "Budgets"
     },
     "currency": {
       "title": "Select your currency",
@@ -1550,7 +1554,9 @@
         "utilities": "Utilities",
         "subscriptions": "Subscriptions",
         "housing": "Housing"
-      }
+      },
+      "showMoreCategories": "Show {{count}} more categories",
+      "showFewerCategories": "Show fewer categories"
     },
     "reveal": {
       "salaryTitle": "Salary",
@@ -1573,7 +1579,37 @@
       "safeToSpend": "You can safely spend about {{amount}} per day until payday.",
       "seededRecurring": "{{count}} recurring transactions created",
       "seededBudgets": "{{count}} budgets set up",
-      "seededForecast": "Your cash-flow forecast is ready"
+      "seededForecast": "Your cash-flow forecast is ready",
+      "seededGoals": "{{count}} goals created",
+      "benchmarkFallbackCategory": "This expense"
+    },
+    "goals": {
+      "title": "Set a goal or two",
+      "subtitle": "Pick something you are saving toward. You can change it or add more later.",
+      "nameLabel": "Goal name",
+      "namePlaceholder": "e.g., Emergency fund",
+      "amountLabel": "Target amount",
+      "targetDateLabel": "Target date",
+      "addCustom": "Add your own goal",
+      "remove": "Remove goal",
+      "empty": "Pick a suggestion above, or add your own. This step is optional.",
+      "presets": {
+        "emergencyFund": "Emergency fund",
+        "vacation": "Vacation",
+        "newDevice": "New device",
+        "debtFree": "Pay off debt"
+      }
+    },
+    "budgets": {
+      "title": "Cap your monthly spending",
+      "subtitle": "Set a monthly limit for a category or two and we will warn you before you go over.",
+      "categoryLabel": "Category",
+      "selectCategory": "Select a category",
+      "amountLabel": "Monthly limit",
+      "addCustom": "Add another limit",
+      "remove": "Remove limit",
+      "empty": "Pick a suggestion above, or add your own. This step is optional.",
+      "emptyNoBills": "Add a limit for any category you want to keep an eye on. This step is optional."
     }
   },
   "shortcuts": {

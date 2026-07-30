@@ -1512,9 +1512,13 @@
       "1": "Valuta",
       "2": "Të ardhurat",
       "3": "Shpenzimet",
+      "4": "Objektivat",
+      "5": "Buxhetet",
       "currency": "Valuta",
       "income": "Të ardhurat",
-      "expenses": "Faturat"
+      "expenses": "Faturat",
+      "goals": "Objektivat",
+      "budgets": "Buxhetet"
     },
     "currency": {
       "title": "Zgjidhni monedhën tuaj",
@@ -1550,7 +1554,9 @@
         "utilities": "Faturat",
         "subscriptions": "Abonimet",
         "housing": "Banesa"
-      }
+      },
+      "showMoreCategories": "Shfaq {{count}} kategori të tjera",
+      "showFewerCategories": "Shfaq më pak kategori"
     },
     "reveal": {
       "salaryTitle": "Paga",
@@ -1573,7 +1579,37 @@
       "safeToSpend": "Mund të shpenzosh me siguri rreth {{amount}} në ditë deri në pagë.",
       "seededRecurring": "{{count}} transaksione të përsëritura u krijuan",
       "seededBudgets": "{{count}} buxhete u vendosën",
-      "seededForecast": "Parashikimi yt i rrjedhës së parasë është gati"
+      "seededForecast": "Parashikimi yt i rrjedhës së parasë është gati",
+      "seededGoals": "{{count}} objektiva u krijuan",
+      "benchmarkFallbackCategory": "Ky shpenzim"
+    },
+    "goals": {
+      "title": "Vendos një ose dy objektiva",
+      "subtitle": "Zgjidh diçka për të cilën po kursen. Mund ta ndryshosh ose të shtosh të tjera më vonë.",
+      "nameLabel": "Emri i objektivit",
+      "namePlaceholder": "si, Fondi i emergjencës",
+      "amountLabel": "Shuma e synuar",
+      "targetDateLabel": "Data e synuar",
+      "addCustom": "Shto objektivin tënd",
+      "remove": "Hiq objektivin",
+      "empty": "Zgjidh një sugjerim më lart, ose shto tëndin. Ky hap është opsional.",
+      "presets": {
+        "emergencyFund": "Fondi i emergjencës",
+        "vacation": "Pushime",
+        "newDevice": "Pajisje e re",
+        "debtFree": "Shlyerja e borxhit"
+      }
+    },
+    "budgets": {
+      "title": "Vendos kufi për shpenzimet mujore",
+      "subtitle": "Vendos një kufi mujor për një ose dy kategori dhe ne të njoftojmë përpara se ta kalosh.",
+      "categoryLabel": "Kategoria",
+      "selectCategory": "Zgjidh një kategori",
+      "amountLabel": "Kufiri mujor",
+      "addCustom": "Shto një kufi tjetër",
+      "remove": "Hiq kufirin",
+      "empty": "Zgjidh një sugjerim më lart, ose shto tëndin. Ky hap është opsional.",
+      "emptyNoBills": "Shto një kufi për çdo kategori që do të mbash nën vëzhgim. Ky hap është opsional."
     }
   },
   "shortcuts": {

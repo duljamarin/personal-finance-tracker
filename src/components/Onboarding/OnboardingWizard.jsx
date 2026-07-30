@@ -6,7 +6,14 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { trackEvent } from '../../lib/analytics';
 import { supabase } from '../../utils/supabaseClient';
-import { fetchCategories, addCategory, addTransaction, addRecurringTransaction } from '../../utils/api';
+import {
+  fetchCategories,
+  addCategory,
+  addTransaction,
+  addRecurringTransaction,
+  createGoal,
+  createBudget,
+} from '../../utils/api';
 import { fetchExchangeRate } from '../../utils/exchangeRate';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { computeSnapshot } from '../../utils/reveal/computeSnapshot';
@@ -16,9 +23,13 @@ import ProgressBar from './ProgressBar';
 import CurrencyStep from './steps/CurrencyStep';
 import IncomeStep from './steps/IncomeStep';
 import ExpensesStep from './steps/ExpensesStep';
+import GoalsStep from './steps/GoalsStep';
+import BudgetsStep from './steps/BudgetsStep';
 import CurrencyArt from './art/CurrencyArt';
 import IncomeArt from './art/IncomeArt';
 import ExpensesArt from './art/ExpensesArt';
+import GoalsArt from './art/GoalsArt';
+import BudgetsArt from './art/BudgetsArt';
 import FinancialReveal from './Reveal/FinancialReveal';
 
 export default function OnboardingWizard() {
@@ -28,8 +39,10 @@ export default function OnboardingWizard() {
   const { addToast } = useToast();
   const { reloadTransactions, reloadCategories } = useTransactions();
 
-  // Step sequence: currency, monthly income, then fixed monthly bills.
-  const steps = ['currency', 'income', 'expenses'];
+  // Step sequence: currency, monthly income, fixed monthly bills, then the two
+  // optional commitment steps (goals + budgets). Goals/budgets come after bills
+  // because both derive their suggestions from what was entered there.
+  const steps = ['currency', 'income', 'expenses', 'goals', 'budgets'];
   const TOTAL_STEPS = steps.length;
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -46,6 +59,8 @@ export default function OnboardingWizard() {
     income: '',
     payday: '',
     expenses: [{ id: crypto.randomUUID(), amount: '', categoryId: '' }],
+    goals: [],
+    budgets: [],
   });
 
   useEffect(() => {
@@ -93,7 +108,7 @@ export default function OnboardingWizard() {
   async function handleFinish() {
     setSubmitting(true);
     try {
-      const { currency, exchangeRate, income, payday, expenses } = wizardData;
+      const { currency, exchangeRate, income, payday, expenses, goals, budgets } = wizardData;
       const todayStr = new Date().toISOString().split('T')[0];
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
       const now = new Date();
@@ -204,6 +219,44 @@ export default function OnboardingWizard() {
         billsForSnapshot.push({ amount: amountNum * rate, categoryName: cat?.name || '' });
       }
 
+      // --- Goals (optional step) ---
+      // target_amount is stored in the base currency (EUR), the same basis goal
+      // contributions use, so convert what the user typed in their own currency.
+      let seededGoals = 0;
+      const validGoals = (goals || []).filter(
+        (g) => g.name?.trim() && Number(g.amount) > 0
+      );
+      for (const goal of validGoals) {
+        const ok = await seed('goal', () => createGoal({
+          name: goal.name.trim(),
+          targetAmount: Number(goal.amount) * rate,
+          targetDate: goal.targetDate || null,
+          goalType: 'savings',
+        }));
+        if (ok) seededGoals += 1;
+      }
+
+      // --- Budgets (optional step) ---
+      // Budget caps are compared against base_amount spend, which is EUR, so the
+      // typed amount needs the same rate conversion as bills above.
+      let seededBudgets = 0;
+      const seenBudgetCategories = new Set();
+      const validBudgets = (budgets || []).filter((b) => {
+        if (!b.categoryId || !(Number(b.amount) > 0)) return false;
+        if (seenBudgetCategories.has(b.categoryId)) return false; // one cap per category
+        seenBudgetCategories.add(b.categoryId);
+        return true;
+      });
+      for (const budget of validBudgets) {
+        const ok = await seed('budget', () => createBudget({
+          categoryId: budget.categoryId,
+          year: now.getFullYear(),
+          month: now.getMonth() + 1,
+          amount: Number(budget.amount) * rate,
+        }));
+        if (ok) seededBudgets += 1;
+      }
+
       if (seedFailed) {
         // Surface a soft warning but keep going — the user can add data later.
         addToast(t('onboarding.wizard.seedWarning'), 'warning');
@@ -220,7 +273,8 @@ export default function OnboardingWizard() {
 
       trackEvent('OnboardingComplete');
 
-      const canReveal = incomeNum > 0 || validExpenses.length > 0;
+      const canReveal =
+        incomeNum > 0 || validExpenses.length > 0 || validGoals.length > 0 || validBudgets.length > 0;
       if (canReveal) {
         // Show the reveal FIRST. onboarding_completed is flipped only when the
         // user finishes the reveal (finalizeOnboarding on onDone) — flipping it
@@ -229,7 +283,11 @@ export default function OnboardingWizard() {
         setReveal({
           snapshot,
           currency,
-          seededSummary: { recurring: seededRecurring, budgets: 0 },
+          seededSummary: {
+            recurring: seededRecurring,
+            budgets: seededBudgets,
+            goals: seededGoals,
+          },
         });
       } else {
         // Nothing entered — keep the original lightweight success screen.
@@ -314,10 +372,12 @@ export default function OnboardingWizard() {
     currency: CurrencyArt,
     income: IncomeArt,
     expenses: ExpensesArt,
+    goals: GoalsArt,
+    budgets: BudgetsArt,
   }[stepKey];
 
-  // Income and the final expenses step are both skippable.
-  const canSkip = stepKey === 'income' || stepKey === 'expenses';
+  // Everything after the currency step is optional.
+  const canSkip = stepKey !== 'currency';
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
@@ -378,6 +438,23 @@ export default function OnboardingWizard() {
                   onChange={(val) => updateData('expenses', val)}
                   categories={categories}
                   currency={wizardData.currency}
+                />
+              )}
+              {stepKey === 'goals' && (
+                <GoalsStep
+                  goals={wizardData.goals}
+                  onChange={(val) => updateData('goals', val)}
+                  currency={wizardData.currency}
+                  income={wizardData.income}
+                />
+              )}
+              {stepKey === 'budgets' && (
+                <BudgetsStep
+                  budgets={wizardData.budgets}
+                  onChange={(val) => updateData('budgets', val)}
+                  categories={categories}
+                  currency={wizardData.currency}
+                  expenses={wizardData.expenses}
                 />
               )}
             </div>

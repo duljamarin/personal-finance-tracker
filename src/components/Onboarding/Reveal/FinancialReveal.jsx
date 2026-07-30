@@ -156,7 +156,13 @@ function SlideBenchmark({ snapshot, currency, t }) {
     <div className="space-y-6">
       <p className="eyebrow">{t('onboarding.reveal.benchmarkEyebrow')}</p>
       <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-primary dark:text-white">
-        {translateCategoryName(opp.categoryName) || t(`onboarding.expenses.presets.${opp.bucket}`)}
+        {/* A bill left uncategorized has no name to show, and the coarse bucket
+            can be 'other', which has no label of its own. Fall back to a generic
+            "this expense" rather than leaking a raw i18n key. */}
+        {translateCategoryName(opp.categoryName) ||
+          t(`onboarding.expenses.presets.${opp.bucket}`, {
+            defaultValue: t('onboarding.reveal.benchmarkFallbackCategory'),
+          })}
       </h2>
 
       <div className="space-y-3 text-left">
@@ -217,6 +223,9 @@ function SlideReady({ snapshot, currency, seededSummary, t }) {
         )}
         {seededSummary.budgets > 0 && (
           <ReadyItem text={t('onboarding.reveal.seededBudgets', { count: seededSummary.budgets })} />
+        )}
+        {seededSummary.goals > 0 && (
+          <ReadyItem text={t('onboarding.reveal.seededGoals', { count: seededSummary.goals })} />
         )}
         <ReadyItem text={t('onboarding.reveal.seededForecast')} />
       </ul>

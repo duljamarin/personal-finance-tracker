@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Input from '../../UI/Input';
 import Button from '../../UI/Button';
@@ -6,24 +7,55 @@ import { CategoryIconSvg } from '../../UI/CategoryIconSvg';
 import CustomSelect from '../../UI/CustomSelect';
 import { CURRENCY_SYMBOLS } from '../../../utils/constants';
 
-const MAX_EXPENSES = 6;
+const MAX_EXPENSES = 8;
 
-// Preset bill chips. `names` lists the exact default category names this chip
-// should map to (first match wins); `match` is a word-boundaried fallback for
-// custom categories. Order matters — exact names are tried before the regex,
-// so e.g. "Healthcare" never gets grabbed by a transport keyword.
-const BILL_PRESETS = [
-  { key: 'rent', names: ['Housing & Rent'], match: /\b(rent|housing|qira|banes|apartment)\b/i },
-  { key: 'food', names: ['Food & Dining', 'Groceries'], match: /\b(food|groceries|ushqim|market)\b/i },
-  { key: 'transport', names: ['Transportation'], match: /\b(transport|transportation|fuel|udhetim|makina)\b/i },
-  { key: 'utilities', names: ['Utilities'], match: /\b(utilities|electric|water|energji|fatura)\b/i },
-  { key: 'subscriptions', names: ['Subscriptions'], match: /\b(subscriptions|abonim|netflix|spotify)\b/i },
+// How many chips to show before "Show more". The pinned names below fill this
+// row first; everything else is revealed on demand.
+const COLLAPSED_CHIP_COUNT = 5;
+
+// The bills people almost always have, pinned to the front of the chip row in
+// this order. These are canonical English category names (categories are always
+// stored in English and localized for display — see translateCategoryName).
+// Anything the user actually has that isn't listed here still appears as a chip,
+// just after these and behind "Show more".
+const PINNED_CATEGORY_NAMES = [
+  'Housing & Rent',
+  'Food & Dining',
+  'Transportation',
+  'Utilities',
+  'Subscriptions',
 ];
+
+// Income-side categories make no sense as a monthly *bill* chip.
+const EXCLUDED_FROM_CHIPS = new Set(['Salary', 'Freelance', 'Investments']);
 
 export default function ExpensesStep({ expenses, onChange, categories, currency }) {
   const { t } = useTranslation();
+  const [showAllChips, setShowAllChips] = useState(false);
   const symbol = CURRENCY_SYMBOLS[currency] || currency;
   const placeholder = currency === 'ALL' ? '5000' : currency === 'JPY' ? '5000' : '50';
+
+  // Chips are derived from the user's REAL categories, so picking one always
+  // yields a concrete category_id — no name/keyword guessing, and custom
+  // categories are offered too. Pinned common bills first, then the rest
+  // alphabetically by their translated (displayed) label.
+  const chips = useMemo(() => {
+    const pinnedIndex = new Map(PINNED_CATEGORY_NAMES.map((n, i) => [n.toLowerCase(), i]));
+    return categories
+      .filter((c) => !EXCLUDED_FROM_CHIPS.has(c.name))
+      .map((c) => ({
+        id: c.id,
+        category: c,
+        label: translateCategoryName(c.name),
+        rank: pinnedIndex.has(c.name.toLowerCase())
+          ? pinnedIndex.get(c.name.toLowerCase())
+          : Number.MAX_SAFE_INTEGER,
+      }))
+      .sort((a, b) => (a.rank !== b.rank ? a.rank - b.rank : a.label.localeCompare(b.label)));
+  }, [categories]);
+
+  const visibleChips = showAllChips ? chips : chips.slice(0, COLLAPSED_CHIP_COUNT);
+  const hiddenChipCount = chips.length - visibleChips.length;
 
   function updateExpense(index, field, value) {
     const updated = expenses.map((exp, i) =>
@@ -42,28 +74,29 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
     onChange(expenses.filter((_, i) => i !== index));
   }
 
-  // Resolve a preset to a category id: exact default-name match first, then a
-  // word-boundaried keyword fallback for custom categories.
-  function resolvePresetCategory(preset) {
-    const byName = categories.find((c) =>
-      preset.names.some((n) => n.toLowerCase() === c.name.toLowerCase())
-    );
-    if (byName) return byName.id;
-    const byKeyword = categories.find((c) => preset.match.test(c.name));
-    return byKeyword?.id || '';
+  // A chip is "selected" once its category occupies a bill row.
+  function isChipSelected(categoryId) {
+    return expenses.some((e) => e.categoryId === categoryId);
   }
 
-  // A preset is "selected" once its category appears in any bill row.
-  function isPresetSelected(preset) {
-    const catId = resolvePresetCategory(preset);
-    return !!catId && expenses.some((e) => e.categoryId === catId);
-  }
-
-  // Add a bill row pre-filled with the best-matching category for a preset.
-  function addPreset(preset) {
+  // Toggle a chip: add a bill row for the category, or remove the row it owns.
+  // Clicking a selected chip only drops the row when the user hasn't typed an
+  // amount into it yet — otherwise a stray click would silently discard input.
+  function toggleChip(categoryId) {
+    const existing = expenses.findIndex((e) => e.categoryId === categoryId);
+    if (existing >= 0) {
+      if (expenses[existing].amount) return; // has data; keep it (use the row's X)
+      // Never leave zero rows behind — blank the row instead of removing the last one.
+      if (expenses.length === 1) {
+        onChange([{ ...expenses[0], categoryId: '' }]);
+      } else {
+        removeExpense(existing);
+      }
+      return;
+    }
     if (expenses.length >= MAX_EXPENSES) return;
-    const categoryId = resolvePresetCategory(preset);
-    if (categoryId && expenses.some((e) => e.categoryId === categoryId)) return; // already added
+    // Reuse an untouched row if one is sitting empty, so clicking chips doesn't
+    // pile up blank rows below the list.
     const firstEmpty = expenses.findIndex((e) => !e.amount && !e.categoryId);
     if (firstEmpty >= 0) {
       updateExpense(firstEmpty, 'categoryId', categoryId);
@@ -83,35 +116,54 @@ export default function ExpensesStep({ expenses, onChange, categories, currency 
         </p>
       </div>
 
-      {/* Preset quick-pick chips */}
-      <div className="max-w-md mx-auto flex flex-wrap justify-center gap-2">
-        {BILL_PRESETS.map((preset) => {
-          const selected = isPresetSelected(preset);
-          return (
+      {/* Category quick-pick chips — driven by the user's own categories */}
+      <div className="max-w-md mx-auto">
+        <div className="flex flex-wrap justify-center gap-2">
+          {visibleChips.map((chip) => {
+            const selected = isChipSelected(chip.id);
+            const iconKey = getCategoryIcon(chip.category);
+            return (
+              <button
+                key={chip.id}
+                type="button"
+                onClick={() => toggleChip(chip.id)}
+                disabled={!selected && expenses.length >= MAX_EXPENSES}
+                aria-pressed={selected}
+                className={
+                  'px-3 py-1.5 text-sm rounded-full border inline-flex items-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ' +
+                  (selected
+                    ? 'border-brand-600 bg-brand-600 text-white font-medium'
+                    : 'border-surface-outline dark:border-surface-dark-outline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
+                }
+              >
+                {selected ? (
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : iconKey ? (
+                  <CategoryIconSvg iconKey={iconKey} className="w-3.5 h-3.5 flex-shrink-0" />
+                ) : (
+                  <span aria-hidden="true">+</span>
+                )}
+                {chip.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {chips.length > COLLAPSED_CHIP_COUNT && (
+          <div className="mt-3 text-center">
             <button
-              key={preset.key}
               type="button"
-              onClick={() => addPreset(preset)}
-              disabled={!selected && expenses.length >= MAX_EXPENSES}
-              aria-pressed={selected}
-              className={
-                'px-3 py-1.5 text-sm rounded-full border inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ' +
-                (selected
-                  ? 'border-brand-600 bg-brand-600 text-white font-medium'
-                  : 'border-surface-outline dark:border-surface-dark-outline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
-              }
+              onClick={() => setShowAllChips((v) => !v)}
+              className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline"
             >
-              {selected ? (
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              ) : (
-                <span aria-hidden="true">+</span>
-              )}
-              {t(`onboarding.expenses.presets.${preset.key}`)}
+              {showAllChips
+                ? t('onboarding.expenses.showFewerCategories')
+                : t('onboarding.expenses.showMoreCategories', { count: hiddenChipCount })}
             </button>
-          );
-        })}
+          </div>
+        )}
       </div>
 
       <div className="max-w-md mx-auto space-y-4">
