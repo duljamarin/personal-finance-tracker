@@ -5,15 +5,22 @@ import { progressColor } from '../../utils/chartColors';
 
 /**
  * Compact usage counter bar. Shows used/limit and a progress bar.
- * Only visible on free plan and when usage is >= threshold% of the limit.
+ * Only visible on the free plan.
  *
  * Props:
  *   used        - current usage count
  *   limit       - plan limit
  *   labelKey    - i18n key for the resource name (e.g. 'freePlanCounter.transactions')
- *   threshold   - 0-1 fraction at which to start showing (default 0.5)
+ *   scopeNote   - optional short suffix clarifying WHAT the limit applies to
+ *                 (e.g. "this month" for budgets vs "at a time" for goals).
+ *                 Budgets are per year+month rows, goals are not scoped to a
+ *                 month at all, so the same "x / 10" reads differently.
+ *   threshold   - 0-1 fraction below which the bar is hidden. Defaults to 0 so
+ *                 the limit is always visible: a user at 3/10 could not see
+ *                 their cap at all under the old 0.5 default, which made the
+ *                 free plan feel arbitrary the moment they hit it.
  */
-export default function FreePlanUsageCounter({ used, limit, labelKey, threshold = 0.5 }) {
+export default function FreePlanUsageCounter({ used, limit, labelKey, scopeNote, threshold = 0 }) {
   const { t } = useTranslation();
   const { isPremium, isTrialing, loading: subLoading } = useSubscription();
 
@@ -26,7 +33,7 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, threshold 
   if (!limit || limit <= 0) return null;
 
   const pct = Math.min(1, used / limit);
-  if (pct < threshold) return null;
+  if (threshold > 0 && pct < threshold) return null;
 
   const isNearLimit = pct >= 0.8 && pct < 1;
   const isAtLimit   = pct >= 1;
@@ -44,7 +51,10 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, threshold 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <span className="text-xs font-medium text-ink-primary dark:text-white truncate">
-            {t(labelKey)}: <span className="tabular-nums">{used}</span> / <span className="tabular-nums">{limit}</span>
+            {t(labelKey)}:{' '}
+            <span className="tabular-nums font-semibold">{used}</span>
+            <span className="tabular-nums"> / {limit}</span>
+            {scopeNote && <span className="font-normal"> {scopeNote}</span>}
           </span>
           {(isAtLimit || isNearLimit) && (
             <Link

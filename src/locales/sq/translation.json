@@ -1476,8 +1476,10 @@
   },
   "freePlanCounter": {
     "transactions": "Transaksionet këtë muaj",
-    "budgets": "Buxhetet mujore",
-    "goals": "Qëllimet aktive"
+    "budgets": "Buxhete të përdorura",
+    "goals": "Objektiva aktive",
+    "scopeMonth": "në {{month}}",
+    "scopeConcurrent": "njëkohësisht"
   },
   "upgrade": {
     "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",

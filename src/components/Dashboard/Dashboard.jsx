@@ -82,13 +82,13 @@ export default function Dashboard() {
       <UpgradeBanner />
       <EncryptionPromptBanner />
 
-      {/* Transaction usage counter (free plan only, shows when >= 50% used) */}
+      {/* Transaction usage counter (free plan only). No scopeNote needed: the
+          label itself already says "this month". */}
       <div className="mb-4">
         <FreePlanUsageCounter
           used={monthlyTransactionCount}
           limit={transactionLimit}
           labelKey="freePlanCounter.transactions"
-          threshold={0.5}
         />
       </div>
 

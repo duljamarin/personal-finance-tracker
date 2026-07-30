@@ -1476,8 +1476,10 @@
   },
   "freePlanCounter": {
     "transactions": "Transactions this month",
-    "budgets": "Monthly budgets",
-    "goals": "Active goals"
+    "budgets": "Budgets used",
+    "goals": "Active goals",
+    "scopeMonth": "in {{month}}",
+    "scopeConcurrent": "at a time"
   },
   "upgrade": {
     "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",

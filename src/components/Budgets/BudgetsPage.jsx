@@ -223,11 +223,16 @@ export default function BudgetsPage() {
       </div>
 
       {/* Free plan usage counter */}
+      {/* Budgets are stored per year+month, so the cap applies to the month the
+          user is currently looking at, not to their account overall. Name that
+          month explicitly — "8 / 10" alone reads as a global cap. */}
       <FreePlanUsageCounter
         used={budgets.length}
         limit={budgetLimit}
         labelKey="freePlanCounter.budgets"
-        threshold={0.5}
+        scopeNote={t('freePlanCounter.scopeMonth', {
+          month: t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`),
+        })}
       />
 
       {/* Month Navigator */}
