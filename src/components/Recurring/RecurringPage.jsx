@@ -13,6 +13,7 @@ import { useCrypto } from '../../context/CryptoContext';
 import { useFormModal } from '../../hooks/useFormModal';
 import RecurringForm from './RecurringForm';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 
 export default function RecurringPage() {
   const { t, i18n } = useTranslation();
@@ -96,6 +97,8 @@ export default function RecurringPage() {
     return <LoadingSpinner size="md" className="min-h-[60vh]" />;
   }
 
+  const activeRecurringCount = recurrings.filter((r) => r.is_active).length;
+
   return (
     <Card className="mt-4 sm:mt-6">
       <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-card rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 border-b border-surface-hairline dark:border-surface-dark-hairline">
@@ -107,8 +110,19 @@ export default function RecurringPage() {
         </p>
       </div>
 
+      {/* Free plan usage counter. Counts ACTIVE templates only, matching both
+          canCreateRecurring() and the check_recurring_limit trigger — pausing a
+          template frees a slot, so the cap is concurrent, not cumulative. */}
+      <div className="mx-4 sm:mx-6 mb-4">
+        <FreePlanUsageCounter
+          used={activeRecurringCount}
+          limit={recurringLimit}
+          labelKey="freePlanCounter.recurring"
+        />
+      </div>
+
       {/* Free tier limit banner */}
-      {!isPremium && recurrings.filter(r => r.is_active).length >= recurringLimit && (
+      {!isPremium && activeRecurringCount >= recurringLimit && (
         <div className="mx-4 sm:mx-6 mb-4 p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
           <p className="text-sm text-ink-muted dark:text-white/70">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}

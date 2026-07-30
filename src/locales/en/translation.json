@@ -1479,7 +1479,7 @@
     "budgets": "Budgets used",
     "goals": "Active goals",
     "scopeMonth": "in {{month}}",
-    "scopeConcurrent": "at a time"
+    "recurring": "Active recurring"
   },
   "upgrade": {
     "bannerFreeLimit": "You've used {{used}} of {{limit}} free transactions this month",

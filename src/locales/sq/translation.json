@@ -1479,7 +1479,7 @@
     "budgets": "Buxhete të përdorura",
     "goals": "Objektiva aktive",
     "scopeMonth": "në {{month}}",
-    "scopeConcurrent": "njëkohësisht"
+    "recurring": "Të përsëritura aktive"
   },
   "upgrade": {
     "bannerFreeLimit": "Keni përdorur {{used}} nga {{limit}} transaksionet falas këtë muaj",

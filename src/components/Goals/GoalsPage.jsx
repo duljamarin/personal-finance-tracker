@@ -199,14 +199,13 @@ export default function GoalsPage() {
       </div>
 
       {/* Free plan usage counter */}
-      {/* Goals have no month column: the cap is on how many are active at once,
-          and completing one frees a slot. Say so, or users assume it is monthly
-          like budgets. */}
+      {/* Goals have no month column, unlike budgets: the cap counts goals that
+          are active and not yet completed, so completing one frees a slot. The
+          "Active goals" label already carries that — no scopeNote needed. */}
       <FreePlanUsageCounter
         used={activeGoalCount}
         limit={goalLimit}
         labelKey="freePlanCounter.goals"
-        scopeNote={t('freePlanCounter.scopeConcurrent')}
       />
 
       {/* Free tier limit banner */}
