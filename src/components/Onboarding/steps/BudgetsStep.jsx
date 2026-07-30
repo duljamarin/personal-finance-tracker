@@ -41,6 +41,9 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
     const seen = new Set();
     const out = [];
     for (const exp of expenses || []) {
+      // Only bills with a real amount: a category with no amount gives us
+      // nothing to suggest a cap from.
+      if (!(Number(exp.amount) > 0)) continue;
       const cat = exp.categoryId && categoryById.get(exp.categoryId);
       if (!cat || seen.has(cat.id) || EXCLUDED.has(cat.name)) continue;
       seen.add(cat.id);
