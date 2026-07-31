@@ -127,6 +127,7 @@ function ForecastTooltip({ active, payload, label }) {
 
 export default function CashFlowForecast() {
   const { t, i18n } = useTranslation();
+  const { format: fmtCurrency } = useDisplayCurrency();
   const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
   const { net, transactions } = useTransactions();
   const { isPremium, isTrialing } = useSubscription();
