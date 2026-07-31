@@ -3,7 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { useTranslation } from 'react-i18next';
+import { useDisplayCurrency } from '../hooks/useDisplayCurrency';
 import { getUnreadNotificationCount } from '../utils/api';
+import CurrencyFlag from './UI/CurrencyFlag.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import {
@@ -62,6 +64,7 @@ export default function Sidebar() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { isPremium, isTrialing, subscription } = useSubscription();
+  const { currency: currencyCode } = useDisplayCurrency();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -216,6 +219,8 @@ export default function Sidebar() {
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(p => !p)}
+            // Collapsed hides the currency chip, so keep it reachable on hover.
+            title={collapsed ? currencyCode : undefined}
             className={`w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors ${collapsed ? 'justify-center' : ''}`}
           >
             <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
@@ -226,9 +231,19 @@ export default function Sidebar() {
                 <p className="text-sm font-medium text-ink-primary dark:text-white truncate">
                   {user?.user_metadata?.username || user?.email}
                 </p>
-                {showProBadge && (
-                  <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white bg-brand-600 rounded">PRO</span>
-                )}
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {showProBadge && (
+                    <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold uppercase text-white bg-brand-600 rounded">PRO</span>
+                  )}
+                  {/* The app is single-currency; surfacing it here saves opening
+                      Account just to check which currency the numbers are in.
+                      Neutral fill, not a brand badge: it is reference data, not
+                      a status that needs to pop like PRO. */}
+                  <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white">
+                    <CurrencyFlag code={currencyCode} />
+                    <span className="text-[10px] font-medium tracking-wide leading-none">{currencyCode}</span>
+                  </span>
+                </div>
               </div>
             )}
           </button>

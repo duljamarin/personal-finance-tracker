@@ -18,9 +18,15 @@ const Sidebar = (await import('../Sidebar.jsx')).default;
 // without opening Account. If it silently stops rendering, nothing else fails —
 // hence an explicit assertion on both the symbol and the code.
 describe('Sidebar currency chip', () => {
-  it('shows the currency symbol and code', () => {
+  it('shows the currency code', () => {
     render(<MemoryRouter><Sidebar /></MemoryRouter>);
     expect(screen.getAllByText('ALL').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('L').length).toBeGreaterThan(0);
+  });
+
+  // The flag is an inline SVG labelled with the code, so it must be reachable
+  // as an image role rather than as text.
+  it('shows the currency flag', () => {
+    render(<MemoryRouter><Sidebar /></MemoryRouter>);
+    expect(screen.getAllByRole('img', { name: 'ALL' }).length).toBeGreaterThan(0);
   });
 });

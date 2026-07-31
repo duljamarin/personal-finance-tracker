@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import CurrencyFlag from '../../UI/CurrencyFlag';
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'ALL', 'CHF', 'JPY', 'CAD', 'AUD'];
-const FLAGS = { EUR: '\u{1F1EA}\u{1F1FA}', USD: '\u{1F1FA}\u{1F1F8}', GBP: '\u{1F1EC}\u{1F1E7}', ALL: '\u{1F1E6}\u{1F1F1}', CHF: '\u{1F1E8}\u{1F1ED}', JPY: '\u{1F1EF}\u{1F1F5}', CAD: '\u{1F1E8}\u{1F1E6}', AUD: '\u{1F1E6}\u{1F1FA}' };
 
 const selectClass =
   'appearance-none w-full px-3 py-2.5 pr-10 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
@@ -31,9 +31,12 @@ export default function CurrencyStep({ currency, onCurrencyChange }) {
               onChange={(e) => onCurrencyChange(e.target.value)}
               className={selectClass}
             >
+              {/* Native <option> renders text only, so no flag markup here.
+                  Emoji flags were showing as bare letters ("AL") on Windows,
+                  which reads as a glitch; the ISO code is unambiguous. */}
               {CURRENCIES.map((code) => (
                 <option key={code} value={code}>
-                  {t(`currency.${code}`)} {FLAGS[code]}
+                  {t(`currency.${code}`)} ({code})
                 </option>
               ))}
             </select>
@@ -45,6 +48,13 @@ export default function CurrencyStep({ currency, onCurrencyChange }) {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
+          </div>
+          {/* Flag lives outside the select — <option> cannot hold markup. */}
+          <div className="flex items-center gap-2 mt-2">
+            <CurrencyFlag code={currency} />
+            <span className="text-xs font-medium text-ink-primary dark:text-white tracking-wide">
+              {currency}
+            </span>
           </div>
         </div>
 

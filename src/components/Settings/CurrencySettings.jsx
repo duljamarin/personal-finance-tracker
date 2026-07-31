@@ -11,6 +11,7 @@ import { useDisplayCurrency, notifyCurrencyChanged } from '../../hooks/useDispla
 import { fetchExchangeRate } from '../../utils/exchangeRate';
 import { convertAllAmounts, getPendingConversion } from '../../utils/currencyConversion';
 import { CURRENCY_SYMBOLS } from '../../utils/constants';
+import CurrencyFlag from '../UI/CurrencyFlag';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'ALL', 'CHF', 'JPY', 'CAD', 'AUD'];
@@ -160,6 +161,14 @@ export default function CurrencySettings() {
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
+        </div>
+
+        {/* Flag lives outside the select — <option> cannot hold markup. */}
+        <div className="flex items-center gap-2 mt-2">
+          <CurrencyFlag code={target} />
+          <span className="text-xs font-medium text-ink-primary dark:text-white tracking-wide">
+            {target}
+          </span>
         </div>
 
         {target !== current && (
