@@ -34,7 +34,7 @@ function CustomTooltip({ active, payload, label, fmt }) {
 export default function ReportDailyTrend({ transactions, startDate, endDate }) {
   const { t } = useTranslation();
   const [dark] = useDarkMode();
-  const { format: fmt, convert, symbol } = useDisplayCurrency();
+  const { format: fmt, symbol } = useDisplayCurrency();
 
   const dailyData = useMemo(() => {
     const start = new Date(startDate + 'T00:00:00');
@@ -97,7 +97,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 interval="preserveStartEnd"
               />
               <YAxis
-                tickFormatter={(v) => `${symbol}${Math.round(convert(v))}`}
+                tickFormatter={(v) => `${symbol}${Math.round(v)}`}
                 tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
                 axisLine={false}
                 tickLine={false}

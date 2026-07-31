@@ -15,7 +15,7 @@ import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { fetchRecurringTransactions, calculateNextDate } from '../../utils/api';
 import useDarkMode from '../../hooks/useDarkMode';
-import { formatCurrency as fmtCurrency } from '../../utils/formatCurrency';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 const HORIZONS = [30, 60, 90];
 const PREMIUM_HORIZONS = [60, 90];
@@ -104,6 +104,7 @@ function buildForecast(startingBalance, recurringList, days) {
 
 function ForecastTooltip({ active, payload, label }) {
   const { t } = useTranslation();
+  const { format: fmtCurrency } = useDisplayCurrency();
   if (!active || !payload || payload.length === 0) return null;
 
   const balance = payload[0]?.value ?? 0;
@@ -113,11 +114,11 @@ function ForecastTooltip({ active, payload, label }) {
     <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-control shadow-tier2 text-sm">
       <p className="font-semibold text-ink-primary dark:text-white mb-1">{label}</p>
       <p className="tabular-nums" style={{ color: balance >= 0 ? INCOME_COLOR : EXPENSE_COLOR }}>
-        {t('cashFlow.balance')}: {fmtCurrency(balance, 'EUR', { compact: true })}
+        {t('cashFlow.balance')}: {fmtCurrency(balance, { compact: true })}
       </p>
       {change !== 0 && (
         <p className="tabular-nums mt-0.5" style={{ color: change > 0 ? HEX.brandLight : EXPENSE_COLOR }}>
-          {change > 0 ? '+' : ''}{fmtCurrency(change, 'EUR', { compact: true })}
+          {change > 0 ? '+' : ''}{fmtCurrency(change, { compact: true })}
         </p>
       )}
     </div>
@@ -216,7 +217,7 @@ export default function CashFlowForecast() {
         <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
           <p className="text-xs text-ink-muted dark:text-white">{t('cashFlow.trackedBalance')}</p>
           <p className={`text-sm font-bold ${net >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
-            {fmtCurrency(net, 'EUR', { compact: true })}
+            {fmtCurrency(net, { compact: true })}
           </p>
           <p className="text-[10px] text-ink-muted/60 dark:text-white mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
         </div>
@@ -224,7 +225,7 @@ export default function CashFlowForecast() {
         <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
           <p className="text-xs text-ink-muted dark:text-white">{t(`cashFlow.projectedIn.${horizon}`)}</p>
           <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
-            {fmtCurrency(endBalance, 'EUR', { compact: true })}
+            {fmtCurrency(endBalance, { compact: true })}
           </p>
         </div>
         {delta !== 0 && (
@@ -233,7 +234,7 @@ export default function CashFlowForecast() {
               ? 'text-brand-600 dark:text-brand-400'
               : 'text-expense'
           }`}>
-            {delta > 0 ? '+' : ''}{fmtCurrency(delta, 'EUR', { compact: true })}
+            {delta > 0 ? '+' : ''}{fmtCurrency(delta, { compact: true })}
           </div>
         )}
       </div>
@@ -268,7 +269,7 @@ export default function CashFlowForecast() {
             />
             <YAxis
               tick={{ fontSize: 11, fill: axisColor }}
-              tickFormatter={(v) => fmtCurrency(v, 'EUR', { compact: true })}
+              tickFormatter={(v) => fmtCurrency(v, { compact: true })}
               width={60}
             />
             <Tooltip content={<ForecastTooltip />} />

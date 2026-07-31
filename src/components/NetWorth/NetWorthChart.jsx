@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { CURRENCY_SYMBOLS } from '../../utils/constants';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import useDarkMode from '../../hooks/useDarkMode';
 import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
 
@@ -9,14 +9,14 @@ const ASSETS_COLOR = INCOME_COLOR;
 const LIABILITIES_COLOR = 'var(--c-data-blue)';
 const NETWORTH_COLOR = 'var(--c-data-violet)';
 
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, fmt }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
         <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
-            {entry.name}: {CURRENCY_SYMBOLS.EUR}{Number(entry.value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {entry.name}: {fmt(Number(entry.value))}
           </p>
         ))}
       </div>
@@ -27,6 +27,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function NetWorthChart({ data, transactions = [] }) {
   const { t } = useTranslation();
+  const { format: fmt, symbol } = useDisplayCurrency();
   const [dark] = useDarkMode();
 
   // Compute cumulative cash flow up to a given date string (YYYY-MM-DD)
@@ -124,12 +125,12 @@ export default function NetWorthChart({ data, transactions = [] }) {
           tickLine={false}
           tickFormatter={(value) => {
             const abs = Math.abs(value);
-            const str = `${CURRENCY_SYMBOLS.EUR}${(abs / 1000).toFixed(0)}k`;
+            const str = `${symbol}${(abs / 1000).toFixed(0)}k`;
             return value < 0 ? `-${str}` : str;
           }}
           width={60}
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<CustomTooltip fmt={fmt} />} />
         <Legend wrapperStyle={{ fontSize: '12px' }} />
         {hasAssetData && (
           <Line

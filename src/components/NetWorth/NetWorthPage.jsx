@@ -12,10 +12,11 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory } from '../../utils/api';
 import { useFormModal } from '../../hooks/useFormModal';
-import { CURRENCY_SYMBOLS } from '../../utils/constants';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default function NetWorthPage() {
   const { t } = useTranslation();
+  const { format: formatCurrency } = useDisplayCurrency();
   const { addToast } = useToast();
   const { transactions } = useTransactions();
   const [assets, setAssets] = useState([]);
@@ -108,7 +109,9 @@ export default function NetWorthPage() {
   const assetsWithCashFlow = totalAssets + cashFlow.net;
   const netWorth = assetsWithCashFlow - totalLiabilities;
 
-  const fmt = (v) => CURRENCY_SYMBOLS.EUR + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2 });
+  // Assets/liabilities are stored in the user's single currency, like every
+  // other amount, so they render through the same formatter.
+  const fmt = (v) => formatCurrency(Math.abs(v));
 
   return (
     <div className="space-y-6">
@@ -218,7 +221,7 @@ export default function NetWorthPage() {
                 </div>
                 <div className="text-right mr-4">
                   <div className="font-semibold text-brand-600 dark:text-brand-400">
-                    {CURRENCY_SYMBOLS.EUR}{asset.current_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatCurrency(asset.current_value)}
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -273,7 +276,7 @@ export default function NetWorthPage() {
                 </div>
                 <div className="text-right mr-4">
                   <div className="font-semibold text-expense">
-                    {CURRENCY_SYMBOLS.EUR}{liability.current_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatCurrency(liability.current_value)}
                   </div>
                 </div>
                 <div className="flex gap-2">

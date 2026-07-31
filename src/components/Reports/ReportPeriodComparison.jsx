@@ -69,7 +69,7 @@ export default function ReportPeriodComparison({
 }) {
   const { t } = useTranslation();
   const [dark] = useDarkMode();
-  const { format: fmt, convert, symbol } = useDisplayCurrency();
+  const { format: fmt, symbol } = useDisplayCurrency();
 
   const calcTotals = (txs) => {
     const income = txs
@@ -123,7 +123,7 @@ export default function ReportPeriodComparison({
               tickLine={false}
             />
             <YAxis
-              tickFormatter={(v) => `${symbol}${Math.round(convert(v))}`}
+              tickFormatter={(v) => `${symbol}${Math.round(v)}`}
               tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
               axisLine={false}
               tickLine={false}
