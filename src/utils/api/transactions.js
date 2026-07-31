@@ -74,6 +74,10 @@ export async function addTransaction(transaction) {
       currency_code: currencyCode || 'EUR',
       exchange_rate: rate,
       base_amount: baseAmount,
+      // Link to the template when the caller supplies one. Without this the row
+      // is invisible to the recurring processor's de-dup check, which is what
+      // let onboarding seeds get duplicated on the next run.
+      ...(sourceRecurringId ? { source_recurring_id: sourceRecurringId } : {}),
     });
 
     const { data, error } = await supabase

@@ -164,20 +164,22 @@ export default function OnboardingWizard() {
       // generic error. Each seed is isolated; failures are logged with their
       // real reason and the flow still reaches the reveal/dashboard.
       let seedFailed = false;
+      // Returns the inserted row on success and null on failure, so callers can
+      // chain off it (the income seed needs the template id). Truthiness still
+      // works as the old boolean did for the counters below.
       const seed = async (label, fn) => {
         try {
-          await fn();
-          return true;
+          return (await fn()) ?? true;
         } catch (e) {
           console.error(`onboarding seed failed (${label}):`, e);
           seedFailed = true;
-          return false;
+          return null;
         }
       };
 
-      // --- Income: monthly recurring template (first instance generated below) ---
+      // --- Income: monthly recurring template + its first instance ---
       if (incomeNum > 0) {
-        const ok = await seed('income recurring', () => addRecurringTransaction({
+        const template = await seed('income recurring', () => addRecurringTransaction({
           title: t('onboarding.reveal.salaryTitle'),
           amount: incomeNum,
           type: 'income',
@@ -188,7 +190,25 @@ export default function OnboardingWizard() {
           intervalCount: 1,
           startDate: incomeStartStr,
         }));
-        if (ok) seededRecurring += 1;
+        if (template) seededRecurring += 1;
+
+        // Insert the first salary on the payday the user picked. The processor
+        // only materialises rows whose next_run_at has already passed, so a
+        // future payday would otherwise leave the dashboard with no income at
+        // all. Stamping source_recurring_id keeps the processor from creating a
+        // second copy of this same date later.
+        if (template?.id) {
+          await seed('income transaction', () => addTransaction({
+            title: t('onboarding.reveal.salaryTitle'),
+            amount: incomeNum,
+            type: 'income',
+            categoryId: null,
+            date: incomeStartStr,
+            currencyCode: currency,
+            exchangeRate: rate,
+            sourceRecurringId: template.id,
+          }));
+        }
       }
 
       // --- Bills: monthly recurring template (first instance generated below) ---
