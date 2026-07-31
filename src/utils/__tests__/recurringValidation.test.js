@@ -120,4 +120,40 @@ describe('calculateNextDate (UTC)', () => {
     expect(utcDay(calculateNextDate('2025-03-01', 'monthly', 1))).toBe('2025-04-01');
     expect(utcDay(calculateNextDate('2025-03-01', 'yearly', 1))).toBe('2026-03-01');
   });
+
+  describe('anchorDay (no end-of-month drift)', () => {
+    it('recovers the anchor day after a short month', () => {
+      // Sep has 30 days, so a 31st schedule clamps there — but October must
+      // snap back to the 31st rather than staying on the 30th.
+      expect(utcDay(calculateNextDate('2025-08-31', 'monthly', 1, 31))).toBe('2025-09-30');
+      expect(utcDay(calculateNextDate('2025-09-30', 'monthly', 1, 31))).toBe('2025-10-31');
+    });
+
+    it('does not degrade across a full year of runs', () => {
+      // The pre-fix bug: each short month permanently lowered the day, so a
+      // 31st schedule ended up pinned to the 28th and never recovered.
+      let date = '2025-07-31';
+      const days = [];
+      for (let i = 0; i < 12; i++) {
+        date = calculateNextDate(date, 'monthly', 1, 31).split('T')[0];
+        days.push(Number(date.split('-')[2]));
+      }
+      // Feb clamps to 28, 30-day months to 30, everything else stays 31.
+      expect(days).toEqual([31, 30, 31, 30, 31, 31, 28, 31, 30, 31, 30, 31]);
+    });
+
+    it('recovers Feb 29 on the next leap year', () => {
+      expect(utcDay(calculateNextDate('2024-02-29', 'yearly', 1, 29))).toBe('2025-02-28');
+      expect(utcDay(calculateNextDate('2027-02-28', 'yearly', 1, 29))).toBe('2028-02-29');
+    });
+
+    it('leaves daily and weekly untouched', () => {
+      expect(utcDay(calculateNextDate('2025-01-31', 'daily', 1, 31))).toBe('2025-02-01');
+      expect(utcDay(calculateNextDate('2025-01-31', 'weekly', 1, 31))).toBe('2025-02-07');
+    });
+
+    it('falls back to the current day when no anchor is given', () => {
+      expect(utcDay(calculateNextDate('2025-09-30', 'monthly', 1))).toBe('2025-10-30');
+    });
+  });
 });

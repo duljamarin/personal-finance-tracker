@@ -67,11 +67,14 @@ function buildForecast(startingBalance, recurringList, days) {
         changesByDate[currentDateStr] = (changesByDate[currentDateStr] || 0) + delta;
       }
 
-      // calculateNextDate returns an ISO string - take only the date part (UTC)
+      // calculateNextDate returns an ISO string - take only the date part (UTC).
+      // Pass the same start_date anchor the processor uses, otherwise the
+      // forecast drifts off the dates that actually get generated.
       currentDateStr = calculateNextDate(
         currentDateStr,
         rec.frequency,
-        rec.interval_count || 1
+        rec.interval_count || 1,
+        rec.start_date ? new Date(rec.start_date).getUTCDate() : null
       ).split('T')[0];
 
       occurrences++;

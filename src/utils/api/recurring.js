@@ -2,10 +2,27 @@ import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 import { checkRecurringNotifications } from '../finance/recurringAlerts';
 
-export function calculateNextDate(currentDate, frequency, intervalCount) {
+// anchorDay: the day-of-month the schedule is really pinned to (normally the
+// day of start_date). Without it, monthly/yearly runs drift permanently
+// downward: a 31st schedule clamps to the 30th in September, and because the
+// next hop is computed from that clamped date the 31st is never recovered
+// (31 Jul → 31 Aug → 30 Sep → 30 Oct → … → 28 Feb → 28 forever). Passing the
+// anchor makes the clamp per-occurrence instead of cumulative, so short months
+// borrow the last day and longer months snap back to the anchor.
+export function calculateNextDate(currentDate, frequency, intervalCount, anchorDay = null) {
   const date = new Date(currentDate);
   const interval = intervalCount || 1;
   const originalDay = date.getUTCDate();
+  // Fall back to the current day when no anchor is supplied, which keeps the
+  // old 3-argument behaviour for callers that have no start_date at hand.
+  const anchor = anchorDay || originalDay;
+
+  // Set to `day`, or the month's last day when the month is too short. Assumes
+  // `d` is already positioned on the 1st of the target month.
+  const clampToMonth = (d, day) => {
+    const daysInMonth = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+    d.setUTCDate(Math.min(day, daysInMonth));
+  };
 
   switch (frequency) {
     case 'daily':
@@ -15,19 +32,16 @@ export function calculateNextDate(currentDate, frequency, intervalCount) {
       date.setUTCDate(date.getUTCDate() + interval * 7);
       break;
     case 'monthly': {
-      const targetMonth = date.getUTCMonth() + interval;
-      date.setUTCMonth(targetMonth);
-      if (date.getUTCDate() !== originalDay) {
-        date.setUTCDate(0);
-      }
+      // Move to the 1st first so adding months can't roll into the next one.
+      date.setUTCDate(1);
+      date.setUTCMonth(date.getUTCMonth() + interval);
+      clampToMonth(date, anchor);
       break;
     }
     case 'yearly': {
-      const targetYear = date.getUTCFullYear() + interval;
-      date.setUTCFullYear(targetYear);
-      if (date.getUTCDate() !== originalDay) {
-        date.setUTCDate(0);
-      }
+      date.setUTCDate(1);
+      date.setUTCFullYear(date.getUTCFullYear() + interval);
+      clampToMonth(date, anchor);
       break;
     }
     default:
@@ -164,7 +178,12 @@ export async function updateRecurringTransaction(id, recurring) {
         baseDate = new Date(current.next_run_at).toISOString().split('T')[0];
       }
 
-      const nextRunAt = calculateNextDate(baseDate, newFrequency, newIntervalCount);
+      // Anchor on start_date's day (not baseDate's, which may already be a
+      // clamped short-month date) so the schedule keeps its intended day.
+      const anchorSource = startDate !== undefined ? startDate : current.start_date;
+      const anchorDay = anchorSource ? new Date(anchorSource).getUTCDate() : null;
+
+      const nextRunAt = calculateNextDate(baseDate, newFrequency, newIntervalCount, anchorDay);
       updateData.next_run_at = nextRunAt;
 
       const { count, error: countError } = await supabase
@@ -251,6 +270,11 @@ export async function processRecurringTransactions() {
       let currentNextRun = recurring.next_run_at;
       let instancesCreated = 0;
       let loopAdvanced = false;
+      // Day the schedule is pinned to — keeps end-of-month runs from drifting
+      // down a day each time they pass through a short month.
+      const anchorDay = recurring.start_date
+        ? new Date(recurring.start_date).getUTCDate()
+        : null;
 
       while (new Date(currentNextRun) <= new Date()) {
         const totalCreated = (recurring.occurrences_created || 0) + instancesCreated;
@@ -311,7 +335,7 @@ export async function processRecurringTransactions() {
           if (insertError) {
             // Unique-violation: concurrent run already inserted this instance — advance and continue
             if (insertError.code === '23505') {
-              currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+              currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count, anchorDay);
               loopAdvanced = true;
               continue;
             }
@@ -323,7 +347,7 @@ export async function processRecurringTransactions() {
           instancesCreated++;
         }
 
-        currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count);
+        currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count, anchorDay);
         loopAdvanced = true;
       }
 

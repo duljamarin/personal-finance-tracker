@@ -120,6 +120,24 @@ export default function OnboardingWizard() {
       // directly (as before) left it unlinked, so every later run happily
       // created a second identical copy.
 
+      // Income is pinned to the payday the user entered, when they entered one,
+      // so the salary template lands on their real pay date instead of whatever
+      // day they happened to sign up on. Bills have no equivalent field and stay
+      // on today. The chosen day is resolved to this month if it hasn't passed
+      // yet, otherwise next month, so start_date is never backdated.
+      const paydayNum = payday ? Number(payday) : null;
+      let incomeStartStr = todayStr;
+      if (paydayNum >= 1 && paydayNum <= 31) {
+        const todayDay = now.getUTCDate();
+        const monthOffset = paydayNum >= todayDay ? 0 : 1;
+        const targetMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + monthOffset, 1));
+        const daysInTarget = new Date(Date.UTC(
+          targetMonth.getUTCFullYear(), targetMonth.getUTCMonth() + 1, 0
+        )).getUTCDate();
+        targetMonth.setUTCDate(Math.min(paydayNum, daysInTarget));
+        incomeStartStr = targetMonth.toISOString().split('T')[0];
+      }
+
       let localCategories = categories;
       const incomeNum = income ? Number(income) : 0;
       const validExpenses = expenses.filter((e) => e.amount && Number(e.amount) > 0);
@@ -168,7 +186,7 @@ export default function OnboardingWizard() {
           exchangeRate: rate,
           frequency: 'monthly',
           intervalCount: 1,
-          startDate: todayStr,
+          startDate: incomeStartStr,
         }));
         if (ok) seededRecurring += 1;
       }
