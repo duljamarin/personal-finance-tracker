@@ -271,14 +271,18 @@ export async function processRecurringTransactions() {
           break;
         }
 
-        const { data: existing } = await supabase
+        // limit(1) rather than maybeSingle(): if an account already has
+        // duplicates for this date, maybeSingle() errors on multiple rows and
+        // the ignored error leaves `existing` undefined, which would add yet
+        // another copy. Any row at all means this instance exists.
+        const { data: existingRows } = await supabase
           .from('transactions')
           .select('id')
           .eq('source_recurring_id', recurring.id)
           .eq('date', transactionDate)
-          .maybeSingle();
+          .limit(1);
 
-        if (!existing) {
+        if (!existingRows || existingRows.length === 0) {
           const baseAmount = Number(recurring.amount) * (Number(recurring.exchange_rate) || 1.0);
 
           const insertRow = await encryptRow('transactions', {

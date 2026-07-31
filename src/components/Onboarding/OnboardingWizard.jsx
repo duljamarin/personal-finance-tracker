@@ -9,8 +9,8 @@ import { supabase } from '../../utils/supabaseClient';
 import {
   fetchCategories,
   addCategory,
-  addTransaction,
   addRecurringTransaction,
+  processRecurringTransactions,
   createGoal,
   createBudget,
 } from '../../utils/api';
@@ -113,10 +113,12 @@ export default function OnboardingWizard() {
       const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
       const now = new Date();
 
-      // Start-of-next-month date (YYYY-MM-DD) for recurring templates so the
-      // processor doesn't double-create this month's instance we add directly.
-      const nextRun = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      const nextRunStr = nextRun.toISOString().split('T')[0];
+      // Recurring templates start TODAY, not next month. The first instance is
+      // created by processRecurringTransactions() below rather than by a direct
+      // addTransaction — that's what stamps source_recurring_id on it, which is
+      // the key the processor's de-dup check looks at. Seeding the instance
+      // directly (as before) left it unlinked, so every later run happily
+      // created a second identical copy.
 
       let localCategories = categories;
       const incomeNum = income ? Number(income) : 0;
@@ -155,17 +157,8 @@ export default function OnboardingWizard() {
         }
       };
 
-      // --- Income: this-month transaction + monthly recurring template ---
+      // --- Income: monthly recurring template (first instance generated below) ---
       if (incomeNum > 0) {
-        await seed('income transaction', () => addTransaction({
-          title: t('onboarding.reveal.salaryTitle'),
-          amount: incomeNum,
-          type: 'income',
-          categoryId: null,
-          date: todayStr,
-          currencyCode: currency,
-          exchangeRate: rate,
-        }));
         const ok = await seed('income recurring', () => addRecurringTransaction({
           title: t('onboarding.reveal.salaryTitle'),
           amount: incomeNum,
@@ -175,28 +168,18 @@ export default function OnboardingWizard() {
           exchangeRate: rate,
           frequency: 'monthly',
           intervalCount: 1,
-          startDate: nextRunStr,
+          startDate: todayStr,
         }));
         if (ok) seededRecurring += 1;
       }
 
-      // --- Bills: this-month transaction + monthly recurring template ---
+      // --- Bills: monthly recurring template (first instance generated below) ---
       const billsForSnapshot = [];
       for (const expense of validExpenses) {
         const resolvedCategoryId = expense.categoryId || uncategorizedCategory?.id;
         const cat = categoryById.get(resolvedCategoryId);
         const title = cat?.name ? translateCategoryName(cat.name) : t('transactions.expense');
         const amountNum = Number(expense.amount);
-
-        await seed('bill transaction', () => addTransaction({
-          title,
-          amount: amountNum,
-          type: 'expense',
-          categoryId: resolvedCategoryId,
-          date: todayStr,
-          currencyCode: currency,
-          exchangeRate: rate,
-        }));
 
         const ok = await seed('bill recurring', () => addRecurringTransaction({
           title,
@@ -207,7 +190,7 @@ export default function OnboardingWizard() {
           exchangeRate: rate,
           frequency: 'monthly',
           intervalCount: 1,
-          startDate: nextRunStr,
+          startDate: todayStr,
         }));
         if (ok) seededRecurring += 1;
 
@@ -255,6 +238,15 @@ export default function OnboardingWizard() {
           amount: Number(budget.amount) * rate,
         }));
         if (ok) seededBudgets += 1;
+      }
+
+      // Materialise this month's instance for each template just seeded. Doing
+      // it here (rather than inserting the transaction directly) means every
+      // seeded transaction carries source_recurring_id, so the processor's
+      // de-dup check recognises it on all later runs. Best-effort like the
+      // seeds above: the Transactions page runs this on mount anyway.
+      if (seededRecurring > 0) {
+        await seed('recurring first run', () => processRecurringTransactions());
       }
 
       if (seedFailed) {
