@@ -1,6 +1,7 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 import { checkBudgetNotifications } from '../finance/budgetAlerts';
+import { getWriteCurrency } from './userSettings';
 
 export async function fetchTransactions({ type } = {}) {
   return withAuthOrEmpty(async (user) => {
@@ -63,6 +64,7 @@ export async function addTransaction(transaction) {
       ...rest
     } = transaction;
 
+    // Single-currency app: rate is always 1.0 and base_amount == amount.
     const rate = exchangeRate || 1.0;
     const baseAmount = transaction.amount * rate;
 
@@ -71,7 +73,7 @@ export async function addTransaction(transaction) {
       date: _date,
       category_id: categoryId,
       user_id: user.id,
-      currency_code: currencyCode || 'EUR',
+      currency_code: currencyCode || (await getWriteCurrency(user)),
       exchange_rate: rate,
       base_amount: baseAmount,
       // Link to the template when the caller supplies one. Without this the row
@@ -124,18 +126,18 @@ export async function updateTransaction(id, transaction) {
     const rate = exchangeRate !== undefined ? exchangeRate : undefined;
     const amount = transaction.amount;
 
+    // base_amount must go THROUGH encryptRow, not be assigned after it: it is an
+    // encrypted field, so setting it on the result would write plaintext into a
+    // ciphertext column and later decrypt to garbage.
+    // Single currency means it is simply a copy of amount.
     const updateData = await encryptRow('transactions', {
       ...rest,
       category_id: categoryId,
+      ...(amount !== undefined ? { base_amount: amount } : {}),
     });
 
     if (currencyCode !== undefined) updateData.currency_code = currencyCode;
     if (rate !== undefined) updateData.exchange_rate = rate;
-    if (amount !== undefined && rate !== undefined) {
-      updateData.base_amount = amount * rate;
-    } else if (amount !== undefined) {
-      updateData.base_amount = amount * 1.0;
-    }
 
     const { data, error } = await supabase
       .from('transactions')
@@ -226,7 +228,7 @@ export async function addTransactionWithSplits(transaction, splits) {
       ...rest,
       category_id: splits?.length > 0 ? null : categoryId,
       user_id: user.id,
-      currency_code: currencyCode || 'EUR',
+      currency_code: currencyCode || (await getWriteCurrency(user)),
       exchange_rate: rate,
       base_amount: transaction.amount * rate,
       has_splits: splits?.length > 0,
@@ -291,7 +293,7 @@ export async function updateTransactionWithSplits(id, transaction, splits) {
     const updateData = await encryptRow('transactions', {
       ...rest,
       category_id: hasSplits ? null : categoryId,
-      currency_code: currencyCode || 'EUR',
+      currency_code: currencyCode || (await getWriteCurrency(user)),
       exchange_rate: rate,
       base_amount: transaction.amount * rate,
       has_splits: hasSplits,
@@ -361,6 +363,9 @@ export async function fetchTransactionsForReport(startDate, endDate) {
 export async function bulkImportTransactions(transactions) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
+    // Imported rows are assumed to be in the user's currency — the CSV carries
+    // no currency column and the app only has one currency.
+    const writeCurrency = await getWriteCurrency(user);
     const rows = await Promise.all(transactions.map(tx => encryptRow('transactions', {
       title: tx.title,
       amount: tx.amount,
@@ -368,7 +373,7 @@ export async function bulkImportTransactions(transactions) {
       date: tx.date,
       category_id: tx.category_id,
       tags: tx.tags || [],
-      currency_code: tx.currency_code || 'EUR',
+      currency_code: tx.currency_code || writeCurrency,
       exchange_rate: tx.exchange_rate || 1.0,
       base_amount: tx.amount * (tx.exchange_rate || 1.0),
       user_id: user.id,

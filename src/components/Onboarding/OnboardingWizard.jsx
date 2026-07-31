@@ -15,7 +15,8 @@ import {
   createGoal,
   createBudget,
 } from '../../utils/api';
-import { fetchExchangeRate } from '../../utils/exchangeRate';
+import { updatePreferredCurrency } from '../../utils/api/userSettings';
+import { notifyCurrencyChanged } from '../../hooks/useDisplayCurrency';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { computeSnapshot } from '../../utils/reveal/computeSnapshot';
 import Button from '../UI/Button';
@@ -51,7 +52,6 @@ export default function OnboardingWizard() {
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isFetchingRate, setIsFetchingRate] = useState(false);
   const [reveal, setReveal] = useState(null); // { snapshot, seededSummary } | null
 
   const [wizardData, setWizardData] = useState({
@@ -70,21 +70,6 @@ export default function OnboardingWizard() {
       .catch(() => {})
       .finally(() => setLoadingCategories(false));
   }, []);
-
-  useEffect(() => {
-    const currency = wizardData.currency;
-    if (currency === 'EUR') {
-      updateData('exchangeRate', 1.0);
-      return;
-    }
-    let cancelled = false;
-    setIsFetchingRate(true);
-    fetchExchangeRate(currency).then((rate) => {
-      if (!cancelled && rate !== null) updateData('exchangeRate', rate);
-      if (!cancelled) setIsFetchingRate(false);
-    });
-    return () => { cancelled = true; };
-  }, [wizardData.currency]);
 
   function updateData(field, value) {
     setWizardData((prev) => ({ ...prev, [field]: value }));
@@ -109,10 +94,16 @@ export default function OnboardingWizard() {
   async function handleFinish() {
     setSubmitting(true);
     try {
-      const { currency, exchangeRate, income, payday, expenses, goals, budgets } = wizardData;
+      const { currency, income, payday, expenses, goals, budgets } = wizardData;
       const todayStr = new Date().toISOString().split('T')[0];
-      const rate = currency === 'EUR' ? 1.0 : Number(exchangeRate) || 1.0;
+      // Single-currency app: everything the user types is already in their
+      // chosen currency, so nothing is converted on the way in.
+      const rate = 1.0;
       const now = new Date();
+
+      // Lock in the currency before seeding anything, so every row created below
+      // is stamped with the currency the user actually picked.
+      await persistCurrency(currency);
 
       // Recurring templates start TODAY, not next month. The first instance is
       // created by processRecurringTransactions() below rather than by a direct
@@ -242,8 +233,6 @@ export default function OnboardingWizard() {
       }
 
       // --- Goals (optional step) ---
-      // target_amount is stored in the base currency (EUR), the same basis goal
-      // contributions use, so convert what the user typed in their own currency.
       let seededGoals = 0;
       const validGoals = (goals || []).filter(
         (g) => g.name?.trim() && Number(g.amount) > 0
@@ -259,8 +248,6 @@ export default function OnboardingWizard() {
       }
 
       // --- Budgets (optional step) ---
-      // Budget caps are compared against base_amount spend, which is EUR, so the
-      // typed amount needs the same rate conversion as bills above.
       let seededBudgets = 0;
       const seenBudgetCategories = new Set();
       const validBudgets = (budgets || []).filter((b) => {
@@ -334,15 +321,26 @@ export default function OnboardingWizard() {
     }
   }
 
-  // Persist the onboarding_completed flag + preferred currency, then refresh the
-  // auth user so the app routes into the authenticated shell. Called when the
-  // user leaves onboarding (after the reveal, or after the success screen) so
-  // OnboardingRoute's redirect never fires while the reveal is still on screen.
+  // Persist the onboarding_completed flag, then refresh the auth user so the app
+  // routes into the authenticated shell. Called when the user leaves onboarding
+  // (after the reveal, or after the success screen) so OnboardingRoute's redirect
+  // never fires while the reveal is still on screen.
+  //
+  // The currency itself is saved earlier, at the top of handleFinish — it has to
+  // be in place before any seeding runs, since the rest of the app reads it to
+  // decide what currency new rows are in.
   async function finalizeOnboarding(currency) {
     await supabase.auth.updateUser({
       data: { onboarding_completed: true, preferred_currency: currency },
     });
     await refreshUser();
+  }
+
+  // user_settings is the source of truth; auth metadata is kept in sync so the
+  // very first render after signup already has the right symbol.
+  async function persistCurrency(currency) {
+    await updatePreferredCurrency(currency);
+    notifyCurrencyChanged(currency);
   }
 
   if (loadingCategories) {
@@ -448,10 +446,7 @@ export default function OnboardingWizard() {
               {stepKey === 'currency' && (
                 <CurrencyStep
                   currency={wizardData.currency}
-                  exchangeRate={wizardData.exchangeRate}
-                  isFetchingRate={isFetchingRate}
                   onCurrencyChange={(val) => updateData('currency', val)}
-                  onExchangeRateChange={(val) => updateData('exchangeRate', val === '' ? '' : parseFloat(val))}
                 />
               )}
               {stepKey === 'income' && (

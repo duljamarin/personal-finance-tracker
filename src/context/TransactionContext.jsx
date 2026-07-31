@@ -34,11 +34,6 @@ export function TransactionProvider({ children }) {
   );
   const net = totalIncome - totalExpense;
 
-  const hasMixedCurrencies = useMemo(() => {
-    const currencies = new Set(transactions.map(tx => tx.currency_code || tx.currencyCode || 'EUR'));
-    return currencies.size > 1;
-  }, [transactions]);
-
   const reloadTransactions = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -140,7 +135,6 @@ export function TransactionProvider({ children }) {
       totalIncome,
       totalExpense,
       net,
-      hasMixedCurrencies,
       mutationCount,
       addTransaction,
       updateTransaction,

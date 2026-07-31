@@ -1057,8 +1057,7 @@
     "exchangeRate": "Kursi i Këmbimit në EUR",
     "exchangeRateOptional": "(opsionale)",
     "baseAmount": "Shuma Bazë (EUR)",
-    "baseCurrency": "Të gjitha totalet në EUR",
-    "mixedCurrencies": "Valuta të përziera - totalet e normalizuara në EUR",
+    "baseCurrency": "Te gjitha totalet ne {{currency}}",
     "USD": "Dollari Amerikan",
     "EUR": "Euro",
     "GBP": "Sterlina Britanike",
@@ -1528,7 +1527,8 @@
       "label": "Monedha e preferuar",
       "exchangeRateLabel": "1 {{currency}} = ? EUR",
       "exchangeRatePlaceholder": "p.sh., 0.92",
-      "exchangeRateHint": "{{amount}} {{currency}} = {{result}} EUR"
+      "exchangeRateHint": "{{amount}} {{currency}} = {{result}} EUR",
+      "permanentHint": "Monedhen mund ta zgjidhni vetem nje here, prandaj zgjidhni ate qe perdorni cdo dite."
     },
     "income": {
       "title": "Sa janë të ardhurat tuaja mujore?",
@@ -1869,7 +1869,7 @@
     "budgetAlertTitle": "Alarm Buxheti: {{category}}",
     "budgetAlertMessage": "Keni shpenzuar {{spent}} nga buxheti juaj {{budget}} ({{percent}}%) për {{category}}",
     "recurringDueTitle": "Kujtues: {{title}}",
-    "recurringDueMessage": "Transaksioni i përsëritur \"{{title}}\" ({{currency}} {{amount}}) do të kryhet më {{date}}.",
+    "recurringDueMessage": "Transaksioni i perseritur \"{{title}}\" ({{amount}}) do te kryhet me {{date}}.",
     "types": {
       "budgetOverrun": "Alarme për Tejkalimin e Buxhetit",
       "budgetOverrunDesc": "Merrni njoftim kur po afroheni ose tejkaloni limitet e buxhetit",
@@ -1939,5 +1939,26 @@
     "noExpenses": "Nuk ka shpenzime në këtë periudhë",
     "noIncome": "Nuk ka të ardhura në këtë periudhë",
     "date": "Data"
+  },
+  "settings": {
+    "currency": {
+      "title": "Monedha",
+      "description": "Monedha e vetme e perdorur ne te gjithe aplikacionin. Ndryshimi i saj konverton cdo shume te ruajtur me kursin aktual te kembimit.",
+      "change": "Ndrysho monedhen",
+      "converting": "Duke konvertuar...",
+      "loadingRate": "Duke marre kursin e kembimit...",
+      "rateError": "Kursi i kembimit nuk u ngarkua. Ju lutemi provoni me vone.",
+      "busy": "Nje konvertim po zhvillohet tashme ne nje skede tjeter.",
+      "success": "Monedha juaj tani eshte {{currency}}.",
+      "error": "Konvertimi nuk perfundoi. Rihapni kete faqe per ta vazhduar ne menyre te sigurt.",
+      "progress": "Duke konvertuar {{done}} nga {{total}} grupe...",
+      "confirmTitle": "Ta ndryshoni monedhen nga {{from}} ne {{to}}?",
+      "confirmBody": "Cdo transaksion, rregull i perseritur, buxhet, objektiv dhe kontribut do te rillogaritet me kursin aktual te kembimit.",
+      "example": "Per shembull",
+      "confirmWarning": "Mbajeni kete skede te hapur derisa te perfundoje. Nese nderpritet, rihapni kete faqe dhe konvertimi vazhdon aty ku mbeti.",
+      "confirmAction": "Konverto gjithcka",
+      "resume": "Vazhdo konvertimin",
+      "resumeDesc": "Nje ndryshim monedhe nga {{from}} ne {{to}} u nderpre. Perfundojeni para ndryshimeve te tjera, qe shumat tuaja te mbeten konsistente."
+    }
   }
 }

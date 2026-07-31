@@ -7,6 +7,7 @@ import { getSupabase } from '../api/_auth';
 import { decryptRows } from '../crypto/rowCodec';
 import { round2 } from './shared';
 import { createNotificationDeduped } from './notify';
+import { getDisplayFormatter } from '../displayCurrency';
 
 export async function checkRecurringNotifications(userId) {
   const supabase = await getSupabase();
@@ -39,6 +40,10 @@ export async function checkRecurringNotifications(userId) {
 
   const rows = await decryptRows('recurring_transactions', raw || []);
 
+  // Legacy templates can have a null currency_code; fall back to the user's
+  // single currency so the message never reads "null 1000".
+  const fmt = await getDisplayFormatter();
+
   for (const r of rows) {
     const dueDate = String(r.next_run_at).slice(0, 10);
     const amount = round2(Number(r.amount));
@@ -48,8 +53,7 @@ export async function checkRecurringNotifications(userId) {
       title: i18n.t('notifications.recurringDueTitle', { title: r.title }),
       message: i18n.t('notifications.recurringDueMessage', {
         title: r.title,
-        currency: r.currency_code,
-        amount,
+        amount: fmt(amount),
         date: dueDate,
       }),
       metadata: { recurring_id: r.id, due_date: dueDate },

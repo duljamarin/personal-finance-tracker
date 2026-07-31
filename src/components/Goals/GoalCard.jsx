@@ -88,7 +88,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
               />
             </div>
             <div className="flex justify-between text-xs mt-1 text-ink-muted dark:text-white">
-              <span>€0</span>
+              <span>{fmt(0)}</span>
               <span>{fmt(targetAmount)}</span>
             </div>
           </div>

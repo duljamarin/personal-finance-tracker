@@ -15,7 +15,7 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { RECURRING_FILTERS } from '../../utils/constants';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { CATEGORY_PALETTE as CAT_PALETTE } from '../../utils/chartColors';
 
@@ -40,6 +40,7 @@ export default function Transactions() {
     deleteTransaction: onDelete,
   } = useTransactions();
   const { t } = useTranslation();
+  const { format: formatCurrency, currency } = useDisplayCurrency();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const { canAddTransaction, isPremium, canCreateRecurring, refreshSubscription } = useSubscription();
@@ -125,7 +126,7 @@ export default function Transactions() {
   }, [yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
 
   function exportCSV() {
-    const csv = toCSV(filtered, t);
+    const csv = toCSV(filtered, t, currency);
     downloadCSV(csv, 'transactions.csv');
   }
 
@@ -368,7 +369,7 @@ export default function Transactions() {
               {visibleItems.map(item => {
                 const catName = item.category?.name || '';
                 const dotColor = colorFromName(catName || item.title || 'x');
-                const amountStr = formatCurrency(Number(item.amount), item.currency_code || item.currencyCode || 'EUR');
+                const amountStr = formatCurrency(Number(item.amount));
 
                 return (
                   <li

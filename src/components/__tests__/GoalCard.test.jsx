@@ -76,7 +76,14 @@ describe('GoalCard', () => {
 
   it('shows remaining amount when not completed', () => {
     render(<GoalCard goal={mockGoal} {...mockHandlers} />);
-    expect(screen.getByText(/500.00.*remaining/)).toBeDefined();
+    // The amount and the "remaining" label are separate text nodes, so match on
+    // the container's combined text rather than a single node.
+    expect(
+      screen.getByText(
+        (_, el) => /500\.00/.test(el?.textContent || '') && /remaining/.test(el?.textContent || ''),
+        { selector: 'span' }
+      )
+    ).toBeDefined();
   });
 
   it('shows completed status when current >= target', () => {

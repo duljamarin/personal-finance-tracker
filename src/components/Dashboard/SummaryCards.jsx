@@ -17,10 +17,10 @@ const ScalesIcon = (
   </svg>
 );
 
-export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedCurrencies, loading }) {
+export default function SummaryCards({ totalIncome, totalExpense, net, loading }) {
   const { t } = useTranslation();
-  // Totals arrive EUR-normalized (base_amount), hence the display conversion.
-  const { format: formatCurrency } = useDisplayCurrency();
+  // Single currency, so totals are already in the user's currency.
+  const { format: formatCurrency, currency } = useDisplayCurrency();
 
   const cards = [
     {
@@ -84,16 +84,9 @@ export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedC
           </div>
         ))}
       </div>
-      <p className="mt-3 text-xs text-ink-muted dark:text-white/70">{t('currency.baseCurrency')}</p>
-
-      {hasMixedCurrencies && (
-        <div className="mt-4 p-3 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-md flex items-center gap-2.5 text-sm text-ink-muted dark:text-white/70">
-          <svg className="w-4 h-4 flex-shrink-0 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{t('currency.mixedCurrencies')}</span>
-        </div>
-      )}
+      <p className="mt-3 text-xs text-ink-muted dark:text-white/70">
+        {t('currency.baseCurrency', { currency })}
+      </p>
     </>
   );
 }

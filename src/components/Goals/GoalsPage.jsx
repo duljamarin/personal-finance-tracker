@@ -143,7 +143,8 @@ export default function GoalsPage() {
         type: txType,
         categoryId: null, // Objektivat nuk kanë kategori - përdor tags
         tags: [t('goals.tag', 'goal')],
-        currencyCode: 'EUR',
+        // Currency omitted on purpose: the API stamps the user's single
+        // currency, so contributions match every other amount in the app.
         exchangeRate: 1.0
       });
 

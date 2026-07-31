@@ -2,7 +2,10 @@ import i18n from '../i18n';
 import { translateCategoryName } from './categoryTranslation';
 
 // CSV helpers for export (and import if needed)
-export function toCSV(items, t) {
+// `fallbackCurrency` is the user's single app currency, used for rows written
+// before currency_code was per-row (or when it is missing). Defaults to EUR only
+// so existing callers/tests keep working.
+export function toCSV(items, t, fallbackCurrency = 'EUR') {
   // Get translated headers
   const headers = [
     'ID',
@@ -31,7 +34,7 @@ export function toCSV(items, t) {
         : ''
     
     const amount = e.amount ?? ''
-    const currencyCode = e.currency_code || 'EUR'
+    const currencyCode = e.currency_code || fallbackCurrency
     const exchangeRate = e.exchange_rate ?? '1.0'
     const baseAmount = e.base_amount ?? e.amount ?? ''
     

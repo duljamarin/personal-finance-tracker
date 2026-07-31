@@ -6,7 +6,7 @@ import { updateRecurringTransaction } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { validateRecurringEndDate, getMinEndDateString } from '../../utils/recurringValidation';
 import { EXPENSE_COLOR } from '../../utils/chartColors';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 const inputBaseClass =
   'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
@@ -18,6 +18,7 @@ const selectClass =
 
 export default function RecurringForm({ onSubmit, onCancel, initial }) {
   const { t } = useTranslation();
+  const { format: formatCurrency } = useDisplayCurrency();
   const { addToast } = useToast();
 
   const [frequency, setFrequency] = useState(initial?.frequency || 'monthly');
@@ -148,7 +149,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
               style={initial?.type === 'expense' ? { color: EXPENSE_COLOR } : undefined}
             >
               {initial?.type === 'expense' ? '-' : '+'}
-              {formatCurrency(Number(initial?.amount), initial?.currency_code || 'EUR')}
+              {formatCurrency(Number(initial?.amount))}
             </span>
           </div>
           <p className="mt-2 pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white/60">

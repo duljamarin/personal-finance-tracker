@@ -1057,8 +1057,7 @@
     "exchangeRate": "Exchange Rate to EUR",
     "exchangeRateOptional": "(optional)",
     "baseAmount": "Base Amount (EUR)",
-    "baseCurrency": "All totals in EUR",
-    "mixedCurrencies": "Mixed currencies - showing normalized totals in EUR",
+    "baseCurrency": "All totals in {{currency}}",
     "USD": "US Dollar",
     "EUR": "Euro",
     "GBP": "British Pound",
@@ -1528,7 +1527,8 @@
       "label": "Preferred currency",
       "exchangeRateLabel": "1 {{currency}} = ? EUR",
       "exchangeRatePlaceholder": "e.g., 0.92",
-      "exchangeRateHint": "{{amount}} {{currency}} = {{result}} EUR"
+      "exchangeRateHint": "{{amount}} {{currency}} = {{result}} EUR",
+      "permanentHint": "You can choose your currency only once, so pick the one you use every day."
     },
     "income": {
       "title": "What's your monthly income?",
@@ -1865,7 +1865,7 @@
     "budgetAlertTitle": "Budget Alert: {{category}}",
     "budgetAlertMessage": "You have spent {{spent}} of your {{budget}} budget ({{percent}}%) for {{category}}",
     "recurringDueTitle": "Upcoming: {{title}}",
-    "recurringDueMessage": "Your recurring transaction \"{{title}}\" ({{currency}} {{amount}}) is due on {{date}}.",
+    "recurringDueMessage": "Your recurring transaction \"{{title}}\" ({{amount}}) is due on {{date}}.",
     "goalMilestoneTitle": "🎯 {{percent}}% reached - {{name}}",
     "goalMilestoneMessage": "You've reached {{percent}}% of your goal \"{{name}}\" ({{current}} / {{target}}).",
     "trialExpiringTitle": "Trial ends in {{days}} day(s)",
@@ -1939,5 +1939,26 @@
     "noExpenses": "No expenses in this period",
     "noIncome": "No income in this period",
     "date": "Date"
+  },
+  "settings": {
+    "currency": {
+      "title": "Currency",
+      "description": "The single currency used across the whole app. Changing it converts every stored amount at the current exchange rate.",
+      "change": "Change currency",
+      "converting": "Converting...",
+      "loadingRate": "Loading exchange rate...",
+      "rateError": "Could not load the exchange rate. Please try again later.",
+      "busy": "A conversion is already running in another tab.",
+      "success": "Your currency is now {{currency}}.",
+      "error": "The conversion did not finish. Reopen this page to resume it safely.",
+      "progress": "Converting {{done}} of {{total}} groups...",
+      "confirmTitle": "Change currency from {{from}} to {{to}}?",
+      "confirmBody": "Every transaction, recurring rule, budget, goal and contribution will be recalculated at the current exchange rate.",
+      "example": "For example",
+      "confirmWarning": "Keep this tab open until it finishes. If it stops early, reopen this page and the conversion continues from where it left off.",
+      "confirmAction": "Convert everything",
+      "resume": "Resume conversion",
+      "resumeDesc": "A currency change from {{from}} to {{to}} was interrupted. Finish it before making other changes, so your amounts stay consistent."
+    }
   }
 }

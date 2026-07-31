@@ -10,3 +10,4 @@ export * from './subscriptions';
 export * from './networth';
 export * from './notifications';
 export * from './health';
+export * from './userSettings';

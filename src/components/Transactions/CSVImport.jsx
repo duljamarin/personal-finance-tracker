@@ -121,8 +121,10 @@ export default function CSVImport({ categories, onImportComplete }) {
           // Keep the raw name so handleImport can create missing categories
           _categoryName: !category && categoryName ? categoryName : null,
           tags: parseTags(row.tags || row.Tags),
-          currency_code: row.currency_code || row.Currency || 'EUR',
-          exchange_rate: parseFloat(row.exchange_rate || row.ExchangeRate) || 1.0,
+          // Left undefined on purpose: bulkImportTransactions stamps the user's
+          // currency. Defaulting to EUR here would mislabel every imported row.
+          currency_code: row.currency_code || row.Currency || undefined,
+          exchange_rate: 1.0,
         });
       }
     });

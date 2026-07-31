@@ -9,6 +9,7 @@ import { deleteUserAccount } from '../../utils/api.js';
 import Card from '../UI/Card.jsx';
 import PasswordInput from '../UI/PasswordInput';
 import EncryptionSettings from '../Encryption/EncryptionSettings.jsx';
+import CurrencySettings from '../Settings/CurrencySettings.jsx';
 import { rewrapForPasswordChange } from '../../utils/crypto/keyLifecycle';
 
 const E2EE_ENABLED = import.meta.env.VITE_E2EE_ENABLED === 'true';
@@ -244,6 +245,9 @@ export default function AccountPage() {
           </button>
         </form>
       </Card>
+
+      {/* Currency */}
+      <CurrencySettings />
 
       {/* Encryption Settings */}
       {E2EE_ENABLED && <EncryptionSettings userId={user?.id} />}

@@ -45,7 +45,6 @@ export default function Dashboard() {
     totalIncome,
     totalExpense,
     net,
-    hasMixedCurrencies,
     mutationCount,
     reloadTransactions,
   } = useTransactions();
@@ -118,7 +117,6 @@ export default function Dashboard() {
         totalIncome={totalIncome}
         totalExpense={totalExpense}
         net={net}
-        hasMixedCurrencies={hasMixedCurrencies}
         loading={loading}
       />
 

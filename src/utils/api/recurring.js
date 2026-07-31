@@ -1,6 +1,7 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 import { checkRecurringNotifications } from '../finance/recurringAlerts';
+import { getWriteCurrency } from './userSettings';
 
 // anchorDay: the day-of-month the schedule is really pinned to (normally the
 // day of start_date). Without it, monthly/yearly runs drift permanently
@@ -98,7 +99,7 @@ export async function addRecurringTransaction(recurring) {
       ...rest,
       category_id: categoryId,
       user_id: user.id,
-      currency_code: currencyCode || 'EUR',
+      currency_code: currencyCode || (await getWriteCurrency(user)),
       exchange_rate: exchangeRate || 1.0,
       frequency: frequency,
       interval_count: intervalCount || 1,

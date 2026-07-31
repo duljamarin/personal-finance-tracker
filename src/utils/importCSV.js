@@ -73,8 +73,10 @@ function parseAppFormat(rows) {
         title:        (r[idx('title')] || '').trim(),
         type:         normaliseType(r[idx('type')]),
         amount:       Math.abs(rawAmount),
-        currencyCode: (r[idx('currency code')] || 'EUR').trim(),
-        exchangeRate: parseFloat(r[idx('exchange rate')]) || 1.0,
+        // undefined when the CSV omits it, so the API stamps the user's
+        // currency instead of silently labelling the rows EUR.
+        currencyCode: (r[idx('currency code')] || '').trim() || undefined,
+        exchangeRate: 1.0,
         date:         normaliseDate(r[idx('date')]),
         categoryName: (r[idx('category')] || '').trim(),
         tags:         tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [],
@@ -141,8 +143,8 @@ function parseGenericFormat(rows) {
       }
 
       const currencyCode = currencyCol !== -1
-        ? (r[currencyCol] || 'EUR').trim().toUpperCase()
-        : 'EUR';
+        ? (r[currencyCol] || '').trim().toUpperCase() || undefined
+        : undefined;
 
       const categoryName = categoryCol !== -1 ? (r[categoryCol] || '').trim() : '';
 

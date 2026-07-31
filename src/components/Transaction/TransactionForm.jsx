@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
@@ -7,19 +7,16 @@ import { translateCategoryName, ICON_PALETTE, CATEGORY_ICONS, getCategoryIcon } 
 import { useToast } from '../../context/ToastContext'
 import { validateRecurringEndDate } from '../../utils/recurringValidation'
 import { RECURRING_FREQUENCIES } from '../../utils/constants'
-import { APP_CONFIG } from '../../config/app'
 import { useSubscription } from '../../context/SubscriptionContext'
-import { useAuth } from '../../context/AuthContext'
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency'
 import TransactionSplitForm from './TransactionSplitForm'
 import TransactionRecurringSection from './TransactionRecurringSection'
 import { CategoryIconSvg } from '../UI/CategoryIconSvg'
 import CustomSelect from '../UI/CustomSelect'
-import { fetchExchangeRate } from '../../utils/exchangeRate'
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t } = useTranslation()
 	const { canSplitTransaction } = useSubscription()
-	const { user } = useAuth()
 	const { addToast } = useToast()
 
 	const [title, setTitle] = useState(initial?.title || '')
@@ -34,10 +31,10 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [proposedCategoryName, setProposedCategoryName] = useState('')
 	const [proposedCategoryEmoji, setProposedCategoryEmoji] = useState('Shopping')
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
-	const [currencyCode, setCurrencyCode] = useState(initial?.currency_code || initial?.currencyCode || user?.user_metadata?.preferred_currency || APP_CONFIG.BASE_CURRENCY)
-	const [exchangeRate, setExchangeRate] = useState(parseFloat(Number(initial?.exchange_rate || initial?.exchangeRate || APP_CONFIG.DEFAULT_EXCHANGE_RATE).toFixed(3)))
-	const [isFetchingRate, setIsFetchingRate] = useState(false)
-	
+	// Single-currency app: every amount is entered and stored in the user's one
+	// chosen currency, so there is no per-transaction picker and no FX rate.
+	const { currency: currencyCode } = useDisplayCurrency()
+
 	// If editing a transaction from a recurring rule
 	const isFromRecurring = initial?.source_recurring_id
 
@@ -61,23 +58,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			}
 		}).catch(() => setCategories([]))
 	}, [])
-
-	const initialCurrencyRef = useRef(currencyCode)
-	useEffect(() => {
-		if (currencyCode === 'EUR') {
-			setExchangeRate(1.0)
-			return
-		}
-		// Don't auto-fetch on mount when editing an existing transaction that already has a rate
-		if (currencyCode === initialCurrencyRef.current && initial?.id) return
-		let cancelled = false
-		setIsFetchingRate(true)
-		fetchExchangeRate(currencyCode).then(rate => {
-			if (!cancelled && rate !== null) setExchangeRate(parseFloat(rate.toFixed(3)))
-			if (!cancelled) setIsFetchingRate(false)
-		})
-		return () => { cancelled = true }
-	}, [currencyCode])
 
 	function validate() {
 		const newErrors = {}
@@ -267,7 +247,8 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			type,
 			tags: tagsList,
 			currencyCode,
-			exchangeRate: Number(exchangeRate),
+			// Single currency, so base_amount always equals amount.
+			exchangeRate: 1.0,
 			sourceRecurringId: initial?.source_recurring_id,
 			// Split data
 			has_splits: isSplit,
@@ -386,53 +367,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					</div>
 				</div>
 
-				{/* Currency Fields */}
-				<div className="grid grid-cols-[1fr_1fr] gap-3 items-start">
-					<div className="flex flex-col gap-1.5">
-						<label className="text-sm font-medium text-ink-primary dark:text-white">
-							{t('currency.code')}
-						</label>
-						<CustomSelect
-							value={currencyCode}
-							onChange={setCurrencyCode}
-							ariaLabel={t('currency.code')}
-							options={[
-								{ value: 'USD', label: t('currency.USD'), leading: <span>🇺🇸</span> },
-								{ value: 'EUR', label: t('currency.EUR'), leading: <span>🇪🇺</span> },
-								{ value: 'GBP', label: t('currency.GBP'), leading: <span>🇬🇧</span> },
-								{ value: 'ALL', label: t('currency.ALL'), leading: <span>🇦🇱</span> },
-								{ value: 'CHF', label: t('currency.CHF'), leading: <span>🇨🇭</span> },
-								{ value: 'JPY', label: t('currency.JPY'), leading: <span>🇯🇵</span> },
-								{ value: 'CAD', label: t('currency.CAD'), leading: <span>🇨🇦</span> },
-								{ value: 'AUD', label: t('currency.AUD'), leading: <span>🇦🇺</span> },
-							]}
-						/>
-					</div>
-					<div className="flex flex-col gap-1.5">
-						<div className="flex items-baseline gap-1.5">
-							<label className="text-sm font-medium text-ink-primary dark:text-white whitespace-nowrap">
-								{t('currency.exchangeRate')}
-							</label>
-							{isFetchingRate
-								? <span className="text-xs text-brand-500 dark:text-brand-400 font-normal animate-pulse">...</span>
-								: <span className="text-xs text-ink-muted dark:text-white font-normal whitespace-nowrap">{t('currency.exchangeRateOptional')}</span>
-							}
-						</div>
-						<Input
-							type="number"
-							step="0.001"
-							placeholder="1.0"
-							value={exchangeRate}
-							onChange={e => setExchangeRate(e.target.value)}
-							disabled={isFetchingRate}
-						/>
-					</div>
-				</div>
-				{currencyCode !== 'EUR' && (
-					<p className="text-xs text-ink-muted dark:text-white -mt-2">
-						{t('currency.baseAmount')}: €{(Number(amount || 0) * Number(exchangeRate || 1)).toFixed(2)}
-					</p>
-				)}
 
 				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
 				<div className="flex flex-col gap-1 sm:gap-2">
