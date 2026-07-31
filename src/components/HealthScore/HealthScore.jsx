@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { fetchHealthScore, fetchHealthScoreHistory } from '../../utils/api';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useAsyncData } from '../../hooks/useAsyncData';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import Card from '../UI/Card';
 
 export default function HealthScore({ onReloadTrigger, compact = false }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
   const { isPremium, isTrialing } = useSubscription();
   const isPaid = isPremium || isTrialing;
   const [selectedMonth, setSelectedMonth] = useState(null);
@@ -43,8 +44,8 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   const getInsightText = (insight) => {
     switch (insight.type) {
       case 'income_expense':
-        if (insight.status === 'positive') return t('healthScore.insightSavingsPositive', { amount: insight.savings.toFixed(2), percent: insight.savingsPercent });
-        if (insight.status === 'negative') return t('healthScore.insightOverspent', { amount: insight.overspent.toFixed(2) });
+        if (insight.status === 'positive') return t('healthScore.insightSavingsPositive', { amount: fmt(insight.savings), percent: insight.savingsPercent });
+        if (insight.status === 'negative') return t('healthScore.insightOverspent', { amount: fmt(insight.overspent) });
         if (insight.status === 'no_income') return t('healthScore.insightNoIncome');
         return t('healthScore.insightNoData');
       case 'budget':
@@ -53,8 +54,8 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         if (insight.status === 'multiple_over') return t('healthScore.insightBudgetMultipleOver', { count: insight.categoriesOver });
         return t('healthScore.insightBudgetNoData');
       case 'savings':
-        if (insight.status === 'saving') return t('healthScore.insightSaving', { amount: insight.amount.toFixed(2) });
-        if (insight.status === 'overspending') return t('healthScore.insightLosing', { amount: insight.amount.toFixed(2) });
+        if (insight.status === 'saving') return t('healthScore.insightSaving', { amount: fmt(insight.amount) });
+        if (insight.status === 'overspending') return t('healthScore.insightLosing', { amount: fmt(insight.amount) });
         return t('healthScore.insightBreakEven');
       default:
         return '';
@@ -294,19 +295,19 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.income')}</p>
                 <p className="text-sm font-semibold tabular-nums text-brand-600 dark:text-brand-400">
-                  {formatCurrency(score.totalIncome)}
+                  {fmt(score.totalIncome)}
                 </p>
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.expenses')}</p>
                 <p className="text-sm font-semibold tabular-nums text-expense dark:text-expense">
-                  {formatCurrency(score.totalExpenses)}
+                  {fmt(score.totalExpenses)}
                 </p>
               </div>
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.saved')}</p>
                 <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense dark:text-expense'}`}>
-                  {formatCurrency(score.savingsAmount)}
+                  {fmt(score.savingsAmount)}
                 </p>
               </div>
             </div>

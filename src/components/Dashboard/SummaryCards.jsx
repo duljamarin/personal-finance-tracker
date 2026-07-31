@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 const TrendUp = (
   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -19,6 +19,8 @@ const ScalesIcon = (
 
 export default function SummaryCards({ totalIncome, totalExpense, net, hasMixedCurrencies, loading }) {
   const { t } = useTranslation();
+  // Totals arrive EUR-normalized (base_amount), hence the display conversion.
+  const { format: formatCurrency } = useDisplayCurrency();
 
   const cards = [
     {

@@ -1,11 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import { EXPENSE_COLOR } from '../../utils/chartColors';
-import { formatCurrency } from '../../utils/formatCurrency';
-
-function formatAmount(amount) {
-  return formatCurrency(Math.abs(amount));
-}
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 function ChangeIndicator({ current, previous }) {
   const { t } = useTranslation();
@@ -35,6 +31,9 @@ function ChangeIndicator({ current, previous }) {
 
 export default function ReportSummaryCards({ transactions, prevTransactions, startDate, endDate }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
+  // Card values are summed from base_amount (EUR).
+  const formatAmount = (amount) => fmt(Math.abs(amount));
 
   const calcTotals = (txs) => {
     const income = txs

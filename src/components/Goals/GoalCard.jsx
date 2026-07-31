@@ -2,9 +2,11 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import Icon from '../UI/Icon';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelete }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
 
   const targetAmount = Number(goal.target_amount) || 0;
   const currentAmount = Number(goal.current_amount) || 0;
@@ -73,7 +75,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
           <div>
             <div className="flex justify-between text-sm mb-1">
               <span className="text-ink-secondary dark:text-white">
-                €{currentAmount.toFixed(2)} {t('goals.card.saved')}
+                {fmt(currentAmount)} {t('goals.card.saved')}
               </span>
               <span className="font-semibold text-ink-secondary dark:text-white">
                 {displayProgress}%
@@ -87,14 +89,14 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
             </div>
             <div className="flex justify-between text-xs mt-1 text-ink-muted dark:text-white">
               <span>€0</span>
-              <span>€{targetAmount.toFixed(2)}</span>
+              <span>{fmt(targetAmount)}</span>
             </div>
           </div>
 
           <div className="flex justify-between items-center text-sm">
             <span className="text-ink-secondary dark:text-white">
               {remaining > 0 ? (
-                <><span className="">€{remaining.toFixed(2)}</span> {t('goals.card.remaining')}</>
+                <><span className="">{fmt(remaining)}</span> {t('goals.card.remaining')}</>
               ) : (
                 <span className="text-brand-600 dark:text-brand-500 font-semibold">
                   {t('goals.status.completed')}

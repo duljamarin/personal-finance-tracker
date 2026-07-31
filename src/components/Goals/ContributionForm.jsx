@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import Modal from '../UI/Modal';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default function ContributionForm({ goal, onSave, onClose }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [note, setNote] = useState('');
@@ -13,7 +15,10 @@ export default function ContributionForm({ goal, onSave, onClose }) {
   const [action, setAction] = useState('add'); // 'add' or 'withdraw'
 
   const currentAmount = Number(goal.current_amount) || 0;
-  const fmtEur = (n) => `€${n.toFixed(2)}`;
+  // Goal balances are stored in EUR, so render them via the display-currency
+  // formatter. The amount INPUT below stays EUR-denominated: handleAddContribution
+  // persists what is typed with currencyCode 'EUR' at rate 1.0.
+  const fmtEur = (n) => fmt(n);
 
   const handleSubmit = (e) => {
     e.preventDefault();

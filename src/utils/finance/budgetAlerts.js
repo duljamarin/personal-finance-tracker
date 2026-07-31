@@ -9,6 +9,7 @@ import { decryptRows } from '../crypto/rowCodec';
 import { translateCategoryName } from '../categoryTranslation';
 import { baseAmountOf, round2 } from './shared';
 import { createNotificationDeduped } from './notify';
+import { getDisplayFormatter } from '../displayCurrency';
 
 export async function checkBudgetNotifications(userId) {
   const supabase = await getSupabase();
@@ -88,6 +89,10 @@ export async function checkBudgetNotifications(userId) {
   }
 
   // 4. Per budget: spent >= threshold amount → notify (deduped).
+  // Budget caps and spend are both EUR-normalized, so render them in the user's
+  // preferred currency rather than assuming euros.
+  const fmt = await getDisplayFormatter();
+
   for (const b of budgetRows) {
     const budgetAmount = Number(b.amount);
     if (!budgetAmount || budgetAmount <= 0) continue;
@@ -104,8 +109,8 @@ export async function checkBudgetNotifications(userId) {
       title: i18n.t('notifications.budgetAlertTitle', { category }),
       message: i18n.t('notifications.budgetAlertMessage', {
         category,
-        spent: spentR,
-        budget: budgetAmount,
+        spent: fmt(spentR),
+        budget: fmt(budgetAmount),
         percent,
       }),
       metadata: { category_id: b.category_id, month: monthKeyStr },

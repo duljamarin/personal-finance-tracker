@@ -2,14 +2,13 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../UI/Card';
 import { EXPENSE_COLOR } from '../../utils/chartColors';
-import { formatCurrency } from '../../utils/formatCurrency';
-
-function formatAmount(amount) {
-  return formatCurrency(Math.abs(amount));
-}
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default function ReportTopTransactions({ transactions }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
+  // Rows are ranked on base_amount (EUR), so format through the display helper.
+  const formatAmount = (amount) => fmt(Math.abs(amount));
 
   const { topExpenses, topIncome } = useMemo(() => {
     const expenses = transactions

@@ -4,9 +4,11 @@ import Card from '../UI/Card';
 import Icon from '../UI/Icon';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { progressColor } from '../../utils/chartColors';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
 
   const budgetAmount = Number(budget.amount) || 0;
   const spentAmount = Number(spent) || 0;
@@ -60,9 +62,9 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
         <div className="flex justify-between text-sm mb-2">
           <span className="text-ink-secondary dark:text-white">
             <span className="font-semibold text-ink-primary dark:text-white">
-              €{spentAmount.toFixed(2)}
+              {fmt(spentAmount)}
             </span>
-            {' '}{t('budgets.card.spent')} {t('budgets.card.of')} €{budgetAmount.toFixed(2)}
+            {' '}{t('budgets.card.spent')} {t('budgets.card.of')} {fmt(budgetAmount)}
           </span>
           <span className={`font-semibold ${isOverBudget ? 'text-expense dark:text-expense' : 'text-ink-secondary dark:text-white'}`}>
             {percentUsed}%
@@ -80,14 +82,14 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
         {/* Overflow indicator */}
         {isOverBudget && (
           <p className="text-xs text-ink-muted dark:text-white/60 mt-1">
-            €{Math.abs(remaining).toFixed(2)} {t('budgets.card.overflow')}
+            {fmt(Math.abs(remaining))} {t('budgets.card.overflow')}
           </p>
         )}
 
         {/* Remaining (when not over budget) */}
         {!isOverBudget && (
           <p className="text-xs text-ink-muted dark:text-white mt-1">
-            €{remaining.toFixed(2)} {t('budgets.card.remaining')}
+            {fmt(remaining)} {t('budgets.card.remaining')}
           </p>
         )}
 
@@ -96,8 +98,8 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
           {forecast && (
             <p className={`text-sm font-medium ${forecast.willExceed ? 'text-expense/80 dark:text-expense/70' : 'text-brand-600 dark:text-brand-500'}`}>
               {forecast.willExceed
-                ? t('budgets.forecast.willExceed', { amount: forecast.exceedBy.toFixed(2) })
-                : t('budgets.forecast.onTrack', { amount: forecast.projected.toFixed(2) })
+                ? t('budgets.forecast.willExceed', { amount: fmt(forecast.exceedBy) })
+                : t('budgets.forecast.onTrack', { amount: fmt(forecast.projected) })
               }
             </p>
           )}

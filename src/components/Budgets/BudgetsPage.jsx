@@ -13,6 +13,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useFormModal } from '../../hooks/useFormModal';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
 import { getValueColorClass } from '../../utils/classNames';
@@ -20,6 +21,7 @@ import { Link } from 'react-router-dom';
 
 export default function BudgetsPage() {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
   const { addToast } = useToast();
   const { user } = useAuth();
   const { isPremium, canCreateBudget, budgetLimit } = useSubscription();
@@ -282,7 +284,7 @@ export default function BudgetsPage() {
             <div className="p-4">
               <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalBudgeted')}</p>
               <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
-                €{totalBudgeted.toFixed(2)}
+                {fmt(totalBudgeted)}
               </p>
             </div>
           </Card>
@@ -293,7 +295,7 @@ export default function BudgetsPage() {
                 positive: 'text-expense dark:text-expense',
                 negative: 'text-ink-primary dark:text-white'
               })}`}>
-                €{totalSpent.toFixed(2)}
+                {fmt(totalSpent)}
               </p>
             </div>
           </Card>
@@ -304,7 +306,7 @@ export default function BudgetsPage() {
                 positive: 'text-brand-600 dark:text-brand-500',
                 negative: 'text-expense dark:text-expense'
               })}`}>
-                €{totalRemaining.toFixed(2)}
+                {fmt(totalRemaining)}
               </p>
             </div>
           </Card>

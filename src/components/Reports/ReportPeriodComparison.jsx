@@ -12,6 +12,7 @@ import {
 import Card from '../UI/Card';
 import useDarkMode from '../../hooks/useDarkMode';
 import { INCOME_COLOR } from '../../utils/chartColors';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 function formatLabel(dateStr) {
   if (!dateStr) return '';
@@ -42,14 +43,14 @@ function PctChange({ current, previous, positiveIsGood }) {
   );
 }
 
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, fmt }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
         <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.name} className="text-sm tabular-nums" style={{ color: entry.color }}>
-            {entry.name}: €{Number(entry.value).toFixed(2)}
+            {entry.name}: {fmt(Number(entry.value))}
           </p>
         ))}
       </div>
@@ -68,6 +69,7 @@ export default function ReportPeriodComparison({
 }) {
   const { t } = useTranslation();
   const [dark] = useDarkMode();
+  const { format: fmt, convert, symbol } = useDisplayCurrency();
 
   const calcTotals = (txs) => {
     const income = txs
@@ -121,13 +123,13 @@ export default function ReportPeriodComparison({
               tickLine={false}
             />
             <YAxis
-              tickFormatter={(v) => `€${v}`}
+              tickFormatter={(v) => `${symbol}${Math.round(convert(v))}`}
               tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
               axisLine={false}
               tickLine={false}
               width={70}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip fmt={fmt} />} />
             <Legend wrapperStyle={{ fontSize: '12px' }} />
             <Bar dataKey={currentLabel} fill={INCOME_COLOR} radius={[4, 4, 0, 0]} />
             {/* previous period: brand-300 tint (lighter teal) — no CSS var, brand-ramp literal */}
@@ -147,10 +149,10 @@ export default function ReportPeriodComparison({
                 <div className="flex items-end justify-between gap-2">
                   <div>
                     <p className="text-sm font-semibold text-ink-primary dark:text-white">
-                      €{row.curr.toFixed(2)}
+                      {fmt(row.curr)}
                     </p>
                     <p className="text-xs text-ink-muted/60 dark:text-white/60">
-                      {t('reports.previousPeriod')}: €{row.prev.toFixed(2)}
+                      {t('reports.previousPeriod')}: {fmt(row.prev)}
                     </p>
                   </div>
                   <PctChange current={row.curr} previous={row.prev} positiveIsGood={row.positiveIsGood} />

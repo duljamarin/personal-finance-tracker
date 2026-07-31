@@ -462,6 +462,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					{isSplit ? (
 						<TransactionSplitForm
 							totalAmount={Number(amount) || 0}
+							currencyCode={currencyCode}
 							categories={categories}
 							initialSplits={splits}
 							onSplitsChange={setSplits}

@@ -14,9 +14,11 @@ import { useSubscription } from '../../context/SubscriptionContext';
 import { useTransactions } from '../../context/TransactionContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default function GoalsPage() {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
   const { addToast } = useToast();
   const { isPremium, canCreateGoal, goalLimit, refreshSubscription } = useSubscription();
   const { reloadTransactions } = useTransactions();
@@ -118,7 +120,7 @@ export default function GoalsPage() {
       const savedAmount = Number(selectedGoal.current_amount) || 0;
       if (isWithdrawal && contributionData.amount > savedAmount) {
         addToast(
-          t('goals.contributions.withdrawExceedsError', { amount: `€${savedAmount.toFixed(2)}` }),
+          t('goals.contributions.withdrawExceedsError', { amount: fmt(savedAmount) }),
           'error'
         );
         return;
@@ -167,7 +169,7 @@ export default function GoalsPage() {
       if (isBalanceConstraint) {
         const savedAmount = Number(selectedGoal?.current_amount) || 0;
         addToast(
-          t('goals.contributions.withdrawExceedsError', { amount: `€${savedAmount.toFixed(2)}` }),
+          t('goals.contributions.withdrawExceedsError', { amount: fmt(savedAmount) }),
           'error'
         );
       } else {
@@ -227,7 +229,7 @@ export default function GoalsPage() {
             <div className="p-4">
               <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.totalSaved')}</p>
               <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
-                €{stats.totalSaved.toFixed(2)}
+                {fmt(stats.totalSaved)}
               </p>
             </div>
           </Card>
@@ -235,7 +237,7 @@ export default function GoalsPage() {
             <div className="p-4">
               <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.totalTarget')}</p>
               <p className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
-                €{stats.totalTarget.toFixed(2)}
+                {fmt(stats.totalTarget)}
               </p>
             </div>
           </Card>

@@ -54,6 +54,7 @@ function translateMonth(monthKey) {
 
 function CombinedMonthTooltip({ active, payload, label }) {
   const { t } = useTranslation();
+  const { format: formatCurrency } = useDisplayCurrency();
 
   if (!active || !payload || payload.length === 0) return null;
 

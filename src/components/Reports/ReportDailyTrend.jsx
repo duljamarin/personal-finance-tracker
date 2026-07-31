@@ -13,15 +13,16 @@ import Card from '../UI/Card';
 import { toISODate } from '../../utils/date';
 import useDarkMode from '../../hooks/useDarkMode';
 import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, fmt }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
         <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
-            {entry.name}: €{Number(entry.value).toFixed(2)}
+            {entry.name}: {fmt(Number(entry.value))}
           </p>
         ))}
       </div>
@@ -33,6 +34,7 @@ function CustomTooltip({ active, payload, label }) {
 export default function ReportDailyTrend({ transactions, startDate, endDate }) {
   const { t } = useTranslation();
   const [dark] = useDarkMode();
+  const { format: fmt, convert, symbol } = useDisplayCurrency();
 
   const dailyData = useMemo(() => {
     const start = new Date(startDate + 'T00:00:00');
@@ -95,13 +97,13 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 interval="preserveStartEnd"
               />
               <YAxis
-                tickFormatter={(v) => `€${v}`}
+                tickFormatter={(v) => `${symbol}${Math.round(convert(v))}`}
                 tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
                 axisLine={false}
                 tickLine={false}
                 width={60}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip fmt={fmt} />} />
               <Area
                 type="monotone"
                 dataKey="income"

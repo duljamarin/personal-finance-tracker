@@ -2,9 +2,11 @@ import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 export default function CategoryPieChart({ transactions, type }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
 
   const categoryTotals = {};
 
@@ -47,7 +49,7 @@ export default function CategoryPieChart({ transactions, type }) {
       return (
         <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
           <p className="text-sm font-semibold text-ink-primary dark:text-white">{payload[0].name}</p>
-          <p className="text-sm text-ink-primary dark:text-white tabular-nums mt-0.5">€{payload[0].value.toFixed(2)}</p>
+          <p className="text-sm text-ink-primary dark:text-white tabular-nums mt-0.5">{fmt(payload[0].value)}</p>
           <p className="text-xs text-ink-muted dark:text-white tabular-nums">{percentage}%</p>
         </div>
       );
@@ -93,7 +95,7 @@ export default function CategoryPieChart({ transactions, type }) {
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
               <span className="text-sm text-ink-primary dark:text-white flex-1 truncate">{entry.name}</span>
-              <span className="text-sm font-semibold text-ink-primary dark:text-white tabular-nums">€{entry.value.toFixed(0)}</span>
+              <span className="text-sm font-semibold text-ink-primary dark:text-white tabular-nums">{fmt(entry.value, { decimals: 0 })}</span>
               <span className="text-xs text-ink-muted dark:text-white tabular-nums w-12 text-right">{pct}%</span>
             </div>
           );

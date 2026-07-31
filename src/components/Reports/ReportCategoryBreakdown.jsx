@@ -9,13 +9,14 @@ import {
 } from 'recharts';
 import Card from '../UI/Card';
 import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
-function CustomTooltip({ active, payload }) {
+function CustomTooltip({ active, payload, fmt }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
         <p className="text-sm font-semibold text-ink-primary dark:text-white">{payload[0].name}</p>
-        <p className="text-sm text-ink-primary dark:text-white tabular-nums mt-0.5">€{payload[0].value.toFixed(2)}</p>
+        <p className="text-sm text-ink-primary dark:text-white tabular-nums mt-0.5">{fmt(payload[0].value)}</p>
         <p className="text-xs text-ink-muted dark:text-white tabular-nums">{payload[0].payload.pct}%</p>
       </div>
     );
@@ -25,6 +26,7 @@ function CustomTooltip({ active, payload }) {
 
 export default function ReportCategoryBreakdown({ transactions }) {
   const { t } = useTranslation();
+  const { format: fmt } = useDisplayCurrency();
 
   const categoryData = useMemo(() => {
     const totals = {};
@@ -87,7 +89,7 @@ export default function ReportCategoryBreakdown({ transactions }) {
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip fmt={fmt} />} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -101,7 +103,7 @@ export default function ReportCategoryBreakdown({ transactions }) {
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
               <span className="text-sm text-ink-primary dark:text-white truncate max-w-[160px]">{entry.name}</span>
-              <span className="text-sm font-semibold text-ink-primary dark:text-white tabular-nums ml-2">€{entry.value.toFixed(0)}</span>
+              <span className="text-sm font-semibold text-ink-primary dark:text-white tabular-nums ml-2">{fmt(entry.value, { decimals: 0 })}</span>
               <span className="text-xs text-ink-muted dark:text-white tabular-nums">{entry.pct}%</span>
             </div>
           ))}
@@ -147,7 +149,7 @@ export default function ReportCategoryBreakdown({ transactions }) {
                   </div>
                 </td>
                 <td className="py-2.5 pr-4 text-right text-ink-primary dark:text-white font-medium tabular-nums">
-                  €{row.value.toFixed(2)}
+                  {fmt(row.value)}
                 </td>
                 <td className="py-2.5 text-right">
                   <div className="flex items-center justify-end gap-2">
@@ -172,7 +174,7 @@ export default function ReportCategoryBreakdown({ transactions }) {
             <tr className="border-t-2 border-surface-hairline dark:border-surface-dark-hairline">
               <td className="pt-2.5 pr-4 font-semibold text-ink-primary dark:text-white">Total</td>
               <td className="pt-2.5 pr-4 text-right font-semibold text-ink-primary dark:text-white tabular-nums">
-                €{total.toFixed(2)}
+                {fmt(total)}
               </td>
               <td className="pt-2.5 text-right font-semibold text-ink-muted dark:text-white">
                 100%

@@ -4,15 +4,20 @@ import Button from '../UI/Button';
 import Input from '../UI/Input';
 import CustomSelect from '../UI/CustomSelect';
 import { translateCategoryName } from '../../utils/categoryTranslation';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function TransactionSplitForm({ 
-  totalAmount, 
-  categories, 
-  initialSplits = [], 
+export default function TransactionSplitForm({
+  totalAmount,
+  currencyCode = 'EUR',
+  categories,
+  initialSplits = [],
   onSplitsChange,
   errors = {}
 }) {
   const { t, i18n } = useTranslation();
+  // Splits are denominated in the parent form's selected currency (the raw typed
+  // amount), not the EUR base, so format with that code directly.
+  const fmt = (n) => formatCurrency(n, currencyCode);
   const [splits, setSplits] = useState(
     initialSplits.length > 0 
       ? initialSplits 
@@ -175,20 +180,20 @@ export default function TransactionSplitForm({
         <div className="flex justify-between">
           <span className="text-ink-secondary dark:text-white">{t('split.totalAmount')}:</span>
           <span className="font-medium text-ink-primary dark:text-white">
-            €{totalAmount.toFixed(2)}
+            {fmt(totalAmount)}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="text-ink-secondary dark:text-white">{t('split.splitTotal')}:</span>
           <span className={`font-medium ${hasValidSplit ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
-            €{totalSplitAmount.toFixed(2)} ({totalPercentage.toFixed(2)}%)
+            {fmt(totalSplitAmount)} ({totalPercentage.toFixed(2)}%)
           </span>
         </div>
         {!hasValidSplit && (
           <div className="flex justify-between">
             <span className="text-ink-secondary dark:text-white">{t('split.difference')}:</span>
             <span className="font-medium text-expense">
-              €{Math.abs(splitDifference).toFixed(2)}
+              {fmt(Math.abs(splitDifference))}
             </span>
           </div>
         )}
