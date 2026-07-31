@@ -236,7 +236,7 @@ function PublicLayout({ children }) {
 
 function InnerAppContent() {
   const location = useLocation();
-  const { accessToken } = useAuth();
+  const { accessToken, user, loading: authLoading } = useAuth();
   const { i18n } = useTranslation();
   const firstView = useRef(true);
 
@@ -286,12 +286,27 @@ function InnerAppContent() {
 
   // Public routes that use the public layout (header + footer, no sidebar)
   const publicRoutes = ['/login', '/sq/login', '/register', '/sq/register', '/forgot-password', '/sq/forgot-password', '/reset-password', '/auth/confirmed', '/terms', '/privacy', ...toolPathVariants(TOOLS_INDEX_PATH), ...TOOLS.flatMap(tool => toolPathVariants(tool.path))];
-  const isOnboardingRoute = location.pathname === '/onboarding';
   const isPublicRoute = publicRoutes.includes(location.pathname)
     || (!accessToken && location.pathname === '/')
     || (!accessToken && location.pathname === '/sq')
     || (!accessToken && location.pathname === '/pricing')
     || (!accessToken && location.pathname === '/sq/pricing');
+
+  // A signed-in user who hasn't finished onboarding is about to be bounced to
+  // /onboarding by PrivateRoute. Rendering AuthenticatedLayout in the meantime
+  // flashes DashboardShell (Suspense fallback) for a frame — very visible on
+  // the OAuth return, where the app mounts straight onto /dashboard. Render the
+  // onboarding branch instead so the shell never mounts. `authLoading` can't
+  // guard this: it flips false in the same commit that sets `user`.
+  // Scoped to non-public paths — public pages (/terms, /tools/*) stay reachable
+  // mid-onboarding, and that branch only has a /onboarding route to match.
+  const needsOnboarding =
+    !authLoading
+    && accessToken
+    && user
+    && !user.user_metadata?.onboarding_completed
+    && !isPublicRoute;
+  const isOnboardingRoute = location.pathname === '/onboarding' || needsOnboarding;
 
   return (
     <ErrorBoundary>
@@ -306,6 +321,10 @@ function InnerAppContent() {
                 </Suspense>
               </OnboardingRoute>
             } />
+            {/* Reached when needsOnboarding pulled a protected path (e.g. the
+                OAuth landing on /dashboard) into this branch. Redirect rather
+                than render nothing, so the URL settles on /onboarding. */}
+            <Route path="*" element={<Navigate to="/onboarding" replace />} />
           </Routes>
         </div>
       ) : isPublicRoute ? (
