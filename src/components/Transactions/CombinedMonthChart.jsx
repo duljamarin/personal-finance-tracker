@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import useDarkMode from '../../hooks/useDarkMode';
 import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 // Month name mapping for translation
 const MONTH_MAP = {
