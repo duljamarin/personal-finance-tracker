@@ -293,20 +293,33 @@ function InnerAppContent() {
     || (!accessToken && location.pathname === '/sq/pricing');
 
   // A signed-in user who hasn't finished onboarding is about to be bounced to
-  // /onboarding by PrivateRoute. Rendering AuthenticatedLayout in the meantime
-  // flashes DashboardShell (Suspense fallback) for a frame — very visible on
-  // the OAuth return, where the app mounts straight onto /dashboard. Render the
-  // onboarding branch instead so the shell never mounts. `authLoading` can't
-  // guard this: it flips false in the same commit that sets `user`.
+  // /onboarding by PrivateRoute, so render the onboarding branch directly and
+  // skip mounting the authenticated shell for a frame.
   // Scoped to non-public paths — public pages (/terms, /tools/*) stay reachable
   // mid-onboarding, and that branch only has a /onboarding route to match.
   const needsOnboarding =
-    !authLoading
-    && accessToken
+    accessToken
     && user
     && !user.user_metadata?.onboarding_completed
     && !isPublicRoute;
   const isOnboardingRoute = location.pathname === '/onboarding' || needsOnboarding;
+
+  // Until getSession() resolves we don't know who this is. On the OAuth return
+  // the app mounts straight onto /dashboard with accessToken still null, so
+  // every branch below picks AuthenticatedLayout and paints the sidebar + the
+  // "loading dashboard" spinner before the redirect to /onboarding lands —
+  // that's the flash. A neutral full-screen loader keeps the layout choice
+  // deferred until the answer is actually known. Public paths are exempt: they
+  // render identically signed-in or out, so they must not be delayed.
+  if (authLoading && !isPublicRoute) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
+          <LoadingSpinner size="md" text="" className="min-h-screen" />
+        </div>
+      </ErrorBoundary>
+    );
+  }
 
   return (
     <ErrorBoundary>
