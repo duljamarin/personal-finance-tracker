@@ -23,10 +23,11 @@ describe('Sidebar currency chip', () => {
     expect(screen.getAllByText('ALL').length).toBeGreaterThan(0);
   });
 
-  // The flag is an inline SVG labelled with the code, so it must be reachable
-  // as an image role rather than as text.
+  // The flag is a decorative <img> (the code next to it carries the meaning),
+  // so assert on the asset it points at rather than an accessible name.
   it('shows the currency flag', () => {
-    render(<MemoryRouter><Sidebar /></MemoryRouter>);
-    expect(screen.getAllByRole('img', { name: 'ALL' }).length).toBeGreaterThan(0);
+    const { container } = render(<MemoryRouter><Sidebar /></MemoryRouter>);
+    const flags = container.querySelectorAll('img[src="/currency-flags/ALL.svg"]');
+    expect(flags.length).toBeGreaterThan(0);
   });
 });
