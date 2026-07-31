@@ -9,6 +9,7 @@ import { supabase } from '../../utils/supabaseClient';
 import {
   fetchCategories,
   addCategory,
+  addTransaction,
   addRecurringTransaction,
   processRecurringTransactions,
   createGoal,
