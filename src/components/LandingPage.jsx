@@ -188,6 +188,55 @@ function MiniBenchmarks() {
   );
 }
 
+// ── Hero visual ──────────────────────────────────────────────────────────────
+// The metaphor the whole page rests on: tangled threads (a spreadsheet, a bank
+// feed) resolving into ordered parallel lines. Decorative, so alt="" keeps it
+// out of the accessibility tree — the H1 beside it already carries the meaning.
+//
+// The source art is a wide 16:9 with the composition weighted left and generous
+// empty margins, so it is cropped to a shorter band and anchored left rather
+// than letterboxed with dead space.
+function HeroVisual() {
+  // A missing/failed art file renders nothing rather than a broken-image icon:
+  // the hero still reads perfectly without it.
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+
+  return (
+    /* The wrapper paints the page colour explicitly: mix-blend-screen
+       composites against the nearest painted backdrop, and without one the
+       image's black field stayed visible as a faint rectangle. */
+    <div
+      className="animate-hero-in mt-12 sm:mt-16 max-w-5xl mx-auto bg-surface-page dark:bg-surface-dark-page"
+      style={{ animationDelay: '440ms' }}
+      aria-hidden="true"
+    >
+      {/* The art is dark green strokes on a baked-in light #FAFAF7 field.
+          In light mode that field matches the page exactly, so the image drops
+          in as-is. In dark mode it would be a bright slab, so the whole image is
+          inverted (light field -> near-black, matching the page) and the hue is
+          rotated back so the strokes stay green rather than becoming magenta.
+          One asset, no second file to keep in sync. */}
+      <img
+        src="/ads/threads-order-from-chaos.webp"
+        alt=""
+        width={1672}
+        height={941}
+        // Above the fold, so it must not be lazy: it competes with the H1 for
+        // LCP and a late load would shift the sections below.
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+        onError={() => setFailed(true)}
+        // `screen` on the inverted image drops its near-black field into the
+        // page (black is the identity for screen), removing the faint rectangle
+        // that invert alone leaves behind against #0A0A0B.
+        className="w-full h-[150px] sm:h-[210px] lg:h-[250px] object-cover object-left dark:invert dark:hue-rotate-180 dark:brightness-110 dark:mix-blend-screen"
+      />
+    </div>
+  );
+}
+
 // ── Feature card shell (hero features) ───────────────────────────────────────
 function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = false }) {
   const [ref, visible] = useReveal(0.1);
@@ -351,7 +400,7 @@ export default function LandingPage() {
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center justify-center gap-4 sm:gap-6 mb-6" style={{ animationDelay: '240ms' }}>
+            <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center justify-center gap-3 mb-8" style={{ animationDelay: '240ms' }}>
               <Link
                 to={localizedPath('/register', i18n.language)}
                 className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
@@ -359,11 +408,12 @@ export default function LandingPage() {
                 {t('landing.hero.getStarted')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
-              {/* Sign-in is a text link, not a second button: registering is
-                  the one primary action, so nothing else competes with it. */}
+              {/* Sign-in matches the primary button's geometry so the pair sits
+                  on one optical line, but stays outlined: only the fill marks
+                  the primary action. */}
               <Link
                 to={localizedPath('/login', i18n.language)}
-                className="text-base font-medium text-ink-muted dark:text-white/80 hover:text-ink-primary dark:hover:text-white underline underline-offset-4 decoration-ink-muted/30 dark:decoration-white/30 transition-colors"
+                className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-white/25 text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-white/5 hover:border-ink-muted/50 dark:hover:border-white/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
@@ -378,6 +428,9 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
+
+          {/* Visual restatement of the promise: chaos resolving into order. */}
+          <HeroVisual />
         </div>
       </section>
 

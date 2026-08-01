@@ -19,7 +19,8 @@ const ScalesIcon = (
 
 export default function SummaryCards({ totalIncome, totalExpense, net, loading }) {
   const { t } = useTranslation();
-  // Single currency, so totals are already in the user's currency.
+  // Single currency: the caption below names which one, so the figures are
+  // never ambiguous.
   const { format: formatCurrency, currency } = useDisplayCurrency();
 
   const cards = [

@@ -697,7 +697,7 @@
       "titleLine1": "Dini ku jeni,",
       "titleAccent": "muaj pas muaji",
       "title": "Dini ku jeni, muaj pas muaji",
-      "subtitle": "Aplikacioni i bankës ju rendit transaksionet. Tabela mban mend vetëm atë që shkruani vetë në të. Ky ju tregon ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj.",
+      "subtitle": "Aplikacioni i bankës ju rendit transaksionet. Tabela mban mend vetëm atë që shkruani vetë në të. Ky aplikacion ju tregon ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj.",
       "getStarted": "Filloni falas",
       "signIn": "Identifikohuni",
       "trust1": "Falas për të filluar, pa kartë",
@@ -712,7 +712,7 @@
       "healthscore": {
         "eyebrow": "Rezultati i shëndetit financiar",
         "title": "Një numër që tregon nëse ky muaj është më i mirë",
-        "desc": "Një rezultat nga 0 në 100, i ndërtuar mbi sa afër qëndruat me buxhetet, si krahasohen shpenzimet me të ardhurat tuaja, sa të qëndrueshme ishin nga muaji në muaj dhe sa muaj i mbyllët me plus. Lëviz kur lëvizin zakonet tuaja, kështu që dalloni përmirësimin e vërtetë nga një javë e mirë."
+        "desc": "Një rezultat nga 0 në 100, i ndërtuar mbi sa afër qëndruat me buxhetet, si krahasohen shpenzimet me të ardhurat tuaja, sa të qëndrueshme ishin nga muaji në muaj dhe sa muaj i mbyllët me plus."
       },
       "benchmarks": {
         "eyebrow": "Krahasime të mençura",
@@ -921,7 +921,7 @@
     "exchangeRate": "Kursi i Këmbimit në EUR",
     "exchangeRateOptional": "(opsionale)",
     "baseAmount": "Shuma Bazë (EUR)",
-    "baseCurrency": "Te gjitha totalet ne {{currency}}",
+    "baseCurrency": "Shumat shfaqen në {{currency}}",
     "USD": "Dollari Amerikan",
     "EUR": "Euro",
     "GBP": "Sterlina Britanike",

@@ -712,7 +712,7 @@
       "healthscore": {
         "eyebrow": "Financial health score",
         "title": "One number that says if this month is better",
-        "desc": "A 0 to 100 score built from how closely you kept your budgets, how your spending compares to your income, how steady it was month to month, and how many months you finished in the positive. It moves when your habits move, so you can tell real progress from one good week."
+        "desc": "A 0 to 100 score built from how closely you kept your budgets, how your spending compares to your income, how steady it was month to month, and how many months you finished in the positive."
       },
       "benchmarks": {
         "eyebrow": "Smart benchmarks",
@@ -921,7 +921,7 @@
     "exchangeRate": "Exchange Rate to EUR",
     "exchangeRateOptional": "(optional)",
     "baseAmount": "Base Amount (EUR)",
-    "baseCurrency": "All totals in {{currency}}",
+    "baseCurrency": "Amounts shown in {{currency}}",
     "USD": "US Dollar",
     "EUR": "Euro",
     "GBP": "British Pound",
