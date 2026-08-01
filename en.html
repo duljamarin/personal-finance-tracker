@@ -6,118 +6,164 @@
     <!-- Apply dark mode before first paint to avoid a light->dark flash (FOUC/CLS).
          Reads the same key useDarkMode writes; React state stays in sync. -->
     <script>try{if(localStorage.getItem('expense_dark_mode')==='1')document.documentElement.classList.add('dark')}catch(e){}</script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111113'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' text-anchor='middle' dominant-baseline='middle' font-family='Space Grotesk, Arial, sans-serif' font-size='42' font-weight='700' fill='%2322ad93'%3E%24%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111113'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' text-anchor='middle' dominant-baseline='middle' font-family='Space Grotesk, Arial, sans-serif' font-size='42' font-weight='700' fill='%230B5D3B'%3E%24%3C/text%3E%3C/svg%3E">
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/fonts/hanken-grotesk-latin.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin-ext.woff2" crossorigin>
+    <link rel="dns-prefetch" href="https://zxihkymybbywxnqfxlql.supabase.co">
+    <link rel="dns-prefetch" href="https://gc.zgo.at">
     <link rel="canonical" href="https://personal-finances.app/" />
     <link rel="alternate" hreflang="en" href="https://personal-finances.app/" />
     <link rel="alternate" hreflang="sq" href="https://personal-finances.app/sq" />
     <link rel="alternate" hreflang="x-default" href="https://personal-finances.app/" />
 
-    <title>Personal Finance Tracker - Budget, Expenses & Goals</title>
-    <meta name="description" content="Personal finance tracker to manage income and expenses, set monthly budgets, track savings goals, and forecast cash flow. Expense tracker with recurring transactions and financial health score." />
+    <title>Personal Finance Tracker, Free to Start</title>
+    <meta name="description" content="Personal finance tracker that shows where you stand this month and whether you are improving, judged against your own history. Free to start, no credit card." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#22ad93" />
+    <meta name="theme-color" content="#0B5D3B" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Personal Finance Tracker - Budget, Expenses & Goals" />
-    <meta property="og:description" content="Personal finance tracker to manage income and expenses, set monthly budgets, track savings goals, and forecast cash flow. Expense tracker with recurring transactions and financial health score." />
+    <meta property="og:title" content="Personal Finance Tracker, Free to Start" />
+    <meta property="og:description" content="Personal finance tracker that shows where you stand this month and whether you are improving, judged against your own history. Free to start, no credit card." />
     <meta property="og:image" content="https://personal-finances.app/social-card-en.png" />
-    <meta property="og:image:alt" content="Personal Finance Tracker dashboard showing income, expenses, and budget overview" />
+    <meta property="og:image:alt" content="Know where you stand, month after month" />
     <meta property="og:url" content="https://personal-finances.app/" />
     <meta property="og:site_name" content="Personal Finance Tracker" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="sq_AL" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Personal Finance Tracker - Budget, Expenses & Goals" />
-    <meta name="twitter:description" content="Personal finance tracker to manage income and expenses, set monthly budgets, track savings goals, and forecast cash flow. Expense tracker with recurring transactions and financial health score." />
+    <meta name="twitter:title" content="Personal Finance Tracker, Free to Start" />
+    <meta name="twitter:description" content="Personal finance tracker that shows where you stand this month and whether you are improving, judged against your own history. Free to start, no credit card." />
     <meta name="twitter:image" content="https://personal-finances.app/social-card-en.png" />
+    <meta name="twitter:image:alt" content="Know where you stand, month after month" />
 
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Personal Finance Tracker",
-      "url": "https://personal-finances.app/",
-      "description": "Personal finance tracker to manage income and expenses, set monthly budgets, track savings goals, and forecast cash flow.",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Web",
-      "inLanguage": "en",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
-      },
-      "featureList": [
-        "Income and expense tracking",
-        "Monthly budget management",
-        "Financial goals",
-        "Recurring transactions",
-        "Cash flow forecasting",
-        "Multi-currency support",
-        "Financial health score"
-      ]
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Personal Finance Tracker",
+          "url": "https://personal-finances.app/",
+          "description": "Personal finance tracker that shows where you stand this month and whether you are improving, judged against your own history. Free to start, no credit card.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web",
+          "inLanguage": "en",
+          "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "EUR"
+          },
+          "featureList": [
+                "Recurring entries post themselves, daily to yearly, pause and resume any time",
+                "Savings goals you fund with contributions and watch fill up",
+                "Net worth over time, assets and liabilities in one line",
+                "Reports by income, expense, and category over any date range",
+                "Alerts when a budget runs over or a goal hits a milestone",
+                "CSV import to start from your existing records, CSV export to leave with them",
+                "Categories you name and pick icons for, not a fixed list",
+                "Full Albanian and English, plus free Albanian salary, freelancer, and loan calculators",
+                "One currency, chosen at signup and changeable in settings",
+                "Amounts encrypted on your device with a key only you hold"
+          ]
     }
     </script>
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Is Personal Finance Tracker free to use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, Personal Finance Tracker is free to start with no credit card required. The free plan includes expense and income tracking, budget management, and financial goals. A premium plan unlocks advanced features like cash flow forecasting, financial health score and spending benchmarks"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What features does the expense tracker include?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The app includes income and expense tracking, monthly budget management, recurring transactions automation, savings goals, cash flow forecasting, financial health score, spending benchmarks by category, net worth tracking, multi-currency support, and financial reports."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does it support recurring transactions?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. You can set up recurring transactions on a daily, weekly, monthly, or yearly schedule. They are automatically added to your account on the due date, so you never forget a regular expense like rent, subscriptions, or salary."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I get started with the budget tracker?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Create a free account at personal-finances.app/register — no credit card needed. The onboarding wizard guides you through adding your first transactions, setting up categories, and creating a monthly budget in under 5 minutes."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the financial health score?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The financial health score is a 0–100 rating calculated from your saving rate, budget adherence, expense diversity, and goal progress. It gives you an instant snapshot of how well you are managing your money and highlights areas for improvement."
-          }
-        }
-      ]
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+                {
+                      "@type": "Question",
+                      "name": "Is it really free?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes. The free plan needs no credit card and has no time limit: 30 transactions a month, 10 budgets, 10 goals. Premium adds unlimited transactions, cash flow forecasting, and the full score and benchmarks."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Which languages and currencies does it support?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "The app is fully translated in English and Albanian. You choose one currency at signup and can change it later in settings, and every screen uses it. There are also free salary, freelancer, and loan calculators built on Albanian rules."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "How long until it tells me something useful?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "The dashboard and budgets work from your first entries. The score and benchmarks compare you to your own past, so they get sharper with each month of history. Importing a CSV from your bank gives you that history immediately."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Can your staff see my amounts?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "No. Amounts, budgets, goals and net worth are encrypted on your device with a key only you hold. What reaches the server is encrypted text, so we cannot read it either. If you lose your key and your recovery code, we cannot restore the data either."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "I already use a spreadsheet. Why switch?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Import it as CSV and keep the history. The difference is that this one keeps score without you maintaining formulas, warns you mid-month when a budget is heading over, and tells you how this month compares to your own normal."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Is this financial advice?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "No. The score, benchmarks, and forecasts describe your own data back to you. They are not professional financial, legal, or tax advice."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Does it work on my phone?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, in any modern browser on phone, tablet, or desktop. There is no native app to install."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Can I cancel a paid subscription?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, from your account settings. You keep full access until the end of the billing period, and your data stays exportable whether you pay or not."
+                      }
+                }
+          ]
     }
     </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Fallback for crawlers that do not execute JavaScript. Mirrors the
+         rendered hero exactly: same H1, same subtitle, same primary action. -->
     <noscript>
-      <h1>Personal Finance Tracker - Take Control of Your Finances</h1>
-      <p>Track your income and expenses, set monthly budgets, manage savings goals, and forecast your cash flow. Free to start - no credit card required.</p>
-      <p>Features: expense tracking, budget management, recurring transactions, financial goals, multi-currency support, cash flow forecasting, financial health score.</p>
-      <a href="/register">Get started for free</a> or <a href="/login">sign in</a>.
+      <h1>Know where you stand, month after month</h1>
+      <p>Your bank app shows last week. A spreadsheet only remembers what you type. This tells you where this month stands and whether you are improving, judged against your own history.</p>
+      <ul>
+        <li>Recurring entries post themselves, daily to yearly, pause and resume any time</li>
+        <li>Savings goals you fund with contributions and watch fill up</li>
+        <li>Net worth over time, assets and liabilities in one line</li>
+        <li>Reports by income, expense, and category over any date range</li>
+        <li>Alerts when a budget runs over or a goal hits a milestone</li>
+        <li>CSV import to start from your existing records, CSV export to leave with them</li>
+        <li>Categories you name and pick icons for, not a fixed list</li>
+        <li>Full Albanian and English, plus free Albanian salary, freelancer, and loan calculators</li>
+        <li>One currency, chosen at signup and changeable in settings</li>
+        <li>Amounts encrypted on your device with a key only you hold</li>
+      </ul>
+      <a href="/register">Start free</a> &middot;
+      <a href="/pricing">See pricing</a>
     </noscript>
     <script type="module" src="/src/main.jsx"></script>
+    <script data-goatcounter="https://marindulja.goatcounter.com/count"
+            defer src="//gc.zgo.at/count.js"></script>
   </body>
 </html>

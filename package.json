@@ -7,7 +7,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prerender": "node scripts/build-prerender.mjs"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

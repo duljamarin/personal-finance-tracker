@@ -6,121 +6,164 @@
     <!-- Apply dark mode before first paint to avoid a light->dark flash (FOUC/CLS).
          Reads the same key useDarkMode writes; React state stays in sync. -->
     <script>try{if(localStorage.getItem('expense_dark_mode')==='1')document.documentElement.classList.add('dark')}catch(e){}</script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111113'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' text-anchor='middle' dominant-baseline='middle' font-family='Space Grotesk, Arial, sans-serif' font-size='42' font-weight='700' fill='%2322ad93'%3E%24%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111113'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' text-anchor='middle' dominant-baseline='middle' font-family='Space Grotesk, Arial, sans-serif' font-size='42' font-weight='700' fill='%230B5D3B'%3E%24%3C/text%3E%3C/svg%3E">
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/fonts/hanken-grotesk-latin.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin-ext.woff2" crossorigin>
+    <link rel="dns-prefetch" href="https://zxihkymybbywxnqfxlql.supabase.co">
+    <link rel="dns-prefetch" href="https://gc.zgo.at">
     <link rel="canonical" href="https://personal-finances.app/sq" />
     <link rel="alternate" hreflang="en" href="https://personal-finances.app/" />
     <link rel="alternate" hreflang="sq" href="https://personal-finances.app/sq" />
     <link rel="alternate" hreflang="x-default" href="https://personal-finances.app/" />
 
-    <title>Gjurmues Financash - Buxhet, Shpenzime & Qëllime</title>
-    <meta name="description" content="Gjurmues i financave personale për Shqipëri dhe Kosovë. Ndiqni shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë." />
+    <title>Gjurmues Financash Personale, Falas për të Filluar</title>
+    <meta name="description" content="Aplikacion financash personale në shqip. Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#22ad93" />
+    <meta name="theme-color" content="#0B5D3B" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Gjurmues Financash - Buxhet, Shpenzime & Qëllime" />
-    <meta property="og:description" content="Gjurmues i financave personale për Shqipëri dhe Kosovë. Ndiqni shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë." />
+    <meta property="og:title" content="Gjurmues Financash Personale, Falas për të Filluar" />
+    <meta property="og:description" content="Aplikacion financash personale në shqip. Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar." />
     <meta property="og:image" content="https://personal-finances.app/social-card-sq.png" />
-    <meta property="og:image:alt" content="Gjurmues i Financave Personale - pamja e panelit me të ardhura, shpenzime dhe buxhet" />
+    <meta property="og:image:alt" content="Dini ku jeni, muaj pas muaji" />
     <meta property="og:url" content="https://personal-finances.app/sq" />
-    <meta property="og:site_name" content="Gjurmues i Financave Personale" />
+    <meta property="og:site_name" content="Personal Finance Tracker" />
     <meta property="og:locale" content="sq_AL" />
     <meta property="og:locale:alternate" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Gjurmues Financash - Buxhet, Shpenzime & Qëllime" />
-    <meta name="twitter:description" content="Gjurmues i financave personale për Shqipëri dhe Kosovë. Ndiqni shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë." />
+    <meta name="twitter:title" content="Gjurmues Financash Personale, Falas për të Filluar" />
+    <meta name="twitter:description" content="Aplikacion financash personale në shqip. Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar." />
     <meta name="twitter:image" content="https://personal-finances.app/social-card-sq.png" />
+    <meta name="twitter:image:alt" content="Dini ku jeni, muaj pas muaji" />
 
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Gjurmues i Financave Personale",
-      "alternateName": "Personal Finance Tracker",
-      "url": "https://personal-finances.app/sq",
-      "description": "Gjurmues i financave personale për Shqipëri dhe Kosovë. Ndiqni shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë.",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Web",
-      "inLanguage": "sq",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
-      },
-      "featureList": [
-        "Gjurmimi i të ardhurave dhe shpenzimeve",
-        "Menaxhimi i buxhetit mujor",
-        "Qëllimet financiare",
-        "Transaksionet periodike",
-        "Parashikimi i fluksit të parasë",
-        "Mbështetje shumë-valutore",
-        "Rezultati i shëndetit financiar"
-      ]
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Personal Finance Tracker",
+          "url": "https://personal-finances.app/sq",
+          "description": "Aplikacion financash personale në shqip. Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web",
+          "inLanguage": "sq",
+          "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "EUR"
+          },
+          "featureList": [
+                "Transaksionet e përsëritura regjistrohen automatikisht, çdo ditë, javë, muaj ose vit, me mundësi pezullimi dhe rifillimi",
+                "Qëllime kursimi që i ushqeni me kontribute dhe u ndiqni ecurinë",
+                "Pasuria neto në kohë, me aktivet dhe detyrimet në një pamje të vetme",
+                "Raporte për të ardhurat, shpenzimet dhe kategoritë, për çdo interval datash",
+                "Njoftime kur një buxhet tejkalohet ose një qëllim arrin një pikë kyçe",
+                "Import CSV për të nisur nga të dhënat që keni, eksport CSV për t'i marrë me vete kurdo",
+                "Kategori që i emërtoni vetë dhe u zgjidhni ikonat, jo një listë e paracaktuar",
+                "Plotësisht në shqip dhe anglisht, plus llogaritës falas për pagën, të vetëpunësuarit dhe kredinë",
+                "Një monedhë e vetme, e zgjedhur gjatë regjistrimit dhe e ndryshueshme në cilësime",
+                "Shumat enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju"
+          ]
     }
     </script>
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "A është falas gjurmuesi i financave personale?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Po, gjurmuesi i financave personale është falas për t'u filluar, pa nevojë për kartë krediti. Plani falas përfshin gjurmimin e shpenzimeve dhe të ardhurave, menaxhimin e buxhetit dhe qëllimet financiare. Plani premium zhbllokon veçori të avancuara si : parashikimin e fluksit të parave dhe rezultatin e shëndetit financiar."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Çfarë veçorish përfshin ky aplikacion financiar?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Aplikacioni përfshin gjurmimin e të ardhurave dhe shpenzimeve, menaxhimin e buxhetit mujor, transaksionet periodike automatike, qëllimet e kursimeve, parashikimin e fluksit të parasë, rezultatin e shëndetit financiar, krahasimet e shpenzimeve sipas kategorisë, gjurmimin e pasurisë neto, mbështetjen shumë-valutore dhe raportet financiare."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "A mbështet transaksionet periodike?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Po. Mund të konfiguroni transaksione periodike ditore, javore, mujore ose vjetore. Ato shtohen automatikisht në llogarinë tuaj në datën e caktuar, kështu që nuk harroni kurrë shpenzime si qiraja, abonimet ose rroga."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Si mund të filloj të përdor gjurmuesin e buxhetit?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Krijoni një llogari falas te personal-finances.app/register - pa nevojë për kartë krediti. Magjistari i konfigurimit fillestar ju udhëzon të shtoni transaksionet e para, të konfiguroni kategoritë dhe të krijoni një buxhet mujor brenda 5 minutave."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Çfarë është rezultati i shëndetit financiar?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Rezultati i shëndetit financiar është një vlerësim nga 0 deri 100 i llogaritur nga norma e kursimit, respektimi i buxhetit, diversiteti i shpenzimeve dhe progresi i qëllimeve. Ju jep një pamje të menjëhershme të menaxhimit të parasë dhe thekson fushat për përmirësim."
-          }
-        }
-      ]
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+                {
+                      "@type": "Question",
+                      "name": "A është vërtet falas?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Po. Plani falas nuk kërkon kartë krediti dhe nuk ka afat kohor: 30 transaksione në muaj, 10 buxhete, 10 qëllime. Premium shton transaksione të pakufizuara, parashikimin e fluksit dhe rezultatin e krahasimet e plota."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Cilat gjuhë dhe monedha mbështeten?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Aplikacioni është i përkthyer plotësisht në anglisht dhe shqip. Zgjidhni një monedhë gjatë regjistrimit dhe mund ta ndryshoni më vonë në cilësime, dhe çdo ekran e përdor atë. Ka gjithashtu llogaritës falas për pagën, të vetëpunësuarit dhe kredinë, bazuar në rregullat shqiptare."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Sa kohë duhet që të më thotë diçka të dobishme?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Paneli dhe buxhetet funksionojnë që nga regjistrimet e para. Rezultati dhe krahasimet ju krahasojnë me të kaluarën tuaj, ndaj mprehen me çdo muaj historiku. Importimi i një CSV nga banka jua jep këtë historik menjëherë."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "A mund t'i shohë stafi juaj shumat e mia?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Jo. Shumat, buxhetet, qëllimet dhe pasuria neto enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju. Te serveri mbërrin tekst i enkriptuar, ndaj as ne nuk mund ta lexojmë. Nëse humbni çelësin dhe kodin e rikuperimit, as ne nuk mund t'i rikthejmë."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "Përdor tashmë një tabelë. Pse të ndryshoj?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Importojeni si CSV dhe mbani historikun. Ndryshimi është se ky e mban llogarinë pa mirëmbajtur formula, ju paralajmëron në mes të muajit kur një buxhet po tejkalohet dhe ju thotë si krahasohet ky muaj me normalen tuaj."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "A është kjo këshillë financiare?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Jo. Rezultati, krahasimet dhe parashikimet thjesht ju përshkruajnë të dhënat tuaja. Nuk janë këshilla profesionale financiare, ligjore ose tatimore."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "A funksionon në telefonin tim?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Po, në çdo shfletues modern, në telefon, tablet ose kompjuter. Nuk ka aplikacion nativ për të instaluar."
+                      }
+                },
+                {
+                      "@type": "Question",
+                      "name": "A mund ta anuloj një abonim me pagesë?",
+                      "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Po, nga cilësimet e llogarisë. Mbani akses të plotë deri në fund të periudhës së faturimit dhe të dhënat mbeten të eksportueshme, paguani ose jo."
+                      }
+                }
+          ]
     }
     </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Fallback for crawlers that do not execute JavaScript. Mirrors the
+         rendered hero exactly: same H1, same subtitle, same primary action. -->
     <noscript>
-      <h1>Gjurmues i Financave Personale - Merrni Kontrollin e Financave Tuaja</h1>
-      <p>Ndiqni të ardhurat dhe shpenzimet tuaja, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë. Falas për të filluar - nuk kërkohet kartë krediti.</p>
-      <p>Veçori: gjurmimi i shpenzimeve, menaxhimi i buxhetit, transaksionet periodike, qëllimet financiare, mbështetja shumë-valutore, parashikimi i fluksit të parasë, rezultati i shëndetit financiar.</p>
-      <a href="/register">Filloni falas</a> ose <a href="/login">identifikohuni</a>.
+      <h1>Dini ku jeni, muaj pas muaji</h1>
+      <p>Aplikacioni i bankës ju tregon javën e shkuar. Tabela mban mend vetëm atë që shkruani vetë. Ky ju tregon ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj.</p>
+      <ul>
+        <li>Transaksionet e përsëritura regjistrohen automatikisht, çdo ditë, javë, muaj ose vit, me mundësi pezullimi dhe rifillimi</li>
+        <li>Qëllime kursimi që i ushqeni me kontribute dhe u ndiqni ecurinë</li>
+        <li>Pasuria neto në kohë, me aktivet dhe detyrimet në një pamje të vetme</li>
+        <li>Raporte për të ardhurat, shpenzimet dhe kategoritë, për çdo interval datash</li>
+        <li>Njoftime kur një buxhet tejkalohet ose një qëllim arrin një pikë kyçe</li>
+        <li>Import CSV për të nisur nga të dhënat që keni, eksport CSV për t'i marrë me vete kurdo</li>
+        <li>Kategori që i emërtoni vetë dhe u zgjidhni ikonat, jo një listë e paracaktuar</li>
+        <li>Plotësisht në shqip dhe anglisht, plus llogaritës falas për pagën, të vetëpunësuarit dhe kredinë</li>
+        <li>Një monedhë e vetme, e zgjedhur gjatë regjistrimit dhe e ndryshueshme në cilësime</li>
+        <li>Shumat enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju</li>
+      </ul>
+      <a href="/register">Filloni falas</a> &middot;
+      <a href="/pricing">Shihni çmimet</a>
     </noscript>
     <script type="module" src="/src/main.jsx"></script>
     <script data-goatcounter="https://marindulja.goatcounter.com/count"
-            async src="//gc.zgo.at/count.js"></script>
+            defer src="//gc.zgo.at/count.js"></script>
   </body>
 </html>

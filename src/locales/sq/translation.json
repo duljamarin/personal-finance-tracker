@@ -8,8 +8,8 @@
     "shortName": "Financat e Mia"
   },
   "meta": {
-    "title": "Gjurmues Financash - Buxhet, Shpenzime & Qëllime",
-    "description": "Gjurmues i financave personale për Shqipëri. Ndiqni shpenzimet, vendosni buxhete mujore, menaxhoni qëllimet e kursimeve dhe parashikoni fluksin e parasë."
+    "title": "Gjurmues Financash Personale, Falas për të Filluar",
+    "description": "Aplikacion financash personale në shqip. Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar."
   },
   "theme": {
     "light": "Modalitet i çelët",
@@ -143,6 +143,7 @@
     "dateLabel": "Data",
     "dateError": "Kjo fushë është e detyrueshme.",
     "tagsLabel": "Etiketat",
+    "isRecurring": "Përsëritës",
     "tagsOptional": "(opsionale)",
     "tagsPlaceholder": "p.sh. ushqim, transporti, punë",
     "typeError": "Kjo fushë është e detyrueshme.",
@@ -693,361 +694,224 @@
   },
   "landing": {
     "hero": {
-      "titleLine1": "Merrni Kontrollin e",
-      "titleAccent": "Financave Tuaja",
-      "title": "Merrni Kontrollin e Financave Tuaja Personale",
-      "subtitle": "Ndiqni shpenzimet, vendosni buxhete dhe arrini qëllimet tuaja financiare - të gjitha në një vend të thjeshtë dhe të qartë.",
-      "getStarted": "Filloni Falas",
-      "signIn": "Identifikohu",
-      "badge": "Filloni Falas · Pa kartë krediti",
-      "trustNote": "✓ Plan falas përgjithmonë  ·  ✓ 30 transaksione/muaj  ·  ✓ Përmirësoni kurdo",
-      "trust1": "Plan falas përgjithmonë",
-      "trust2": "Pa kartë krediti",
-      "trust3": "Anuloni kurdo"
-    },
-    "preview": {
-      "monthlyOverview": "Përmbledhje sipas Muajve",
-      "categoryBreakdown": "Ndarje sipas Kategorisë"
-    },
-    "stats": {
-      "freeTransactions": "Transaksione Falas / Muaj",
-      "features": "Funksionalitete të Integruara",
-      "currencies": "Valuta të Mbështetura",
-      "cloudSync": "Sinkronizim Cloud",
-      "free": "Falas për të Filluar"
-    },
-    "howItWorks": {
-      "title": "Filloni Brenda Pak Minutave",
-      "subtitle": "Tre hapa të thjeshtë drejt qartësisë financiare",
-      "step1": {
-        "title": "Krijoni Llogarinë",
-        "desc": "Regjistrohuni në sekonda vetëm me emailin tuaj. Pa kartë krediti."
-      },
-      "step2": {
-        "title": "Ndiqni Paratë Tuaja",
-        "desc": "Regjistroni të ardhurat dhe shpenzimet, vendosni buxhete dhe krijoni transaksione të përsëritura."
-      },
-      "step3": {
-        "title": "Kuptoni Financat Tuaja",
-        "desc": "Shikoni grafikë, rezultatin e shëndetit financiar, krahasime dhe progresin drejt qëllimeve."
-      }
-    },
-    "showcase": {
-      "title": "Qartësia Takon Thjeshtësinë",
-      "desc": "Shikoni pamjen e plotë financiare me grafikë intuitivë dhe ndjekje në kohë reale. Merrni vendime më të mira me të dhëna që i kuptoni lehtë.",
-      "showcase1": "Analiza e shpenzimeve sipas kategorisë në kohë reale",
-      "showcase2": "Ndjekja e buxhetit mujor me parashikime",
-      "showcase3": "Rezultat i shëndetit financiar me këshilla praktike",
-      "imageAlt": "Panel analitik financiar"
-    },
-    "mockup": {
-      "dashboard": "Paneli",
-      "balance": "Bilanci",
-      "income": "Të ardhura",
-      "expenses": "Shpenzime",
-      "budget": "Buxheti Mujor",
-      "recent": "Të fundit",
-      "coffee": "Kafe",
-      "salary": "Paga",
-      "rent": "Qira"
+      "titleLine1": "Dini ku jeni,",
+      "titleAccent": "muaj pas muaji",
+      "title": "Dini ku jeni, muaj pas muaji",
+      "subtitle": "Aplikacioni i bankës ju tregon javën e shkuar. Tabela mban mend vetëm atë që shkruani vetë. Ky ju tregon ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj.",
+      "getStarted": "Filloni falas",
+      "signIn": "Identifikohuni",
+      "trust1": "Falas për të filluar, pa kartë",
+      "trust2": "Shumat enkriptohen në pajisjen tuaj",
+      "trust3": "Eksportoni ose fshini kurdo"
     },
     "features": {
-      "eyebrow": "Gjithçka që ju nevojitet",
-      "heading": "Shikoni ku shkojnë vërtet paratë tuaja",
-      "title": "Gjithçka që Ju Nevojitet për të Menaxhuar Paratë Tuaja",
-      "tracking": {
-        "title": "Gjurmim i Mençur",
-        "desc": "Ndiqni lehtësisht të gjitha të ardhurat dhe shpenzimet tuaja me kategorizim të detajuar"
-      },
-      "charts": {
-        "title": "Njohuri Vizuale",
-        "desc": "Grafikë që ju ndihmojnë të kuptoni zakonet tuaja të shpenzimeve dhe të merrni vendime të informuara"
-      },
-      "categories": {
-        "title": "Kategori të Personalizuara",
-        "desc": "Krijoni dhe menaxhoni kategoritë që përputhen me nevojat tuaja unike financiare"
-      },
-      "multicurrency": {
-        "title": "Mbështetje për disa valuta",
-        "desc": "Mbështetje për disa valuta me gjurmim automatik të konvertimit"
-      },
-      "recurring": {
-        "title": "Transaksione Të Përsëritura",
-        "desc": "Automatizoni lehtësisht transaksionet ditore, javore, mujore ose vjetore"
-      },
-      "goals": {
-        "title": "Objektiva Financiare",
-        "desc": "Vendosni qëllime financiare dhe ndiqni progresin nëpërmjet kontributeve dhe etapave"
-      },
-      "budgets": {
-        "title": "Buxhete Mujore",
-        "desc": "Vendosni limitet e shpenzimeve sipas kategorisë dhe merrni parashikime për çdo muaj"
-      },
-      "healthscore": {
-        "title": "Rezultat i Shëndetit Financiar",
-        "desc": "Merrni njohuri për mirëqenien tuaj financiare mujore"
-      },
-      "benchmarks": {
-        "title": "Njohuri për Shpenzimet",
-        "desc": "Shikoni se si shpenzimet tuaja aktuale krahasohen me modelet tuaja të zakonshme për çdo kategori"
-      },
-      "reports": {
-        "title": "Raporte Financiare",
-        "desc": "Gjeneroni raporte të detajuara të të ardhurave, shpenzimeve dhe kategorive me filtra fleksibël sipas datës"
-      },
-      "notifications": {
-        "title": "Sistem Njoftimesh",
-        "desc": "Qëndroni të informuar me alarme për kapërcimin e buxhetit, arritjet e qëllimeve dhe kujtime për transaksionet e përsëritura"
-      },
-      "networth": {
-        "title": "Ndjekja e Pasurisë Neto",
-        "desc": "Monitoroni aktivet, detyrimet dhe pasurinë tuaj neto në kohë me grafikë të trendit historik"
-      },
-      "cashflow": {
-        "title": "Parashikim i Rrjedhës së Parasë",
-        "desc": "Projektoni bilancin tuaj të ardhshëm bazuar në të ardhurat, shpenzimet dhe transaksionet e planifikuara"
-      }
-    },
-    "viz": {
-      "goal": "Qëllimi",
-      "goalName": "Fondi i Emergjencës",
-      "ytdSavings": "Kursime Vjetore",
-      "scoreGood": "Mirë",
-      "thisMonth": "Këtë muaj",
-      "avg3Month": "Mesatarja 3-mujore",
-      "lowerThanAvg": "më pak se mesatarja",
-      "recurringThisMonth": "të përsëritura këtë muaj",
-      "nextDays": "30 ditët e ardhshme",
-      "reportTypes": "Të Ardhura · Shpenzime · Kategori",
-      "alertTransport": "Buxheti i transportit në 92%",
-      "alertGoal": "Fondi i Emergjencës arriti 73%",
-      "alertRent": "Qiraja u pagua sot"
-    },
-    "cta": {
-      "title": "Gati të Merrni Kontrollin?",
-      "subtitle": "Bashkohuni me përdorues të tjerë që tashmë po menaxhojnë financat e tyre më mirë",
-      "button": "Krijoni Llogarinë Tuaj Falas",
-      "seePricing": "Shihni çmimet",
-      "statTxUnit": "/në muaj",
-      "statTxLabel": "Transaksione",
-      "statBudgetUnit": "buxhete",
-      "statBudgetLabel": "Në muaj",
-      "statGoalUnit": "qëllime",
-      "statGoalLabel": "Njëkohësisht"
-    },
-    "months": {
-      "jan": "Jan",
-      "feb": "Shk",
-      "mar": "Mar",
-      "apr": "Pri"
-    },
-    "categories": {
-      "food": "Ushqim",
-      "transport": "Transport",
-      "entertainment": "Argëtim",
-      "utilities": "Shërbime"
-    },
-    "freePlan": {
-      "badge": "Falas përgjithmonë",
-      "title": "I fuqishëm. Falas. Pa surpriza.",
-      "subtitle": "Ndiqni financat tuaja pa bllokime. Përmirësoni vetëm kur keni nevojë për më shumë.",
-      "transactions": "Transaksione / muaj",
-      "budgets": "Buxhete mujore",
-      "goals": "Qëllime financiare",
-      "charts": "Grafikë & analitikë",
-      "trust": {
-        "privacy": "Privatësi e parë - të dhënat tuaja, kontrolli juaj",
-        "secure": "Të enkriptuara dhe të sigurta",
-        "noAdvice": "Vetëm analitikë, jo këshilla financiare"
-      }
-    },
-    "demo": {
-      "yearToDate": "2025 - Nga fillimi i vitit",
-      "onTrack": "Në rrugë të mbarë",
-      "highSpend": "Shpenzim i lartë",
-      "income": "Të ardhura",
-      "expenses": "Shpenzime",
-      "saved": "Kursyer",
-      "scoreGood": "Mirë",
-      "savings": "Kursime",
-      "budget": "Buxheti",
-      "goals": "Qëllime",
-      "totalEur": "Totali (EUR)",
-      "budgetItems": {
-        "food": "Ushqim dhe Restorante",
-        "housing": "Strehim dhe Qira",
-        "entertainment": "Argëtim",
-        "transport": "Transport"
-      }
+      "eyebrow": "Çfarë merrni",
+      "heading": "Krahasuar me historikun tuaj, jo me një mesatare të përgjithshme"
     },
     "heroFeatures": {
-      "tracking": {
-        "eyebrow": "Gjurmim i Mençur",
-        "title": "Shikoni ku shkojnë paratë tuaja",
-        "desc": "Regjistroni të ardhurat dhe shpenzimet sipas kategorisë. Merrni pasqyrën mujore - pa surpriza në fund të muajit."
+      "healthscore": {
+        "eyebrow": "Rezultati i shëndetit financiar",
+        "title": "Një numër që tregon nëse ky muaj është më i mirë",
+        "desc": "Një rezultat nga 0 në 100, i ndërtuar mbi normën tuaj të kursimit, sa afër qëndruat me buxhetet, sa të qëndrueshme ishin shpenzimet dhe sa muaj i mbyllët me plus. Lëviz kur lëvizin zakonet tuaja, kështu që dalloni përmirësimin e vërtetë nga një javë e mirë."
+      },
+      "benchmarks": {
+        "eyebrow": "Krahasime të mençura",
+        "title": "Njihni çfarë është normale për ju dhe kur e tejkaloni",
+        "desc": "Çdo kategori matet me mesataren tuaj të gjashtë muajve të fundit, jo me të huajt. Kur ushqimet shënohen si të larta, do të thotë të larta për ju, dhe ky është i vetmi krahasim që duhet të ndryshojë vendimin tuaj të radhës."
       },
       "budgets": {
-        "eyebrow": "Buxhete Mujore",
-        "title": "Vendosni limite. Dini kur jeni afër.",
-        "desc": "Caktoni limite shpenzimesh sipas kategorisë. Shikoni progresin dhe parashikimet në kohë reale para se të jetë vonë."
+        "eyebrow": "Buxhete mujore",
+        "title": "Kuptoni se po e teproni sa jeni ende në kohë",
+        "desc": "Vendosni një limit për çdo kategori dhe shikoni si mbushet në kohë reale, me një parashikim se ku mbyllet muaji nëse vazhdoni me këtë ritëm. Kopjoni muajin e kaluar për t'i vendosur të gjitha njëherësh."
       },
-      "healthscore": {
-        "eyebrow": "Rezultat i Shëndetit Financiar",
-        "title": "Një numër që tregon të vërtetën",
-        "desc": "Një vlerësim 0–100 bazuar në normën e kursimit, respektimin e buxhetit dhe progresin e qëllimeve. Tregon çfarë duhet përmirësuar."
-      },
-      "multicurrency": {
-        "eyebrow": "Shumë Valuta",
-        "title": "Regjistroni në çdo valutë, totale në një",
-        "desc": "Regjistroni transaksione në USD, EUR, ALL ose çdo valutë. Gjithçka normalizohet automatikisht në valutën tuaj bazë."
+      "tracking": {
+        "eyebrow": "Paneli dhe kategoritë",
+        "title": "Një vit i parave tuaja në një ekran",
+        "desc": "Regjistroni të ardhurat dhe shpenzimet sipas kategorisë dhe shihni çdo muaj krah për krah, ku një muaj i keq bie në sy menjëherë përbri njëmbëdhjetë të tjerëve. Transaksionet e përsëritura regjistrohen vetë, kështu qiraja dhe paga nuk mbeten kurrë harresë."
       }
     },
     "secondaryFeatures": {
-      "title": "Gjithçka tjetër e përfshirë",
+      "title": "Përfshihet gjithashtu",
       "items": {
-        "recurring": "Transaksione të përsëritura - ditore, javore, mujore, vjetore",
-        "goals": "Qëllime financiare me gjurmim kontributesh",
-        "cashflow": "Shiko ku do të jetë bilanci yt bazuar në pagesat fikse",
-        "networth": "Shiko pasurinë tënde neto - aktivet dhe borxhet në një vend",
-        "benchmarks": "Krahaso shpenzimet me muajt e kaluar",
-        "reports": "Raporte të detajuara",
-        "notifications": "Alarme për tejkalimin e buxhetit dhe arritjet e qëllimeve",
-        "csvImport": "Import dhe eksport CSV",
-        "categories": "Kategori të personalizuara me ikona",
-        "encryption": "Enkriptim nga skaji në skaj, çelësi mbahet vetëm nga ju"
+        "recurring": "Transaksionet e përsëritura regjistrohen automatikisht, çdo ditë, javë, muaj ose vit, me mundësi pezullimi dhe rifillimi",
+        "goals": "Qëllime kursimi që i ushqeni me kontribute dhe u ndiqni ecurinë",
+        "networth": "Pasuria neto në kohë, me aktivet dhe detyrimet në një pamje të vetme",
+        "reports": "Raporte për të ardhurat, shpenzimet dhe kategoritë, për çdo interval datash",
+        "notifications": "Njoftime kur një buxhet tejkalohet ose një qëllim arrin një pikë kyçe",
+        "csvImport": "Import CSV për të nisur nga të dhënat që keni, eksport CSV për t'i marrë me vete kurdo",
+        "categories": "Kategori që i emërtoni vetë dhe u zgjidhni ikonat, jo një listë e paracaktuar",
+        "albanian": "Plotësisht në shqip dhe anglisht, plus llogaritës falas për pagën, të vetëpunësuarit dhe kredinë",
+        "currency": "Një monedhë e vetme, e zgjedhur gjatë regjistrimit dhe e ndryshueshme në cilësime",
+        "encryption": "Shumat enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju"
+      }
+    },
+    "howItWorks": {
+      "title": "Si funksionon",
+      "subtitle": "Tre hapa deri te rezultati juaj i parë",
+      "step1": {
+        "title": "Krijoni një llogari",
+        "desc": "Vetëm email dhe një fjalëkalim. Pa kartë. Zgjidhni monedhën dhe gjuhën gjatë konfigurimit."
+      },
+      "step2": {
+        "title": "Sillni të dhënat tuaja",
+        "desc": "Shtoni transaksione, importoni një CSV nga banka dhe vendosni transaksione të përsëritura për qiranë dhe pagën, që gjërat e rregullta të regjistrohen vetë."
+      },
+      "step3": {
+        "title": "Shihni ku jeni",
+        "desc": "Paneli, rezultati dhe krahasimet mbushen menjëherë. Çdo muaj që shtoni e qartëson më mirë se çfarë është normale për ju."
       }
     },
     "privacy": {
       "eyebrow": "Të dhënat tuaja, rregullat tuaja",
-      "title": "Një aplikacion financiar që mund ta besoni",
-      "desc": "Të dhënat financiare janë të ndjeshme. Ja saktësisht çfarë bëjmë - dhe nuk bëjmë - me të dhënat tuaja.",
+      "title": "Një aplikacion financash që mund ta besoni vërtet",
+      "desc": "Të dhënat financiare personale janë të ndjeshme. Ja saktësisht çfarë ndodh me tuajat dhe çfarë nuk ndodh.",
       "items": {
         "ownership": {
-          "title": "Të dhënat janë tuajat",
-          "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të gjitha të dhënat zhduken - përgjithmonë, jo të arkivuara."
+          "title": "Ju i zotëroni të dhënat tuaja",
+          "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të dhënat zhduken përfundimisht, jo thjesht arkivohen."
         },
         "encryption": {
-          "title": "Enkriptim nga skaji në skaj që e kontrolloni ju",
-          "desc": "Aktivizoni enkriptimin dhe titujt e transaksioneve, etiketat, emrat e objektivave, shënimet dhe të dhënat e aseteve enkriptohen në pajisjen tuaj me një çelës që e mban vetëm ju. Ne ruajmë tekst të enkriptuar që nuk mund ta lexojmë, as ekipi ynë."
+          "title": "Enkriptuar para se të largohen nga pajisja juaj",
+          "desc": "Shumat, buxhetet, qëllimet, pasuria neto, titujt e transaksioneve, etiketat dhe shënimet enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju. Serveri ruan tekst që nuk mund ta lexojë."
         },
         "noSell": {
-          "title": "Nuk i shesim kurrë të dhënat tuaja",
-          "desc": "Të dhënat tuaja financiare nuk shiten, shkëmbehen apo ndahen me reklamues - asnjëherë. Ekzistojnë vetëm për të fuqizuar panelin tuaj."
+          "title": "Të dhënat tuaja nuk shiten kurrë",
+          "desc": "Nuk shiten, nuk tregtohen dhe nuk u jepen reklamuesve. Ekzistojnë vetëm për të fuqizuar panelin tuaj."
         },
         "noAdvice": {
-          "title": "Analitikë, jo këshilla financiare",
-          "desc": "Rezultati i shëndetit dhe krahasimet janë mjete informuese. Konsultohuni gjithmonë me një profesionist për vendime financiare."
+          "title": "Analiza, jo këshilla financiare",
+          "desc": "Rezultati dhe krahasimet thjesht ju përshkruajnë numrat tuaj. Për vendime me pasoja reale, flisni me një profesionist të kualifikuar."
         },
         "analytics": {
-          "title": "Analitikë që respekton privatësinë tuaj",
-          "desc": "Përdorim GoatCounter - pa cookies, pa të dhëna personale, pa skripte gjurmimi nga palë të treta."
+          "title": "Vetëm analiza që respektojnë privatësinë",
+          "desc": "Numërime faqesh pa cookie dhe pa gjurmim ndërmjet faqeve. Asnjë piksel reklamues në aplikacion."
         },
         "payments": {
-          "title": "Pagesat trajtohen nga Paddle",
-          "desc": "Ne kurrë nuk shohim apo ruajmë detajet e kartës suaj. Procesimi i pagesave kryhet plotësisht nga Paddle, procesor i çertifikuar PCI."
+          "title": "Detajet e kartës nuk mbërrijnë kurrë tek ne",
+          "desc": "Pagesat trajtohen nga Paddle. Numri i kartës shkon tek ata, kurrë tek ky aplikacion."
+        }
+      }
+    },
+    "dataPrivacy": {
+      "eyebrow": "Privatësia e të dhënave",
+      "title": "Askush nuk mund t'i lexojë numrat tuaj",
+      "desc": "Shumat, buxhetet, qëllimet dhe pasuria neto enkriptohen në pajisjen tuaj para se të largohen prej saj. Serveri ruan vetëm tekst të palexueshëm.",
+      "points": {
+        "device": {
+          "title": "Enkriptuar në pajisjen tuaj",
+          "desc": "Çelësi gjenerohet në pajisjen tuaj dhe nuk largohet kurrë prej saj. Serveri merr vetëm tekst të enkriptuar."
+        },
+        "noone": {
+          "title": "As ne nuk mund t'i shohim",
+          "desc": "Pa çelësin tuaj të dhënat janë të palexueshme, përfshirë për ne. Kjo nuk është premtim politikash, është matematikë."
+        },
+        "yours": {
+          "title": "Gjithmonë tuajat",
+          "desc": "Eksportoni gjithçka në CSV ose fshini të gjitha, kurdo. Pa pyetje, pa vonesa."
         }
       }
     },
     "pricingPreview": {
-      "eyebrow": "Çmime të thjeshta",
-      "title": "Falas për të filluar. Përditesoni abonimin kur të keni nevojë.",
+      "title": "Falas për të filluar. Përmirësoni kur ta tejkaloni.",
       "free": {
-        "label": "Plani falas - përgjithmonë",
+        "label": "Plani falas",
         "items": {
-          "tx": "30 transaksione / muaj",
+          "tx": "30 transaksione në muaj",
           "budgets": "10 buxhete mujore",
-          "goals": "10 objektiva aktive",
-          "categories": "Kategori të personalizuara & transaksione të përsëritura",
+          "goals": "10 qëllime aktive",
+          "categories": "Kategori të personalizuara dhe transaksione të përsëritura",
           "reports": "Raporte financiare",
-          "networth": "Ndjekja e pasurisë neto",
-          "healthscore": "Rezultat bazë i shëndetit & krahasime shpenzimesh"
+          "networth": "Gjurmimi i pasurisë neto",
+          "healthscore": "Rezultat bazë shëndeti dhe krahasime"
         }
       },
       "premium": {
-        "label": "Premium - hapni gjithçka",
+        "label": "Premium",
         "items": {
           "unlimited": "Transaksione të pakufizuara",
-          "cashflow": "Parashikim i rrjedhës së parasë",
-          "healthscore": "Rezultat i plotë i shëndetit me analiza të detajuara",
-          "benchmarks": "Krahasime të plota shpenzimesh sipas kategorisë",
-          "splits": "Ndarje transaksionesh sipas kategorive",
-          "notifications": "Njoftime inteligjente"
+          "cashflow": "Parashikimi i fluksit të parasë",
+          "healthscore": "Rezultat i plotë shëndeti me analiza të detajuara",
+          "benchmarks": "Krahasime të plota për çdo kategori",
+          "splits": "Ndani një transaksion në disa kategori",
+          "notifications": "Njoftime të mençura brenda aplikacionit"
         }
       },
-      "cta": "Shikoni çmimet e plota",
-      "trial": "7 ditë provë falas për planin premium"
+      "cta": "Shihni çmimet e plota",
+      "trial": "Premium nis me një provë falas, pa kartë për ta parë"
     },
     "founder": {
       "eyebrow": "Nga ndërtuesi",
-      "quote": "E ndërtova këtë aplikacion sepse u lodha nga menaxhimi i parave në fletëllogaritëse. Jo sepse janë keq - janë shumë mirë - por sepse doja diçka që do të më tregonte pamjen pa u dashur t'a ndërtoja vetë. Çdo funksion këtu ekziston sepse unë vetë kisha nevojë për të.",
+      "quote": "E ndërtova këtë sepse isha lodhur duke i menaxhuar paratë në tabela. Jo se tabelat janë të këqija, në fakt janë shumë të mira, por sepse doja diçka që thjesht të ma tregonte pamjen pa qenë nevoja ta pikturoja vetë fillimisht. Çdo funksion këtu ekziston sepse më duhej mua vetë.",
       "name": "Marin Dulja",
-      "role": "Ndërtues & zhvillues i vetëm"
-    },
-    "tools": {
-      "eyebrow": "Mjete falas",
-      "title": "Mjete falas për Shqipërinë",
-      "desc": "Kalkulatorë të saktë sipas ligjit shqiptar: paga neto dhe bruto, dhe sa të mbetet si i vetëpunësuar. Pa regjistrim dhe pa kufizim.",
-      "cta": "Hap kalkulatorin e pagës"
+      "role": "Ndërtues dhe zhvillues i vetëm"
     },
     "faq": {
       "eyebrow": "Pyetje",
       "title": "Përgjigje të ndershme",
       "items": {
         "free": {
-          "q": "A është me të vërtetë falas?",
-          "a": "Po. Plani falas është vërtet falas - pa kartë krediti, pa limit kohor. Merrni 30 transaksione/muaj, 10 buxhete dhe 10 objektiva. Plani me pagesë zhbllokon transaksione të pakufizuara dhe funksione premium."
+          "q": "A është vërtet falas?",
+          "a": "Po. Plani falas nuk kërkon kartë krediti dhe nuk ka afat kohor: 30 transaksione në muaj, 10 buxhete, 10 qëllime. Premium shton transaksione të pakufizuara, parashikimin e fluksit dhe rezultatin e krahasimet e plota."
         },
-        "safe": {
-          "q": "A janë të sigurta të dhënat e mia financiare?",
-          "a": "Të dhënat tuaja janë të enkriptuara në ruajtje dhe transit, ruhen në bazë të dhënash PostgreSQL dhe nuk shiten kurrë palëve të treta. Mund t'i eksportoni ose fshini gjithçka kurdo."
+        "albanian": {
+          "q": "Cilat gjuhë dhe monedha mbështeten?",
+          "a": "Aplikacioni është i përkthyer plotësisht në anglisht dhe shqip. Zgjidhni një monedhë gjatë regjistrimit dhe mund ta ndryshoni më vonë në cilësime, dhe çdo ekran e përdor atë. Ka gjithashtu llogaritës falas për pagën, të vetëpunësuarit dhe kredinë, bazuar në rregullat shqiptare."
         },
-        "currencies": {
-          "q": "Cilat valuta mbështeten?",
-          "a": "Mbështeten 8 valuta: EUR, USD, GBP, CHF, JPY, CAD, AUD dhe ALL (Lekë Shqiptare). EUR është valuta bazë - të gjitha totalet normalizohen në EUR. Kurset e këmbimit për valutat e tjera merren automatikisht kur regjistroni një transaksion."
-        },
-        "cancel": {
-          "q": "Mund të anuloj një abonim me pagesë?",
-          "a": "Po, anuloni kurdo nga cilësimet e llogarisë. Mbani akses të plotë deri në fund të periudhës së faturimit. Ka garanci kthimi parash 14-ditore për pagesën e parë."
-        },
-        "advice": {
-          "q": "A është kjo këshillë financiare?",
-          "a": "Jo. Rezultati i shëndetit, krahasimet dhe parashikimet janë mjete informuese bazuar në të dhënat tuaja. Nuk janë këshilla profesionale financiare, ligjore ose tatimore."
-        },
-        "multidevice": {
-          "q": "A funksionon në celular?",
-          "a": "Po, aplikacioni është plotësisht responsive dhe funksionon në çdo shfletues modern - celular, tablet ose desktop. Nuk ka aplikacion nativ - funksionon në shfletues."
+        "howLong": {
+          "q": "Sa kohë duhet që të më thotë diçka të dobishme?",
+          "a": "Paneli dhe buxhetet funksionojnë që nga regjistrimet e para. Rezultati dhe krahasimet ju krahasojnë me të kaluarën tuaj, ndaj mprehen me çdo muaj historiku. Importimi i një CSV nga banka jua jep këtë historik menjëherë."
         },
         "encrypted": {
           "q": "A mund t'i shohë stafi juaj shumat e mia?",
-          "a": "Jo. Shumat, buxhetet, objektivat dhe pasuria neto enkriptohen në pajisjen tënde me një çelës që e mban vetëm ti. Te serveri mbërrin tekst i enkriptuar, ndaj as ne nuk mund ta lexojmë. Nëse humbet çelësin dhe kodin e rikuperimit, as ne nuk mund t'i rikthejmë."
+          "a": "Jo. Shumat, buxhetet, qëllimet dhe pasuria neto enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju. Te serveri mbërrin tekst i enkriptuar, ndaj as ne nuk mund ta lexojmë. Nëse humbni çelësin dhe kodin e rikuperimit, as ne nuk mund t'i rikthejmë."
+        },
+        "switch": {
+          "q": "Përdor tashmë një tabelë. Pse të ndryshoj?",
+          "a": "Importojeni si CSV dhe mbani historikun. Ndryshimi është se ky e mban llogarinë pa mirëmbajtur formula, ju paralajmëron në mes të muajit kur një buxhet po tejkalohet dhe ju thotë si krahasohet ky muaj me normalen tuaj."
+        },
+        "advice": {
+          "q": "A është kjo këshillë financiare?",
+          "a": "Jo. Rezultati, krahasimet dhe parashikimet thjesht ju përshkruajnë të dhënat tuaja. Nuk janë këshilla profesionale financiare, ligjore ose tatimore."
+        },
+        "multidevice": {
+          "q": "A funksionon në telefonin tim?",
+          "a": "Po, në çdo shfletues modern, në telefon, tablet ose kompjuter. Nuk ka aplikacion nativ për të instaluar."
+        },
+        "cancel": {
+          "q": "A mund ta anuloj një abonim me pagesë?",
+          "a": "Po, nga cilësimet e llogarisë. Mbani akses të plotë deri në fund të periudhës së faturimit dhe të dhënat mbeten të eksportueshme, paguani ose jo."
         }
       }
     },
-    "finalCta": {
-      "eyebrow": "Gati për të filluar",
-      "title": "Financat tuaja, më në fund të qarta.",
-      "desc": "Pa fletëllogaritëse. Pa stres. Vetëm pamje e qetë dhe e ndershme e parave tuaja.",
-      "button": "Krijoni llogari falas",
-      "secondary": "Shihni çmimet",
-      "trustLine": "Plan falas përgjithmonë · Pa kartë krediti · Anuloni planin me pagesë kurdo"
+    "tools": {
+      "eyebrow": "Mjete falas",
+      "title": "Llogaritës falas për Shqipërinë",
+      "desc": "Ndërtuar mbi rregullat shqiptare: paga neto dhe bruto, sa ju mbetet si i vetëpunësuar dhe këstet e kredisë. Pa regjistrim, pa kufij."
     },
-    "dataPrivacy": {
-      "eyebrow": "Privatësia e të dhënave",
-      "title": "Shifrat e tua nuk i lexon dot askush",
-      "desc": "Shumat e transaksioneve, buxhetet, objektivat dhe pasuria neto enkriptohen në pajisjen tënde përpara se të nisen. Serveri ruan vetëm tekst të palexueshëm.",
-      "points": {
-        "device": {
-          "title": "Enkriptohen te ti, jo te ne",
-          "desc": "Çelësi krijohet në pajisjen tënde dhe nuk largohet kurrë prej saj. Ne marrim vetëm ciphertext."
-        },
-        "noone": {
-          "title": "As ne nuk i shohim",
-          "desc": "Pa çelësin tënd, të dhënat janë të palexueshme edhe për ekipin tonë. Nuk është premtim politike, është matematikë."
-        },
-        "yours": {
-          "title": "Gjithmonë të tuat",
-          "desc": "Eksportoji në CSV ose fshiji të gjitha kurdo. Pa pyetje, pa vonesa."
-        }
+    "finalCta": {
+      "title": "Dini ku jeni",
+      "desc": "Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar, pa kartë.",
+      "button": "Filloni falas",
+      "secondary": "Shihni çmimet",
+      "trustLine": "Falas për të filluar · Pa kartë krediti · Eksportoni ose fshini kurdo"
+    },
+    "demo": {
+      "yearToDate": "12 muajt tuaj të fundit",
+      "onTrack": "Brenda normales tuaj",
+      "highSpend": "Mbi normalen tuaj",
+      "income": "Të ardhura",
+      "expenses": "Shpenzime",
+      "saved": "Kursyer",
+      "scoreGood": "Në përmirësim",
+      "savings": "Norma e kursimit",
+      "budget": "Buxhete të respektuara",
+      "goals": "Qëllime në rrugë të mbarë",
+      "vsLastMonth": "kundrejt mesatares tuaj 6-mujore",
+      "budgetItems": {
+        "food": "Ushqim dhe restorante",
+        "housing": "Banesë dhe qira",
+        "entertainment": "Argëtim",
+        "transport": "Transport"
       }
     }
   },

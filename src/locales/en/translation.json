@@ -8,8 +8,8 @@
     "shortName": "My Finances"
   },
   "meta": {
-    "title": "Personal Finance Tracker - Budget, Expenses & Goals",
-    "description": "Personal finance tracker to manage income and expenses, set monthly budgets, track savings goals, and forecast cash flow. Expense tracker with recurring transactions and financial health score."
+    "title": "Personal Finance Tracker, Free to Start",
+    "description": "Personal finance tracker that shows where you stand this month and whether you are improving, judged against your own history. Free to start, no credit card."
   },
   "theme": {
     "light": "Light Mode",
@@ -143,6 +143,7 @@
     "dateLabel": "Date",
     "dateError": "This field is required.",
     "tagsLabel": "Tags",
+    "isRecurring": "Recurring",
     "tagsOptional": "(optional)",
     "tagsPlaceholder": "e.g. groceries, food, work",
     "typeError": "This field is required.",
@@ -693,301 +694,156 @@
   },
   "landing": {
     "hero": {
-      "titleLine1": "Take Control of Your",
-      "titleAccent": "Finances",
-      "title": "Take Control of Your Personal Finances",
-      "subtitle": "Track spending, set budgets, and reach your financial goals - all in one beautifully simple dashboard.",
-      "getStarted": "Get Started Free",
-      "signIn": "Sign In",
-      "badge": "Free to start · No credit card required",
-      "trustNote": "✓ Free forever plan  ·  ✓ 30 transactions/month  ·  ✓ Upgrade anytime",
-      "trust1": "Free forever plan",
-      "trust2": "No credit card required",
-      "trust3": "Cancel anytime"
-    },
-    "preview": {
-      "monthlyOverview": "Monthly Overview",
-      "categoryBreakdown": "Category Breakdown"
-    },
-    "stats": {
-      "freeTransactions": "Free Transactions / Month (free plan)",
-      "features": "Built-in Features",
-      "currencies": "Currencies Supported",
-      "cloudSync": "Cloud Sync",
-      "free": "Free to Start"
-    },
-    "howItWorks": {
-      "title": "Get Started in Minutes",
-      "subtitle": "Three simple steps to financial clarity",
-      "step1": {
-        "title": "Create Your Account",
-        "desc": "Sign up in seconds with just your email. No credit card needed."
-      },
-      "step2": {
-        "title": "Track Your Money",
-        "desc": "Log income and expenses, set budgets, and create recurring entries."
-      },
-      "step3": {
-        "title": "See Clear Insights",
-        "desc": "Get charts, health scores, benchmarks, and progress toward your goals."
-      }
-    },
-    "showcase": {
-      "title": "Clarity Meets Simplicity",
-      "desc": "See your complete financial picture with intuitive charts and real-time tracking. Make smarter decisions with data you can actually understand.",
-      "showcase1": "Real-time spending breakdowns by category",
-      "showcase2": "Monthly budget tracking with forecasts",
-      "showcase3": "Financial health score with actionable tips",
-      "imageAlt": "Financial analytics dashboard"
-    },
-    "mockup": {
-      "dashboard": "Dashboard",
-      "balance": "Balance",
-      "income": "Income",
-      "expenses": "Expenses",
-      "budget": "Monthly Budget",
-      "recent": "Recent",
-      "coffee": "Coffee",
-      "salary": "Salary",
-      "rent": "Rent"
+      "titleLine1": "Know where you stand,",
+      "titleAccent": "month after month",
+      "title": "Know where you stand, month after month",
+      "subtitle": "Your bank app shows last week. A spreadsheet only remembers what you type. This tells you where this month stands and whether you are improving, judged against your own history.",
+      "getStarted": "Start free",
+      "signIn": "Sign in",
+      "trust1": "Free to start, no card",
+      "trust2": "Amounts encrypted on your device",
+      "trust3": "Export or delete anytime"
     },
     "features": {
-      "eyebrow": "Everything you need",
-      "heading": "See where your money actually goes",
-      "title": "Everything You Need to Manage Your Money",
-      "tracking": {
-        "title": "Smart Tracking",
-        "desc": "Easily track all your income and expenses with detailed categorization"
-      },
-      "charts": {
-        "title": "Visual Insights",
-        "desc": "Charts and graphs that help you understand your spending habits and make informed decisions"
-      },
-      "categories": {
-        "title": "Custom Categories",
-        "desc": "Create and manage categories that fit your unique financial needs"
-      },
-      "multicurrency": {
-        "title": "Multi-Currency",
-        "desc": "Support for multiple currencies with automatic conversion tracking"
-      },
-      "recurring": {
-        "title": "Recurring Transactions",
-        "desc": "Automate routine income and expenses on daily, weekly, monthly, or yearly schedules"
-      },
-      "goals": {
-        "title": "Financial Goals",
-        "desc": "Set savings, debt payoff, investment, and purchase goals - track progress with contributions"
-      },
-      "budgets": {
-        "title": "Monthly Budgets",
-        "desc": "Set spending limits per category and get end-of-month forecasts to stay on track"
-      },
-      "healthscore": {
-        "title": "Health Score",
-        "desc": "Get an overall financial wellness score with actionable insights based on your spending"
-      },
-      "benchmarks": {
-        "title": "Spending Benchmarks",
-        "desc": "See how your current spending compares to your usual patterns for each category"
-      },
-      "reports": {
-        "title": "Financial Reports",
-        "desc": "Generate detailed income, expense, and category reports with flexible date-range filters"
-      },
-      "notifications": {
-        "title": "Notification System",
-        "desc": "Stay informed with alerts for budget overruns, goal milestones, and recurring transaction reminders"
-      },
-      "networth": {
-        "title": "Net Worth Tracking",
-        "desc": "Monitor your total assets, liabilities, and net worth over time with historical trend charts"
-      },
-      "cashflow": {
-        "title": "Cash Flow Forecast",
-        "desc": "Project your future balance based on recurring income, expenses, and scheduled transactions"
-      }
-    },
-    "viz": {
-      "goal": "Goal",
-      "goalName": "Emergency Fund",
-      "ytdSavings": "YTD Savings",
-      "scoreGood": "Good",
-      "thisMonth": "This month",
-      "avg3Month": "3-month average",
-      "lowerThanAvg": "lower than average",
-      "recurringThisMonth": "recurring this month",
-      "nextDays": "Next 30 days",
-      "reportTypes": "Income · Expenses · Categories",
-      "alertTransport": "Transport budget at 92%",
-      "alertGoal": "Emergency Fund reached 73%",
-      "alertRent": "Rent charged today"
-    },
-    "cta": {
-      "title": "Ready to Take Control?",
-      "subtitle": "Join others who are already managing their finances better",
-      "button": "Create Your Free Account",
-      "seePricing": "See pricing",
-      "statTxUnit": "/mo",
-      "statTxLabel": "Transactions",
-      "statBudgetUnit": "budgets",
-      "statBudgetLabel": "Per month",
-      "statGoalUnit": "goals",
-      "statGoalLabel": "Active at once"
-    },
-    "months": {
-      "jan": "Jan",
-      "feb": "Feb",
-      "mar": "Mar",
-      "apr": "Apr"
-    },
-    "categories": {
-      "food": "Food",
-      "transport": "Transport",
-      "entertainment": "Entertainment",
-      "utilities": "Utilities"
-    },
-    "freePlan": {
-      "badge": "Free forever",
-      "title": "Powerful. Free. No surprises.",
-      "subtitle": "Track your finances without a paywall blocking the basics. Upgrade only when you need more.",
-      "transactions": "Transactions / month",
-      "budgets": "Monthly budgets",
-      "goals": "Financial goals",
-      "charts": "Charts & analytics",
-      "trust": {
-        "privacy": "Privacy-first - your data, your control",
-        "secure": "Encrypted and secure",
-        "noAdvice": "Analytics only, not financial advice"
-      }
-    },
-    "demo": {
-      "yearToDate": "2025 - Year to date",
-      "onTrack": "On track",
-      "highSpend": "High spend",
-      "income": "Income",
-      "expenses": "Expenses",
-      "saved": "Saved",
-      "scoreGood": "Good",
-      "savings": "Savings",
-      "budget": "Budget",
-      "goals": "Goals",
-      "totalEur": "Total (EUR)",
-      "budgetItems": {
-        "food": "Food & Dining",
-        "housing": "Housing & Rent",
-        "entertainment": "Entertainment",
-        "transport": "Transport"
-      }
+      "eyebrow": "What you get",
+      "heading": "Judged against your own history, not a generic average"
     },
     "heroFeatures": {
-      "tracking": {
-        "eyebrow": "Smart Tracking",
-        "title": "See where your money actually goes",
-        "desc": "Log income and expenses by category. Get a clear monthly breakdown - no more end-of-month surprises."
+      "healthscore": {
+        "eyebrow": "Financial health score",
+        "title": "One number that says if this month is better",
+        "desc": "A 0 to 100 score built from your saving rate, how closely you kept your budgets, how steady your spending was, and how many months you finished in the positive. It moves when your habits move, so you can tell progress from a good week."
+      },
+      "benchmarks": {
+        "eyebrow": "Smart benchmarks",
+        "title": "Know what is normal for you, and when you break it",
+        "desc": "Every category is measured against your own average of the last six months, not against strangers. Groceries flagged as high means high for you, which is the only comparison that should change what you do next."
       },
       "budgets": {
-        "eyebrow": "Monthly Budgets",
-        "title": "Set limits. Know when you're close.",
-        "desc": "Assign spending limits per category. See real-time progress and end-of-month forecasts so you can adjust before it's too late."
+        "eyebrow": "Monthly budgets",
+        "title": "Find out you are overspending while you can still stop",
+        "desc": "Set a limit per category and watch it fill in real time, with a forecast of where the month ends if you keep going. Copy last month to set them all up at once instead of starting from an empty page."
       },
-      "healthscore": {
-        "eyebrow": "Financial Health Score",
-        "title": "One number that tells the honest truth",
-        "desc": "A 0–100 score calculated from your saving rate, budget adherence, and goal progress. Highlights what to fix, not just what looks good."
-      },
-      "multicurrency": {
-        "eyebrow": "Multi-Currency",
-        "title": "Track in any currency, totals in one",
-        "desc": "Record transactions in USD, EUR, ALL, or any currency. Everything normalizes to your base currency automatically."
+      "tracking": {
+        "eyebrow": "Dashboard and categories",
+        "title": "A year of your money on one screen",
+        "desc": "Log income and expenses by category and see every month side by side, so a bad month is obvious next to the eleven around it. Recurring entries post themselves, so rent and salary are never the thing you forgot."
       }
     },
     "secondaryFeatures": {
-      "title": "Everything else included",
+      "title": "Also included",
       "items": {
-        "recurring": "Recurring transactions - daily, weekly, monthly, yearly",
-        "goals": "Financial goals with contribution tracking",
-        "cashflow": "Cash flow forecasting from recurring entries",
-        "networth": "Net worth tracking with asset & liability history",
-        "benchmarks": "Spending benchmarks vs. your own patterns",
-        "reports": "Detailed reports",
-        "notifications": "Alerts for budget overruns and goal milestones",
-        "csvImport": "CSV import and export",
-        "categories": "Custom categories with icons",
-        "encryption": "End-to-end encryption, the key stays only with you"
+        "recurring": "Recurring entries post themselves, daily to yearly, pause and resume any time",
+        "goals": "Savings goals you fund with contributions and watch fill up",
+        "networth": "Net worth over time, assets and liabilities in one line",
+        "reports": "Reports by income, expense, and category over any date range",
+        "notifications": "Alerts when a budget runs over or a goal hits a milestone",
+        "csvImport": "CSV import to start from your existing records, CSV export to leave with them",
+        "categories": "Categories you name and pick icons for, not a fixed list",
+        "albanian": "Full Albanian and English, plus free Albanian salary, freelancer, and loan calculators",
+        "currency": "One currency, chosen at signup and changeable in settings",
+        "encryption": "Amounts encrypted on your device with a key only you hold"
+      }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "subtitle": "Three steps to your first score",
+      "step1": {
+        "title": "Create an account",
+        "desc": "Email and a password. No card. Pick your currency and language during setup."
+      },
+      "step2": {
+        "title": "Bring in your money",
+        "desc": "Add transactions, import a CSV from your bank, and set recurring entries for rent and salary so the regular things log themselves."
+      },
+      "step3": {
+        "title": "See where you stand",
+        "desc": "Your dashboard, score, and benchmarks fill in immediately. Each month you add sharpens what normal looks like for you."
       }
     },
     "privacy": {
       "eyebrow": "Your data, your rules",
       "title": "A finance app you can actually trust",
-      "desc": "Personal finance data is sensitive. Here's exactly what we do - and don't do - with yours.",
+      "desc": "Personal finance data is sensitive. Here is exactly what happens to yours, and what does not.",
       "items": {
         "ownership": {
           "title": "You own your data",
-          "desc": "Export everything as CSV any time. Delete your account and all data is gone - permanently, not archived."
+          "desc": "Export everything as CSV any time. Delete your account and the data is gone, permanently, not archived."
         },
         "encryption": {
-          "title": "End-to-end encryption you control",
-          "desc": "Turn on encryption and your transaction titles, tags, goal names, notes, and asset details are encrypted on your device with a key only you hold. We store ciphertext we cannot read, not even our team."
+          "title": "Encrypted before it leaves your device",
+          "desc": "Amounts, budgets, goals, net worth, transaction titles, tags, and notes are encrypted on your device with a key only you hold. The server stores text it cannot read."
         },
         "noSell": {
-          "title": "We never sell your data",
-          "desc": "Your financial data is not sold, traded, or shared with advertisers - ever. It exists only to power your dashboard."
+          "title": "Your data is never sold",
+          "desc": "Not sold, not traded, not shared with advertisers. It exists to power your dashboard and nothing else."
         },
         "noAdvice": {
           "title": "Analytics, not financial advice",
-          "desc": "The health score and benchmarks are informational tools. Always consult a qualified professional for financial decisions."
+          "desc": "The score and benchmarks describe your own numbers back to you. For decisions with real consequences, talk to a qualified professional."
         },
         "analytics": {
           "title": "Privacy-friendly analytics only",
-          "desc": "We use GoatCounter - no cookies, no personal data collected, no third-party tracking scripts."
+          "desc": "Page counts with no cookies and no cross-site tracking. No advertising pixels anywhere in the app."
         },
         "payments": {
-          "title": "Payments handled by Paddle",
-          "desc": "We never see or store your card details. Payment processing is handled entirely by Paddle, a certified PCI-compliant processor."
+          "title": "Card details never reach us",
+          "desc": "Payments are handled by Paddle. Your card number goes to them, never to this app."
+        }
+      }
+    },
+    "dataPrivacy": {
+      "eyebrow": "Data privacy",
+      "title": "Nobody can read your numbers",
+      "desc": "Amounts, budgets, goals and net worth are encrypted on your device before they ever leave it. The server only ever stores unreadable text.",
+      "points": {
+        "device": {
+          "title": "Encrypted on your device",
+          "desc": "The key is generated on your device and never leaves it. All the server receives is ciphertext."
+        },
+        "noone": {
+          "title": "Not even we can see them",
+          "desc": "Without your key the data is unreadable, including to us. That is not a policy promise, it is maths."
+        },
+        "yours": {
+          "title": "Always yours",
+          "desc": "Export everything to CSV or delete all of it, any time. No questions, no delays."
         }
       }
     },
     "pricingPreview": {
-      "eyebrow": "Simple pricing",
-      "title": "Free to start. Upgrade when you need more.",
+      "title": "Free to start. Upgrade when you outgrow it.",
       "free": {
-        "label": "Free plan - forever",
+        "label": "Free plan",
         "items": {
-          "tx": "30 transactions / month",
+          "tx": "30 transactions per month",
           "budgets": "10 monthly budgets",
           "goals": "10 active goals",
-          "categories": "Custom categories & recurring transactions",
+          "categories": "Custom categories and recurring transactions",
           "reports": "Financial reports",
           "networth": "Net worth tracking",
-          "healthscore": "Basic health score & spending benchmarks"
+          "healthscore": "Basic health score and benchmarks"
         }
       },
       "premium": {
-        "label": "Premium - unlock everything",
+        "label": "Premium",
         "items": {
           "unlimited": "Unlimited transactions",
           "cashflow": "Cash flow forecasting",
           "healthscore": "Full health score with detailed insights",
-          "benchmarks": "Full spending benchmarks by category",
-          "splits": "Split transactions across categories",
+          "benchmarks": "Full benchmarks for every category",
+          "splits": "Split one transaction across categories",
           "notifications": "Smart in-app notifications"
         }
       },
       "cta": "See full pricing",
-      "trial": "7-day free trial on the paid plans"
+      "trial": "Premium starts with a free trial, no card to look around"
     },
     "founder": {
       "eyebrow": "From the builder",
-      "quote": "I built this because I was tired of managing my money in spreadsheets. Not because spreadsheets are bad - they're actually great - but because I wanted something that would just show me the picture without me having to paint it first. Every feature in here exists because I needed it myself.",
+      "quote": "I built this because I was tired of managing my money in spreadsheets. Not because spreadsheets are bad, they are actually great, but because I wanted something that would just show me the picture without me having to paint it first. Every feature in here exists because I needed it myself.",
       "name": "Marin Dulja",
-      "role": "Builder & sole developer"
-    },
-    "tools": {
-      "eyebrow": "Free tools",
-      "title": "Free tools for Albania",
-      "desc": "Accurate calculators based on Albanian law: net and gross salary, and what you keep as a freelancer. No signup, no limits.",
-      "cta": "Open the salary calculator"
+      "role": "Builder and sole developer"
     },
     "faq": {
       "eyebrow": "Questions",
@@ -995,59 +851,67 @@
       "items": {
         "free": {
           "q": "Is it really free?",
-          "a": "Yes. The free plan is genuinely free - no credit card required, no time limit. You get 30 transactions/month, 10 budgets, and 10 goals. The paid plan unlocks unlimited transactions and premium features like health scores and cash flow forecasting."
+          "a": "Yes. The free plan needs no credit card and has no time limit: 30 transactions a month, 10 budgets, 10 goals. Premium adds unlimited transactions, cash flow forecasting, and the full score and benchmarks."
         },
-        "safe": {
-          "q": "Is my financial data safe?",
-          "a": "Your data is encrypted at rest and in transit, stored in a PostgreSQL database, and never sold or shared with third parties. You can export or delete everything at any time."
+        "albanian": {
+          "q": "Which languages and currencies does it support?",
+          "a": "The app is fully translated in English and Albanian. You choose one currency at signup and can change it later in settings, and every screen uses it. There are also free salary, freelancer, and loan calculators built on Albanian rules."
         },
-        "currencies": {
-          "q": "Which currencies are supported?",
-          "a": "8 currencies are supported: EUR, USD, GBP, CHF, JPY, CAD, AUD, and ALL (Albanian Lek). EUR is the base currency - all totals are normalized to EUR. Exchange rates for other currencies are fetched automatically when you log a transaction."
-        },
-        "cancel": {
-          "q": "Can I cancel a paid subscription?",
-          "a": "Yes, cancel any time from your account settings. You keep full access until the end of your billing period. No partial refunds for unused time, but there's a 14-day money-back guarantee on your first payment."
-        },
-        "advice": {
-          "q": "Is this financial advice?",
-          "a": "No. The health score, benchmarks, and forecasts are informational tools based on your own data. They help you understand your patterns - they are not professional financial, legal, or tax advice."
-        },
-        "multidevice": {
-          "q": "Does it work on mobile?",
-          "a": "Yes, the app is fully responsive and works in any modern browser on phone, tablet, or desktop. There is no native app - it runs in your browser."
+        "howLong": {
+          "q": "How long until it tells me something useful?",
+          "a": "The dashboard and budgets work from your first entries. The score and benchmarks compare you to your own past, so they get sharper with each month of history. Importing a CSV from your bank gives you that history immediately."
         },
         "encrypted": {
           "q": "Can your staff see my amounts?",
           "a": "No. Amounts, budgets, goals and net worth are encrypted on your device with a key only you hold. What reaches the server is encrypted text, so we cannot read it either. If you lose your key and your recovery code, we cannot restore the data either."
+        },
+        "switch": {
+          "q": "I already use a spreadsheet. Why switch?",
+          "a": "Import it as CSV and keep the history. The difference is that this one keeps score without you maintaining formulas, warns you mid-month when a budget is heading over, and tells you how this month compares to your own normal."
+        },
+        "advice": {
+          "q": "Is this financial advice?",
+          "a": "No. The score, benchmarks, and forecasts describe your own data back to you. They are not professional financial, legal, or tax advice."
+        },
+        "multidevice": {
+          "q": "Does it work on my phone?",
+          "a": "Yes, in any modern browser on phone, tablet, or desktop. There is no native app to install."
+        },
+        "cancel": {
+          "q": "Can I cancel a paid subscription?",
+          "a": "Yes, from your account settings. You keep full access until the end of the billing period, and your data stays exportable whether you pay or not."
         }
       }
     },
-    "finalCta": {
-      "eyebrow": "Ready to start",
-      "title": "Your finances, finally clear.",
-      "desc": "No spreadsheets. No overwhelm. Just a calm, honest view of your money.",
-      "button": "Create free account",
-      "secondary": "See pricing",
-      "trustLine": "Free forever plan · No credit card · Cancel paid plan anytime"
+    "tools": {
+      "eyebrow": "Free tools",
+      "title": "Free calculators for Albania",
+      "desc": "Built on Albanian rules: net and gross salary, what you keep as a freelancer, and loan repayments. No signup, no limits."
     },
-    "dataPrivacy": {
-      "eyebrow": "Data privacy",
-      "title": "Nobody can read your numbers",
-      "desc": "Transaction amounts, budgets, goals and net worth are encrypted on your device before they ever leave it. The server only ever stores unreadable text.",
-      "points": {
-        "device": {
-          "title": "Encrypted on your device",
-          "desc": "The key is generated on your device and never leaves it. All we receive is ciphertext."
-        },
-        "noone": {
-          "title": "Not even we can see them",
-          "desc": "Without your key the data is unreadable, including to our own team. That is not a policy promise, it is maths."
-        },
-        "yours": {
-          "title": "Always yours",
-          "desc": "Export everything to CSV or delete it all, any time. No questions, no delays."
-        }
+    "finalCta": {
+      "title": "Know where you stand",
+      "desc": "See where this month stands and whether you are improving, judged against your own history. Free to start, no card.",
+      "button": "Start free",
+      "secondary": "See pricing",
+      "trustLine": "Free to start · No credit card · Export or delete anytime"
+    },
+    "demo": {
+      "yearToDate": "Your last 12 months",
+      "onTrack": "Within your normal",
+      "highSpend": "Above your normal",
+      "income": "Income",
+      "expenses": "Expenses",
+      "saved": "Kept",
+      "scoreGood": "Improving",
+      "savings": "Saving rate",
+      "budget": "Budgets kept",
+      "goals": "Goals on track",
+      "vsLastMonth": "vs your 6-month average",
+      "budgetItems": {
+        "food": "Food and dining",
+        "housing": "Housing and rent",
+        "entertainment": "Entertainment",
+        "transport": "Transport"
       }
     }
   },

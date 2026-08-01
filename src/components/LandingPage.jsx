@@ -1,14 +1,14 @@
-import { lazy, Suspense, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import {
-  TrendingUp, Target, PieChart, Activity, RefreshCw,
-  Globe, BarChart3, Bell, Tag, FileText, Heart,
+  TrendingUp, Target, Activity, RefreshCw,
+  Globe, Bell, Tag, FileText,
   ArrowRight, CheckCircle2, Lock, ShieldCheck, CloudOff,
-  Download, Trash2, CreditCard, ChevronDown, ChevronUp,
-  Zap, Database, Eye,
+  Download, CreditCard, ChevronDown, ChevronUp,
+  Database, Eye,
 } from 'lucide-react';
 
 
@@ -133,32 +133,57 @@ function MiniBudgets() {
   );
 }
 
-// ── Mini currency card ────────────────────────────────────────────────────────
-function MiniCurrency() {
+// ── Mini benchmarks card ──────────────────────────────────────────────────────
+// Mirrors what computeCategoryBenchmarks actually returns: this month's spend
+// per category measured against THAT USER's own trailing average, as a signed
+// deviation. Deliberately not a comparison against other people — the app holds
+// no population data and the page must not imply otherwise.
+const BENCHMARK_ROWS = [
+  { key: 'food',          now: 412, avg: 350 },
+  { key: 'transport',     now: 58,  avg: 90  },
+  { key: 'entertainment', now: 96,  avg: 70  },
+  { key: 'housing',       now: 850, avg: 850 },
+];
+
+function MiniBenchmarks() {
   const { t } = useTranslation();
-  const rows = [
-    { flag: '🇺🇸', code: 'USD', amount: '$1,200', base: '€1,104' },
-    { flag: '🇦🇱', code: 'ALL', amount: 'L45,000', base: '€460' },
-    { flag: '🇨🇭', code: 'CHF', amount: 'Fr380', base: '€397' },
-  ];
   return (
-    <div className="space-y-2.5 py-2">
-      {rows.map(r => (
-        <div key={r.code} className="flex items-center gap-3">
-          <span className="text-xl leading-none">{r.flag}</span>
-          <div className="flex-1">
-            <div className="flex justify-between text-[12px]">
-              <span className="font-semibold text-ink-primary dark:text-white">{r.code}</span>
-              <span className="text-brand-600 dark:text-brand-400 font-semibold tabular-nums">{r.amount}</span>
+    <div className="space-y-3 py-2">
+      {BENCHMARK_ROWS.map(({ key, now, avg }) => {
+        const delta = now - avg;
+        const pct = avg === 0 ? 0 : Math.round((delta / avg) * 100);
+        const above = delta > 0;
+        // Bar is centred: the midpoint is the user's own average, so bar length
+        // encodes how far this month deviates, in either direction.
+        const width = Math.min(Math.abs(pct), 100) / 2;
+        return (
+          <div key={key}>
+            <div className="flex justify-between text-[11px] mb-1">
+              <span className="font-medium text-ink-primary dark:text-white truncate">
+                {t(`landing.demo.budgetItems.${key}`)}
+              </span>
+              <span className={`tabular-nums font-semibold ${above ? 'text-expense' : 'text-brand-600 dark:text-brand-400'}`}>
+                {pct === 0 ? '0%' : `${above ? '+' : ''}${pct}%`}
+              </span>
             </div>
-            <div className="text-[10px] text-ink-muted dark:text-white tabular-nums">{r.base}</div>
+            <div className="relative h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
+              {/* centre line marks the user's own average */}
+              <div className="absolute inset-y-0 left-1/2 w-px bg-ink-muted/40 dark:bg-white/30" />
+              <div
+                className="absolute inset-y-0 rounded-full"
+                style={{
+                  width: `${width}%`,
+                  [above ? 'left' : 'right']: '50%',
+                  backgroundColor: above ? 'var(--c-expense)' : 'var(--c-brand-accent)',
+                }}
+              />
+            </div>
           </div>
-        </div>
-      ))}
-      <div className="pt-1 border-t border-surface-hairline dark:border-surface-dark-hairline flex justify-between text-[11px]">
-        <span className="text-ink-muted dark:text-white">{t('landing.demo.totalEur')}</span>
-        <span className="font-bold text-ink-primary dark:text-white tabular-nums">€1,961</span>
-      </div>
+        );
+      })}
+      <p className="pt-1 text-[10px] text-ink-muted dark:text-white">
+        {t('landing.demo.vsLastMonth')}
+      </p>
     </div>
   );
 }
@@ -199,7 +224,9 @@ function PrivacyCard({ icon: Icon, title, desc }) {
     <div className="flex gap-3.5">
       <Icon className="flex-shrink-0 w-5 h-5 mt-0.5 text-ink-muted dark:text-white/60" strokeWidth={1.6} />
       <div>
-        <h4 className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{title}</h4>
+        {/* h3, not h4: the enclosing section heading is an h2, so h4 would
+            skip a level. Visual size is set by the classes, not the tag. */}
+        <h3 className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{title}</h3>
         <p className="text-sm text-ink-muted dark:text-white leading-relaxed">{desc}</p>
       </div>
     </div>
@@ -245,6 +272,11 @@ function SectionHeading({ children, className = '' }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Single source for the FAQ: the rendered accordion and the FAQPage JSON-LD
+// both map over this, so structured data can never drift from what a visitor
+// actually sees (which is what Google penalises).
+const FAQ_KEYS = ['free', 'albanian', 'howLong', 'encrypted', 'switch', 'advice', 'multidevice', 'cancel'];
+
 const LANDING_HREFLANGS = [
   { lang: 'en', href: 'https://personal-finances.app/' },
   { lang: 'sq', href: 'https://personal-finances.app/sq' },
@@ -255,11 +287,42 @@ export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
 
+  // FAQPage + SoftwareApplication, both generated from the same i18n keys the
+  // page renders, so structured data cannot drift from visible content. No
+  // aggregateRating: there are no real ratings to report. Memoised so the
+  // useMetaTags effect does not re-inject the scripts on every render.
+  const jsonLd = useMemo(() => {
+    const url = isSq ? 'https://personal-finances.app/sq' : 'https://personal-finances.app/';
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: FAQ_KEYS.map((key) => ({
+          '@type': 'Question',
+          name: t(`landing.faq.items.${key}.q`),
+          acceptedAnswer: { '@type': 'Answer', text: t(`landing.faq.items.${key}.a`) },
+        })),
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'Personal Finance Tracker',
+        url,
+        description: t('meta.description'),
+        applicationCategory: 'FinanceApplication',
+        operatingSystem: 'Web',
+        inLanguage: isSq ? 'sq' : 'en',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+      },
+    ];
+  }, [t, isSq]);
+
   useMetaTags({
     title: t('meta.title'),
     description: t('meta.description'),
     canonical: isSq ? 'https://personal-finances.app/sq' : 'https://personal-finances.app/',
     hreflangs: LANDING_HREFLANGS,
+    jsonLd,
   });
 
   // ── Hero ──────────────────────────────────────────────────────────────────
@@ -296,9 +359,11 @@ export default function LandingPage() {
                 {t('landing.hero.getStarted')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
+              {/* Sign-in is a text link, not a second button: registering is
+                  the one primary action, so nothing else competes with it. */}
               <Link
                 to={localizedPath('/login', i18n.language)}
-                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors"
+                className="text-base font-medium text-ink-muted dark:text-white/80 hover:text-ink-primary dark:hover:text-white underline underline-offset-4 decoration-ink-muted/30 dark:decoration-white/30 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
@@ -325,7 +390,12 @@ export default function LandingPage() {
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────────── */}
       <HowItWorksSection t={t} />
 
-      {/* ── PRIVACY & TRUST ──────────────────────────────────────────────────── */}
+      {/* ── TRUST / PRIVACY ──────────────────────────────────────────────────── */}
+      {/* Both trust sections sit together: encryption proof first, then the
+          wider data-handling promises. Order is value > proof > how > trust >
+          price > founder > FAQ > tools > final CTA. */}
+      <DataPrivacySection t={t} />
+
       <PrivacySection t={t} />
 
       {/* ── PRICING PREVIEW ──────────────────────────────────────────────────── */}
@@ -336,9 +406,6 @@ export default function LandingPage() {
 
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <FaqSection t={t} />
-
-      {/* ── DATA PRIVACY ─────────────────────────────────────────────────────── */}
-      <DataPrivacySection t={t} />
 
       {/* ── FREE TOOLS ───────────────────────────────────────────────────────── */}
       <ToolsSection t={t} />
@@ -368,10 +435,35 @@ function HeroFeaturesSection({ t }) {
         </div>
 
         <div className="space-y-5">
+          {/* Strongest proof first: the score is the differentiator, so it is
+              the first thing after the hero. */}
+          <FeatureCard
+            eyebrow={feats.healthscore?.eyebrow}
+            title={feats.healthscore?.title}
+            desc={feats.healthscore?.desc}
+            preview={<MiniHealthScore />}
+          />
+
+          <FeatureCard
+            eyebrow={feats.benchmarks?.eyebrow}
+            title={feats.benchmarks?.title}
+            desc={feats.benchmarks?.desc}
+            flip
+            preview={<MiniBenchmarks />}
+          />
+
+          <FeatureCard
+            eyebrow={feats.budgets?.eyebrow}
+            title={feats.budgets?.title}
+            desc={feats.budgets?.desc}
+            preview={<MiniBudgets />}
+          />
+
           <FeatureCard
             eyebrow={feats.tracking?.eyebrow}
             title={feats.tracking?.title}
             desc={feats.tracking?.desc}
+            flip
             preview={
               <div>
                 <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
@@ -399,29 +491,6 @@ function HeroFeaturesSection({ t }) {
               </div>
             }
           />
-
-          <FeatureCard
-            eyebrow={feats.budgets?.eyebrow}
-            title={feats.budgets?.title}
-            desc={feats.budgets?.desc}
-            flip
-            preview={<MiniBudgets />}
-          />
-
-          <FeatureCard
-            eyebrow={feats.healthscore?.eyebrow}
-            title={feats.healthscore?.title}
-            desc={feats.healthscore?.desc}
-            preview={<MiniHealthScore />}
-          />
-
-          <FeatureCard
-            eyebrow={feats.multicurrency?.eyebrow}
-            title={feats.multicurrency?.title}
-            desc={feats.multicurrency?.desc}
-            flip
-            preview={<MiniCurrency />}
-          />
         </div>
       </div>
     </section>
@@ -430,16 +499,17 @@ function HeroFeaturesSection({ t }) {
 
 function SecondaryFeaturesSection({ t }) {
   const [ref, visible] = useReveal(0.1);
+  // Keys here must match landing.secondaryFeatures.items in both locales.
   const items = [
     { icon: RefreshCw,  key: 'recurring' },
     { icon: Target,     key: 'goals' },
-    { icon: Activity,   key: 'cashflow' },
     { icon: TrendingUp, key: 'networth' },
-    { icon: Zap,        key: 'benchmarks' },
     { icon: FileText,   key: 'reports' },
     { icon: Bell,       key: 'notifications' },
     { icon: Download,   key: 'csvImport' },
     { icon: Tag,        key: 'categories' },
+    { icon: Globe,      key: 'albanian' },
+    { icon: Activity,   key: 'currency' },
     { icon: Lock,       key: 'encryption' },
   ];
   return (
@@ -632,7 +702,6 @@ function FounderSection({ t }) {
 
 function FaqSection({ t }) {
   const [ref, visible] = useReveal(0.1);
-  const faqKeys = ['free','safe','encrypted','currencies','cancel','advice','multidevice'];
   return (
     <section className="py-24 sm:py-32 bg-surface-page dark:bg-surface-dark-page">
       <div
@@ -644,7 +713,7 @@ function FaqSection({ t }) {
           <SectionHeading>{t('landing.faq.title')}</SectionHeading>
         </div>
         <div>
-          {faqKeys.map(key => (
+          {FAQ_KEYS.map(key => (
             <FaqItem
               key={key}
               q={t(`landing.faq.items.${key}.q`)}
