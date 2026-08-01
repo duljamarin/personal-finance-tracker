@@ -126,6 +126,13 @@ export async function updateTransaction(id, transaction) {
     const rate = exchangeRate !== undefined ? exchangeRate : undefined;
     const amount = transaction.amount;
 
+    // Converting a split transaction back to a single category comes through
+    // here (the caller only routes to updateTransactionWithSplits when splits
+    // are present). Clearing has_splits and deleting the child rows must happen
+    // here too, or the row keeps has_splits = true with orphaned splits that
+    // still count toward budget alerts, and the edit form reopens in split mode.
+    const clearingSplits = has_splits === false;
+
     // base_amount must go THROUGH encryptRow, not be assigned after it: it is an
     // encrypted field, so setting it on the result would write plaintext into a
     // ciphertext column and later decrypt to garbage.
@@ -134,6 +141,7 @@ export async function updateTransaction(id, transaction) {
       ...rest,
       category_id: categoryId,
       ...(amount !== undefined ? { base_amount: amount } : {}),
+      ...(clearingSplits ? { has_splits: false } : {}),
     });
 
     if (currencyCode !== undefined) updateData.currency_code = currencyCode;
@@ -151,6 +159,19 @@ export async function updateTransaction(id, transaction) {
       .single();
 
     if (error) throw error;
+
+    // Awaited, not fire-and-forget: the budget check below reads
+    // transaction_splits, so leftover children would be counted alongside the
+    // transaction's new single category.
+    if (clearingSplits) {
+      const { error: delError } = await supabase
+        .from('transaction_splits')
+        .delete()
+        .eq('transaction_id', id)
+        .eq('user_id', user.id);
+      if (delError) throw delError;
+    }
+
     // Fire-and-forget: budget alerts are a side effect and now run as several
     // client round-trips (amounts are encrypted), so we don't block the add.
     checkBudgetNotifications(user.id).catch((e) =>
