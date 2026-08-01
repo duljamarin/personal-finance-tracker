@@ -25,34 +25,47 @@ async function loadTranslation(lang) {
   return mod.default;
 }
 
+// ── Synchronous init, before any await can yield to the renderer ────────────
+//
+// main.jsx calls render() on the line right after `import './i18n'`, so React
+// can paint while the translation chunk is still being fetched. Configuring
+// i18n inside an async function meant that during that window i18n had NO
+// config, so t('app.name') returned the raw key — which is exactly what a cold
+// load from a WhatsApp link showed: "app.name", "nav.pricing", "auth.login"
+// rendered literally in the navbar. parseMissingKeyHandler could not prevent it
+// because it was only installed after the await.
+//
+// So init() runs synchronously with an empty resource set: the missing-key
+// guard is active from the very first paint, and the real bundle is attached a
+// moment later by initPromise below.
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources: {},
+    lng: pathLang,
+    supportedLngs: ['en', 'sq'],
+    nonExplicitSupportedLngs: true,
+    fallbackLng: 'en',
+    debug: false,
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
+    // Blank rather than a raw key: an empty label reads as "still loading",
+    // a raw key reads as a broken app.
+    parseMissingKeyHandler: () => '',
+    detection: {
+      order: ['path', 'localStorage', 'navigator'],
+      lookupFromPathIndex: 0,
+      caches: ['localStorage'],
+    },
+  });
+
 const initPromise = (async () => {
   const translation = await loadTranslation(pathLang);
-
-  await i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      resources: {
-        [pathLang]: { translation },
-      },
-      lng: pathLang,
-      supportedLngs: ['en', 'sq'],
-      nonExplicitSupportedLngs: true,
-      fallbackLng: 'en',
-      debug: false,
-      interpolation: { escapeValue: false },
-      react: { useSuspense: false },
-      // Render immediately (no Suspense) for performance, but never paint a raw
-      // key during the brief window before init/bundle load finishes — resolve
-      // missing keys to an empty string instead of "some.key".
-      parseMissingKeyHandler: () => '',
-      detection: {
-        order: ['path', 'localStorage', 'navigator'],
-        lookupFromPathIndex: 0,
-        caches: ['localStorage'],
-      },
-    });
-
+  i18n.addResourceBundle(pathLang, 'translation', translation, true, true);
+  // Re-emit so components mounted during the pre-bundle window re-render with
+  // real strings instead of the blank placeholders.
+  await i18n.changeLanguage(pathLang);
   return i18n;
 })();
 
