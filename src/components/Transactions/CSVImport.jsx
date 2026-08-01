@@ -7,6 +7,11 @@ import Card from '../UI/Card';
 import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { bulkImportTransactions, addCategory } from '../../utils/api';
+import {
+  pickField,
+  normaliseType as normaliseImportType,
+  normaliseDate as normaliseImportDate,
+} from '../../utils/importCSV';
 
 export default function CSVImport({ categories, onImportComplete }) {
   const { t } = useTranslation();
@@ -71,59 +76,49 @@ export default function CSVImport({ categories, onImportComplete }) {
       const errors = [];
       const lineNum = index + 2; // +2 for header and 1-indexed
 
-      // Validate required fields
-      if (!row.title && !row.Title && !row.description && !row.Description) {
+      // Fields are read through the shared alias table rather than hardcoded
+      // English keys: toCSV writes TRANSLATED headers, so an Albanian export
+      // ("Titulli | Shuma | Data") previously failed every check on every row.
+      const rawTitle = pickField(row, 'title');
+      if (!rawTitle.trim()) {
         errors.push(t('import.missingTitle'));
       }
 
-      const amount = parseFloat(row.amount || row.Amount);
+      const amount = parseFloat(pickField(row, 'amount'));
       if (isNaN(amount) || amount <= 0) {
         errors.push(t('import.invalidAmount'));
       }
 
-      // Validate type
-      const typeRaw = (row.type || row.Type || '').toLowerCase();
-      let type = 'expense'; // default
-      if (typeRaw.includes('income') || typeRaw === t('transactions.income').toLowerCase()) {
-        type = 'income';
-      } else if (typeRaw.includes('expense') || typeRaw === t('transactions.expense').toLowerCase()) {
-        type = 'expense';
-      }
+      const type = normaliseImportType(pickField(row, 'type'));
 
-      // Validate date
-      const dateStr = row.date || row.Date;
-      let date = null;
-      if (dateStr) {
-        const parsed = new Date(dateStr);
-        if (!isNaN(parsed)) {
-          date = parsed.toISOString().split('T')[0];
-        }
-      }
+      // normaliseImportDate understands DD/MM/YYYY and the other layouts the
+      // shared parser accepts; `new Date()` alone misread those.
+      const date = normaliseImportDate(pickField(row, 'date'));
       if (!date) {
         errors.push(t('import.invalidDate'));
       }
 
       // Match category (optional - unrecognised names are silently accepted as uncategorised)
-      const categoryName = row.category || row.Category || '';
-      const category = categories.find(c => 
-        c.name.toLowerCase() === categoryName.toLowerCase()
+      const categoryName = pickField(row, 'category');
+      const category = categories.find(c =>
+        c.name.toLowerCase().trim() === categoryName.toLowerCase().trim()
       );
 
       if (errors.length > 0) {
         invalid.push({ line: lineNum, errors, row });
       } else {
         valid.push({
-          title: row.title || row.Title || row.description || row.Description,
+          title: rawTitle.trim(),
           amount,
           type,
           date,
           category_id: category?.id ?? null,
           // Keep the raw name so handleImport can create missing categories
           _categoryName: !category && categoryName ? categoryName : null,
-          tags: parseTags(row.tags || row.Tags),
+          tags: parseTags(pickField(row, 'tags')),
           // Left undefined on purpose: bulkImportTransactions stamps the user's
           // currency. Defaulting to EUR here would mislabel every imported row.
-          currency_code: row.currency_code || row.Currency || undefined,
+          currency_code: pickField(row, 'currency').trim() || undefined,
           exchange_rate: 1.0,
         });
       }

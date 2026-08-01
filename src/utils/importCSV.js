@@ -13,15 +13,60 @@ import Papa from 'papaparse';
  * @property {number}  exchangeRate  default 1.0
  */
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
+// ─── Header aliases ─────────────────────────────────────────────────────────
+// The app's own CSV export writes TRANSLATED headers (toCSV uses t(...)), so an
+// Albanian export comes back as "Titulli | Lloji | Shuma | Data". Matching only
+// English names made every re-import fail with "missing title/amount/date" on
+// every row. Aliases are lowercased; keep both locales in sync with csv.js.
+export const HEADER_ALIASES = {
+  title:    ['title', 'titulli', 'titull', 'description', 'përshkrimi', 'pershkrimi', 'name', 'emri'],
+  type:     ['type', 'lloji', 'llojo'],
+  amount:   ['amount', 'shuma', 'vlera'],
+  currency: ['currency code', 'kodi i valutës', 'kodi i valutes', 'currency', 'valuta', 'monedha'],
+  date:     ['date', 'data'],
+  category: ['category', 'kategoria', 'kategori'],
+  tags:     ['tags', 'etiketat', 'etiketa'],
+  recurring:['recurring', 'përsëritës', 'perseritues', 'i përsëritur'],
+};
 
-function normaliseType(raw = '') {
-  const v = raw.toLowerCase().trim();
-  if (v === 'income' || v === 'e ardhur' || v === 'credit' || v === 'cr') return 'income';
-  return 'expense';
+/** Index of the first column whose header matches any alias for `field`. */
+export function aliasIndex(headers, field) {
+  const h = headers.map((s) => String(s || '').toLowerCase().trim());
+  for (const alias of HEADER_ALIASES[field] || []) {
+    const i = h.indexOf(alias);
+    if (i !== -1) return i;
+  }
+  return -1;
 }
 
-function normaliseDate(raw = '') {
+/**
+ * Read a field from a header-keyed row object (PapaParse `header: true`) using
+ * the alias table, so callers do not have to know the export language.
+ */
+export function pickField(row, field) {
+  const aliases = HEADER_ALIASES[field] || [];
+  for (const key of Object.keys(row || {})) {
+    if (aliases.includes(String(key).toLowerCase().trim())) {
+      const v = row[key];
+      if (v !== undefined && v !== null && String(v).trim() !== '') return String(v);
+    }
+  }
+  return '';
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+
+// Accepts the localised labels toCSV writes ("Income" / "E ardhur") plus common
+// bank wordings. Anything unrecognised falls back to expense, which is the safe
+// default: an expense mistaken for income inflates the health score.
+const INCOME_WORDS = ['income', 'e ardhur', 'të ardhura', 'te ardhura', 'ardhur', 'credit', 'cr', 'deposit'];
+
+export function normaliseType(raw = '') {
+  const v = String(raw || '').toLowerCase().trim();
+  return INCOME_WORDS.includes(v) ? 'income' : 'expense';
+}
+
+export function normaliseDate(raw = '') {
   const s = raw.trim();
   // YYYY-MM-DD already
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
@@ -54,33 +99,40 @@ function isValidRow(row) {
 // Older exports also carried Exchange Rate and Base Amount between Currency Code
 // and Date; columns are looked up by header name, so both layouts still parse.
 
-const APP_REQUIRED_HEADERS = ['title', 'type', 'amount', 'currency code'];
+// Resolved via HEADER_ALIASES, so an export made in Albanian re-imports too.
+const APP_REQUIRED_FIELDS = ['title', 'type', 'amount'];
 
 function isAppFormat(headers) {
-  const h = headers.map(s => s.toLowerCase().trim());
-  return APP_REQUIRED_HEADERS.every(key => h.includes(key));
+  return APP_REQUIRED_FIELDS.every(field => aliasIndex(headers, field) !== -1);
 }
 
 function parseAppFormat(rows) {
   const [headerRow, ...dataRows] = rows;
-  const h = headerRow.map(s => s.toLowerCase().trim());
-  const idx = key => h.indexOf(key);
+  const idx = field => aliasIndex(headerRow, field);
+
+  const iTitle = idx('title');
+  const iType = idx('type');
+  const iAmount = idx('amount');
+  const iCurrency = idx('currency');
+  const iDate = idx('date');
+  const iCategory = idx('category');
+  const iTags = idx('tags');
 
   return dataRows
     .filter(r => r.length >= headerRow.length)
     .map(r => {
-      const rawAmount = parseFloat(r[idx('amount')]);
-      const tagsStr = r[idx('tags')] || '';
+      const rawAmount = parseFloat(r[iAmount]);
+      const tagsStr = iTags !== -1 ? (r[iTags] || '') : '';
       return {
-        title:        (r[idx('title')] || '').trim(),
-        type:         normaliseType(r[idx('type')]),
+        title:        (r[iTitle] || '').trim(),
+        type:         normaliseType(r[iType]),
         amount:       Math.abs(rawAmount),
         // undefined when the CSV omits it, so the API stamps the user's
         // currency instead of silently labelling the rows EUR.
-        currencyCode: (r[idx('currency code')] || '').trim() || undefined,
+        currencyCode: iCurrency !== -1 ? ((r[iCurrency] || '').trim() || undefined) : undefined,
         exchangeRate: 1.0,
-        date:         normaliseDate(r[idx('date')]),
-        categoryName: (r[idx('category')] || '').trim(),
+        date:         iDate !== -1 ? normaliseDate(r[iDate]) : null,
+        categoryName: iCategory !== -1 ? (r[iCategory] || '').trim() : '',
         tags:         tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [],
       };
     })
