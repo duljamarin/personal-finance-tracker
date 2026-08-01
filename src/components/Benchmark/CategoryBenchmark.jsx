@@ -9,11 +9,13 @@ import Card from '../UI/Card';
 
 // Status -> design token color map (CSS vars; see chartColors / index.css).
 // on-track -> brand accent; over -> expense; under -> data.blue.
+// `new` means "no history to compare against yet" — a neutral fact, not a
+// problem, so it must not borrow the expense red that signals overspending.
 const STATUS_COLOR = {
   within: 'var(--c-brand-accent)',
   below: 'var(--c-data-blue)',
   above: 'var(--c-expense)',
-  new: 'var(--c-expense)',
+  new: 'var(--c-brand-accent)',
 };
 
 export default function CategoryBenchmark({ onReloadTrigger }) {
@@ -64,15 +66,17 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
           ),
         };
       case 'new':
+        // Neutral, not red: "no baseline yet" is a statement about how much
+        // history exists, not a judgement on the spending.
         return {
           label: t('benchmark.statusNew'),
-          pillClass: 'bg-expense-bg dark:bg-expense-tint text-expense',
-          borderClass: 'border-l-2 border-l-expense',
+          pillClass: 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white/70',
+          borderClass: 'border-l-2 border-l-surface-outline dark:border-l-surface-dark-outline',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
-          progressColor: 'var(--c-expense)',
+          progressColor: 'var(--c-brand-accent)',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           ),
         };
@@ -183,10 +187,21 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
 
         {/* Benchmarks list */}
         {(() => {
+          // Rows without history used to be filtered out entirely, so a first-run
+          // user saw nothing at all even though their spending had been computed.
+          // They are rendered now with their real current-month spend, labelled
+          // as having no baseline yet; the comparison appears next month.
           const benchmarksWithHistory = benchmarks.filter(b => b.months_with_data > 0);
-          const currentMonthOnly = benchmarks.length > 0 && benchmarksWithHistory.length === 0;
+          const hasAnyHistory = benchmarksWithHistory.length > 0;
+          // Everything with spending to show, history or not. Sorted by spend so
+          // the biggest categories lead on a first run.
+          const visible = hasAnyHistory
+            ? benchmarksWithHistory
+            : [...benchmarks]
+                .filter(b => Number(b.current_month_spending) > 0)
+                .sort((a, b) => Number(b.current_month_spending) - Number(a.current_month_spending));
 
-          if (benchmarks.length === 0) {
+          if (visible.length === 0) {
             return (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md flex items-center justify-center mx-auto mb-4">
@@ -204,43 +219,23 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
             );
           }
 
-          if (currentMonthOnly) {
-            return (
-              <div className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 bg-white dark:bg-surface-dark-card p-5">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-md bg-brand-600 flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-ink-primary dark:text-white mb-1">
-                      {t('benchmark.buildingBaseline')}
-                    </p>
-                    <p className="text-sm text-ink-muted dark:text-white/70 leading-relaxed">
-                      {t('benchmark.buildingBaselineDesc')}
-                    </p>
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-medium text-ink-muted dark:text-white/70">
-                          {t('benchmark.buildingBaselineProgress')}
-                        </span>
-                        <span className="text-xs font-semibold text-brand-600 dark:text-brand-400">50%</span>
-                      </div>
-                      <div className="h-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-full overflow-hidden">
-                        <div className="h-full w-1/2 bg-brand-600 dark:bg-brand-400 rounded-full" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
           return (
             <>
+              {/* First run: say plainly that the comparison is not available yet,
+                  instead of a progress bar with an invented percentage. */}
+              {!hasAnyHistory && (
+                <div className="mb-4 rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 bg-white dark:bg-surface-dark-card p-4">
+                  <p className="text-sm font-semibold text-ink-primary dark:text-white mb-1">
+                    {t('benchmark.buildingBaseline')}
+                  </p>
+                  <p className="text-sm text-ink-muted dark:text-white/70 leading-relaxed">
+                    {t('benchmark.buildingBaselineDesc')}
+                  </p>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {benchmarksWithHistory.map((benchmark) => {
+                {visible.map((benchmark) => {
                   const config = getStatusConfig(benchmark.status);
                   const progress = calculateProgress(
                     benchmark.current_month_spending,
@@ -282,8 +277,14 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                         </div>
                       </div>
 
-                      {/* Progress bar & Thresholds - locked for free users */}
-                      {isPremium ? (
+                      {/* No baseline yet: showing a 0 - 0 "typical range" and a
+                          0/month average would be worse than saying nothing, so
+                          state the situation instead. */}
+                      {benchmark.months_with_data === 0 ? (
+                        <p className="mt-2 text-xs text-ink-muted dark:text-white/70 leading-relaxed">
+                          {t('benchmark.noBaselineYet')}
+                        </p>
+                      ) : isPremium ? (
                         <>
                           <div className="mb-3">
                             <div className="h-2 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
