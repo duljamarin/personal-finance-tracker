@@ -10,7 +10,7 @@ import CSVImport from './CSVImport';
 import { translateCategoryName, getCategoryIcon } from '../../utils/categoryTranslation';
 import { CategoryIconSvg } from '../UI/CategoryIconSvg';
 import CustomSelect from '../UI/CustomSelect';
-import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions, addTransactionWithSplits, updateTransactionWithSplits, fetchTransactionSplits } from '../../utils/api';
+import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions, addTransactionWithSplits, updateTransactionWithSplits, fetchTransactionSplits, fetchSplitsForTransactions } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
@@ -61,6 +61,8 @@ export default function Transactions() {
   const [showAll, setShowAll] = useState(false);
   const [txToDelete, setTxToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  // transaction_id -> [{ category_id, categoryName, amount }], largest first
+  const [splitsByTx, setSplitsByTx] = useState({});
   const searchInputRef = useRef(null);
 
   // Process recurring transactions on component mount
@@ -83,6 +85,30 @@ export default function Transactions() {
     }).catch(() => {});
   }, []);
 
+  // Split transactions carry category_id = NULL on the parent row (the money
+  // belongs to the child rows), so without this the list shows them as
+  // uncategorised and the category filter never matches them. Loaded for every
+  // split transaction, not just the visible page, because filtering runs over
+  // the whole set. One batched query, refreshed when the data changes.
+  // Keyed on a joined id string so the effect only refires when the actual set
+  // of split transactions changes, not on every re-render of `items`.
+  const splitParentKey = useMemo(
+    () => items.filter(i => i.has_splits).map(i => i.id).sort().join(','),
+    [items]
+  );
+
+  useEffect(() => {
+    if (!splitParentKey) {
+      setSplitsByTx({});
+      return;
+    }
+    let cancelled = false;
+    fetchSplitsForTransactions(splitParentKey.split(','))
+      .then(map => { if (!cancelled) setSplitsByTx(map); })
+      .catch(e => console.error('Failed to load split categories:', e));
+    return () => { cancelled = true; };
+  }, [splitParentKey]);
+
   useEffect(() => {
     processRecurring();
   }, [processRecurring]);
@@ -93,7 +119,13 @@ export default function Transactions() {
       result = result.filter(i => i.date?.startsWith(yearFilter));
     }
     if (categoryFilter !== 'All') {
-      result = result.filter(i => i.category?.id === categoryFilter);
+      // A split transaction matches when ANY of its parts is in the category.
+      // Its own category_id is NULL, so matching only on that silently hid
+      // split rows from every category filter.
+      result = result.filter(i =>
+        i.category?.id === categoryFilter ||
+        (i.has_splits && (splitsByTx[i.id] || []).some(s => s.category_id === categoryFilter))
+      );
     }
     if (typeFilter && typeFilter !== 'all') {
       result = result.filter(i => i.type === typeFilter);
@@ -108,11 +140,16 @@ export default function Transactions() {
       result = result.filter(i =>
         i.title?.toLowerCase().includes(q) ||
         translateCategoryName(i.category?.name || '').toLowerCase().includes(q) ||
+        // Searching a category name should also surface split transactions
+        // that spend into it.
+        (i.has_splits && (splitsByTx[i.id] || []).some(s =>
+          translateCategoryName(s.categoryName || '').toLowerCase().includes(q)
+        )) ||
         (Array.isArray(i.tags) && i.tags.some(tag => tag.toLowerCase().includes(q)))
       );
     }
     return result;
-  }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery]);
+  }, [items, yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery, splitsByTx]);
 
   const INITIAL_DISPLAY_COUNT = 12;
   const visibleItems = useMemo(() => {
@@ -368,7 +405,11 @@ export default function Transactions() {
             <ul className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
               {visibleItems.map(item => {
                 const catName = item.category?.name || '';
-                const dotColor = colorFromName(catName || item.title || 'x');
+                // Split rows have no single category: label them with their
+                // parts (largest share first) so the column is never blank.
+                const itemSplits = item.has_splits ? (splitsByTx[item.id] || []) : [];
+                const splitNames = itemSplits.map(s => s.categoryName).filter(Boolean);
+                const dotColor = colorFromName(catName || splitNames[0] || item.title || 'x');
                 const amountStr = formatCurrency(Number(item.amount));
 
                 return (
@@ -401,6 +442,12 @@ export default function Transactions() {
                           {catName && (
                             <span className="text-xs text-ink-muted dark:text-white truncate">
                               {translateCategoryName(catName)}
+                            </span>
+                          )}
+                          {!catName && splitNames.length > 0 && (
+                            <span className="text-xs text-ink-muted dark:text-white truncate">
+                              {splitNames.slice(0, 2).map(translateCategoryName).join(', ')}
+                              {splitNames.length > 2 && ` +${splitNames.length - 2}`}
                             </span>
                           )}
                           {Array.isArray(item.tags) && item.tags.length > 0 && (

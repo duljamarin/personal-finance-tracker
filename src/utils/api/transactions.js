@@ -204,6 +204,52 @@ export async function fetchTransactionSplits(transactionId) {
   });
 }
 
+/**
+ * Splits for many transactions at once, keyed by transaction_id.
+ *
+ * A split transaction stores category_id = NULL on the parent row (the money
+ * belongs to the child rows, not to one category), so any list that wants to
+ * show or filter by category has to read the children. Fetching them per row
+ * would be one request per split transaction; this is a single `in` query,
+ * mirroring what budgetAlerts already does.
+ *
+ * Category names are E2E-encrypted, so the join is decrypted here and the
+ * caller receives plaintext names.
+ */
+export async function fetchSplitsForTransactions(transactionIds) {
+  return withAuthOrEmpty(async (user) => {
+    const ids = (transactionIds || []).filter(Boolean);
+    if (ids.length === 0) return {};
+
+    const supabase = await getSupabase();
+    const { data, error } = await supabase
+      .from('transaction_splits')
+      .select('id, transaction_id, category_id, amount, category:categories(id, name)')
+      .eq('user_id', user.id)
+      .in('transaction_id', ids);
+
+    if (error) throw error;
+
+    // NESTED_RELATIONS registers CATEGORY_EMBED for transaction_splits, so the
+    // joined category name comes back already decrypted.
+    const rows = await decryptRows('transaction_splits', data || []);
+
+    const byTx = {};
+    for (const row of rows) {
+      const entry = {
+        id: row.id,
+        category_id: row.category_id,
+        amount: Number(row.amount),
+        categoryName: row.category?.name || '',
+      };
+      (byTx[row.transaction_id] ||= []).push(entry);
+    }
+    // Largest share first, so a truncated chip list shows the dominant category.
+    for (const list of Object.values(byTx)) list.sort((a, b) => b.amount - a.amount);
+    return byTx;
+  });
+}
+
 export async function addTransactionWithSplits(transaction, splits) {
   return withAuth(async (user) => {
     const supabase = await getSupabase();
