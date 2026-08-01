@@ -842,20 +842,24 @@ function ToolsSection({ t }) {
         {/* Maps over TOOLS so a new tool appears here with no edit to this file.
             The first tool is the primary action (brand fill); the rest stay
             secondary/outlined so the pair reads as a hierarchy rather than two
-            buttons competing for the same attention. */}
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+            buttons competing for the same attention.
+
+            Grid, not flex-wrap: Albanian labels vary a lot in width, so wrapping
+            left a ragged 2 + 1 stair-step with the orphan at its own width. Equal
+            columns keep every button on the same grid regardless of label length. */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {TOOLS.map((tool, i) => (
             <Link
               key={tool.path}
               to={toolPath(tool.path, i18n.language)}
-              className={`group inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium rounded-md transition-colors ${
+              className={`group inline-flex items-center justify-center gap-2 text-center px-5 py-3 text-base font-medium rounded-md transition-colors ${
                 i === 0
                   ? 'bg-brand-600 hover:bg-brand-700 text-white'
                   : 'border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
               }`}
             >
               {t(tool.labelKey)}
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
+              <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
             </Link>
           ))}
         </div>
@@ -867,7 +871,7 @@ function ToolsSection({ t }) {
 function FinalCtaSection({ t, lang }) {
   const [ref, visible] = useReveal(0.1);
   return (
-    <section className="relative overflow-hidden bg-white dark:bg-surface-dark-card border-t border-surface-hairline dark:border-surface-dark-hairline py-28 sm:py-36">
+    <section className="relative overflow-hidden bg-white dark:bg-surface-dark-card py-28 sm:py-36">
       <div
         ref={ref}
         className={`relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
