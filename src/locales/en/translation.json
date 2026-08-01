@@ -1053,7 +1053,7 @@
     "statusBelow": "Spending Less",
     "statusWithin": "On Track",
     "statusAbove": "Spending More",
-    "statusNew": "New Category",
+    "statusNew": "No baseline yet",
     "thisMonth": "this month",
     "typical": "Typical range",
     "average": "Average",
@@ -1064,10 +1064,10 @@
     "loadError": "Unable to load spending insights. Please try again later.",
     "legendInfo": "Typical range is calculated based on your personal spending history (average ± variation)",
     "unlockPeriods": "Unlock multi-period trends",
-    "buildingBaseline": "Building Your Baseline",
-    "buildingBaselineDesc": "Great start! Add expenses from previous months too, or keep tracking and your personalized benchmarks will unlock once you have data from at least one completed month.",
-    "buildingBaselineProgress": "Month 1 of 2 complete",
-    "currentMonthOnly": "Current month only"
+    "buildingBaseline": "Your spending so far this month",
+    "buildingBaselineDesc": "Comparisons need at least one completed month of history. Import older transactions from your bank to get them straight away, or keep tracking and they appear next month.",
+    "currentMonthOnly": "Current month only",
+    "noBaselineYet": "This is what you spent here this month. Once a full month is behind you, this card shows whether that is high or low for you."
   },
   "healthScore": {
     "title": "Financial Health Score",

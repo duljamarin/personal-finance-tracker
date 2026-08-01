@@ -1053,7 +1053,7 @@
     "statusBelow": "Shpenzime të Ulëta",
     "statusWithin": "Në Rrugë të Drejtë",
     "statusAbove": "Shpenzime të Larta",
-    "statusNew": "Kategori e Re",
+    "statusNew": "Ende pa bazë",
     "thisMonth": "këtë muaj",
     "typical": "Diapazoni tipik",
     "average": "Mesatarja",
@@ -1064,10 +1064,10 @@
     "loadError": "Nuk mund të ngarkohen njohuritë e shpenzimeve. Ju lutem provoni përsëri më vonë.",
     "legendInfo": "Diapazoni tipik llogaritet bazuar në historinë tuaj personale të shpenzimeve (mesatarja ± variancioni)",
     "unlockPeriods": "Zhbllokoni trendet shumë-periodike",
-    "buildingBaseline": "Duke Ndërtuar Bazën Tuaj",
-    "buildingBaselineDesc": "Fillim i shkëlqyer! Shtoni gjithashtu shpenzime nga muajt e kaluar, ose vazhdoni të gjurmoni - njohuritë tuaja personale do të zhbllokohen kur të keni të dhëna nga të paktën një muaj i plotë.",
-    "buildingBaselineProgress": "Muaji 1 nga 2 i plotësuar",
-    "currentMonthOnly": "Vetëm muaji aktual"
+    "buildingBaseline": "Shpenzimet tuaja deri tani këtë muaj",
+    "buildingBaselineDesc": "Krahasimet kërkojnë të paktën një muaj të plotë historik. Importoni transaksione të vjetra nga banka për t'i marrë menjëherë, ose vazhdoni të regjistroni dhe shfaqen muajin tjetër.",
+    "currentMonthOnly": "Vetëm muaji aktual",
+    "noBaselineYet": "Kaq keni shpenzuar këtu këtë muaj. Kur të mbyllet një muaj i plotë, kjo kartë do t'ju tregojë nëse kjo shumë është e lartë apo e ulët për ju."
   },
   "healthScore": {
     "title": "Rezultati i Shëndetit Financiar",
