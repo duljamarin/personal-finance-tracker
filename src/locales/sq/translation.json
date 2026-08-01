@@ -1108,11 +1108,12 @@
     "howItWorks": "Si llogaritet ky rezultat?",
     "howItWorksHide": "Fshih shpjegimin",
     "pillarBudgetDesc": "Krahasojmë shpenzimet tuaja në çdo kategori me mesataren tuaj 6-mujore. Qëndrueshmëria ndaj buxhetit personal e mban këtë pikë lart.",
-    "pillarRatioDesc": "Mat sa nga të ardhurat tuaja mbani. Shpenzimi nën gjysmën e të ardhurave merr pikë maksimale - tejkalimi i tyre e ul rezultatin.",
+    "pillarRatioDesc": "Mat sa nga të ardhurat e këtij muaji mbani. Shpenzimi nën gjysmën merr pikë maksimale, tejkalimi i tyre e ul rezultatin.",
     "pillarStabilityDesc": "Shpërblen shpenzime të qëndrueshme gjatë 6 muajve të fundit. Luhatjet e mëdha nga muaji në muaj e ulin këtë rezultat.",
     "pillarSavingsDesc": "Gjurmon sa muaj nga 7 të fundit keni kursyer para. Qëndrueshmëria ka më shumë rëndësi se shuma.",
     "pillarWeight": "{{weight}}% e rezultatit tuaj",
-    "howItWorksSummary": "Rezultati juaj total ndërthur këto katër shtylla së bashku, të peshuar sipas rëndësisë. Rifreskohet automatikisht që të shihni gjithmonë pasqyrën më të fundit."
+    "howItWorksSummary": "Rezultati juaj total ndërthur këto katër shtylla së bashku, të peshuar sipas rëndësisë. Rifreskohet automatikisht që të shihni gjithmonë pasqyrën më të fundit.",
+    "descriptionForMonth": "Kontrolli i mirëqenies suaj financiare për {{month}}"
   },
   "goals": {
     "tag": "objektiv",

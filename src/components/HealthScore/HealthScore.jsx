@@ -8,7 +8,8 @@ import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import Card from '../UI/Card';
 
 export default function HealthScore({ onReloadTrigger, compact = false }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
   const { format: fmt } = useDisplayCurrency();
   const { isPremium, isTrialing } = useSubscription();
   const isPaid = isPremium || isTrialing;
@@ -119,6 +120,15 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
   }
 
   const scoreColors = getScoreColor(score.totalScore);
+  // monthDate is 'YYYY-MM-DD'; parsed as UTC parts so a timezone behind UTC
+  // cannot roll it back into the previous month.
+  const scoreMonthLabel = (() => {
+    const raw = score.monthDate;
+    if (!raw) return null;
+    const [y, m] = String(raw).split('-').map(Number);
+    if (!y || !m) return null;
+    return new Date(y, m - 1, 1).toLocaleDateString(dateLocale, { month: 'long', year: 'numeric' });
+  })();
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
   const displayScore = Math.min(score.totalScore, 100);
@@ -144,6 +154,9 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           <div>
             <p className={`text-xl font-semibold tracking-tight ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
             <p className="text-sm text-ink-muted dark:text-white">{t('healthScore.title')}</p>
+            {scoreMonthLabel && (
+              <p className="text-xs text-ink-muted dark:text-white/70 mt-0.5">{scoreMonthLabel}</p>
+            )}
           </div>
         </div>
       </Card>
@@ -170,8 +183,13 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
             <h2 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
               {t('healthScore.title')}
             </h2>
+            {/* Name the month the score is for. The headline figures (income,
+                expenses, ratio) are current-month only, so an undated score
+                reads as an all-time verdict on the user's finances. */}
             <p className="text-sm text-ink-muted dark:text-white mt-0.5">
-              {t('healthScore.description')}
+              {scoreMonthLabel
+                ? t('healthScore.descriptionForMonth', { month: scoreMonthLabel })
+                : t('healthScore.description')}
             </p>
           </div>
         </div>
@@ -288,9 +306,16 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
           </div>
         )}
 
-        {/* Quick stats */}
+        {/* Quick stats — current month only, unlike the volatility and savings
+            pillars above which look back 7 months. Labelled so the two are not
+            read as the same period. */}
         {isPaid && (
           <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
+            {scoreMonthLabel && (
+              <p className="eyebrow text-[10px] mb-3 text-center">
+                {scoreMonthLabel}
+              </p>
+            )}
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <p className="eyebrow text-[10px] mb-1">{t('healthScore.income')}</p>
