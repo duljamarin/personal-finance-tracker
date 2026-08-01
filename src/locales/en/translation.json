@@ -697,7 +697,7 @@
       "titleLine1": "Know where you stand,",
       "titleAccent": "month after month",
       "title": "Know where you stand, month after month",
-      "subtitle": "Your bank app shows last week. A spreadsheet only remembers what you type. This tells you where this month stands and whether you are improving, judged against your own history.",
+      "subtitle": "Your bank app lists transactions. A spreadsheet only remembers what you type into it. This tells you where this month stands and whether you are improving, judged against your own history.",
       "getStarted": "Start free",
       "signIn": "Sign in",
       "trust1": "Free to start, no card",
@@ -712,17 +712,17 @@
       "healthscore": {
         "eyebrow": "Financial health score",
         "title": "One number that says if this month is better",
-        "desc": "A 0 to 100 score built from your saving rate, how closely you kept your budgets, how steady your spending was, and how many months you finished in the positive. It moves when your habits move, so you can tell progress from a good week."
+        "desc": "A 0 to 100 score built from how closely you kept your budgets, how your spending compares to your income, how steady it was month to month, and how many months you finished in the positive. It moves when your habits move, so you can tell real progress from one good week."
       },
       "benchmarks": {
         "eyebrow": "Smart benchmarks",
         "title": "Know what is normal for you, and when you break it",
-        "desc": "Every category is measured against your own average of the last six months, not against strangers. Groceries flagged as high means high for you, which is the only comparison that should change what you do next."
+        "desc": "Every category is measured against your own past months, not against strangers. When groceries are flagged as high, it means high for you, and that is the only comparison that should change what you do next."
       },
       "budgets": {
         "eyebrow": "Monthly budgets",
         "title": "Find out you are overspending while you can still stop",
-        "desc": "Set a limit per category and watch it fill in real time, with a forecast of where the month ends if you keep going. Copy last month to set them all up at once instead of starting from an empty page."
+        "desc": "Set a limit per category and watch it fill in real time, with a forecast of where the month ends if you keep spending at this pace. You find out you are over while there is still time to do something about it."
       },
       "tracking": {
         "eyebrow": "Dashboard and categories",
@@ -906,7 +906,7 @@
       "savings": "Saving rate",
       "budget": "Budgets kept",
       "goals": "Goals on track",
-      "vsLastMonth": "vs your 6-month average",
+      "vsLastMonth": "compared with your own past months",
       "budgetItems": {
         "food": "Food and dining",
         "housing": "Housing and rent",

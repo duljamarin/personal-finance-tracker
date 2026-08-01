@@ -697,7 +697,7 @@
       "titleLine1": "Dini ku jeni,",
       "titleAccent": "muaj pas muaji",
       "title": "Dini ku jeni, muaj pas muaji",
-      "subtitle": "Aplikacioni i bankës ju tregon javën e shkuar. Tabela mban mend vetëm atë që shkruani vetë. Ky ju tregon ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj.",
+      "subtitle": "Aplikacioni i bankës ju rendit transaksionet. Tabela mban mend vetëm atë që shkruani vetë në të. Ky ju tregon ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj.",
       "getStarted": "Filloni falas",
       "signIn": "Identifikohuni",
       "trust1": "Falas për të filluar, pa kartë",
@@ -712,17 +712,17 @@
       "healthscore": {
         "eyebrow": "Rezultati i shëndetit financiar",
         "title": "Një numër që tregon nëse ky muaj është më i mirë",
-        "desc": "Një rezultat nga 0 në 100, i ndërtuar mbi normën tuaj të kursimit, sa afër qëndruat me buxhetet, sa të qëndrueshme ishin shpenzimet dhe sa muaj i mbyllët me plus. Lëviz kur lëvizin zakonet tuaja, kështu që dalloni përmirësimin e vërtetë nga një javë e mirë."
+        "desc": "Një rezultat nga 0 në 100, i ndërtuar mbi sa afër qëndruat me buxhetet, si krahasohen shpenzimet me të ardhurat tuaja, sa të qëndrueshme ishin nga muaji në muaj dhe sa muaj i mbyllët me plus. Lëviz kur lëvizin zakonet tuaja, kështu që dalloni përmirësimin e vërtetë nga një javë e mirë."
       },
       "benchmarks": {
         "eyebrow": "Krahasime të mençura",
         "title": "Njihni çfarë është normale për ju dhe kur e tejkaloni",
-        "desc": "Çdo kategori matet me mesataren tuaj të gjashtë muajve të fundit, jo me të huajt. Kur ushqimet shënohen si të larta, do të thotë të larta për ju, dhe ky është i vetmi krahasim që duhet të ndryshojë vendimin tuaj të radhës."
+        "desc": "Çdo kategori matet me muajt tuaj të shkuar, jo me të huajt. Kur ushqimet shënohen si të larta, do të thotë të larta për ju, dhe ky është i vetmi krahasim që duhet të ndryshojë vendimin tuaj të radhës."
       },
       "budgets": {
         "eyebrow": "Buxhete mujore",
         "title": "Kuptoni se po e teproni sa jeni ende në kohë",
-        "desc": "Vendosni një limit për çdo kategori dhe shikoni si mbushet në kohë reale, me një parashikim se ku mbyllet muaji nëse vazhdoni me këtë ritëm. Kopjoni muajin e kaluar për t'i vendosur të gjitha njëherësh."
+        "desc": "Vendosni një limit për çdo kategori dhe shikoni si mbushet në kohë reale, me një parashikim se ku mbyllet muaji nëse vazhdoni me këtë ritëm. E merrni vesh që e keni tepruar sa jeni ende në kohë ta ndreqni."
       },
       "tracking": {
         "eyebrow": "Paneli dhe kategoritë",
@@ -906,7 +906,7 @@
       "savings": "Norma e kursimit",
       "budget": "Buxhete të respektuara",
       "goals": "Qëllime në rrugë të mbarë",
-      "vsLastMonth": "kundrejt mesatares tuaj 6-mujore",
+      "vsLastMonth": "krahasuar me muajt tuaj të shkuar",
       "budgetItems": {
         "food": "Ushqim dhe restorante",
         "housing": "Banesë dhe qira",
