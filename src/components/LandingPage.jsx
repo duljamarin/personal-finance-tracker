@@ -832,11 +832,11 @@ function ToolsSection({ t }) {
     <section className="py-20 sm:py-24 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
       <div
         ref={ref}
-        className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
       >
         <Eyebrow>{t('landing.tools.eyebrow')}</Eyebrow>
         <SectionHeading className="mb-5">{t('landing.tools.title')}</SectionHeading>
-        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl">
+        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl mx-auto">
           {t('landing.tools.desc')}
         </p>
         {/* Maps over TOOLS so a new tool appears here with no edit to this file.
@@ -844,15 +844,17 @@ function ToolsSection({ t }) {
             secondary/outlined so the pair reads as a hierarchy rather than two
             buttons competing for the same attention.
 
-            Grid, not flex-wrap: Albanian labels vary a lot in width, so wrapping
-            left a ragged 2 + 1 stair-step with the orphan at its own width. Equal
-            columns keep every button on the same grid regardless of label length. */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            Buttons size to their own labels and center as a group, sharing the
+            vertical axis of the heading above. Not an equal-column grid: the
+            Albanian labels differ enough in length that equal columns wrap the
+            longest onto two lines while its neighbours stay on one, which makes
+            the row read as uneven. */}
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-3">
           {TOOLS.map((tool, i) => (
             <Link
               key={tool.path}
               to={toolPath(tool.path, i18n.language)}
-              className={`group inline-flex items-center justify-center gap-2 text-center px-5 py-3 text-base font-medium rounded-md transition-colors ${
+              className={`group inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap px-5 py-3 text-base font-medium rounded-md transition-colors ${
                 i === 0
                   ? 'bg-brand-600 hover:bg-brand-700 text-white'
                   : 'border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
