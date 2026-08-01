@@ -13,12 +13,10 @@ export function toCSV(items, t, fallbackCurrency = 'EUR') {
     t('transactions.type'),
     t('transactions.amount'),
     t('currency.code'),
-    t('currency.exchangeRate'),
-    t('currency.baseAmount'),
     t('transactions.date'),
     t('transactions.category'),
     t('transactions.tagsLabel'),
-    t('common.recurring')
+    t('transactions.isRecurring')
   ]
   
   const rows = items.map((e, i) => {
@@ -35,9 +33,7 @@ export function toCSV(items, t, fallbackCurrency = 'EUR') {
     
     const amount = e.amount ?? ''
     const currencyCode = e.currency_code || fallbackCurrency
-    const exchangeRate = e.exchange_rate ?? '1.0'
-    const baseAmount = e.base_amount ?? e.amount ?? ''
-    
+
     let dateStr = ''
     if (e.date) {
       const d = (e.date instanceof Date) ? e.date : new Date(e.date)
@@ -52,7 +48,7 @@ export function toCSV(items, t, fallbackCurrency = 'EUR') {
     const tags = Array.isArray(e.tags) ? e.tags.join(', ').replace(/"/g, '""') : ''
     const isRecurring = e.source_recurring_id ? t('common.yes', 'Yes') : t('common.no', 'No')
 
-    return `${id},"${title}","${typeTranslated}",${amount},"${currencyCode}",${exchangeRate},${baseAmount},"${dateStr}","${category}","${tags}","${isRecurring}"`
+    return `${id},"${title}","${typeTranslated}",${amount},"${currencyCode}","${dateStr}","${category}","${tags}","${isRecurring}"`
   })
   
   return [headers.join(','), ...rows].join('\r\n')

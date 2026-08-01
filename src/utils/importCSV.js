@@ -50,13 +50,15 @@ function isValidRow(row) {
 }
 
 // ─── App-own export format ──────────────────────────────────────────────────
-// Columns: ID | Title | Type | Amount | Currency Code | Exchange Rate | Base Amount | Date | Category | Tags
+// Columns: ID | Title | Type | Amount | Currency Code | Date | Category | Tags | Recurring
+// Older exports also carried Exchange Rate and Base Amount between Currency Code
+// and Date; columns are looked up by header name, so both layouts still parse.
 
-const APP_HEADERS = ['id', 'title', 'type', 'amount', 'currency code', 'exchange rate', 'base amount', 'date', 'category', 'tags'];
+const APP_REQUIRED_HEADERS = ['title', 'type', 'amount', 'currency code'];
 
 function isAppFormat(headers) {
   const h = headers.map(s => s.toLowerCase().trim());
-  return APP_HEADERS.slice(1, 5).every(key => h.includes(key));
+  return APP_REQUIRED_HEADERS.every(key => h.includes(key));
 }
 
 function parseAppFormat(rows) {
@@ -65,7 +67,7 @@ function parseAppFormat(rows) {
   const idx = key => h.indexOf(key);
 
   return dataRows
-    .filter(r => r.length >= 8)
+    .filter(r => r.length >= headerRow.length)
     .map(r => {
       const rawAmount = parseFloat(r[idx('amount')]);
       const tagsStr = r[idx('tags')] || '';

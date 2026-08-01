@@ -18,13 +18,14 @@ const mockT = (key) => {
     'transactions.type': 'Type',
     'transactions.amount': 'Amount',
     'currency.code': 'Currency',
-    'currency.exchangeRate': 'Exchange Rate',
-    'currency.baseAmount': 'Base Amount (EUR)',
     'transactions.date': 'Date',
     'transactions.category': 'Category',
     'transactions.tagsLabel': 'Tags',
+    'transactions.isRecurring': 'Recurring',
     'transactions.income': 'Income',
     'transactions.expense': 'Expense',
+    'common.yes': 'Yes',
+    'common.no': 'No',
   };
   return map[key] || key;
 };
@@ -110,10 +111,33 @@ describe('toCSV', () => {
     expect(lines[0]).toContain('Title');
   });
 
-  it('uses base_amount as fallback when not provided', () => {
-    const items = [{ title: 'Test', type: 'expense', amount: 99, date: '2025-01-01', tags: [] }];
+  it('omits exchange rate and base amount columns', () => {
+    const csv = toCSV(mockItems, mockT);
+    expect(csv).not.toContain('Exchange Rate');
+    expect(csv).not.toContain('Base Amount');
+    // 0.92 / 2300 only ever appeared via the removed columns
+    expect(csv).not.toContain('0.92');
+    expect(csv).not.toContain('2300');
+  });
+
+  it('marks rows created from a recurring transaction as Yes', () => {
+    const items = [
+      { title: 'Rent', type: 'expense', amount: 500, date: '2025-01-01', tags: [], source_recurring_id: 'rec-1' },
+      { title: 'Coffee', type: 'expense', amount: 3, date: '2025-01-02', tags: [] },
+    ];
     const csv = toCSV(items, mockT);
-    expect(csv).toContain('99');
+    const lines = csv.split('\r\n');
+    expect(lines[0].endsWith('Recurring')).toBe(true);
+    expect(lines[1].endsWith('"Yes"')).toBe(true);
+    expect(lines[2].endsWith('"No"')).toBe(true);
+  });
+
+  it('emits one column per header', () => {
+    const csv = toCSV(mockItems, mockT);
+    const lines = csv.split('\r\n');
+    expect(lines[0].split(',')).toHaveLength(9);
+    // amount is unquoted, every other field is quoted
+    expect(lines[1]).toBe('1,"Grocery shopping","Expense",45.5,"EUR","2025-01-15","Food & Dining","food, groceries","No"');
   });
 });
 
