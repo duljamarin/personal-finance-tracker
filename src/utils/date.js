@@ -1,5 +1,18 @@
 // ─── Date helpers ────────────────────────────────────────────────────────────
 
+/**
+ * i18n language tag -> Intl locale for date formatting.
+ *
+ * Must match on prefix, not equality. i18n.js sets `nonExplicitSupportedLngs`,
+ * so a browser reporting `sq-AL` gets Albanian translations while i18n.language
+ * keeps the full tag — an `=== 'sq'` test then falls through to en-US and
+ * renders "August 2026" inside an otherwise Albanian sentence. Prefix matching
+ * is what the rest of the app already uses for language checks.
+ */
+export function getDateLocale(language) {
+  return String(language || '').toLowerCase().startsWith('sq') ? 'sq-AL' : 'en-US';
+}
+
 export function toISODate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');

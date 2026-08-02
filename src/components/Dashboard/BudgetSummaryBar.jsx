@@ -5,10 +5,11 @@ import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import Card from '../UI/Card';
 import { progressColor } from '../../utils/chartColors';
+import { getDateLocale } from '../../utils/date';
 
 export default function BudgetSummaryBar({ maxItems = 5, reloadTrigger }) {
   const { t, i18n } = useTranslation();
-  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
+  const dateLocale = getDateLocale(i18n.language);
   const now = new Date();
   const monthLabel = now.toLocaleDateString(dateLocale, { month: 'long', year: 'numeric' });
 

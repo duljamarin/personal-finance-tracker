@@ -11,6 +11,7 @@ import { useToast } from '../../context/ToastContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useCrypto } from '../../context/CryptoContext';
 import { useFormModal } from '../../hooks/useFormModal';
+import { getDateLocale } from '../../utils/date';
 import RecurringForm from './RecurringForm';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
@@ -18,7 +19,7 @@ import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 export default function RecurringPage() {
   const { t, i18n } = useTranslation();
   const { format: formatCurrency } = useDisplayCurrency();
-  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
+  const dateLocale = getDateLocale(i18n.language);
   const fmtDate = (str) => {
     if (!str) return '-';
     return new Date(str).toLocaleDateString(dateLocale, { year: 'numeric', month: 'short', day: 'numeric' });

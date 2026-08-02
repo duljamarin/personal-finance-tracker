@@ -28,7 +28,8 @@ function getTimeGreeting(t) {
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
-  const isSq = i18n.language === 'sq';
+  // Prefix match, not equality: `sq-AL` is Albanian too (see getDateLocale).
+  const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
   const formatTodayLabel = () => {
     const d = new Date();
     if (!isSq) {

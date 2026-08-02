@@ -5,11 +5,12 @@ import { fetchHealthScore, fetchHealthScoreHistory } from '../../utils/api';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
+import { getDateLocale } from '../../utils/date';
 import Card from '../UI/Card';
 
 export default function HealthScore({ onReloadTrigger, compact = false }) {
   const { t, i18n } = useTranslation();
-  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
+  const dateLocale = getDateLocale(i18n.language);
   const { format: fmt } = useDisplayCurrency();
   const { isPremium, isTrialing } = useSubscription();
   const isPaid = isPremium || isTrialing;

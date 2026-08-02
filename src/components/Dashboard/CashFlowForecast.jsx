@@ -16,6 +16,7 @@ import { useSubscription } from '../../context/SubscriptionContext';
 import { fetchRecurringTransactions, calculateNextDate } from '../../utils/api';
 import useDarkMode from '../../hooks/useDarkMode';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
+import { getDateLocale } from '../../utils/date';
 
 const HORIZONS = [30, 60, 90];
 const PREMIUM_HORIZONS = [60, 90];
@@ -128,7 +129,7 @@ function ForecastTooltip({ active, payload, label }) {
 export default function CashFlowForecast() {
   const { t, i18n } = useTranslation();
   const { format: fmtCurrency } = useDisplayCurrency();
-  const dateLocale = i18n.language === 'sq' ? 'sq-AL' : 'en-US';
+  const dateLocale = getDateLocale(i18n.language);
   const { net, transactions } = useTransactions();
   const { isPremium, isTrialing } = useSubscription();
   const isPaid = isPremium || isTrialing;
