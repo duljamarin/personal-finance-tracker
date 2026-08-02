@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { fetchCategoryBenchmarks } from '../../utils/api';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useCrypto } from '../../context/CryptoContext';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import Card from '../UI/Card';
@@ -23,14 +24,20 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
   // Benchmark figures come back EUR-normalized from the RPC.
   const { format: formatCurrency } = useDisplayCurrency();
   const { isPremium } = useSubscription();
+  const { status: cryptoStatus } = useCrypto();
   const [months, setMonths] = useState(1);
 
   // Free users are always locked to 1-month view
   const effectiveMonths = isPremium ? months : 1;
 
+  // cryptoStatus is a dep so the benchmarks refetch when the user unlocks after
+  // a restored session. Without it the first fetch runs while the keyring is
+  // still 'locked', category names decrypt to locked placeholders, and the card
+  // keeps showing them until a manual refresh. Same reload-on-unlock pattern as
+  // TransactionContext and RecurringPage.
   const { data: benchmarks, loading, error } = useAsyncData(
     () => fetchCategoryBenchmarks(effectiveMonths),
-    [effectiveMonths, onReloadTrigger],
+    [effectiveMonths, onReloadTrigger, cryptoStatus],
     []
   );
 
