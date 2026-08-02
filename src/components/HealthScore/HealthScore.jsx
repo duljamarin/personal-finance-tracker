@@ -127,7 +127,11 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
     if (!raw) return null;
     const [y, m] = String(raw).split('-').map(Number);
     if (!y || !m) return null;
-    return new Date(y, m - 1, 1).toLocaleDateString(dateLocale, { month: 'long', year: 'numeric' });
+    const label = new Date(y, m - 1, 1).toLocaleDateString(dateLocale, { month: 'long', year: 'numeric' });
+    // Albanian (and most non-English locales) lowercase month names: "gusht 2026".
+    // Uppercase the first letter so the label reads as a proper noun in both
+    // languages. locale-aware so 'i' maps correctly outside en/sq too.
+    return label.charAt(0).toLocaleUpperCase(dateLocale) + label.slice(1);
   })();
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
