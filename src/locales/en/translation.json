@@ -946,6 +946,7 @@
     "Healthcare": "Healthcare",
     "Investments": "Investments",
     "Salary": "Salary",
+    "Uncategorized": "Uncategorized",
     "Shopping": "Shopping",
     "Transportation": "Transportation",
     "Utilities": "Utilities",
@@ -1426,7 +1427,7 @@
       "showFewerCategories": "Show fewer categories"
     },
     "reveal": {
-      "salaryTitle": "Salary",
+      "incomeTitle": "Income",
       "continue": "Continue",
       "goToDashboard": "Go to my dashboard",
       "scoreEyebrow": "Your starting score",

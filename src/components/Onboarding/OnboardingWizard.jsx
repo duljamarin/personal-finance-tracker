@@ -136,8 +136,13 @@ export default function OnboardingWizard() {
 
       let seededRecurring = 0;
 
-      // --- Ensure an Uncategorized fallback if any bill lacks a category ---
-      const needsUncategorized = validExpenses.some((e) => !e.categoryId);
+      // --- Ensure an Uncategorized fallback if any seeded row lacks a category ---
+      // Income needs it too: the wizard never asks what KIND of income this is,
+      // and it can't be assumed — salary, freelance, rent, pension are all
+      // plausible. Seeding a hardcoded "Salary" would assert something we don't
+      // know, so the income rows get Uncategorized like any other uncategorized
+      // row and the user recategorises later.
+      const needsUncategorized = validExpenses.some((e) => !e.categoryId) || incomeNum > 0;
       let uncategorizedCategory = null;
       if (needsUncategorized) {
         uncategorizedCategory = localCategories.find((c) => c.name.toLowerCase() === 'uncategorized');
@@ -172,10 +177,10 @@ export default function OnboardingWizard() {
       // --- Income: monthly recurring template + its first instance ---
       if (incomeNum > 0) {
         const template = await seed('income recurring', () => addRecurringTransaction({
-          title: t('onboarding.reveal.salaryTitle'),
+          title: t('onboarding.reveal.incomeTitle'),
           amount: incomeNum,
           type: 'income',
-          categoryId: null,
+          categoryId: uncategorizedCategory?.id ?? null,
           currencyCode: currency,
           exchangeRate: rate,
           frequency: 'monthly',
@@ -191,10 +196,10 @@ export default function OnboardingWizard() {
         // second copy of this same date later.
         if (template?.id) {
           await seed('income transaction', () => addTransaction({
-            title: t('onboarding.reveal.salaryTitle'),
+            title: t('onboarding.reveal.incomeTitle'),
             amount: incomeNum,
             type: 'income',
-            categoryId: null,
+            categoryId: uncategorizedCategory?.id ?? null,
             date: incomeStartStr,
             currencyCode: currency,
             exchangeRate: rate,

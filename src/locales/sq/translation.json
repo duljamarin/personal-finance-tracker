@@ -946,6 +946,7 @@
     "Healthcare": "Shëndetësi",
     "Investments": "Investime",
     "Salary": "Pagë",
+    "Uncategorized": "Pa kategori",
     "Shopping": "Blerje",
     "Transportation": "Transport",
     "Utilities": "Shërbime",
@@ -1426,7 +1427,7 @@
       "showFewerCategories": "Shfaq më pak kategori"
     },
     "reveal": {
-      "salaryTitle": "Paga",
+      "incomeTitle": "Të ardhura",
       "continue": "Vazhdo",
       "goToDashboard": "Shko te paneli im",
       "scoreEyebrow": "Pikët e tua fillestare",

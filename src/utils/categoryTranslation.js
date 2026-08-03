@@ -26,6 +26,10 @@ const DEFAULT_CATEGORIES = [
   'Communication',
   'Home & Garden',
   'Kids & Family',
+  // Not seeded with the defaults, but created on demand by the onboarding
+  // wizard as the fallback for rows whose category the user never chose.
+  // Listed here so it translates instead of rendering literal English.
+  'Uncategorized',
 ];
 
 
