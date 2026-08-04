@@ -47,3 +47,6 @@ lerna-debug.log*
 # Logs
 logs/
 *.log
+
+# Local-only analytics / funnel queries (never committed)
+analytics/
