@@ -247,7 +247,7 @@ export default function BudgetsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <span className="text-lg font-semibold text-ink-primary dark:text-white min-w-[160px] text-center">
+        <span className="text-lg font-semibold text-ink-primary dark:text-white min-w-0 sm:min-w-[160px] text-center">
           {t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`)} {selectedYear}
         </span>
         <button

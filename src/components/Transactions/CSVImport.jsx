@@ -266,7 +266,7 @@ export default function CSVImport({ categories, onImportComplete }) {
 
           {/* Preview Table */}
           {previewData.length > 0 && (
-            <div className="max-h-96 overflow-auto">
+            <div className="max-h-96 overflow-auto overflow-x-auto">
               <h3 className="text-sm font-semibold mb-2 text-ink-primary dark:text-white">
                 {t('import.preview')} ({previewData.slice(0, 10).length} {t('import.of')} {previewData.length})
               </h3>

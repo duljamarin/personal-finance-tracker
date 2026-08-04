@@ -50,3 +50,6 @@ logs/
 
 # Local-only analytics / funnel queries (never committed)
 analytics/
+
+test-results/
+e2e/screenshots/

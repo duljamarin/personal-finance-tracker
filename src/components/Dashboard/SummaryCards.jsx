@@ -78,7 +78,7 @@ export default function SummaryCards({ totalIncome, totalExpense, net, loading }
             {showSkeleton ? (
               <div className="h-9 bg-surface-hairline dark:bg-surface-dark-hairline rounded-md w-2/3 animate-pulse" />
             ) : (
-              <p className={`text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight leading-none ${valueTone(card.tone)}`}>
+              <p className={`min-w-0 [overflow-wrap:anywhere] text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight leading-none ${valueTone(card.tone)}`}>
                 {formatCurrency(card.value)}
               </p>
             )}

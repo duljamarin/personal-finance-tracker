@@ -127,7 +127,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
           <div className="p-4">
             <p className="eyebrow mb-1">{card.label}</p>
             <p
-              className={`font-semibold tracking-tight text-lg ${toneClass(card.tone)}`}
+              className={`min-w-0 [overflow-wrap:anywhere] font-semibold tracking-tight text-lg ${toneClass(card.tone)}`}
               style={card.tone === 'expense' ? { color: EXPENSE_COLOR } : undefined}
             >
               {formatValue(card.value, card.format)}

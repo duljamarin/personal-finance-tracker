@@ -37,10 +37,10 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
       <div className="p-4 sm:p-6">
         {/* Header: category name + action buttons */}
         <div className="flex items-start justify-between mb-3">
-          <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
+          <h3 className="min-w-0 [overflow-wrap:anywhere] font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
             {translateCategoryName(budget.category?.name || '')}
           </h3>
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-shrink-0">
             <button
               onClick={() => onEdit(budget)}
               className="p-2 text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 transition"

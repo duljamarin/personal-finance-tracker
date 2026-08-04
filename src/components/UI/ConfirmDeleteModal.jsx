@@ -23,7 +23,7 @@ export default function ConfirmDeleteModal({
           {title}
         </h3>
         {itemName && (
-          <p className="text-sm text-ink-muted dark:text-white mb-2">
+          <p className="min-w-0 [overflow-wrap:anywhere] text-sm text-ink-muted dark:text-white mb-2">
             <span className="font-medium text-ink-secondary dark:text-white">{itemName}</span>
           </p>
         )}

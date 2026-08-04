@@ -23,7 +23,7 @@ export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, de
         {initial}
       </span>
 
-      <span className="text-sm font-medium text-center text-ink-primary dark:text-white leading-tight line-clamp-2">
+      <span className="w-full min-w-0 [overflow-wrap:anywhere] text-sm font-medium text-center text-ink-primary dark:text-white leading-tight line-clamp-2">
         {displayName}
       </span>
 

@@ -37,13 +37,13 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
     <Card className="hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors duration-200">
       <div className="p-4 sm:p-6">
         <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <div
-                className="w-3 h-3 rounded-full"
+                className="w-3 h-3 rounded-full flex-shrink-0"
                 style={{ backgroundColor: goal.color }}
               />
-              <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
+              <h3 className="min-w-0 [overflow-wrap:anywhere] font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
                 {goal.name}
               </h3>
             </div>
