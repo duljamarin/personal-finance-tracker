@@ -31,4 +31,15 @@ export const APP_CONFIG = {
   FREE_GOAL_LIMIT: 10,
   GRACE_PERIOD_DAYS: 30,
   TRIAL_DAYS: 7,
+
+  // Dashboard quota bar visibility. The bar stays hidden until the user is
+  // this far into their monthly transaction allowance, so a new user is never
+  // shown a cap before they have seen any value from the app.
+  QUOTA_VISIBLE_AT_FRACTION: 0.7,
 };
+
+// Transaction count at which the dashboard quota bar becomes visible.
+// Derived, never hardcoded: changing FREE_TRANSACTION_LIMIT alone moves this.
+export const QUOTA_VISIBLE_AT = Math.ceil(
+  APP_CONFIG.FREE_TRANSACTION_LIMIT * APP_CONFIG.QUOTA_VISIBLE_AT_FRACTION
+);

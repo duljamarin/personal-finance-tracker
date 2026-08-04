@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { fetchCategories, addCategory, bulkImportTransactions } from '../../utils/api';
-import UpgradeBanner from '../Subscription/UpgradeBanner';
 import EncryptionPromptBanner from '../Encryption/EncryptionPromptBanner';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
+import { QUOTA_VISIBLE_AT } from '../../config/app';
 import HealthScore from '../HealthScore/HealthScore';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import SummaryCards from './SummaryCards';
@@ -79,18 +79,22 @@ export default function Dashboard() {
         </div>
       )}
 
-      <UpgradeBanner />
       <EncryptionPromptBanner />
 
-      {/* Transaction usage counter (free plan only). No scopeNote needed: the
-          label itself already says "this month". */}
-      <div className="mb-4">
-        <FreePlanUsageCounter
-          used={monthlyTransactionCount}
-          limit={transactionLimit}
-          labelKey="freePlanCounter.transactions"
-        />
-      </div>
+      {/* Transaction usage counter (free plan only). Hidden entirely until the
+          user is QUOTA_VISIBLE_AT transactions in — below that it is noise, and
+          showing a cap before any value has been delivered reads as a paywall.
+          The sidebar plan card is the single permanent upgrade surface.
+          No scopeNote needed: the label itself already says "this month". */}
+      {monthlyTransactionCount >= QUOTA_VISIBLE_AT && (
+        <div className="mb-4">
+          <FreePlanUsageCounter
+            used={monthlyTransactionCount}
+            limit={transactionLimit}
+            labelKey="freePlanCounter.transactions"
+          />
+        </div>
+      )}
 
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
