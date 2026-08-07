@@ -60,7 +60,7 @@ A comprehensive reference of every JavaScript (ES6+) and React feature used in t
 52. [Environment Variables (import.meta.env)](#52-environment-variables-importmetaenv)
 53. [localStorage & sessionStorage](#53-localstorage--sessionstorage)
 54. [Dynamic Script Loading](#54-dynamic-script-loading)
-55. [Supabase Real-Time Subscriptions](#55-supabase-real-time-subscriptions)
+55. [Supabase Real-Time — Deliberately Disabled](#55-supabase-real-time--deliberately-disabled)
 56. [Tailwind CSS - Dark Mode with Class Strategy](#56-tailwind-css--dark-mode-with-class-strategy)
 57. [Vitest & React Testing Library](#57-vitest--react-testing-library)
 58. [PapaParse - CSV Parsing](#58-papaparse--csv-parsing)
@@ -70,6 +70,16 @@ A comprehensive reference of every JavaScript (ES6+) and React feature used in t
 62. [IndexedDB](#62-indexeddb)
 63. [Publish-Subscribe Pattern](#63-publish-subscribe-pattern)
 64. [Typed Arrays & Base64 Encoding](#64-typed-arrays--base64-encoding)
+65. [React - memo (Render Memoization)](#65-react--memo-render-memoization)
+66. [React - useTransition (Concurrent Rendering)](#66-react--usetransition-concurrent-rendering)
+67. [Web Locks API (navigator.locks)](#67-web-locks-api-navigatorlocks)
+68. [IntersectionObserver](#68-intersectionobserver)
+69. [requestAnimationFrame (Frame-Synced Animation)](#69-requestanimationframe-frame-synced-animation)
+70. [Intl.NumberFormat (Locale-Aware Formatting)](#70-intlnumberformat-locale-aware-formatting)
+
+> **Companion document:** PostgreSQL and Supabase backend features are documented separately in
+> [SUPABASE_POSTGRES_FEATURES.md](SUPABASE_POSTGRES_FEATURES.md) — RLS, policies, triggers,
+> SECURITY DEFINER functions, Edge Functions, and webhook handling.
 
 ---
 
@@ -266,10 +276,17 @@ className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-all duration
 newErrors[`split_${idx}_category`] = 'transactions.categoryError';
 ```
 
-**Supabase channel names**:
+**Building a month-key string** from numeric parts, zero-padded:
 ```js
-// src/components/Budgets/BudgetsPage.jsx
-const channel = supabase.channel(`budgets-live-${user.id}-${selectedYear}-${selectedMonth}`);
+// src/utils/finance/budgetAlerts.js
+const monthKeyStr = `${year}-${String(month).padStart(2, '0')}`;
+const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
+```
+
+**PostgREST JSONB filter paths** — the operator string itself is interpolated:
+```js
+// src/utils/finance/notify.js
+query = query.eq(`metadata->>${k}`, String(v));
 ```
 
 ---
@@ -854,11 +871,13 @@ const set = new Set(items.map(i => i.date?.slice(0, 4) || 'Unknown'));
 const years = ['All', ...Array.from(set).sort((a, b) => b.localeCompare(a))];
 ```
 
-**Detect mixed currencies**:
+**Exclusion list for a bulk email campaign** — `.has()` is O(1) per lookup, so filtering thousands of users stays linear:
 ```js
-// src/context/TransactionContext.jsx
-const currencies = new Set(transactions.map(tx => tx.currency_code || tx.currencyCode || 'EUR'));
-return currencies.size > 1;
+// supabase/functions/send-yearly-promo/index.ts
+const excludeEmails = new Set((body.exclude_emails ?? []).map((e) => e.toLowerCase()));
+const confirmedUsers = allUsers.filter(u =>
+  u.email && u.email_confirmed_at && !excludeEmails.has(u.email.toLowerCase())
+);
 ```
 
 **Duplicate detection in CSV import**:
@@ -1136,15 +1155,21 @@ A function that takes another function as an argument, returns a function, or bo
 
 ### How It Is Used in This Project
 
-**Auth wrapper** - accepts a function, calls it with the authenticated user:
+**Auth wrapper** - accepts a function, calls it with the authenticated user. Note `getSession()` (local cache) rather than `getUser()` (network call per invocation) — the comment records why:
 ```js
 // src/utils/api/_auth.js
 export async function withAuth(fn) {
-  const { data: { user } } = await supabase.auth.getUser();
+  const supabase = await getSupabase();
+  // getSession() reads from local cache — no HTTP round-trip per call.
+  // getUser() makes a network request every time and causes 429s under load.
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
   if (!user) throw new Error('Please log in to perform this action');
   return fn(user);
 }
 ```
+
+There is a paired variant, `withAuthOrEmpty`, that returns `[]` instead of throwing — used for reads, so a logged-out render shows an empty list rather than an error.
 
 **Custom hook returning a function** - `useAsyncAction` returns `executeAction`:
 ```js
@@ -1258,7 +1283,7 @@ When a variable name matches the desired property name, you can omit the colon: 
   totalIncome,
   totalExpense,
   net,
-  hasMixedCurrencies,
+  mutationCount,
   addTransaction,
   updateTransaction,
   deleteTransaction,
@@ -1567,13 +1592,13 @@ const years = useMemo(() => {
 }, [items]);
 ```
 
-**Mixed currency detection**:
+**Derived premium flags** — read straight from the server-computed RPC result rather than recomputed from raw status/date columns, so the client can never disagree with the database:
 ```js
-// src/context/TransactionContext.jsx
-const hasMixedCurrencies = useMemo(() => {
-  const currencies = new Set(transactions.map(tx => tx.currency_code || tx.currencyCode || 'EUR'));
-  return currencies.size > 1;
-}, [transactions]);
+// src/context/SubscriptionContext.jsx
+const isPremium = useMemo(() => {
+  if (!subscription) return false;
+  return subscription.is_premium === true;
+}, [subscription]);
 ```
 
 ---
@@ -2419,33 +2444,31 @@ document.head.appendChild(script);
 
 ---
 
-## 55. Supabase Real-Time Subscriptions
+## 55. Supabase Real-Time — Deliberately Disabled
 
 ### How It Works
 Supabase provides a `.channel()` API that subscribes to PostgreSQL changes via WebSockets. When rows are inserted, updated, or deleted, the callback fires in real time.
 
-### Why It Is Useful
-- Live updates without polling
-- Keeps UI in sync with the database across devices/tabs
-- Scoped by table and user for efficiency
-
-### How It Is Used in This Project
+### Why This Project Does Not Use It
+**This app uses no Realtime subscriptions.** A search for `.channel(` / `postgres_changes` across `src/` returns no matches, and the client disconnects the socket at creation time:
 
 ```js
-// src/components/Budgets/BudgetsPage.jsx
-const channel = supabase
-  .channel(`budgets-live-${user.id}-${selectedYear}-${selectedMonth}`)
-  .on('postgres_changes', {
-    event: '*',
-    schema: 'public',
-    table: 'transactions',
-    filter: `user_id=eq.${user.id}`
-  }, refreshExpenses)
-  .subscribe();
-
-// Cleanup
-return () => { supabase.removeChannel(channel); };
+// src/utils/supabaseClient.js
+// App does not use Realtime subscriptions. Disconnect immediately to prevent
+// the WebSocket from opening and causing 429 rate-limit errors in the console.
+supabase.realtime.disconnect();
 ```
+
+The one place that needs cross-component change notification (the sidebar unread badge) uses a plain in-tab event instead — synchronous, no socket, no rate-limit pressure:
+
+```js
+// src/utils/finance/notify.js
+if (typeof window !== 'undefined') {
+  window.dispatchEvent(new Event('notifications:changed'));
+}
+```
+
+Realtime would be the natural upgrade if the app ever needs live sync across devices or tabs. Today it would add a WebSocket for no user-visible gain. See §45 for the event-bus pattern that replaces it.
 
 ---
 
@@ -2863,6 +2886,206 @@ export async function encryptField(dek, str) {
 
 ---
 
+## 65. React - memo (Render Memoization)
+
+### How It Works
+`memo(Component)` wraps a component so React skips re-rendering it when its props are shallowly equal to the previous render. It is a bail-out hint, not a guarantee — state or context changes inside the component still cause a render.
+
+### Why It Is Useful
+- Long lists re-render on every parent state change; memoizing the row component stops that cascade
+- Pairs with `useCallback` — a memoized child only helps if its function props are identity-stable
+- Measurable win exactly where this project uses it: card components rendered once per record
+
+### How It Is Used in This Project
+
+**✅ Correctly used** — applied to the three list-item components, which are the ones actually rendered N times:
+
+```jsx
+// src/components/Goals/GoalCard.jsx
+export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelete }) {
+
+// src/components/Budgets/BudgetCard.jsx
+export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete }) {
+
+// src/components/Categories/CategoryCard.jsx
+export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, deleteLabel }) {
+```
+
+Note the discipline in the prop design: `CategoryCard` takes `editLabel`/`deleteLabel` as **strings** rather than calling `useTranslation()` internally. A translated string is a stable primitive, so the memo comparison succeeds; consuming context inside the component would defeat it.
+
+---
+
+## 66. React - useTransition (Concurrent Rendering)
+
+### How It Works
+`useTransition()` returns `[isPending, startTransition]`. Updates wrapped in `startTransition` are marked non-urgent: React keeps the UI responsive and can interrupt the transition render to handle urgent input. `isPending` is true while it is in flight.
+
+### Why It Is Useful
+- Keeps click and keystroke response fast when the resulting render is expensive
+- Directly targets the INP (Interaction to Next Paint) Core Web Vital
+- No debouncing hacks — React schedules the work rather than delaying it
+
+### How It Is Used in This Project
+
+**✅ Correctly used** — switching a chart's time range recomputes and redraws a Recharts SVG, which is expensive enough to block the click feedback. Marking it a transition keeps INP under the 200ms threshold (this is a documented project requirement in CLAUDE.md — do not revert to a direct `setRange`):
+
+```jsx
+// src/components/Dashboard/ChartWithTimeRange.jsx
+import { useState, useMemo, useTransition } from 'react';
+
+const [isPending, startTransition] = useTransition();
+...
+onClick={() => startTransition(() => setRange(r))}
+```
+
+---
+
+## 67. Web Locks API (navigator.locks)
+
+### How It Works
+`navigator.locks.request(name, options, callback)` acquires a named lock scoped to the browser origin — **across tabs**. With `{ ifAvailable: true }` the callback receives `null` instead of waiting when the lock is already held. The lock releases when the callback's returned promise settles.
+
+### Why It Is Useful
+- Prevents two open tabs from running the same one-shot job concurrently
+- Automatically released if a tab crashes or is closed — unlike a localStorage flag, which can strand
+- The only browser primitive that provides genuine cross-tab mutual exclusion
+
+### How It Is Used in This Project
+
+**✅ Correctly used** — the E2EE background migration rewrites every row of the user's data. Two tabs doing that simultaneously would race on the resume cursor. The pattern holds the lock by keeping a promise open, and bails out cleanly when another tab holds it:
+
+```js
+// src/utils/crypto/migrationRunner.js
+  let lockRelease = null;
+  if (typeof navigator !== 'undefined' && navigator.locks) {
+    const acquired = await new Promise((resolve) => {
+      navigator.locks.request('e2ee-migration', { ifAvailable: true }, (lock) => {
+        if (!lock) return resolve(false);
+        return new Promise((release) => {
+          lockRelease = release;
+          resolve(true);
+        });
+      });
+    });
+    if (!acquired) return; // another tab is already migrating
+  }
+```
+
+The same guard protects currency conversion (`src/utils/currencyConversion.js`, lock name `currency-conversion`).
+
+Both sites **feature-detect** (`navigator.locks &&`) and degrade to running unlocked, because the API is absent in jsdom — the test suite relies on that fallback:
+
+```js
+// src/utils/__tests__/currencyConversion.test.js
+  // navigator.locks is absent in jsdom; the runner treats that as "no lock
+```
+
+---
+
+## 68. IntersectionObserver
+
+### How It Works
+`new IntersectionObserver(callback, options)` asynchronously reports when an observed element enters or leaves the viewport. The callback runs off the main-thread scroll path, unlike a `scroll` listener that calls `getBoundingClientRect()`.
+
+### Why It Is Useful
+- Scroll-triggered effects with no scroll handler and no layout thrashing
+- Lazy-triggering animations only when the user can actually see them
+- `unobserve()` after firing makes a one-shot reveal trivial
+
+### How It Is Used in This Project
+
+Used on the landing page to start an animation when the section scrolls into view:
+
+```js
+// src/components/LandingPage.jsx
+const obs = new IntersectionObserver(([entry]) => {
+```
+
+**✅ Correctly used** — it is paired with a `prefers-reduced-motion` check, so the animation is skipped entirely for users who have asked for less motion:
+
+```js
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+```
+
+---
+
+## 69. requestAnimationFrame (Frame-Synced Animation)
+
+### How It Works
+`requestAnimationFrame(cb)` schedules `cb` before the browser's next repaint, passing a high-resolution timestamp. Driving animation from the elapsed time (rather than a fixed per-frame delta) keeps the duration correct regardless of frame rate. `cancelAnimationFrame` stops a pending frame.
+
+### Why It Is Useful
+- Synced to the display refresh: smoother than `setInterval` and automatically paused in background tabs
+- Timestamp-driven easing gives identical duration on 60Hz and 120Hz displays
+- Cancellable, so a React cleanup can stop a mid-flight animation
+
+### How It Is Used in This Project
+
+**✅ Correctly used** — `useCountUp` animates a number with an ease-out cubic curve. It computes progress from elapsed time, cancels on unmount, and honors `prefers-reduced-motion` by jumping straight to the target:
+
+```js
+// src/hooks/useCountUp.js
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      setValue(to);
+      return;
+    }
+
+    const tick = (now) => {
+      if (startTimeRef.current === null) startTimeRef.current = now;
+      const elapsed = now - startTimeRef.current;
+      const t = Math.min(1, elapsed / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setValue(from + (target - from) * eased);
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setValue(target);      // snap to exact target — avoids float drift
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+```
+
+The final `setValue(target)` matters: floating-point easing would otherwise leave the counter at something like `29999.97` instead of `30000`.
+
+`requestAnimationFrame` is also used to defer a focus call until after paint in `src/components/ToolsNav.jsx`.
+
+---
+
+## 70. Intl.NumberFormat (Locale-Aware Formatting)
+
+### How It Works
+`new Intl.NumberFormat(locale, options)` creates a reusable formatter that renders numbers with locale-correct grouping and decimal separators. Constructing it once and reusing it is markedly faster than calling `toLocaleString()` per value.
+
+### Why It Is Useful
+- Correct separators per locale without hand-rolled string manipulation
+- Built into the browser — no formatting library in the bundle
+- Module-level construction amortizes the (relatively expensive) setup cost
+
+### How It Is Used in This Project
+
+**✅ Correctly used** — formatters are created **once at module scope**, not inside the render function, so re-renders reuse them:
+
+```js
+// src/components/Tools/SalaryCalculator.jsx
+const fmt = new Intl.NumberFormat('sq-AL', { maximumFractionDigits: 0 });
+
+// src/components/Tools/LoanCalculator.jsx
+const fmtALL = new Intl.NumberFormat('sq-AL', { maximumFractionDigits: 0 });
+const fmtEUR = new Intl.NumberFormat('sq-AL', { maximumFractionDigits: 0 });
+```
+
+Also used in `src/components/Tools/FreelancerCalculator.jsx`. These are the public SEO calculator tools, where output is always Albanian-locale formatted.
+
+---
+
 ## Summary Table
 
 | # | Feature | Category | Primary Purpose |
@@ -2921,7 +3144,7 @@ export async function encryptField(dek, str) {
 | 52 | import.meta.env | Vite | Environment configuration |
 | 53 | localStorage/sessionStorage | Web API | Client-side persistence |
 | 54 | Dynamic Script Loading | Web API | On-demand third-party SDKs |
-| 55 | Real-Time Subscriptions | Supabase | Live database change notifications |
+| 55 | Realtime (disabled) | Supabase | Deliberate non-use — event bus instead |
 | 56 | Dark Mode (class) | Tailwind | User-controlled theme switching |
 | 57 | Vitest + RTL | Testing | Unit and component testing |
 | 58 | PapaParse | Library | CSV file parsing |
@@ -2931,3 +3154,9 @@ export async function encryptField(dek, str) {
 | 62 | IndexedDB | Web API | Persisting the unlocked crypto key across sessions |
 | 63 | Publish-Subscribe | JS Pattern | Bridging non-React code with React state |
 | 64 | Typed Arrays & Base64 | Web API | Binary/text interchange for crypto |
+| 65 | memo | React | Skip re-renders of list-item components |
+| 66 | useTransition | React | Non-urgent updates; keeps INP under 200ms |
+| 67 | Web Locks API | Web API | Cross-tab mutual exclusion for one-shot jobs |
+| 68 | IntersectionObserver | Web API | Viewport-triggered effects without scroll handlers |
+| 69 | requestAnimationFrame | Web API | Frame-synced, duration-correct animation |
+| 70 | Intl.NumberFormat | Web API | Locale-aware number formatting |
