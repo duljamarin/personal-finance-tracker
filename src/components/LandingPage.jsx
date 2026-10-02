@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { TOOLS, toolPath, localizedPath } from '../lib/tools';
+import HeroPreview from './Landing/HeroPreview';
 import {
   TrendingUp, Target, Activity, RefreshCw,
   Globe, Bell, Tag, FileText,
@@ -188,55 +189,6 @@ function MiniBenchmarks() {
   );
 }
 
-// ── Hero visual ──────────────────────────────────────────────────────────────
-// The metaphor the whole page rests on: tangled threads (a spreadsheet, a bank
-// feed) resolving into ordered parallel lines. Decorative, so alt="" keeps it
-// out of the accessibility tree — the H1 beside it already carries the meaning.
-//
-// The source art is a wide 16:9 with the composition weighted left and generous
-// empty margins, so it is cropped to a shorter band and anchored left rather
-// than letterboxed with dead space.
-function HeroVisual() {
-  // A missing/failed art file renders nothing rather than a broken-image icon:
-  // the hero still reads perfectly without it.
-  const [failed, setFailed] = useState(false);
-  if (failed) return null;
-
-  return (
-    /* The wrapper paints the page colour explicitly: mix-blend-screen
-       composites against the nearest painted backdrop, and without one the
-       image's black field stayed visible as a faint rectangle. */
-    <div
-      className="animate-hero-in mt-12 sm:mt-16 max-w-5xl mx-auto bg-surface-page dark:bg-surface-dark-page"
-      style={{ animationDelay: '440ms' }}
-      aria-hidden="true"
-    >
-      {/* The art is dark green strokes on a baked-in light #FAFAF7 field.
-          In light mode that field matches the page exactly, so the image drops
-          in as-is. In dark mode it would be a bright slab, so the whole image is
-          inverted (light field -> near-black, matching the page) and the hue is
-          rotated back so the strokes stay green rather than becoming magenta.
-          One asset, no second file to keep in sync. */}
-      <img
-        src="/ads/threads-order-from-chaos.webp"
-        alt=""
-        width={1672}
-        height={941}
-        // Above the fold, so it must not be lazy: it competes with the H1 for
-        // LCP and a late load would shift the sections below.
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-        onError={() => setFailed(true)}
-        // `screen` on the inverted image drops its near-black field into the
-        // page (black is the identity for screen), removing the faint rectangle
-        // that invert alone leaves behind against #0A0A0B.
-        className="w-full h-[150px] sm:h-[210px] lg:h-[250px] object-cover object-left dark:invert dark:hue-rotate-180 dark:brightness-110 dark:mix-blend-screen"
-      />
-    </div>
-  );
-}
-
 // ── Feature card shell (hero features) ───────────────────────────────────────
 function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = false }) {
   const [ref, visible] = useReveal(0.1);
@@ -379,14 +331,16 @@ export default function LandingPage() {
     <div className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section
-        className="relative overflow-hidden bg-surface-page dark:bg-surface-dark-page"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
+      {/* Asymmetric: the promise on the left, the product itself on the right.
+          (No edge bleed: PublicLayout's max-w-7xl container would clip it.)
+          The preview is static HTML (Landing/HeroPreview), so the H1 stays the
+          LCP element. */}
+      <section className="relative overflow-hidden bg-surface-page dark:bg-surface-dark-page">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 lg:pt-24 pb-20 sm:pb-24 grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 lg:gap-14 items-center">
           {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="min-w-0">
             <h1
-              className="animate-hero-in font-display text-[3.25rem] sm:text-6xl lg:text-[4.5rem] font-bold text-ink-primary dark:text-white leading-[0.98] tracking-[-0.035em] mb-6"
+              className="animate-hero-in font-display text-[2.85rem] sm:text-6xl lg:text-[4.25rem] font-bold text-ink-primary dark:text-white leading-[0.98] tracking-[-0.035em] mb-6"
               style={{ animationDelay: '40ms' }}
             >
               {t('landing.hero.titleLine1')}{' '}
@@ -394,43 +348,52 @@ export default function LandingPage() {
             </h1>
 
             <p
-              className="animate-hero-in text-lg sm:text-xl font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl mx-auto"
+              className="animate-hero-in text-lg font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-lg"
               style={{ animationDelay: '140ms' }}
             >
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center justify-center gap-3 mb-8" style={{ animationDelay: '240ms' }}>
+            <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center gap-3 mb-10" style={{ animationDelay: '240ms' }}>
               <Link
                 to={localizedPath('/register', i18n.language)}
-                className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
               >
                 {t('landing.hero.getStarted')}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
-              {/* Sign-in matches the primary button's geometry so the pair sits
-                  on one optical line, but stays outlined: only the fill marks
-                  the primary action. */}
+              {/* Outlined: only the fill marks the primary action. */}
               <Link
                 to={localizedPath('/login', i18n.language)}
-                className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-white/25 text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-white/5 hover:border-ink-muted/50 dark:hover:border-white/40 transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-white/25 text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-white/5 hover:border-ink-muted/50 dark:hover:border-white/40 transition-colors"
               >
                 {t('landing.hero.signIn')}
               </Link>
             </div>
 
-            <div className="animate-hero-in flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted dark:text-white" style={{ animationDelay: '340ms' }}>
-              {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
-                <span key={label} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2.5} />
+            {/* Editorial metadata bar: three ruled cells under a hairline, not
+                a row of check-icon pills. Stacks on narrow screens. */}
+            <ul
+              className="animate-hero-in grid sm:grid-cols-3 gap-y-2 border-t border-surface-outline dark:border-white/25 pt-4 font-display text-[13px] font-medium leading-snug text-ink-muted dark:text-white list-none m-0 p-0 max-w-lg"
+              style={{ animationDelay: '340ms' }}
+            >
+              {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label, i) => (
+                <li
+                  key={label}
+                  className={i === 0 ? 'sm:pr-4' : 'sm:px-4 sm:border-l border-surface-outline dark:border-white/25'}
+                >
                   {label}
-                </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Visual restatement of the promise: chaos resolving into order. */}
-          <HeroVisual />
+          <div
+            className="animate-hero-in min-w-0"
+            style={{ animationDelay: '300ms' }}
+          >
+            <HeroPreview />
+          </div>
         </div>
       </section>
 
@@ -679,10 +642,9 @@ function PricingPreviewSection({ t }) {
         <div className="grid sm:grid-cols-2 gap-5 mb-8">
           {/* Free */}
           <div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-8">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white text-xs font-semibold">
-                {t('landing.pricingPreview.free.label')}
-              </span>
+            <div className="mb-6 pb-6 border-b border-surface-hairline dark:border-surface-dark-hairline">
+              <h3 className="font-display text-lg font-semibold text-ink-primary dark:text-white">{t('landing.pricingPreview.free.label')}</h3>
+              <p className="mt-3 text-4xl font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white leading-none">{t('pricing.free')}</p>
             </div>
             <ul className="space-y-3">
               {freeItems.map(key => (
@@ -694,11 +656,17 @@ function PricingPreviewSection({ t }) {
             </ul>
           </div>
           {/* Premium */}
-          <div className="rounded-[10px] border border-brand-600/50 ring-1 ring-brand-600/20 bg-white dark:bg-surface-dark-card p-8 relative overflow-hidden">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="inline-flex items-center justify-center min-w-[200px] px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold">
-                {t('landing.pricingPreview.premium.label')}
-              </span>
+          <div className="rounded-[10px] border border-brand-600 dark:border-brand-400/60 bg-white dark:bg-surface-dark-card p-8 relative overflow-hidden">
+            <div className="mb-6 pb-6 border-b border-surface-hairline dark:border-surface-dark-hairline">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-display text-lg font-semibold text-ink-primary dark:text-white">{t('landing.pricingPreview.premium.label')}</h3>
+                <span className="px-2 py-0.5 rounded-md bg-brand-600 text-white text-[11px] font-medium">{t('pricing.freeTrial')}</span>
+              </div>
+              <p className="mt-3 leading-none">
+                <span className="text-4xl font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">{t('pricing.yearlyPrice')}</span>
+                <span className="ml-1 text-sm text-ink-muted dark:text-white">{t('pricing.perYear')}</span>
+              </p>
+              <p className="mt-2 text-sm text-ink-muted dark:text-white">{t('pricing.yearlyPerMonth')}</p>
             </div>
             <ul className="space-y-3">
               {premiumItems.map(key => (
@@ -881,7 +849,7 @@ function FinalCtaSection({ t, lang }) {
         <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-5">
           {t('landing.finalCta.title')}
         </h2>
-        <p className="text-lg text-ink-muted dark:text-white/80 leading-relaxed max-w-lg mx-auto mb-10">
+        <p className="text-lg text-ink-muted dark:text-white leading-relaxed max-w-lg mx-auto mb-10">
           {t('landing.finalCta.desc')}
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">

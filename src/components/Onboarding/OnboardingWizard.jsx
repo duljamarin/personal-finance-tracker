@@ -382,12 +382,12 @@ export default function OnboardingWizard() {
       (typeof window !== 'undefined' && localStorage.getItem('username')) || '';
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-surface-page dark:bg-surface-dark-page px-4">
-        <div className="animate-celebrate inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-brand-600 rounded-md shadow-lg shadow-brand-500/30 mb-6">
+        <div className="animate-celebrate inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-brand-600 rounded-md mb-6">
           <svg viewBox="0 0 24 24" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] text-center mb-3">
+        <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] text-center mb-3">
           {username
             ? `${t('onboarding.wizard.successTitle').replace(/!$/, '')}, ${username}!`
             : t('onboarding.wizard.successTitle')}
@@ -418,13 +418,13 @@ export default function OnboardingWizard() {
       <div className="relative w-full max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-md mb-5 shadow-lg shadow-brand-500/30">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-md mb-5">
             <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
             {t('onboarding.wizard.title')}
           </h1>
           <p className="text-base text-ink-muted dark:text-white max-w-md mx-auto">
@@ -513,14 +513,12 @@ export default function OnboardingWizard() {
               <Button
                 onClick={handleFinish}
                 disabled={submitting}
-                className="shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
               >
                 {submitting ? t('onboarding.wizard.submitting') : t('onboarding.wizard.finish')}
               </Button>
             ) : (
               <Button
                 onClick={handleNext}
-                className="shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
               >
                 {t('onboarding.wizard.next')}
               </Button>

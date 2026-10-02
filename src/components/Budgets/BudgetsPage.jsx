@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Card from '../UI/Card';
 import Button from '../UI/Button';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import EmptyState from '../UI/EmptyState';
@@ -16,7 +15,10 @@ import { useFormModal } from '../../hooks/useFormModal';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
-import { getValueColorClass } from '../../utils/classNames';
+import { progressColor } from '../../utils/chartColors';
+import PageHeader from '../UI/PageHeader';
+import MonthSwitcher from '../UI/MonthSwitcher';
+import { Plus, Copy, PieChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function BudgetsPage() {
@@ -190,39 +192,48 @@ export default function BudgetsPage() {
     return <LoadingSpinner size="md" className="min-h-[60vh]" />;
   }
 
+  // Days left + daily allowance only make sense while the month is running.
+  const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+  const daysLeft = isCurrentMonth ? daysInMonth - today.getDate() + 1 : null;
+  const perDay = isCurrentMonth && totalRemaining > 0 ? totalRemaining / daysLeft : null;
+  const monthLabel = `${t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`)} ${selectedYear}`;
+  const overallRatio = totalBudgeted > 0 ? totalSpent / totalBudgeted : 0;
+  const canCreate = canCreateBudget(budgets.length);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-display font-bold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
-            <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            {t('budgets.title')}
-          </h1>
-          <p className="text-ink-secondary dark:text-white mt-1">{t('budgets.subtitle')}</p>
+    <div className="space-y-6">
+      <PageHeader
+        title={t('budgets.title')}
+        subtitle={t('budgets.subtitle')}
+        actions={
+          <>
+            <Button variant="secondary" onClick={handleCopyFromPrevious} disabled={!canCreate}>
+              <span className="inline-flex items-center gap-2">
+                <Copy className="w-4 h-4" strokeWidth={1.75} />
+                {t('budgets.copyFromPrevious')}
+              </span>
+            </Button>
+            <Button onClick={openBudgetForm} disabled={!canCreate}>
+              <span className="inline-flex items-center gap-2">
+                <Plus className="w-4 h-4" strokeWidth={2} />
+                {t('budgets.addBudget')}
+              </span>
+            </Button>
+          </>
+        }
+        className="!mb-0"
+      >
+        <div className="mt-4">
+          <MonthSwitcher
+            label={monthLabel}
+            onPrev={goToPrevMonth}
+            onNext={goToNextMonth}
+            prevLabel={t('budgets.prevMonth')}
+            nextLabel={t('budgets.nextMonth')}
+            badge={isCurrentMonth ? t('budgets.currentMonth') : null}
+          />
         </div>
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={handleCopyFromPrevious}
-            disabled={!canCreateBudget(budgets.length)}
-            className={`px-4 py-2 text-sm font-medium border rounded-md transition ${
-              canCreateBudget(budgets.length)
-                ? 'text-brand-700 dark:text-brand-400 font-semibold bg-surface-subtle dark:bg-surface-dark-subtle hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline border-surface-outline dark:border-surface-dark-outline'
-                : 'text-ink-muted dark:text-white bg-surface-subtle dark:bg-surface-dark-subtle border-surface-hairline dark:border-surface-dark-hairline cursor-not-allowed'
-            }`}
-          >
-            {t('budgets.copyFromPrevious')}
-          </button>
-          <Button
-            onClick={openBudgetForm}
-            disabled={!canCreateBudget(budgets.length)}
-          >
-            + {t('budgets.addBudget')}
-          </Button>
-        </div>
-      </div>
+      </PageHeader>
 
       {/* Free plan usage counter */}
       {/* Budgets are stored per year+month, so the cap applies to the month the
@@ -237,94 +248,21 @@ export default function BudgetsPage() {
         })}
       />
 
-      {/* Month Navigator */}
-      <div className="flex items-center justify-center gap-4 bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-3">
-        <button
-          onClick={goToPrevMonth}
-          className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-white transition"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <span className="text-lg font-semibold text-ink-primary dark:text-white min-w-0 sm:min-w-[160px] text-center">
-          {t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`)} {selectedYear}
-        </span>
-        <button
-          onClick={goToNextMonth}
-          className="p-2 rounded-md hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle text-ink-secondary dark:text-white transition"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-        {isCurrentMonth && (
-          <span className="ml-2 text-xs font-semibold text-brand-600 dark:text-brand-400 bg-surface-subtle dark:bg-surface-dark-subtle px-2 py-0.5 rounded-full">
-            {t('budgets.currentMonth')}
-          </span>
-        )}
-      </div>
-
       {/* Free tier limit banner */}
       {!isPremium && budgets.length >= budgetLimit && (
         <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-ink-muted dark:text-white/70">
+          <p className="text-sm text-ink-muted dark:text-white">
             {t('limits.budgetLimitReached', { limit: budgetLimit })}
           </p>
-          <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-500 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
           </Link>
         </div>
       )}
 
-      {/* Summary Stats */}
-      {budgets.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalBudgeted')}</p>
-              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
-                {fmt(totalBudgeted)}
-              </p>
-            </div>
-          </Card>
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalSpent')}</p>
-              <p className={`font-semibold tracking-tight text-2xl ${getValueColorClass(totalSpent, totalBudgeted, {
-                positive: 'text-expense dark:text-expense',
-                negative: 'text-ink-primary dark:text-white'
-              })}`}>
-                {fmt(totalSpent)}
-              </p>
-            </div>
-          </Card>
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.totalRemaining')}</p>
-              <p className={`font-semibold tracking-tight text-2xl ${getValueColorClass(totalRemaining, 0, {
-                positive: 'text-brand-600 dark:text-brand-500',
-                negative: 'text-expense dark:text-expense'
-              })}`}>
-                {fmt(totalRemaining)}
-              </p>
-            </div>
-          </Card>
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('budgets.stats.percentUsed')}</p>
-              <p className={`font-semibold tracking-tight text-2xl ${percentUsed > 100 ? 'text-expense dark:text-expense' : percentUsed > 80 ? 'text-brand-700 dark:text-brand-500' : 'text-brand-600 dark:text-brand-500'}`}>
-                {percentUsed}%
-              </p>
-            </div>
-          </Card>
-        </div>
-      )}
-
-      {/* Budget Cards Grid or Empty State */}
       {budgets.length === 0 ? (
         <EmptyState
-          icon={<svg className="w-10 h-10 text-brand-600 dark:text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
+          icon={<PieChart className="w-5 h-5" strokeWidth={1.75} />}
           title={t('budgets.noData')}
           description={t('budgets.noDataDesc')}
           action={openBudgetForm}
@@ -332,19 +270,67 @@ export default function BudgetsPage() {
           limitText={!isPremium ? t('limits.freeLimit', { limit: budgetLimit }) : null}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {budgets.map(budget => (
-            <BudgetCard
-              key={budget.id}
-              budget={budget}
-              spent={expensesByCategory[budget.category_id] || 0}
-              isCurrentMonth={isCurrentMonth}
-              isFutureMonth={isFutureMonth}
-              onEdit={openBudgetEdit}
-              onDelete={handleDeleteBudget}
-            />
-          ))}
-        </div>
+        <>
+          {/* Month overview: one hero figure (what's left), one bar for the
+              whole month, then the supporting numbers. */}
+          <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div className="min-w-0">
+                <p className="eyebrow">{totalRemaining >= 0 ? t('budgets.leftToSpend') : t('budgets.overBudgetTotal')}</p>
+                <p className={`mt-2 [overflow-wrap:anywhere] text-4xl sm:text-[2.75rem] font-semibold tabular-nums tracking-tight leading-none ${totalRemaining < 0 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
+                  {fmt(Math.abs(totalRemaining))}
+                </p>
+                <p className="mt-3 text-sm text-ink-muted dark:text-white tabular-nums">
+                  {t('budgets.ofBudgeted', { spent: fmt(totalSpent), budgeted: fmt(totalBudgeted) })}
+                </p>
+              </div>
+              {daysLeft !== null && (
+                <div className="sm:text-right">
+                  <p className="text-sm font-medium text-ink-primary dark:text-white tabular-nums">
+                    {t('budgets.daysLeft', { count: daysLeft })}
+                  </p>
+                  {perDay !== null && (
+                    <p className="mt-1 text-sm text-ink-muted dark:text-white tabular-nums">
+                      {t('budgets.perDay', { amount: fmt(perDay) })}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="mt-5 flex items-center gap-3">
+              <div className="flex-1 h-2 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{ width: `${Math.min(100, overallRatio * 100)}%`, backgroundColor: progressColor(overallRatio) }}
+                />
+              </div>
+              <span className={`text-sm font-semibold tabular-nums ${percentUsed > 100 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
+                {percentUsed}%
+              </span>
+            </div>
+          </section>
+
+          {/* Category budgets as one list, not a wall of cards */}
+          <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline">
+              <h2 className="text-heading text-ink-primary dark:text-white">{t('budgets.categoriesHeading')}</h2>
+              <span className="text-xs text-ink-muted dark:text-white tabular-nums">{budgets.length}</span>
+            </div>
+            <div className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
+              {budgets.map(budget => (
+                <BudgetCard
+                  key={budget.id}
+                  budget={budget}
+                  spent={expensesByCategory[budget.category_id] || 0}
+                  isCurrentMonth={isCurrentMonth}
+                  isFutureMonth={isFutureMonth}
+                  onEdit={openBudgetEdit}
+                  onDelete={handleDeleteBudget}
+                />
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Add / Edit Modal */}

@@ -46,10 +46,10 @@ export default function ContributionForm({ goal, onSave, onClose }) {
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mb-2">
+      <h2 className="font-display text-title text-ink-primary dark:text-white mb-2">
         {t('goals.contributions.add')}
       </h2>
-      <p className="text-ink-secondary dark:text-white mb-6">
+      <p className="text-ink-muted dark:text-white mb-6">
         {goal.name}
       </p>
 
@@ -62,7 +62,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'add'
                 ? 'bg-brand-600 text-white'
-                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+                : 'bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
           >
             {t('goals.contributions.add')}
@@ -73,7 +73,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
               action === 'withdraw'
                 ? 'bg-expense text-white'
-                : 'bg-white dark:bg-surface-dark-card text-ink-secondary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+                : 'bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
             }`}
           >
             {t('goals.contributions.withdraw')}
@@ -105,7 +105,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
+          <label className="block text-sm font-medium text-ink-muted dark:text-white mb-1">
             {t('goals.contributions.note')}
           </label>
           <textarea

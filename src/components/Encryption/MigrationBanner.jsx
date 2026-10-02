@@ -23,7 +23,7 @@ export default function MigrationBanner() {
           {reversing ? t('encryption.migrationReversingTitle') : t('encryption.migrationTitle')}
         </p>
         {label && (
-          <p className="text-xs text-ink-muted dark:text-white/60 truncate">{label}</p>
+          <p className="text-xs text-ink-muted dark:text-white truncate">{label}</p>
         )}
       </div>
     </div>

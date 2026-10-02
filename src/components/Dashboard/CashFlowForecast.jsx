@@ -175,18 +175,18 @@ export default function CashFlowForecast() {
   const areaFill = endBalance >= 0 ? `${HEX.income}33` : `${HEX.expense}33`;
 
   return (
-    <div className="bg-white dark:bg-surface-dark-tertiary rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
+    <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline">
       {/* Header */}
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-ink-primary dark:text-white">
+          <h3 className="text-heading text-ink-primary dark:text-white">
             {t('cashFlow.title')}
           </h3>
           <p className="text-xs text-ink-muted dark:text-white mt-0.5">
             {t('cashFlow.subtitle')}
           </p>
         </div>
-        <div className="flex gap-1">
+        <div className="inline-flex p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
           {HORIZONS.map((h) => {
             const locked = PREMIUM_HORIZONS.includes(h) && !isPaid;
             return (
@@ -194,12 +194,13 @@ export default function CashFlowForecast() {
                 key={h}
                 onClick={() => !locked && setHorizon(h)}
                 title={locked ? t('cashFlow.premiumOnly') : undefined}
-                className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                aria-pressed={!locked && horizon === h}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-[5px] font-medium tabular-nums transition-colors ${
                   locked
-                    ? 'bg-surface-secondary dark:bg-surface-dark-elevated text-ink-muted/40 dark:text-white/40 cursor-not-allowed'
+                    ? 'text-ink-muted dark:text-white opacity-60 cursor-not-allowed'
                     : horizon === h
-                      ? 'bg-brand-600 text-white'
-                      : 'bg-surface-secondary dark:bg-surface-dark-elevated text-ink-muted dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-tertiary'
+                      ? 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white shadow-xs'
+                      : 'text-ink-muted dark:text-white hover:text-ink-primary'
                 }`}
               >
                 {t(`cashFlow.horizon.${h}`)}
@@ -214,32 +215,29 @@ export default function CashFlowForecast() {
         </div>
       </div>
 
-      {/* Summary pill */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
-          <p className="text-xs text-ink-muted dark:text-white">{t('cashFlow.trackedBalance')}</p>
-          <p className={`text-sm font-bold ${net >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
+      {/* Today -> projected, as two figures on one line */}
+      <div className="flex flex-wrap items-end gap-x-6 gap-y-3 mb-4">
+        <div>
+          <p className="eyebrow">{t('cashFlow.trackedBalance')}</p>
+          <p className={`mt-1 text-xl font-semibold tabular-nums tracking-tight ${net >= 0 ? 'text-ink-primary dark:text-white' : 'text-expense'}`}>
             {fmtCurrency(net, { compact: true })}
           </p>
-          <p className="text-[10px] text-ink-muted/60 dark:text-white mt-0.5">{t('cashFlow.trackedBalanceNote')}</p>
         </div>
-        <div className="text-ink-muted/50 dark:text-white/50 text-lg font-light">→</div>
-        <div className="flex-1 bg-surface-secondary dark:bg-surface-dark-elevated rounded-lg px-3 py-2">
-          <p className="text-xs text-ink-muted dark:text-white">{t(`cashFlow.projectedIn.${horizon}`)}</p>
-          <p className={`text-sm font-bold ${endBalance >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
+        <span className="pb-1 text-ink-muted dark:text-white/60" aria-hidden="true">→</span>
+        <div>
+          <p className="eyebrow">{t(`cashFlow.projectedIn.${horizon}`)}</p>
+          <p className={`mt-1 text-xl font-semibold tabular-nums tracking-tight ${endBalance >= 0 ? 'text-ink-primary dark:text-white' : 'text-expense'}`}>
             {fmtCurrency(endBalance, { compact: true })}
           </p>
         </div>
-        {delta !== 0 && (
-          <div className={`text-xs font-semibold px-2 py-1 rounded-full bg-surface-subtle dark:bg-surface-dark-subtle ${
-            delta >= 0
-              ? 'text-brand-600 dark:text-brand-400'
-              : 'text-expense'
-          }`}>
+        {/* Sub-unit deltas round to "-€0"; hide them. */}
+        {Math.abs(delta) >= 0.5 && (
+          <span className={`pb-1 text-sm font-semibold tabular-nums ${delta >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
             {delta > 0 ? '+' : ''}{fmtCurrency(delta, { compact: true })}
-          </div>
+          </span>
         )}
       </div>
+      <p className="-mt-2 mb-4 text-xs text-ink-muted dark:text-white">{t('cashFlow.trackedBalanceNote')}</p>
 
       {/* Chart */}
       {loading ? (
@@ -249,7 +247,7 @@ export default function CashFlowForecast() {
       ) : !hasRecurring ? (
         <div className="h-48 flex flex-col items-center justify-center text-center">
           <p className="text-sm text-ink-muted dark:text-white">{t('cashFlow.noRecurring')}</p>
-          <p className="text-xs text-ink-muted/60 dark:text-white mt-1">{t('cashFlow.noRecurringHint')}</p>
+          <p className="text-xs text-ink-muted dark:text-white mt-1">{t('cashFlow.noRecurringHint')}</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={220}>
@@ -260,7 +258,7 @@ export default function CashFlowForecast() {
                 <stop offset="95%" stopColor={areaColor} stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <CartesianGrid vertical={false} stroke={gridColor} strokeOpacity={0.6} />
             <XAxis
               dataKey="date"
               tick={{ fontSize: 11, fill: axisColor }}

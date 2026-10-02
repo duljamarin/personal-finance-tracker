@@ -35,7 +35,7 @@ export default function EmptyState({
           </div>
         )}
 
-        <h3 className="text-xl sm:text-2xl font-semibold text-ink-primary dark:text-white tracking-tight leading-tight mb-2">
+        <h3 className="text-heading text-ink-primary dark:text-white mb-1.5">
           {title}
         </h3>
 

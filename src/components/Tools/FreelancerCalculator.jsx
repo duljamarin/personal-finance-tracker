@@ -67,7 +67,7 @@ function AmountField({ id, label, hint, value, onChange, currency }) {
           {currency}
         </span>
       </div>
-      {hint && <p className="mt-1.5 text-xs text-ink-muted dark:text-white/60 leading-relaxed">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-ink-muted dark:text-white leading-relaxed">{hint}</p>}
     </div>
   );
 }
@@ -103,7 +103,7 @@ function YesNo({ question, value, onChange, t }) {
               className={`px-5 py-1.5 text-label rounded-control transition-colors focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
                 active
                   ? 'bg-brand-600 text-white font-semibold'
-                  : 'text-ink-muted dark:text-white/70 hover:text-ink-primary dark:hover:text-white'
+                  : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-white'
               }`}
             >
               {o.label}
@@ -120,7 +120,7 @@ function Row({ label, value, sign, emphasis = false }) {
     <div className={`flex items-baseline justify-between gap-4 py-2.5 ${
       emphasis ? 'border-t border-surface-hairline dark:border-surface-dark-hairline pt-3.5 mt-1' : ''
     }`}>
-      <span className={`text-body ${emphasis ? 'font-semibold text-ink-primary dark:text-white' : 'text-ink-muted dark:text-white/80'}`}>
+      <span className={`text-body ${emphasis ? 'font-semibold text-ink-primary dark:text-white' : 'text-ink-muted dark:text-white'}`}>
         {label}
       </span>
       <span className={`tabular-nums whitespace-nowrap ${
@@ -241,7 +241,7 @@ export default function FreelancerCalculator() {
         <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
           {t('freelancerCalc.title', { year: config.YEAR })}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed max-w-xl">
+        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
           {t('freelancerCalc.intro', { year: config.YEAR, until: config.ZERO_REGIME_UNTIL })}
         </p>
       </div>
@@ -259,7 +259,7 @@ export default function FreelancerCalculator() {
               />
             </div>
           ) : (
-            <span className="text-label text-ink-muted dark:text-white/60 tabular-nums">
+            <span className="text-label text-ink-muted dark:text-white tabular-nums">
               {t('freelancerCalc.taxYearWithValue', { year: config.LABEL })}
             </span>
           )}
@@ -329,14 +329,14 @@ export default function FreelancerCalculator() {
       {treatment.status === 'ZERO_REGIME' && (
         <div className="mt-6 bg-white dark:bg-surface-dark-card border-l-2 border-l-brand-600 dark:border-l-brand-400 border-t border-r border-b border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
           <div className="flex items-center gap-3 mb-1">
-            <p className="text-label text-ink-muted dark:text-white/60">{t('freelancerCalc.zero.headline')}</p>
+            <p className="text-label text-ink-muted dark:text-white">{t('freelancerCalc.zero.headline')}</p>
             <span className="px-2 py-0.5 text-xs font-semibold rounded-control bg-brand-600 text-white">
               {t('freelancerCalc.zero.badge')}
             </span>
           </div>
-          <p className="font-display text-[2.5rem] sm:text-[3rem] leading-none font-bold tabular-nums tracking-tight text-ink-primary dark:text-white">
+          <p className="text-[2.5rem] sm:text-[3rem] leading-none font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
             {money(zero.net)}
-            <span className="text-xl font-medium text-ink-muted dark:text-white/50 ml-2">{currency}</span>
+            <span className="text-xl font-medium text-ink-muted dark:text-white ml-2">{currency}</span>
           </p>
 
           <div className="mt-6">
@@ -361,12 +361,12 @@ export default function FreelancerCalculator() {
             <Row label={t('freelancerCalc.zero.rows.net')} value={zero.net} emphasis />
           </div>
 
-          <p className="mt-4 text-label text-ink-muted dark:text-white/60">
+          <p className="mt-4 text-label text-ink-muted dark:text-white">
             {t('freelancerCalc.zero.effectiveRate')}{' '}
             <span className="tabular-nums font-medium text-ink-primary dark:text-white">{pct(effectiveRate)}</span>
           </p>
 
-          <p className="mt-4 text-label text-ink-muted dark:text-white/70 leading-relaxed">
+          <p className="mt-4 text-label text-ink-muted dark:text-white leading-relaxed">
             {t('freelancerCalc.zero.positive', {
               until: config.ZERO_REGIME_UNTIL,
               contrib: money(contrib.total),
@@ -380,19 +380,19 @@ export default function FreelancerCalculator() {
           <h2 className="font-display text-heading text-ink-primary dark:text-white mb-3">
             {t('freelancerCalc.reclassified.title')}
           </h2>
-          <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed mb-5">
+          <p className="text-body text-ink-muted dark:text-white leading-relaxed mb-5">
             {t('freelancerCalc.reclassified.explain')}
           </p>
 
           {/* Indicative only — computed by the salary engine, not a take-home figure. */}
           <div className="p-4 rounded-container bg-surface-subtle dark:bg-surface-dark-subtle mb-5">
-            <p className="text-label text-ink-muted dark:text-white/70 mb-1">
+            <p className="text-label text-ink-muted dark:text-white mb-1">
               {t('freelancerCalc.reclassified.estimate', { income: money(income) })}
             </p>
             <p className="text-2xl font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
-              {money(reclassifiedTax)} <span className="text-base font-medium text-ink-muted dark:text-white/50">{currency}</span>
+              {money(reclassifiedTax)} <span className="text-base font-medium text-ink-muted dark:text-white">{currency}</span>
             </p>
-            <p className="mt-2 text-xs text-ink-muted dark:text-white/60 leading-relaxed">
+            <p className="mt-2 text-xs text-ink-muted dark:text-white leading-relaxed">
               {t('freelancerCalc.reclassified.estimateNote')}
             </p>
           </div>
@@ -405,7 +405,7 @@ export default function FreelancerCalculator() {
               {t('freelancerCalc.reclassified.cta')}
             </Link>
           )}
-          <p className="mt-4 text-label text-ink-muted dark:text-white/60 leading-relaxed">
+          <p className="mt-4 text-label text-ink-muted dark:text-white leading-relaxed">
             {t('freelancerCalc.reclassified.accountant')}
           </p>
         </div>
@@ -416,10 +416,10 @@ export default function FreelancerCalculator() {
           <h2 className="font-display text-heading text-ink-primary dark:text-white mb-3">
             {t('freelancerCalc.overTurnover.title', { limit: money(config.PROFIT_TAX_FREE_TURNOVER) })}
           </h2>
-          <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed mb-3">
+          <p className="text-body text-ink-muted dark:text-white leading-relaxed mb-3">
             {t('freelancerCalc.overTurnover.explain')}
           </p>
-          <p className="text-label text-ink-muted dark:text-white/60 leading-relaxed">
+          <p className="text-label text-ink-muted dark:text-white leading-relaxed">
             {t('freelancerCalc.overTurnover.accountant')}
           </p>
         </div>
@@ -431,7 +431,7 @@ export default function FreelancerCalculator() {
           <p className="text-label font-semibold text-ink-primary dark:text-white mb-1">
             {t('freelancerCalc.vat.title')}
           </p>
-          <p className="text-label text-ink-muted dark:text-white/70 leading-relaxed">
+          <p className="text-label text-ink-muted dark:text-white leading-relaxed">
             {t('freelancerCalc.vat.desc', { threshold: money(vat.threshold) })}
           </p>
         </div>
@@ -442,7 +442,7 @@ export default function FreelancerCalculator() {
         <h2 className="font-display text-heading text-ink-primary dark:text-white mb-4">
           {t('freelancerCalc.example.title', { income: money(example.income) })}
         </h2>
-        <div className="space-y-3 text-body text-ink-muted dark:text-white/80 leading-relaxed">
+        <div className="space-y-3 text-body text-ink-muted dark:text-white leading-relaxed">
           <p>
             {t('freelancerCalc.example.p1', {
               ceiling: money(config.PROFIT_TAX_FREE_TURNOVER),
@@ -466,13 +466,13 @@ export default function FreelancerCalculator() {
           </p>
         </div>
 
-        <p className="mt-6 text-label text-ink-muted dark:text-white/60 leading-relaxed">
+        <p className="mt-6 text-label text-ink-muted dark:text-white leading-relaxed">
           {t('freelancerCalc.disclaimer', { year: config.YEAR })}
         </p>
       </section>
 
       <div className="mt-10 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white/80 mb-4">
+        <p className="text-body text-ink-muted dark:text-white mb-4">
           {t('freelancerCalc.ctaText')}
         </p>
         <Link

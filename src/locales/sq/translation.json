@@ -33,7 +33,10 @@
       "loanCalculator": "Kalkulator kredie",
       "allTools": "Të gjitha mjetet",
       "toggle": "Shfaq menunë e mjeteve"
-    }
+    },
+    "groupMoney": "Paratë",
+    "groupPlanning": "Planifikimi",
+    "openMenu": "Hap menynë"
   },
   "common": {
     "cancel": "Anulo",
@@ -79,7 +82,20 @@
       "step2Desc": "Vizualizoni modelet e shpenzimeve me grafikë dhe përmbledhje.",
       "step3Title": "Arrini qëllimet tuaja",
       "step3Desc": "Vendosni buxhete dhe monitoroni shëndetin tuaj financiar me kalimin e kohës."
-    }
+    },
+    "overview": "Përmbledhje",
+    "balanceAllTime": "Bilanci",
+    "balanceNote": "Neto e të gjitha transaksioneve që keni regjistruar",
+    "incomeMonth": "Të ardhurat në {{month}}",
+    "spendingMonth": "Shpenzimet në {{month}}",
+    "savingsRate": "Norma e kursimit",
+    "savingsRateNote": "Pjesa e të ardhurave të këtij muaji që keni ruajtur",
+    "vsLastMonth": "{{value}} krahasuar me të njëjtat ditë të muajit të kaluar",
+    "noLastMonth": "Ende nuk ka me çfarë të krahasohet",
+    "spendingByCategory": "Shpenzimet sipas kategorisë",
+    "incomeBySource": "Të ardhurat sipas kategorisë",
+    "allTime": "Gjithë kohën",
+    "noIncomeYet": "Ende nuk ka të ardhura këtë muaj"
   },
   "cashFlow": {
     "title": "Parashikimi i Fluksit të Parasë",
@@ -158,7 +174,14 @@
     "templateGroceries": "Blerjet Javore",
     "templateSalary": "Rroga Mujore",
     "noTransactionsDesc": "Shtoni transaksionin e parë për të filluar gjurmimin e financave tuaja.",
-    "clearFilters": "Pastro të gjitha filtrat"
+    "clearFilters": "Pastro të gjitha filtrat",
+    "recent": "Transaksionet e fundit",
+    "viewAll": "Shiko të gjitha",
+    "today": "Sot",
+    "yesterday": "Dje",
+    "subtitle": "Çdo e ardhur dhe shpenzim që keni regjistruar",
+    "count_one": "{{count}} transaksion",
+    "count_other": "{{count}} transaksione"
   },
   "categories": {
     "title": "Kategoritë",
@@ -171,7 +194,11 @@
     "noCategories": "Nuk u gjetën kategori",
     "exists": "Kategoria ekziston tashmë",
     "deleteConfirm": "Fshirja e kësaj kategorie do të fshijë të gjitha transaksionet e lidhura. Jeni i sigurt?",
-    "searchPlaceholder": "Kërko kategoritë..."
+    "searchPlaceholder": "Kërko kategoritë...",
+    "subtitle": "Gruponi transaksionet që buxhetet dhe raportet të përputhen",
+    "txCount_one": "{{count}} transaksion",
+    "txCount_other": "{{count}} transaksione",
+    "spentThisMonth": "Shpenzuar këtë muaj"
   },
   "forms": {
     "save": "Ruaj",
@@ -395,7 +422,8 @@
       "oct": "Tet",
       "nov": "Nën",
       "dec": "Dhj"
-    }
+    },
+    "cashFlow": "Fluksi i parasë"
   },
   "toolsIndex": {
     "eyebrow": "Mjete falas",
@@ -913,6 +941,15 @@
         "entertainment": "Argëtim",
         "transport": "Transport"
       }
+    },
+    "preview": {
+      "label": "Pamje e panelit me të dhëna shembull",
+      "tx": {
+        "market": "Supermarket",
+        "salary": "Paga mujore",
+        "fuel": "Karburant",
+        "rent": "Qiraja"
+      }
     }
   },
   "currency": {
@@ -1044,7 +1081,16 @@
     "editInstanceNote": "Po modifikoni vetëm këtë instancë të transaksionit. Për të ndryshuar konfigurimin e rregullit të përsëritjes, shkoni tek faqja e Përsëritjeve.",
     "alsoUpdateTemplate": "Përditëso edhe shabllonin e përsëritjes për transaksionet e ardhshme",
     "templateUpdated": "Shablloni i përsëritjes u përditësua me sukses",
-    "templateUpdateError": "Dështoi përditësimi i shabllonit të përsëritjes"
+    "templateUpdateError": "Dështoi përditësimi i shabllonit të përsëritjes",
+    "monthlyIncome": "Të ardhura periodike në muaj",
+    "monthlyCosts": "Kosto periodike në muaj",
+    "activeCount": "Orare aktive",
+    "estimateNote": "Vlerësuar nga çdo orar",
+    "netNote": "Neto {{amount}} në muaj",
+    "next": "Tjetri {{date}}",
+    "ranTimes_one": "U ekzekutua {{count}} herë",
+    "ranTimes_other": "U ekzekutua {{count}} herë",
+    "endsOn": "Përfundon më {{date}}"
   },
   "benchmark": {
     "title": "Njohuri për Shpenzimet",
@@ -1168,7 +1214,11 @@
       "overdue": "Vonuar",
       "noDeadline": "Pa afat",
       "addContribution": "Menaxho Fondet",
-      "viewDetails": "Shiko Detajet"
+      "viewDetails": "Shiko Detajet",
+      "ofTarget": "nga {{amount}}",
+      "perMonth": "Kurseni {{amount}} në muaj për ta arritur në kohë",
+      "daysLeftCount_one": "{{count}} ditë e mbetur",
+      "daysLeftCount_other": "{{count}} ditë të mbetura"
     },
     "contributions": {
       "title": "Kontributet",
@@ -1187,7 +1237,9 @@
       "totalSaved": "Totali i Kursyer",
       "totalTarget": "Objektivi Total",
       "activeGoals": "Objektiva Aktive",
-      "completedGoals": "Të Përfunduara"
+      "completedGoals": "Të Përfunduara",
+      "ofTarget": "nga {{amount}} në të gjitha objektivat",
+      "progress": "Përparimi i përgjithshëm"
     },
     "filters": {
       "all": "Të Gjitha",
@@ -1225,7 +1277,9 @@
       "spent": "shpenzuar",
       "of": "nga",
       "remaining": "mbetet",
-      "overflow": "mbi buxhet"
+      "overflow": "mbi buxhet",
+      "left": "{{amount}} të mbetura",
+      "over": "{{amount}} mbi buxhet"
     },
     "forecast": {
       "onTrack": "Në rrugë - parashikuar {{amount}} deri fundit i muajit",
@@ -1258,7 +1312,16 @@
       "copied": "Buxhetet u kopjuan nga muaji i kaluar",
       "copyEmpty": "Asnjë buxhet u gjet nga muaji i kaluar për të kopjuar",
       "error": "Ndodhi një gabim"
-    }
+    },
+    "leftToSpend": "Mbetur për të shpenzuar",
+    "overBudgetTotal": "Mbi buxhet",
+    "ofBudgeted": "{{spent}} të shpenzuara nga {{budgeted}}",
+    "daysLeft_one": "{{count}} ditë e mbetur",
+    "daysLeft_other": "{{count}} ditë të mbetura",
+    "perDay": "Rreth {{amount}} në ditë",
+    "prevMonth": "Muaji i kaluar",
+    "nextMonth": "Muaji i ardhshëm",
+    "categoriesHeading": "Kategoritë"
   },
   "pricing": {
     "title": "Çmim i Thjeshtë dhe i Ndershëm",
@@ -1804,7 +1867,9 @@
     "avgDailySpend": "Mesatarja ditore e shpenzimeve",
     "noExpenses": "Nuk ka shpenzime në këtë periudhë",
     "noIncome": "Nuk ka të ardhura në këtë periudhë",
-    "date": "Data"
+    "date": "Data",
+    "prevCount": "{{count}} në periudhën e mëparshme",
+    "periodLabel": "Periudha"
   },
   "settings": {
     "currency": {

@@ -91,7 +91,7 @@ export default function FinancialReveal({ snapshot, currency, seededSummary, onD
       <div className="px-6 pb-8 flex justify-center">
         <Button
           onClick={next}
-          className="min-w-[200px] shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/30"
+          className="min-w-[200px]"
         >
           {isLast ? t('onboarding.reveal.goToDashboard') : t('onboarding.reveal.continue')}
         </Button>
@@ -110,7 +110,7 @@ function SlideScore({ snapshot, t }) {
       <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-primary dark:text-white">
         {t('onboarding.reveal.scoreTitle')}
       </h2>
-      <p className="text-ink-muted dark:text-white/70">
+      <p className="text-ink-muted dark:text-white">
         {snapshot.hasIncome
           ? t('onboarding.reveal.scoreSubtitle')
           : t('onboarding.reveal.scoreSubtitleNoIncome')}
@@ -136,7 +136,7 @@ function SlideProjection({ snapshot, currency, t }) {
           ? t('onboarding.reveal.projectionTitlePositive')
           : t('onboarding.reveal.projectionTitleNegative')}
       </h2>
-      <p className="text-ink-muted dark:text-white/70">
+      <p className="text-ink-muted dark:text-white">
         {positive
           ? t('onboarding.reveal.projectionSubPositive', {
               amount: formatCurrency(Math.abs(snapshot.monthlySavings), currency, { decimals: 0 }),
@@ -170,7 +170,7 @@ function SlideBenchmark({ snapshot, currency, t }) {
         <BenchmarkBar label={t('onboarding.reveal.typical')} pct={refPct} maxPct={maxPct} color="#0B5D3B" />
       </div>
 
-      <p className="text-ink-muted dark:text-white/70">
+      <p className="text-ink-muted dark:text-white">
         {t('onboarding.reveal.benchmarkOpportunity', {
           amount: formatCurrency(opp.potentialAnnual, currency, { decimals: 0 }),
         })}
@@ -200,7 +200,7 @@ function BenchmarkBar({ label, pct, maxPct, color }) {
 function SlideReady({ snapshot, currency, seededSummary, t }) {
   return (
     <div className="space-y-6">
-      <div className="animate-celebrate inline-flex items-center justify-center w-16 h-16 bg-brand-600 rounded-md shadow-lg shadow-brand-500/30">
+      <div className="animate-celebrate inline-flex items-center justify-center w-16 h-16 bg-brand-600 rounded-md shadow-lg">
         <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 13l4 4L19 7" />
         </svg>
@@ -210,7 +210,7 @@ function SlideReady({ snapshot, currency, seededSummary, t }) {
       </h2>
 
       {snapshot.hasIncome && snapshot.safeToSpendPerDay > 0 && (
-        <p className="text-ink-muted dark:text-white/70">
+        <p className="text-ink-muted dark:text-white">
           {t('onboarding.reveal.safeToSpend', {
             amount: formatCurrency(snapshot.safeToSpendPerDay, currency, { decimals: 0 }),
           })}

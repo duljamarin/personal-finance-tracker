@@ -157,7 +157,7 @@ export default function TransactionSplitForm({
                 placeholder="0"
                 className="text-sm"
               />
-              <span className="text-xs text-ink-muted/60 dark:text-white/60 select-none shrink-0">%</span>
+              <span className="text-xs text-ink-muted dark:text-white select-none shrink-0">%</span>
             </div>
 
             {/* Remove Button */}
@@ -178,20 +178,20 @@ export default function TransactionSplitForm({
       {/* Summary */}
       <div className="text-sm space-y-1 bg-surface-subtle dark:bg-surface-dark-elevated p-3 rounded">
         <div className="flex justify-between">
-          <span className="text-ink-secondary dark:text-white">{t('split.totalAmount')}:</span>
+          <span className="text-ink-muted dark:text-white">{t('split.totalAmount')}:</span>
           <span className="font-medium text-ink-primary dark:text-white">
             {fmt(totalAmount)}
           </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-ink-secondary dark:text-white">{t('split.splitTotal')}:</span>
+          <span className="text-ink-muted dark:text-white">{t('split.splitTotal')}:</span>
           <span className={`font-medium ${hasValidSplit ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
             {fmt(totalSplitAmount)} ({totalPercentage.toFixed(2)}%)
           </span>
         </div>
         {!hasValidSplit && (
           <div className="flex justify-between">
-            <span className="text-ink-secondary dark:text-white">{t('split.difference')}:</span>
+            <span className="text-ink-muted dark:text-white">{t('split.difference')}:</span>
             <span className="font-medium text-expense">
               {fmt(Math.abs(splitDifference))}
             </span>

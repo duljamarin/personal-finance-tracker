@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Card from '../UI/Card';
+import PageHeader from '../UI/PageHeader';
+import StatStrip from '../UI/StatStrip';
+import EmptyState from '../UI/EmptyState';
+import CategoryAvatar from '../UI/CategoryAvatar';
+import { Pause, Play, Pencil, Trash2, Repeat as RepeatIcon } from 'lucide-react';
 import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction, processRecurringTransactions } from '../../utils/api';
@@ -101,191 +105,148 @@ export default function RecurringPage() {
 
   const activeRecurringCount = recurrings.filter((r) => r.is_active).length;
 
+  // Rough per-month equivalent of each schedule, for the summary strip only.
+  const PER_MONTH = { daily: 30.44, weekly: 52 / 12, monthly: 1, yearly: 1 / 12 };
+  const monthly = recurrings
+    .filter(r => r.is_active)
+    .reduce((acc, r) => {
+      const factor = (PER_MONTH[r.frequency] || 1) / (r.interval_count || 1);
+      acc[r.type === 'income' ? 'income' : 'expense'] += (Number(r.amount) || 0) * factor;
+      return acc;
+    }, { income: 0, expense: 0 });
+  const monthlyNet = monthly.income - monthly.expense;
+
+  // Soonest first; paused schedules sink to the bottom.
+  const sorted = [...recurrings].sort((a, b) => {
+    if (a.is_active !== b.is_active) return a.is_active ? -1 : 1;
+    return String(a.next_run_at || '').localeCompare(String(b.next_run_at || ''));
+  });
+
+  const iconBtn =
+    'inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted dark:text-white ' +
+    'hover:text-ink-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors';
+
   return (
-    <Card className="mt-4 sm:mt-6">
-      <div className="sticky top-0 z-10 bg-white dark:bg-surface-dark-card rounded-t-xl sm:rounded-t-2xl p-4 sm:p-6 mb-4 border-b border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-white">
-          {t('recurring.manageTitle')}
-        </h2>
-        <p className="text-sm text-ink-muted dark:text-white mt-2">
-          {t('recurring.manageDescription')}
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader title={t('recurring.manageTitle')} subtitle={t('recurring.manageDescription')} className="!mb-0" />
 
       {/* Free plan usage counter. Counts ACTIVE templates only, matching both
           canCreateRecurring() and the check_recurring_limit trigger — pausing a
           template frees a slot, so the cap is concurrent, not cumulative. */}
-      <div className="mx-4 sm:mx-6 mb-4">
-        <FreePlanUsageCounter
-          used={activeRecurringCount}
-          limit={recurringLimit}
-          labelKey="freePlanCounter.recurring"
-        />
-      </div>
+      <FreePlanUsageCounter
+        used={activeRecurringCount}
+        limit={recurringLimit}
+        labelKey="freePlanCounter.recurring"
+      />
 
       {/* Free tier limit banner */}
       {!isPremium && activeRecurringCount >= recurringLimit && (
-        <div className="mx-4 sm:mx-6 mb-4 p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-ink-muted dark:text-white/70">
+        <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
+          <p className="text-sm text-ink-muted dark:text-white">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}
           </p>
-          <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
           </Link>
         </div>
       )}
 
       {recurrings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10 text-ink-muted dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </div>
-          <h3 className="font-semibold tracking-tight text-ink-primary dark:text-white text-lg sm:text-xl mb-2">
-            {t('recurring.noRecurring')}
-          </h3>
-          <p className="text-ink-muted dark:text-white text-sm sm:text-base max-w-sm">
-            {t('recurring.noRecurringDesc')}
-          </p>
-        </div>
+        <EmptyState
+          icon={<RepeatIcon className="w-5 h-5" strokeWidth={1.75} />}
+          title={t('recurring.noRecurring')}
+          description={t('recurring.noRecurringDesc')}
+        />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:gap-6 px-4 sm:px-6 pb-4 sm:pb-6">
-          {recurrings.map(recurring => (
-            <div
-              key={recurring.id}
-              className={`bg-white dark:bg-surface-dark-card rounded-container p-5 sm:p-6 border transition-all ${
-                recurring.is_active
-                  ? 'border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-300 dark:hover:border-brand-700'
-                  : 'border-surface-hairline dark:border-surface-dark-hairline opacity-60'
-              }`}
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold tracking-tight text-lg sm:text-xl text-ink-primary dark:text-white">
-                      {recurring.title}
-                    </h3>
-                    {!recurring.is_active && (
-                      <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-surface-subtle text-ink-muted dark:bg-surface-dark-subtle dark:text-white">
-                        {t('recurring.paused')}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-ink-muted dark:text-white">
-                    <span className="flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      {getFrequencyText(recurring.frequency, recurring.interval_count)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                      </svg>
-                      {translateCategoryName(recurring.category?.name)}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div
-                    className={`font-semibold tracking-tight text-2xl ${
-                      recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-expense'
-                    }`}
-                  >
-                    {formatCurrency(Number(recurring.amount))}
-                  </div>
-                  <span
-                    className={`eyebrow ${
-                      recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-expense'
-                    }`}
-                  >
-                    {recurring.type === 'income' ? t('transactions.income') : t('transactions.expense')}
-                  </span>
-                </div>
-              </div>
+        <>
+          <StatStrip
+            items={[
+              {
+                label: t('recurring.monthlyCosts'),
+                value: formatCurrency(monthly.expense),
+                hero: true,
+                note: t('recurring.netNote', { amount: formatCurrency(monthlyNet) }),
+              },
+              {
+                label: t('recurring.monthlyIncome'),
+                value: formatCurrency(monthly.income),
+                tone: 'income',
+                note: t('recurring.estimateNote'),
+              },
+              { label: t('recurring.activeCount'), value: activeRecurringCount },
+            ]}
+          />
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-sm">
-                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1 truncate">{t('recurring.startDate')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white truncate">{fmtDate(recurring.start_date)}</div>
-                </div>
-                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1 truncate">{t('recurring.lastRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white truncate">
-                    {fmtDate(recurring.last_run_at)}
-                  </div>
-                </div>
-                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1 truncate">{t('recurring.nextRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white truncate">
-                    {fmtDate(recurring.next_run_at)}
-                  </div>
-                </div>
-                <div className="min-w-0 bg-surface-subtle dark:bg-surface-dark-subtle rounded-lg p-3 border border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="eyebrow mb-1 truncate">{t('recurring.timesRun')}</div>
-                  <div className="font-semibold text-ink-primary dark:text-white truncate">
-                    {recurring.occurrences_created || 0}
-                    {recurring.occurrences_limit && ` / ${recurring.occurrences_limit}`}
-                  </div>
-                </div>
-              </div>
+          <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
+            <ul className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
+              {sorted.map(recurring => {
+                const ends = recurring.end_date
+                  ? t('recurring.endsOn', { date: fmtDate(recurring.end_date) })
+                  : recurring.occurrences_limit
+                    ? t('recurring.afterCount', { count: recurring.occurrences_limit })
+                    : null;
+                const meta = [
+                  getFrequencyText(recurring.frequency, recurring.interval_count),
+                  recurring.category?.name ? translateCategoryName(recurring.category.name) : null,
+                  ends,
+                  t('recurring.ranTimes', { count: recurring.occurrences_created || 0 }),
+                ].filter(Boolean);
 
-              <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-md p-3 mb-4 border border-surface-hairline dark:border-surface-dark-hairline">
-                <div className="eyebrow mb-1 text-brand-600 dark:text-brand-400">{t('recurring.endsLabel')}</div>
-                <div className="font-semibold text-ink-primary dark:text-white">
-                  {recurring.end_date ? fmtDate(recurring.end_date) : (recurring.occurrences_limit ? t('recurring.afterCount', { count: recurring.occurrences_limit }) : t('recurring.endNever'))}
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => handleEdit(recurring)}
-                  className="flex-1 min-w-[8rem] bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  {t('transactions.edit')}
-                </button>
-                <button
-                  onClick={() => handleToggleActive(recurring)}
-                  className={`flex-1 min-w-[8rem] px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2 ${
-                    recurring.is_active
-                      ? 'bg-warning-bg hover:bg-warning/15 dark:bg-warning/10 dark:hover:bg-warning/20 text-warning border border-warning/30'
-                      : 'bg-brand-600 hover:bg-brand-700 text-white'
-                  }`}
-                >
-                  {recurring.is_active ? (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {t('recurring.pause')}
-                    </>
-                  ) : (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {t('recurring.resume')}
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => setDeleteConfirm(recurring)}
-                  className="flex-1 min-w-[8rem] text-white px-4 py-2.5 rounded-md font-medium transition-all flex items-center justify-center gap-2 bg-danger hover:bg-danger-hover"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  {t('transactions.deleteBtn')}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+                return (
+                  <li key={recurring.id} className={`group flex items-center gap-3 px-4 sm:px-5 py-3.5 ${recurring.is_active ? '' : 'bg-surface-page/60 dark:bg-surface-dark-page/60'}`}>
+                    <CategoryAvatar category={recurring.category} fallbackName={recurring.title} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <p className={`text-sm font-medium [overflow-wrap:anywhere] ${recurring.is_active ? 'text-ink-primary dark:text-white' : 'text-ink-muted dark:text-white'}`}>
+                          {recurring.title}
+                        </p>
+                        {!recurring.is_active && (
+                          <span className="shrink-0 px-1.5 py-0.5 rounded-md text-[11px] font-medium bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white">
+                            {t('recurring.paused')}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-0.5 text-xs text-ink-muted dark:text-white">{meta.join(' · ')}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className={`text-sm font-semibold tabular-nums ${recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-white'}`}>
+                        {recurring.type === 'income' ? '+' : '−'}{formatCurrency(Number(recurring.amount))}
+                      </p>
+                      {recurring.is_active && recurring.next_run_at && (
+                        <p className="mt-0.5 text-xs text-ink-muted dark:text-white tabular-nums">
+                          {t('recurring.next', { date: fmtDate(recurring.next_run_at) })}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex gap-0.5 shrink-0 -mr-1.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleToggleActive(recurring)}
+                        className={iconBtn}
+                        aria-label={recurring.is_active ? t('recurring.pause') : t('recurring.resume')}
+                        title={recurring.is_active ? t('recurring.pause') : t('recurring.resume')}
+                      >
+                        {recurring.is_active
+                          ? <Pause className="w-4 h-4" strokeWidth={1.75} />
+                          : <Play className="w-4 h-4" strokeWidth={1.75} />}
+                      </button>
+                      <button onClick={() => handleEdit(recurring)} className={iconBtn} aria-label={t('transactions.edit')} title={t('transactions.edit')}>
+                        <Pencil className="w-4 h-4" strokeWidth={1.75} />
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirm(recurring)}
+                        className={`${iconBtn} hover:!text-expense hover:!bg-expense/5`}
+                        aria-label={t('transactions.deleteBtn')}
+                        title={t('transactions.deleteBtn')}
+                      >
+                        <Trash2 className="w-4 h-4" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </>
       )}
 
       {showModal && (
@@ -312,6 +273,6 @@ export default function RecurringPage() {
           cancelLabel={t('forms.cancel')}
         />
       )}
-    </Card>
+    </div>
   );
 }

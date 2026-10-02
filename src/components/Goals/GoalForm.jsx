@@ -38,7 +38,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
     targetDate: '',
     goalType: 'savings',
     priority: 2,
-    color: '#168b78'
+    color: '#0B5D3B'
   });
 
   const [errors, setErrors] = useState({});
@@ -52,7 +52,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         targetDate: goal.target_date || '',
         goalType: goal.goal_type || 'savings',
         priority: goal.priority || 2,
-        color: goal.color || '#168b78'
+        color: goal.color || '#0B5D3B'
       });
     }
   }, [goal]);
@@ -93,13 +93,15 @@ export default function GoalForm({ goal, onSave, onClose }) {
   ];
 
   const colors = [
-    '#168b78', '#0ea5a3', '#d97706', '#e8394d',
-    '#7c4ddc', '#c2519c', '#0891b2', '#65a30d'
+    // Forest brand + the data.* ladder from tailwind.config.cjs, so goal
+    // colors sit in the same family as the charts.
+    '#0B5D3B', '#2F8F83', '#3E6DB5', '#7D5BA6',
+    '#C64B65', '#BE8A45', '#D9A628', '#DC2626'
   ];
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mb-6">
+      <h2 className="font-display text-title text-ink-primary dark:text-white mb-6">
         {isEditing ? t('goals.editGoal') : t('goals.addGoal')}
       </h2>
 
@@ -115,7 +117,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
+          <label className="block text-sm font-medium text-ink-muted dark:text-white mb-1">
             {t('goals.form.description')}
           </label>
           <textarea
@@ -148,7 +150,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-2">
+          <label className="block text-sm font-medium text-ink-muted dark:text-white mb-2">
             {t('goals.form.goalType')}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -160,7 +162,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-md border font-medium text-sm transition-colors ${
                   formData.goalType === type
                     ? 'bg-brand-600 border-brand-600 text-white'
-                    : 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-secondary dark:text-white hover:border-brand-400 dark:hover:border-brand-600'
+                    : 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-brand-400 dark:hover:border-brand-600'
                 }`}
               >
                 <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-white' : 'text-ink-muted dark:text-white'}`}>
@@ -173,7 +175,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-1">
+          <label className="block text-sm font-medium text-ink-muted dark:text-white mb-1">
             {t('goals.form.priority')}
           </label>
           <select
@@ -190,7 +192,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink-secondary dark:text-white mb-2">
+          <label className="block text-sm font-medium text-ink-muted dark:text-white mb-2">
             {t('goals.form.color')}
           </label>
           <div className="flex gap-2 flex-wrap">

@@ -18,20 +18,21 @@ export default function ChartWithTimeRange({ transactions }) {
   }, [transactions, range]);
 
   return (
-    <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline mb-6">
+    <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline">
       <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h3 className="font-semibold tracking-tight text-sm text-ink-primary dark:text-white">
-          {t('chart.monthlyOverview')}
-        </h3>
-        <div className="flex gap-1">
+        <h2 className="text-heading text-ink-primary dark:text-white">
+          {t('chart.cashFlow')}
+        </h2>
+        <div className="inline-flex p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
           {RANGES.map(r => (
             <button
               key={r}
               onClick={() => startTransition(() => setRange(r))}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+              aria-pressed={range === r}
+              className={`px-2.5 py-1 text-xs rounded-[5px] font-medium tabular-nums transition-colors ${
                 range === r
-                  ? 'bg-brand-600 text-white'
-                  : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline'
+                  ? 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white shadow-xs'
+                  : 'text-ink-muted dark:text-white hover:text-ink-primary'
               }`}
             >
               {t(`dashboard.range.${r}`)}

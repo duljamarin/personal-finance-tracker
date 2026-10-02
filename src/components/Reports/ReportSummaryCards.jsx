@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import Card from '../UI/Card';
-import { EXPENSE_COLOR } from '../../utils/chartColors';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
-function ChangeIndicator({ current, previous }) {
+// goodWhenUp: income up is good, spending up is not — color by meaning, not direction.
+function ChangeIndicator({ current, previous, goodWhenUp = true }) {
   const { t } = useTranslation();
   if (previous === 0 && current === 0) return null;
 
@@ -18,12 +17,10 @@ function ChangeIndicator({ current, previous }) {
   const diff = current - previous;
   const pct = ((diff / previous) * 100).toFixed(1);
   const isUp = diff > 0;
+  const good = diff === 0 || isUp === goodWhenUp;
 
   return (
-    <span
-      className={`inline-flex items-center gap-0.5 text-xs font-medium ${isUp ? 'text-brand-600 dark:text-brand-400' : ''}`}
-      style={!isUp ? { color: EXPENSE_COLOR } : undefined}
-    >
+    <span className={`inline-flex items-center gap-0.5 text-xs font-medium tabular-nums ${good ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
       {isUp ? '+' : '-'}{Math.abs(pct)}% {t('reports.vsLastPeriod')}
     </span>
   );
@@ -70,6 +67,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
       prevValue: prev.expenses,
       tone: 'expense',
       format: 'currency',
+      goodWhenUp: false,
     },
     {
       label: t('reports.netSavings'),
@@ -91,6 +89,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
       prevValue: prevTransactions.length,
       tone: 'neutral',
       format: 'number',
+      neutralDelta: true,
     },
     {
       label: t('reports.avgDailySpend'),
@@ -121,24 +120,22 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+    // One panel with hairline dividers instead of six floating cards.
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px bg-surface-hairline dark:bg-surface-dark-hairline border border-surface-hairline dark:border-surface-dark-hairline rounded-container overflow-hidden">
       {cards.map((card) => (
-        <Card key={card.label}>
-          <div className="p-4">
-            <p className="eyebrow mb-1">{card.label}</p>
-            <p
-              className={`min-w-0 [overflow-wrap:anywhere] font-semibold tracking-tight text-lg ${toneClass(card.tone)}`}
-              style={card.tone === 'expense' ? { color: EXPENSE_COLOR } : undefined}
-            >
-              {formatValue(card.value, card.format)}
-            </p>
-            {card.prevValue !== null && (
-              <div className="mt-1">
-                <ChangeIndicator current={card.value} previous={card.prevValue} />
-              </div>
-            )}
-          </div>
-        </Card>
+        <div key={card.label} className="bg-white dark:bg-surface-dark-card p-4 min-w-0">
+          <p className="eyebrow mb-1.5">{card.label}</p>
+          <p className={`min-w-0 [overflow-wrap:anywhere] font-semibold tabular-nums tracking-tight text-xl leading-tight ${card.tone === 'expense' ? 'text-expense' : toneClass(card.tone)}`}>
+            {formatValue(card.value, card.format)}
+          </p>
+          {card.prevValue !== null && (
+            <div className="mt-1.5">
+              {card.neutralDelta
+                ? <span className="text-xs text-ink-muted dark:text-white tabular-nums">{t('reports.prevCount', { count: card.prevValue })}</span>
+                : <ChangeIndicator current={card.value} previous={card.prevValue} goodWhenUp={card.goodWhenUp !== false} />}
+            </div>
+          )}
+        </div>
       ))}
     </div>
   );

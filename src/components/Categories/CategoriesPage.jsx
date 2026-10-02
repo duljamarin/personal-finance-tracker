@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { addCategory, updateCategory, deleteCategory } from '../../utils/api';
 import Button from '../UI/Button.jsx';
@@ -9,10 +9,30 @@ import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { translateCategoryName, getCategoryIcon, ICON_PALETTE, CATEGORY_ICONS } from '../../utils/categoryTranslation';
 import CategoryCard from './CategoryCard';
-import { CategoryIconSvg } from '../UI/CategoryIconSvg.jsx';  
+import { CategoryIconSvg } from '../UI/CategoryIconSvg.jsx';
+import PageHeader from '../UI/PageHeader';
+import { Plus, Search } from 'lucide-react';
+import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
+import { toISODate } from '../../utils/date';  
 
 export default function CategoriesPage() {
-  const { categories, catError, reloadCategories, reloadTransactions } = useTransactions();
+  const { categories, catError, reloadCategories, reloadTransactions, transactions } = useTransactions();
+  const { format: formatCurrency } = useDisplayCurrency();
+
+  // Per-category usage for the list: how often it's used overall, and how
+  // much was spent in it this month.
+  const usage = useMemo(() => {
+    const ym = toISODate(new Date()).slice(0, 7);
+    const out = {};
+    for (const tx of transactions || []) {
+      const id = tx.category?.id || tx.category_id;
+      if (!id) continue;
+      const u = (out[id] ??= { count: 0, month: 0 });
+      u.count += 1;
+      if (tx.type === 'expense' && tx.date?.startsWith(ym)) u.month += tx.base_amount || tx.amount || 0;
+    }
+    return out;
+  }, [transactions]);
   const { addToast } = useToast();
   const { t } = useTranslation();
 
@@ -117,56 +137,73 @@ export default function CategoriesPage() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-semibold tracking-tight text-ink-primary dark:text-white mb-6">
-        {t('categories.title')}
-      </h2>
+    <div className="space-y-6">
+      <PageHeader
+        title={t('categories.title')}
+        subtitle={t('categories.subtitle')}
+        className="!mb-0"
+        actions={
+          <Button onClick={openAddModal}>
+            <span className="inline-flex items-center gap-2">
+              <Plus className="w-4 h-4" strokeWidth={2} />
+              {t('categories.addNew')}
+            </span>
+          </Button>
+        }
+      />
 
-      {error && <div className="text-expense mb-2 text-sm">{error}</div>}
-      {catError && <div className="text-expense mb-2 text-sm">{catError}</div>}
+      {error && <div className="text-expense text-sm">{error}</div>}
+      {catError && <div className="text-expense text-sm">{catError}</div>}
 
-      <div className="mb-8 flex flex-col sm:flex-row gap-3 items-center">
-        <input
-          type="text"
-          placeholder={t('categories.searchPlaceholder')}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 p-3 rounded-md w-full text-base focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40"
-        />
-        <Button
-          onClick={openAddModal}
-          className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-md shadow-sm hover:bg-brand-700 transition font-medium text-base whitespace-nowrap"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          {t('categories.addNew')}
-        </Button>
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="text-center text-ink-muted dark:text-white mt-16 text-base">
-          {t('categories.noCategories')}
-        </p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {filtered.map(cat => (
-            <CategoryCard
-              key={cat.id}
-              cat={cat}
-              onEdit={() => openEditModal(cat)}
-              onDelete={() => handleDelete(cat.id)}
-              editLabel={t('categories.edit')}
-              deleteLabel={t('categories.delete')}
+      <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
+        <div className="p-3 sm:p-4 border-b border-surface-hairline dark:border-surface-dark-hairline">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-ink-muted dark:text-white/60">
+              <Search className="w-4 h-4" strokeWidth={1.75} />
+            </div>
+            <input
+              type="text"
+              placeholder={t('categories.searchPlaceholder')}
+              aria-label={t('categories.searchPlaceholder')}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/50 dark:placeholder:text-white/40 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors"
             />
-          ))}
+          </div>
         </div>
-      )}
+
+        {filtered.length === 0 ? (
+          <p className="px-4 py-14 text-center text-sm text-ink-muted dark:text-white">
+            {t('categories.noCategories')}
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-surface-hairline dark:bg-surface-dark-hairline">
+            {filtered.map(cat => {
+              const s = usage[cat.id];
+              return (
+                <CategoryCard
+                  key={cat.id}
+                  cat={cat}
+                  onEdit={() => openEditModal(cat)}
+                  onDelete={() => handleDelete(cat.id)}
+                  editLabel={t('categories.edit')}
+                  deleteLabel={t('categories.delete')}
+                  meta={t('categories.txCount', { count: s?.count || 0 })}
+                  amount={s?.month ? formatCurrency(s.month) : null}
+                  amountLabel={t('categories.spentThisMonth')}
+                />
+              );
+            })}
+            {/* Keep the two-column grid's last cell white when the count is odd. */}
+            {filtered.length % 2 === 1 && <div className="hidden md:block bg-white dark:bg-surface-dark-card" />}
+          </div>
+        )}
+      </section>
 
       {showModal && (
         <Modal onClose={closeModal}>
           <form onSubmit={e => { e.preventDefault(); handleModalSave(); }} className="flex flex-col gap-5">
-            <h3 className="text-xl font-semibold text-ink-primary dark:text-white">
+            <h3 className="font-display text-title text-ink-primary dark:text-white">
               {modalMode === 'add' ? t('categories.addNew') : t('categories.edit')}
             </h3>
 

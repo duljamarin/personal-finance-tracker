@@ -5,7 +5,8 @@ import GoalCard from '../Goals/GoalCard.jsx';
 // Mock react-i18next
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key) => {
+    t: (key, opts) => {
+      if (key === 'goals.card.daysLeftCount') return `${opts?.count} days left`;
       const map = {
         'goals.editGoal': 'Edit Goal',
         'goals.deleteGoal': 'Delete Goal',
@@ -76,14 +77,10 @@ describe('GoalCard', () => {
 
   it('shows remaining amount when not completed', () => {
     render(<GoalCard goal={mockGoal} {...mockHandlers} />);
-    // The amount and the "remaining" label are separate text nodes, so match on
-    // the container's combined text rather than a single node.
-    expect(
-      screen.getByText(
-        (_, el) => /500\.00/.test(el?.textContent || '') && /remaining/.test(el?.textContent || ''),
-        { selector: 'span' }
-      )
-    ).toBeDefined();
+    // "remaining" is a <dt> label; the amount is the <dd> right after it.
+    const label = screen.getByText('remaining');
+    expect(label.tagName).toBe('DT');
+    expect(label.nextElementSibling?.textContent).toMatch(/500\.00/);
   });
 
   it('shows completed status when current >= target', () => {

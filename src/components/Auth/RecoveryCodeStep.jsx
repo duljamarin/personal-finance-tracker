@@ -42,7 +42,7 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
     <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12">
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-ink-primary dark:text-white tracking-tight leading-[1.05] mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
             {t('encryption.resetRecoveryTitle')}
           </h1>
           <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
@@ -64,14 +64,14 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
               <button
                 type="submit"
                 disabled={busy || !code}
-                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               >
                 {busy ? t('encryption.unlocking') : t('encryption.unlock')}
               </button>
               <button
                 type="button"
                 onClick={() => setMode('lost')}
-                className="w-full text-sm text-ink-muted dark:text-white/70 hover:text-expense underline text-center"
+                className="w-full text-sm text-ink-muted dark:text-white hover:text-expense underline text-center"
               >
                 {t('encryption.lostRecoveryCode')}
               </button>
@@ -81,7 +81,7 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
               <div className="border border-expense rounded-md p-3 bg-expense-bg text-sm text-expense">
                 {t('encryption.lostRecoveryCodeWarning')}
               </div>
-              <label className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white cursor-pointer">
+              <label className="flex items-start gap-2 text-sm text-ink-muted dark:text-white cursor-pointer">
                 <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} className="mt-0.5" />
                 {t('encryption.lostRecoveryCodeAck')}
               </label>
@@ -89,14 +89,14 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
                 type="button"
                 disabled={!ack || busy}
                 onClick={handleLostCode}
-                className="w-full bg-danger hover:bg-danger-hover text-white font-medium py-3 px-4 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                className="w-full bg-danger hover:bg-danger-hover text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               >
                 {busy ? t('encryption.disabling') : t('encryption.continueWithNewKey')}
               </button>
               <button
                 type="button"
                 onClick={() => setMode('enter')}
-                className="w-full text-sm text-ink-muted dark:text-white/70 hover:text-brand-600 underline text-center"
+                className="w-full text-sm text-ink-muted dark:text-white hover:text-brand-600 underline text-center"
               >
                 {t('common.back')}
               </button>

@@ -77,6 +77,22 @@ A comprehensive reference of every JavaScript (ES6+) and React feature used in t
 69. [requestAnimationFrame (Frame-Synced Animation)](#69-requestanimationframe-frame-synced-animation)
 70. [Intl.NumberFormat (Locale-Aware Formatting)](#70-intlnumberformat-locale-aware-formatting)
 
+### Part II — Architectural Patterns
+
+A1. [Layered Architecture](#a1-layered-architecture-components--hooks--api--crypto--supabase) ·
+A2. [Barrel Module](#a2-barrel-module-single-import-surface) ·
+A3. [Provider Composition](#a3-provider-composition-layered-context) ·
+A4. [Custom Hook as State Machine](#a4-custom-hook-as-state-machine-encapsulated-ui-logic) ·
+A5. [Guard Component](#a5-guard-component-conditional-wrapper) ·
+A6. [Presentational vs Container](#a6-presentational-vs-container-components) ·
+A7. [Compound State Rendering](#a7-compound-state-rendering-loading--empty--error--data) ·
+A8. [Reload-Trigger Prop](#a8-reload-trigger-prop-cross-component-refetch-signal) ·
+A9. [Module Singleton + Pub/Sub](#a9-module-singleton-with-pubsub-bridge) ·
+A10. [Lazy Routes + Sized Fallbacks](#a10-lazy-route-loading-with-sized-fallbacks) ·
+A11. [Design-System Primitives](#a11-design-system-primitives-constrained-component-vocabulary) ·
+A12. [Optimistic UI Update](#a12-optimistic-ui-update) ·
+A13. [Progressive Enhancement](#a13-progressive-enhancement--graceful-degradation)
+
 > **Companion document:** PostgreSQL and Supabase backend features are documented separately in
 > [SUPABASE_POSTGRES_FEATURES.md](SUPABASE_POSTGRES_FEATURES.md) — RLS, policies, triggers,
 > SECURITY DEFINER functions, Edge Functions, and webhook handling.
@@ -3083,6 +3099,528 @@ const fmtEUR = new Intl.NumberFormat('sq-AL', { maximumFractionDigits: 0 });
 ```
 
 Also used in `src/components/Tools/FreelancerCalculator.jsx`. These are the public SEO calculator tools, where output is always Albanian-locale formatted.
+
+---
+
+# Part II — React Architectural Patterns
+
+The sections above catalog *features* — individual language and library capabilities. This part covers *architecture*: the structural decisions about where state lives, how data flows, and how modules depend on each other. These are the patterns you need to understand before adding a feature, because they determine where the new code belongs.
+
+---
+
+## A1. Layered Architecture (Components → Hooks → API → Crypto → Supabase)
+
+### The Pattern
+The app is organized in strict layers, each depending only on the one below it. No component imports `supabaseClient` directly; no API module imports React.
+
+```
+src/components/    UI — JSX, styling, local interaction state
+src/context/       Shared state — cross-cutting app state via Context
+src/hooks/         Reusable stateful logic — no JSX
+src/utils/api/     Data access — plain async functions, no React
+src/utils/crypto/  Encryption codec — sits between API and the wire
+src/utils/supabaseClient.js   The single Supabase client instance
+```
+
+### Why It Matters
+- Each layer is testable in isolation — API functions are plain async functions with no React runtime needed
+- The crypto layer intercepts every read and write in one place, so no caller can forget to encrypt
+- Swapping the backend would touch `utils/api/` only
+
+### How It Shows Up
+
+**Components never touch Supabase directly.** A page imports from the API barrel and knows nothing about tables, joins, or encryption:
+
+```js
+// src/components/Goals/GoalsPage.jsx
+import { fetchGoals, fetchGoalsStats, createGoal, updateGoal, deleteGoal, addContribution } from '../../utils/api';
+```
+
+**The API layer is React-free**, so it can be called from contexts, hooks, event handlers, or other plain modules:
+
+```js
+// src/utils/api/budgets.js — no React import anywhere in this file
+export async function fetchBudgets(year, month) { ... }
+```
+
+**✅ Correctly used:** the encryption codec sits *inside* the API layer, not in components. `encryptRow` on the way in, `decryptRows` on the way out — so a component reading `tx.amount` always gets a plaintext number and never has to know the column is ciphertext:
+
+```js
+// src/utils/api/transactions.js
+    const insertData = await encryptRow('transactions', { ...rest, user_id: user.id, ... });
+    const { data, error } = await supabase.from('transactions').insert([insertData]) ...
+    return decryptRow('transactions', data);
+```
+
+---
+
+## A2. Barrel Module (Single Import Surface)
+
+### The Pattern
+A domain is split into focused modules, then re-exported through one `index.js`. Consumers import from the barrel and are insulated from the internal file layout.
+
+### Why It Matters
+- Files can be split or renamed without touching a single import site
+- One obvious place to look for "what data operations exist"
+- Import statements stay short even when pulling from several domains
+
+### How It Shows Up
+
+```js
+// src/utils/api/index.js
+// Barrel file - re-exports every public API function from domain modules.
+export * from './categories';
+export * from './transactions';
+export * from './recurring';
+export * from './goals';
+export * from './budgets';
+export * from './subscriptions';
+export * from './networth';
+export * from './notifications';
+export * from './health';
+export * from './userSettings';
+```
+
+The API layer was once a single `api.js`. Splitting it into ten domain modules required no changes in any component, because the barrel kept the import path stable.
+
+---
+
+## A3. Provider Composition (Layered Context)
+
+### The Pattern
+Rather than one god-object store, concerns are split across six providers, nested in **dependency order** — each may consume the ones above it.
+
+### Why It Matters
+- Each context has one job and a small, readable value object
+- Nesting order encodes real dependencies rather than being arbitrary
+- A component subscribes only to the contexts it uses
+
+### How It Shows Up
+
+```jsx
+// src/App.jsx
+<AuthProvider>            {/* depends on nothing */}
+  <ToastProvider>
+    <ThemeProvider>
+      <CryptoProvider>          {/* consumes useAuth() */}
+        <SubscriptionProvider>  {/* consumes useAuth() */}
+          <TransactionProvider> {/* consumes Auth + Toast + Subscription + Crypto */}
+            <Router>
+              <InnerAppContent />
+```
+
+The order is load-bearing. `TransactionProvider` is innermost because it consumes four of the others:
+
+```js
+// src/context/TransactionContext.jsx
+  const { user, loading: authLoading } = useAuth();
+  const { addToast } = useToast();
+  const { refreshSubscription } = useSubscription();
+  const { status: cryptoStatus } = useCrypto();
+```
+
+**⚠️ The tradeoff:** any change to a provider's `value` re-renders all of its consumers. `TransactionContext` builds its value inline, so every mutation re-renders every consumer of the transaction list. That is acceptable at this app's scale, but memoizing the value object (`useMemo`) is the standard next step if consumer count grows.
+
+---
+
+## A4. Custom Hook as State Machine (Encapsulated UI Logic)
+
+### The Pattern
+A repeated cluster of `useState` + handlers is extracted into a named hook that returns a small, intention-revealing API — a tiny state machine rather than loose state variables.
+
+### Why It Matters
+- Names the concept ("form modal") instead of leaving three booleans to be re-derived at each call site
+- Impossible-by-construction bugs: `close()` always clears the editing item, so a stale item can't leak into the next "add"
+- The handlers are `useCallback`-stable, so passing them to memoized children actually works
+
+### How It Shows Up
+
+```js
+// src/hooks/useFormModal.js
+export function useFormModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+
+  const openAdd = useCallback(() => { setEditingItem(null); setIsOpen(true); }, []);
+  const openEdit = useCallback((item) => { setEditingItem(item); setIsOpen(true); }, []);
+  const close = useCallback(() => { setIsOpen(false); setEditingItem(null); }, []);
+
+  return { isOpen, editingItem, openAdd, openEdit, close };
+}
+```
+
+`useAsyncData` is the same idea for the fetch lifecycle — it replaces the four-part `data` + `loading` + `error` + `useEffect` ritual, including unmount cancellation:
+
+```js
+// src/hooks/useAsyncData.js
+  return { data, loading, error, reload, setData };
+```
+
+**⚠️ Inconsistently adopted:** `GoalsPage.jsx` still manages this manually with six `useState` calls (`showGoalForm`, `editingGoal`, `showContributionForm`, `selectedGoal`, `goalToDelete`, `deleting`) plus a hand-rolled `loadGoalsAndStats`. Converting it to `useFormModal` + `useAsyncData` would remove roughly 40 lines and align it with the newer pages.
+
+---
+
+## A5. Guard Component (Conditional Wrapper)
+
+### The Pattern
+A component takes `children` and decides whether to render them, substituting a fallback otherwise. Access control becomes a JSX wrapper rather than an `if` scattered through the tree.
+
+### Why It Matters
+- The gate is declarative and visible in the markup
+- One place to change the upsell UI for every premium feature
+- Composes naturally — guards can nest
+
+### How It Shows Up
+
+**Premium gating** — note it checks `isPremium || isTrialing`, the project-wide rule:
+
+```jsx
+// src/components/Subscription/PremiumFeatureLock.jsx
+export default function PremiumFeatureLock({ children, featureName }) {
+  const { isPremium, isTrialing } = useSubscription();
+
+  if (isPremium || isTrialing) return children;
+
+  return ( /* faded children + upgrade overlay */ );
+}
+```
+
+**Route guards** are the same pattern applied to navigation, with a three-state decision (loading → unauthenticated → un-onboarded → render):
+
+```jsx
+// src/App.jsx
+function PrivateRoute({ children }) {
+  const { accessToken, user, loading } = useAuth();
+  if (loading) return <LoadingSpinner size="md" className="min-h-screen" />;
+  if (!accessToken) return <Navigate to="/login" replace />;
+  if (!user?.user_metadata?.onboarding_completed) return <Navigate to="/onboarding" replace />;
+  return children;
+}
+```
+
+`OnboardingRoute` is its mirror image, and `ErrorBoundary` is the class-component form of the same shape.
+
+**Important:** these guards are UX, not security. The real boundary is RLS in Postgres — see `SUPABASE_POSTGRES_FEATURES.md` §1–§2.
+
+---
+
+## A6. Presentational vs Container Components
+
+### The Pattern
+Components split into two kinds: *containers* that fetch and own state, and *presentational* components that receive everything through props and render.
+
+### Why It Matters
+- Presentational components are trivially testable — pass props, assert output
+- They are also safely `memo`-able, since they hold no context subscriptions
+- Data-loading logic concentrates in a few files instead of spreading across the tree
+
+### How It Shows Up
+
+**Presentational** — `GoalCard` takes data and callbacks, owns nothing, and is memoized:
+
+```jsx
+// src/components/Goals/GoalCard.jsx
+export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelete }) {
+```
+
+**✅ Correctly used:** `CategoryCard` receives its labels as **strings** (`editLabel`, `deleteLabel`) rather than calling `useTranslation()` internally. Consuming context inside a memoized component would re-render it on every language-context change and defeat the memo; a translated string is a stable primitive:
+
+```jsx
+// src/components/Categories/CategoryCard.jsx
+export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, deleteLabel }) {
+```
+
+**Container** — `GoalsPage` fetches, holds state, and passes handlers down:
+
+```jsx
+// src/components/Goals/GoalsPage.jsx
+{goals.map(goal => (
+  <GoalCard key={goal.id} goal={goal} onEdit={...} onDelete={...} onAddContribution={...} />
+))}
+```
+
+The split is not absolute — `BudgetSummaryBar` fetches its own data via `useAsyncData` while also rendering. That is a deliberate "self-contained widget": it is dropped onto the dashboard with one prop and needs no wiring from the parent.
+
+---
+
+## A7. Compound State Rendering (loading / empty / error / data)
+
+### The Pattern
+Every data-driven view explicitly handles four states, in order, with early returns — never just "spinner or data".
+
+### Why It Matters
+- The empty state is a real UX surface (onboarding, calls to action), not an accident
+- Early returns keep the happy path unindented and readable
+- Skeletons sized to match real content prevent layout shift (a CLS requirement in this project)
+
+### How It Shows Up
+
+```jsx
+// src/components/Dashboard/BudgetSummaryBar.jsx
+if (loading) {
+  // Skeleton mirrors the loaded card's padding (p-4 sm:p-6) and row shape
+  // (label line + progress bar) so the card doesn't resize when data lands.
+  return ( /* skeleton with min-h-[180px] */ );
+}
+
+if (budgets.length === 0) {
+  return ( /* "no budgets yet" + Link to /budgets */ );
+}
+
+const displayed = budgets.slice(0, maxItems);
+return ( /* the real content, also min-h-[180px] */ );
+```
+
+**✅ Correctly used:** the skeleton and the loaded card share `min-h-[180px]` and identical padding. The comment states the reason explicitly — this is CLS prevention encoded in the component, not incidental styling. The shared `EmptyState` and `Skeleton` primitives in `src/components/UI/` exist to make this consistent.
+
+---
+
+## A8. Reload-Trigger Prop (Cross-Component Refetch Signal)
+
+### The Pattern
+A parent passes a changing scalar to a child; the child lists it in its fetch dependency array. When the value changes, the child refetches. The value's *meaning* is irrelevant — only that it changed.
+
+### Why It Matters
+- Lets independent widgets refresh after a mutation without lifting their data into shared state
+- Avoids a global event bus for what is really a parent-child relationship
+- The child stays self-contained and reusable
+
+### How It Shows Up
+
+`TransactionContext` exposes `mutationCount`, incremented on every add/update/delete:
+
+```js
+// src/context/TransactionContext.jsx
+setMutationCount(c => c + 1);
+```
+
+The dashboard forwards it into widgets that own their own data:
+
+```jsx
+// src/components/Dashboard/Dashboard.jsx
+<BudgetSummaryBar reloadTrigger={totalExpense} />
+<CategoryBenchmark onReloadTrigger={mutationCount} />
+<HealthScore onReloadTrigger={mutationCount} />
+```
+
+Each widget just declares the dependency:
+
+```js
+// src/components/Dashboard/BudgetSummaryBar.jsx
+const { data, loading } = useAsyncData(async () => { ... }, [reloadTrigger], { budgets: [], expenses: {} });
+```
+
+**⚠️ Naming caveat:** as CLAUDE.md notes, `mutationCount` is a *change signal*, not a record count — never render it as a number. Note also that `BudgetSummaryBar` is passed `totalExpense` rather than `mutationCount`: a value-based trigger that only refires when the expense total actually changes, which is the more precise signal for that particular widget.
+
+---
+
+## A9. Module Singleton with Pub/Sub Bridge
+
+### The Pattern
+State that must be reachable from non-React code lives in a plain module (a singleton), which exposes `subscribe()`. A Context provider subscribes and mirrors it into React state, so components read it through the normal hook API.
+
+### Why It Matters
+- The plain-function API layer can read the encryption key without being a hook
+- One source of truth serves both imperative code and the component tree
+- The unsubscribe function drops straight into a `useEffect` cleanup
+
+### How It Shows Up
+
+The crypto keyring holds the unlocked key at module scope:
+
+```js
+// src/utils/crypto/keyring.js
+let listeners = new Set();
+export function subscribe(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);   // unsubscribe
+}
+```
+
+React mirrors it in one line — the hook contract is preserved for components even though the real state lives outside React:
+
+```js
+// src/context/CryptoContext.jsx
+useEffect(() => keyring.subscribe(setStatus), []);
+```
+
+This is what lets `src/utils/api/transactions.js` call `encryptRow()` — a plain function, no hooks — while `UnlockModal` reacts to the same status through `useCrypto()`.
+
+---
+
+## A10. Lazy Route Loading with Sized Fallbacks
+
+### The Pattern
+Every route is `lazy()`-loaded, and each `Suspense` boundary gets a fallback whose height approximates the real content.
+
+### Why It Matters
+- Initial bundle contains only what the first paint needs
+- Heavy dependencies (Recharts, PapaParse, Supabase) stay out of the landing-page critical path
+- Sized fallbacks stop the footer from jumping when a chunk resolves — the CLS rule in CLAUDE.md
+
+### How It Shows Up
+
+All ~25 routes are lazy in `src/App.jsx`:
+
+```js
+const Dashboard = lazy(() => import('./components/Dashboard/Dashboard.jsx'));
+const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
+```
+
+**✅ Correctly used:** the fallback is chosen to match what is being replaced, with the reasoning recorded inline:
+
+```jsx
+// src/App.jsx
+{/* Taller fallback approximates the landing hero so the page doesn't jump
+    from 40vh to full height when the chunk resolves — that jump shoves the
+    footer (highest field-CLS element on /). */}
+<Suspense fallback={<LoadingSpinner size="md" text="" className="min-h-[70vh]" />}>
+```
+
+`DashboardShell` goes further: it is a hand-built skeleton rendering the real `<h1>` (from `localStorage`) so the LCP element exists immediately, before the Dashboard chunk arrives.
+
+---
+
+## A11. Design-System Primitives (Constrained Component Vocabulary)
+
+### The Pattern
+Shared UI lives in `src/components/UI/` as a small set of primitives. Feature code composes them instead of hand-rolling markup, and variants are chosen by prop rather than by passing class strings.
+
+### Why It Matters
+- A design change lands in one file instead of two hundred
+- Variant props (`variant="primary"`) keep visual decisions inside the primitive
+- Consistent focus, dark-mode, and accessibility behavior for free
+
+### How It Shows Up
+
+The full vocabulary in `src/components/UI/` — thirteen primitives: `Button`, `Card`, `Input`, `Modal`, `CustomSelect`, `PasswordInput`, `ConfirmDeleteModal`, `EmptyState`, `LoadingSpinner`, `Skeleton`, `Icon`, `CategoryIconSvg`, `CurrencyFlag`.
+
+**Variant-by-prop** rather than by class string — the primitive owns the lookup table, so callers cannot invent a fourth button style:
+
+```jsx
+// src/components/UI/Card.jsx
+export default function Card({ children, className = '', variant = 'default', padding = 'md' }) {
+  const variants = { ... };
+  return <div className={`${variants[variant]} ${paddings[padding]} rounded-container ${className}`}>
+```
+
+**✅ Correctly used:** `Input` owns its own error styling through an `error` prop. CLAUDE.md explicitly forbids passing border classes instead, because they fight the component's internal state:
+
+```jsx
+// CORRECT
+<Input error={errors.field ? t(errors.field) : undefined} />
+// WRONG — className border classes conflict with Input's internal state
+<Input className="border-red-500" />
+```
+
+`CustomSelect` exists because a native `<select>` cannot render icons inside options — a documented reason to replace a platform element rather than an arbitrary preference:
+
+```js
+// src/components/UI/CustomSelect.jsx
+ * Custom dropdown select that supports rendering arbitrary leading content
+ * (icons/SVGs) per option — something native <select>/<option> cannot do.
+```
+
+---
+
+## A12. Optimistic UI Update
+
+### The Pattern
+On mutation, update local state from the server's response immediately rather than refetching the whole collection.
+
+### Why It Matters
+- The list reflects the change instantly, with no second round-trip
+- Especially valuable here: a refetch would re-download and re-decrypt every row
+
+### How It Shows Up
+
+```js
+// src/context/TransactionContext.jsx
+const addTransaction = useCallback(async (item) => {
+  try {
+    const newItem = await apiAddTransaction(item);
+    setTransactions(prev => [newItem, ...prev]);      // splice in the saved row
+    setMutationCount(c => c + 1);
+    addToast(t('messages.transactionAdded'), 'success');
+    refreshSubscription();                            // usage counters may have changed
+  } catch (e) { ... }
+}, [addToast, t, refreshSubscription]);
+```
+
+Update and delete follow the same shape with `.map()` and `.filter()`.
+
+This is "optimistic" in the update-locally sense rather than the render-before-confirmation sense: the row is inserted only *after* the server returns it, so the client never displays a transaction the database rejected — which matters because a `BEFORE INSERT` trigger can reject a write for exceeding a free-tier limit.
+
+---
+
+## A13. Progressive Enhancement / Graceful Degradation
+
+### The Pattern
+Optional capabilities are feature-detected, and every failure path has a defined non-fatal outcome. A missing browser API or a not-yet-deployed function degrades instead of breaking.
+
+### Why It Matters
+- Private browsing, older browsers, and partial deploys don't produce a broken app
+- Non-essential side effects never block the user's primary action
+
+### How It Shows Up
+
+**Feature detection** with a working fallback (jsdom lacks the Web Locks API, and the test suite depends on this path):
+
+```js
+// src/utils/crypto/migrationRunner.js
+if (typeof navigator !== 'undefined' && navigator.locks) { ... }
+```
+
+**Fail-soft persistence** — IndexedDB unavailable just means the user unlocks once per session:
+
+```js
+// src/utils/crypto/keyStore.js
+export async function putKey(userId, cryptoKey) {
+  try { await tx('readwrite', (s) => s.put(cryptoKey, `dek:${userId}`)); return true; }
+  catch { return false; }   // fail soft
+}
+```
+
+**Tolerating a partial deploy** — a missing RPC returns a neutral value instead of throwing:
+
+```js
+// src/utils/api/subscriptions.js
+if (error.code === '42883' || error.message?.includes('does not exist')) {
+  console.warn('Subscription functions not yet deployed.');
+  return null;
+}
+```
+
+**Fire-and-forget side effects** — a failed notification check must not fail the transaction the user actually asked for:
+
+```js
+// src/utils/api/transactions.js
+checkBudgetNotifications(user.id).catch((e) =>
+  console.error('budget notification check failed:', e)
+);
+```
+
+**Accessibility as degradation** — `prefers-reduced-motion` is honored in both `useCountUp` and the landing page's `IntersectionObserver` reveal.
+
+---
+
+## Architectural Patterns Summary
+
+| # | Pattern | Category | Primary Purpose |
+|---|---------|----------|-----------------|
+| A1 | Layered Architecture | Structure | One-directional dependencies; testable layers |
+| A2 | Barrel Module | Structure | Stable import surface over a split codebase |
+| A3 | Provider Composition | State | Focused contexts nested in dependency order |
+| A4 | Custom Hook as State Machine | State | Name and encapsulate repeated UI state |
+| A5 | Guard Component | Composition | Declarative access control via `children` |
+| A6 | Presentational vs Container | Composition | Testable, memo-able leaf components |
+| A7 | Compound State Rendering | Data flow | Explicit loading/empty/error/data with sized skeletons |
+| A8 | Reload-Trigger Prop | Data flow | Refetch signal without lifting state |
+| A9 | Module Singleton + Pub/Sub | State | Bridge non-React code into the component tree |
+| A10 | Lazy Routes + Sized Fallbacks | Performance | Small initial bundle, no layout shift |
+| A11 | Design-System Primitives | UI | One place to change shared visual behavior |
+| A12 | Optimistic UI Update | Data flow | Instant list updates, no full refetch |
+| A13 | Progressive Enhancement | Resilience | Feature detection and defined failure paths |
 
 ---
 

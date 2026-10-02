@@ -80,7 +80,7 @@ export default function TransactionRecurringSection({
 									onChange={onIntervalCountChange}
 									className={`${getInputClassName(errors.intervalCount)} w-16 sm:w-20`}
 								/>
-								<span className="text-xs sm:text-sm text-ink-secondary dark:text-white">
+								<span className="text-xs sm:text-sm text-ink-muted dark:text-white">
 									{t(`recurring.${frequency}Unit`, { count: Number(intervalCount) || 1 })}
 								</span>
 							</div>
@@ -154,7 +154,7 @@ export default function TransactionRecurringSection({
 
 					{/* Recurring Summary */}
 					{!errors.intervalCount && !errors.endDate && !errors.occurrencesLimit && (
-						<div className="text-xs text-ink-muted dark:text-white/70 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline p-2.5 sm:p-3 rounded-control">
+						<div className="text-xs text-ink-muted dark:text-white bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline p-2.5 sm:p-3 rounded-control">
 							<span className="inline-flex items-center gap-2 font-semibold text-ink-primary dark:text-white">
 								{t('recurring.summary')} :
 							</span>

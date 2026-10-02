@@ -4,7 +4,9 @@ import { translateCategoryName } from '../../utils/categoryTranslation';
 import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
-export default function CategoryPieChart({ transactions, type }) {
+// layout="stacked" puts the list under the donut, for narrow side columns.
+export default function CategoryPieChart({ transactions, type, layout = 'inline' }) {
+  const stacked = layout === 'stacked';
   const { t } = useTranslation();
   const { format: fmt } = useDisplayCurrency();
 
@@ -58,9 +60,9 @@ export default function CategoryPieChart({ transactions, type }) {
   };
 
   return (
-    <div className="grid sm:grid-cols-[auto_1fr] gap-6 items-center">
+    <div className={stacked ? 'space-y-5' : 'grid sm:grid-cols-[auto_1fr] gap-6 items-center'}>
       {/* Donut with total in center */}
-      <div className="relative w-[180px] h-[180px] mx-auto sm:mx-0 shrink-0">
+      <div className={`relative w-[180px] h-[180px] mx-auto shrink-0 ${stacked ? '' : 'sm:mx-0'}`}>
         <ResponsiveContainer width={180} height={180}>
           <PieChart>
             <Pie
@@ -78,9 +80,15 @@ export default function CategoryPieChart({ transactions, type }) {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip />} wrapperStyle={{ zIndex: 10 }} />
           </PieChart>
         </ResponsiveContainer>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className="text-xs font-medium text-ink-muted dark:text-white">{t('chart.total')}</span>
+          <span className="mt-0.5 text-lg font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
+            {fmt(total, { decimals: 0 })}
+          </span>
+        </div>
       </div>
 
       {/* Category list */}
@@ -101,7 +109,7 @@ export default function CategoryPieChart({ transactions, type }) {
           );
         })}
         {data.length > 6 && (
-          <p className="text-xs text-ink-muted dark:text-white pt-1">+ {data.length - 6} more</p>
+          <p className="text-xs text-ink-muted dark:text-white pt-1 tabular-nums">+{data.length - 6}</p>
         )}
       </div>
     </div>

@@ -66,10 +66,10 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
   return (
     <Modal onClose={() => {}}>
       <div className="flex flex-col gap-4">
-        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
+        <h2 className="text-heading text-ink-primary dark:text-white">
           {t('encryption.unlockTitle')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-white/70">
+        <p className="text-sm text-ink-muted dark:text-white">
           {t('encryption.unlockDesc')}
         </p>
 
@@ -89,7 +89,7 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
             <button
               type="button"
               onClick={() => { setMode('recovery'); setError(''); }}
-              className="text-sm text-ink-muted dark:text-white/70 hover:text-brand-600 dark:hover:text-brand-500 underline text-center"
+              className="text-sm text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 underline text-center"
             >
               {t('encryption.useRecoveryCodeInstead')}
             </button>
@@ -113,14 +113,14 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
               <button
                 type="button"
                 onClick={() => { setMode('password'); setError(''); }}
-                className="text-ink-muted dark:text-white/70 hover:text-brand-600 dark:hover:text-brand-500 underline"
+                className="text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 underline"
               >
                 {t('common.back')}
               </button>
               <button
                 type="button"
                 onClick={() => { setMode('lost'); setError(''); }}
-                className="text-ink-muted dark:text-white/70 hover:text-expense underline"
+                className="text-ink-muted dark:text-white hover:text-expense underline"
               >
                 {t('encryption.lostRecoveryCode')}
               </button>
@@ -159,7 +159,7 @@ function LostCodeConfirm({ onBack, onConfirm, busy, isAppPassword }) {
       <div className="border border-expense rounded-md p-3 bg-expense-bg text-sm text-expense">
         {t('encryption.lostRecoveryCodeWarning')}
       </div>
-      <label className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white cursor-pointer">
+      <label className="flex items-start gap-2 text-sm text-ink-muted dark:text-white cursor-pointer">
         <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} className="mt-0.5" />
         {t('encryption.lostRecoveryCodeAck')}
       </label>
@@ -179,7 +179,7 @@ function LostCodeConfirm({ onBack, onConfirm, busy, isAppPassword }) {
       >
         {t('encryption.continueWithNewKey')}
       </Button>
-      <button type="button" onClick={onBack} className="text-sm text-ink-muted dark:text-white/70 hover:text-brand-600 underline text-center">
+      <button type="button" onClick={onBack} className="text-sm text-ink-muted dark:text-white hover:text-brand-600 underline text-center">
         {t('common.back')}
       </button>
     </div>

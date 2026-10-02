@@ -7,6 +7,8 @@ import { useCrypto } from '../../context/CryptoContext';
 import { supabase } from '../../utils/supabaseClient';
 import { deleteUserAccount } from '../../utils/api.js';
 import Card from '../UI/Card.jsx';
+import Button from '../UI/Button';
+import PageHeader from '../UI/PageHeader';
 import PasswordInput from '../UI/PasswordInput';
 import EncryptionSettings from '../Encryption/EncryptionSettings.jsx';
 import CurrencySettings from '../Settings/CurrencySettings.jsx';
@@ -137,14 +139,14 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto py-8 px-4 flex flex-col gap-6">
-      <h1 className="font-display font-bold tracking-tight text-2xl text-ink-primary dark:text-white">{t('account.title')}</h1>
+    <div className="max-w-2xl flex flex-col gap-6">
+      <PageHeader title={t('account.title')} className="!mb-0" />
 
       {/* Display Name Section */}
-      <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
+      <Card padding="lg">
         <form onSubmit={handleSaveName} className="flex flex-col gap-4">
           <div>
-            <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
+            <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
               {t('account.displayName')}
             </label>
             <input
@@ -152,13 +154,13 @@ export default function AccountPage() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder={t('account.displayNamePlaceholder')}
-              className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border rounded-md px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
             />
           </div>
           <button
             type="submit"
             disabled={savingName || !displayName.trim()}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="self-end bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingName ? t('account.saving') : t('account.saveDisplayName')}
           </button>
@@ -168,19 +170,19 @@ export default function AccountPage() {
       {/* Change Password Section. For OAuth users this doubles as "set a
           password" (Supabase Auth's link-a-password-to-OAuth-identity flow)
           so they can additionally log in with email+password. */}
-      <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-4">
+      <Card padding="lg">
+        <h2 className="text-heading text-ink-primary dark:text-white mb-4">
           {isOAuthUser ? t('account.setPassword') : t('account.changePassword')}
         </h2>
         {isOAuthUser && (
-          <p className="text-sm text-ink-muted dark:text-white/70 mb-4">
+          <p className="text-sm text-ink-muted dark:text-white mb-4">
             {t('account.setPasswordDesc')}
           </p>
         )}
         <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
           {requiresRewrap && (
             <div>
-              <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
+              <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
                 {t('account.currentPassword')}
               </label>
               <PasswordInput
@@ -193,12 +195,12 @@ export default function AccountPage() {
                 autoComplete="current-password"
                 show={showPassword}
                 onToggle={() => setShowPassword(v => !v)}
-                className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+                className="w-full border rounded-md px-3.5 py-2.5 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
               />
             </div>
           )}
           <div>
-            <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
+            <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
               {t('account.newPassword')}
             </label>
             <PasswordInput
@@ -211,11 +213,11 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border rounded-md px-3.5 py-2.5 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           <div>
-            <label className="block font-semibold text-ink-secondary dark:text-white mb-2 text-sm">
+            <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
               {t('account.confirmPassword')}
             </label>
             <PasswordInput
@@ -228,7 +230,7 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border rounded-md px-3.5 py-2.5 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
             />
           </div>
           {passwordError && (
@@ -239,7 +241,7 @@ export default function AccountPage() {
           <button
             type="submit"
             disabled={savingPassword || !newPassword || !confirmPassword}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-md font-semibold text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="self-end bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingPassword ? t('account.saving') : t('account.savePassword')}
           </button>
@@ -252,27 +254,21 @@ export default function AccountPage() {
       {/* Encryption Settings */}
       {E2EE_ENABLED && <EncryptionSettings userId={user?.id} />}
 
-      {/* Danger Zone */}
-      <div className="border border-expense rounded-container overflow-hidden">
-        <div className="px-6 py-4 flex items-center gap-3 border-b border-expense bg-expense-bg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 text-expense" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          </svg>
-          <h2 className="font-semibold tracking-tight text-lg text-expense">{t('account.dangerZone')}</h2>
+      {/* Danger Zone: red carries meaning in the heading and the button, not as a wash. */}
+      <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline">
+        <div className="px-5 sm:px-6 pt-5">
+          <h2 className="text-heading text-expense">{t('account.dangerZone')}</h2>
         </div>
-        <div className="bg-white dark:bg-surface-dark-card px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="px-5 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="font-semibold text-ink-primary dark:text-white text-sm">{t('account.deleteAccountTitle')}</p>
+            <p className="font-medium text-ink-primary dark:text-white text-sm">{t('account.deleteAccountTitle')}</p>
             <p className="text-ink-muted dark:text-white text-xs mt-1">{t('account.deleteAccountDesc')}</p>
           </div>
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="flex-shrink-0 px-5 py-2.5 text-white text-sm font-bold rounded-md shadow-sm transition-colors bg-danger hover:bg-danger-hover"
-          >
+          <Button variant="danger" onClick={() => setShowDeleteModal(true)} className="flex-shrink-0">
             {t('account.deleteAccountBtn')}
-          </button>
+          </Button>
         </div>
-      </div>
+      </section>
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
@@ -291,7 +287,7 @@ export default function AccountPage() {
             </div>
 
             <div className="border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-4 bg-surface-subtle dark:bg-surface-dark-subtle">
-              <ul className="text-sm text-ink-secondary dark:text-white space-y-1 list-disc list-inside">
+              <ul className="text-sm text-ink-muted dark:text-white space-y-1 list-disc list-inside">
                 <li>{t('account.deleteWarn1')}</li>
                 <li>{t('account.deleteWarn2')}</li>
                 <li>{t('account.deleteWarn3')}</li>
@@ -299,7 +295,7 @@ export default function AccountPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-ink-secondary dark:text-white mb-2">
+              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
                 {t('account.deleteConfirmLabel')}
               </label>
               <input
@@ -307,7 +303,7 @@ export default function AccountPage() {
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline font-mono tracking-widest"
+                className="w-full border rounded-md px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline font-mono tracking-widest"
               />
             </div>
 
@@ -315,14 +311,14 @@ export default function AccountPage() {
               <button
                 onClick={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}
                 disabled={deleting}
-                className="flex-1 px-4 py-3 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white rounded-md font-bold text-sm hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle transition-all disabled:opacity-50"
+                className="flex-1 px-4 py-3 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white rounded-md font-medium text-sm hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle transition-all disabled:opacity-50"
               >
                 {t('common.cancel')}
               </button>
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmText !== 'DELETE' || deleting}
-                className="flex-1 px-4 py-3 text-white rounded-md font-bold text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-danger hover:bg-danger-hover"
+                className="flex-1 px-4 py-3 text-white rounded-md font-medium text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-danger hover:bg-danger-hover"
               >
                 {deleting ? t('account.deleting') : t('account.deleteAccountBtn')}
               </button>

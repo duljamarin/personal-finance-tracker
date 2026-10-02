@@ -10,18 +10,33 @@ import ThemeToggle from './ThemeToggle.jsx';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import {
   LayoutDashboard, PieChart, Target, TrendingUp, Repeat,
-  Tag, FileText, Bell, Rocket, User, CreditCard,
+  Tag, FileText, Bell, Rocket, User, CreditCard, ArrowLeftRight,
   LogOut, ChevronsLeft, Menu as MenuIcon,
 } from 'lucide-react';
 
-const navItems = [
-  { key: 'dashboard',  path: '/dashboard',    labelKey: 'nav.dashboard',   Icon: LayoutDashboard },
-  { key: 'budgets',    path: '/budgets',       labelKey: 'budgets.title',   Icon: PieChart        },
-  { key: 'goals',      path: '/goals',         labelKey: 'goals.title',     Icon: Target          },
-  { key: 'networth',   path: '/networth',      labelKey: 'networth.title',  Icon: TrendingUp      },
-  { key: 'recurring',  path: '/recurring',     labelKey: 'nav.recurring',   Icon: Repeat          },
-  { key: 'categories', path: '/categories',    labelKey: 'nav.categories',  Icon: Tag             },
-  { key: 'reports',    path: '/reports',       labelKey: 'reports.title',   Icon: FileText        },
+// Grouped the way people think about their money: the day-to-day ledger
+// first, longer-horizon planning second.
+const navGroups = [
+  {
+    key: 'money',
+    labelKey: 'nav.groupMoney',
+    items: [
+      { key: 'dashboard',    path: '/dashboard',    labelKey: 'nav.dashboard',    Icon: LayoutDashboard },
+      { key: 'transactions', path: '/transactions', labelKey: 'nav.transactions', Icon: ArrowLeftRight  },
+      { key: 'budgets',      path: '/budgets',      labelKey: 'budgets.title',    Icon: PieChart        },
+      { key: 'recurring',    path: '/recurring',    labelKey: 'nav.recurring',    Icon: Repeat          },
+      { key: 'categories',   path: '/categories',   labelKey: 'nav.categories',   Icon: Tag             },
+    ],
+  },
+  {
+    key: 'planning',
+    labelKey: 'nav.groupPlanning',
+    items: [
+      { key: 'goals',    path: '/goals',    labelKey: 'goals.title',    Icon: Target     },
+      { key: 'networth', path: '/networth', labelKey: 'networth.title', Icon: TrendingUp },
+      { key: 'reports',  path: '/reports',  labelKey: 'reports.title',  Icon: FileText   },
+    ],
+  },
 ];
 
 function BrandMark({ compact = false }) {
@@ -129,19 +144,29 @@ export default function Sidebar() {
       </div>
 
       {/* Main nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {!collapsed && (
-          <p className="eyebrow px-3 mb-3 text-[10px]">Menu</p>
-        )}
-        {navItems.map(item => (
-          <NavItem
-            key={item.key}
-            item={item}
-            isActive={location.pathname === item.path}
-            collapsed={collapsed}
-            onClick={() => setMobileOpen(false)}
-          />
+      <nav className="flex-1 px-3 py-4 overflow-y-auto">
+        {navGroups.map((group, gi) => (
+          <div key={group.key} className={gi > 0 ? 'mt-6' : ''}>
+            {collapsed ? (
+              gi > 0 && <div className="mx-3 mb-3 border-t border-surface-hairline dark:border-surface-dark-hairline" />
+            ) : (
+              <p className="eyebrow px-3 mb-2">{t(group.labelKey)}</p>
+            )}
+            <div className="space-y-0.5">
+              {group.items.map(item => (
+                <NavItem
+                  key={item.key}
+                  item={item}
+                  isActive={location.pathname === item.path}
+                  collapsed={collapsed}
+                  onClick={() => setMobileOpen(false)}
+                />
+              ))}
+            </div>
+          </div>
         ))}
+
+        <div className={collapsed ? 'mt-3' : 'mt-6'}>
 
         {/* Notifications */}
         <Link
@@ -166,6 +191,7 @@ export default function Sidebar() {
           </span>
           {!collapsed && <span>{t('notifications.title')}</span>}
         </Link>
+        </div>
       </nav>
 
       {/* Upgrade / Manage Subscription CTA */}
@@ -180,7 +206,7 @@ export default function Sidebar() {
                 <Rocket className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
                 <span className="text-xs font-semibold text-ink-primary dark:text-white">{t('upgrade.proPlan')}</span>
               </div>
-              <p className="text-xs text-ink-muted dark:text-white/70 mb-2.5 leading-relaxed">
+              <p className="text-xs text-ink-muted dark:text-white mb-2.5 leading-relaxed">
                 {t('upgrade.unlockAll')}
               </p>
               <span className="flex items-center justify-center w-full px-3 py-1.5 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors">
@@ -207,7 +233,7 @@ export default function Sidebar() {
             <ThemeToggle />
             <button
               onClick={() => setCollapsed(c => !c)}
-              className="hidden lg:flex p-2 rounded-md text-ink-muted/70 dark:text-white/70 hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+              className="hidden lg:flex p-2 rounded-md text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               <ChevronsLeft className={`w-4 h-4 transition-transform ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.75} />
@@ -288,14 +314,35 @@ export default function Sidebar() {
         {sidebarContent}
       </aside>
 
-      {/* Mobile trigger */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 p-2.5 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline shadow-sm text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
-        aria-label="Open menu"
-      >
-        <MenuIcon className="w-5 h-5" strokeWidth={1.75} />
-      </button>
+      {/* Mobile top bar — replaces a floating menu button that sat on top of
+          page headings. Fixed height h-14; AuthenticatedLayout pads for it. */}
+      <div className="lg:hidden fixed top-0 inset-x-0 z-40 h-14 flex items-center gap-3 px-3 bg-white/95 dark:bg-surface-dark-card/95 backdrop-blur border-b border-surface-hairline dark:border-surface-dark-hairline">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 rounded-md text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+          aria-label={t('nav.openMenu')}
+        >
+          <MenuIcon className="w-5 h-5" strokeWidth={1.75} />
+        </button>
+        <Link to="/dashboard" className="flex items-center gap-2 min-w-0">
+          <BrandMark compact />
+          <span className="text-sm font-semibold text-ink-primary dark:text-white tracking-tight truncate">
+            {t('app.shortName')}
+          </span>
+        </Link>
+        <Link
+          to="/notifications"
+          className="relative ml-auto p-2 rounded-md text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+          aria-label={t('notifications.title')}
+        >
+          <Bell className="w-5 h-5" strokeWidth={1.75} />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-expense text-white text-[9px] font-bold leading-none">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
+        </Link>
+      </div>
 
       {/* Mobile overlay */}
       {mobileOpen && (

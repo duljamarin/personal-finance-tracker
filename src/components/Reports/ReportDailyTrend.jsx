@@ -72,7 +72,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
 
   return (
     <Card padding="md">
-      <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-4">
+      <h3 className="text-heading text-ink-primary dark:text-white mb-4">
         {t('reports.dailySpendingTrend')}
       </h3>
       <div className="w-full">

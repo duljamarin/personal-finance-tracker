@@ -4,7 +4,7 @@ import { localizedPath } from '../lib/tools';
 
 function BrandMark() {
   return (
-    <span className="inline-flex items-center justify-center w-8 h-8 bg-brand-600 rounded-md shadow-sm shadow-brand-500/20 flex-shrink-0">
+    <span className="inline-flex items-center justify-center w-8 h-8 bg-brand-600 rounded-md shadow-sm flex-shrink-0">
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
@@ -32,14 +32,14 @@ export default function Footer() {
                 {t('app.name')}
               </span>
             </Link>
-            <p className="text-xs text-ink-muted dark:text-white/50 leading-relaxed max-w-[200px]">
+            <p className="text-xs text-ink-muted dark:text-white leading-relaxed max-w-[200px]">
               {t('footer.builtBy')}
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted dark:text-white/40 mb-4">
+            <p className="font-display text-[13px] font-semibold text-ink-primary dark:text-white mb-4">
               {t('footer.product')}
             </p>
             <ul className="space-y-3">
@@ -63,7 +63,7 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted dark:text-white/40 mb-4">
+            <p className="font-display text-[13px] font-semibold text-ink-primary dark:text-white mb-4">
               {t('footer.legal')}
             </p>
             <ul className="space-y-3">
@@ -82,7 +82,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted dark:text-white/40 mb-4">
+            <p className="font-display text-[13px] font-semibold text-ink-primary dark:text-white mb-4">
               {t('footer.contact')}
             </p>
             <ul className="space-y-3">
@@ -100,11 +100,11 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-surface-hairline dark:border-surface-dark-hairline">
-          <p className="text-xs text-ink-muted dark:text-white/40 order-2 sm:order-1">
+          <p className="text-xs text-ink-muted dark:text-white order-2 sm:order-1">
             &copy; {year} {t('app.name')}. {t('footer.rights')}
           </p>
           <div className="flex items-center gap-1 order-1 sm:order-2">
-            <span className="text-xs text-ink-muted dark:text-white/35">personal-finances.app</span>
+            <span className="text-xs text-ink-muted dark:text-white">personal-finances.app</span>
           </div>
         </div>
       </div>

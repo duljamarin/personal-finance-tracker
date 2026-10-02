@@ -132,7 +132,7 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
           aria-label={t('nav.tools.toggle')}
           onClick={() => setOpen((o) => !o)}
           onKeyDown={onButtonKeyDown}
-          className="inline-flex items-center p-1 -m-1 text-ink-muted dark:text-white/70 hover:text-ink-primary dark:hover:text-white rounded focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15"
+          className="inline-flex items-center p-1 -m-1 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-white rounded focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15"
         >
           <svg className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />

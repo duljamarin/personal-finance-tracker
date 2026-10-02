@@ -195,10 +195,10 @@ export default function PricingPage() {
         <div className={`mb-8 p-4 rounded-container text-center ${
           subscription?.subscription_cancel_at
             ? 'bg-warning-bg dark:bg-warning/15 border border-warning/40'
-            : 'bg-white dark:bg-surface-dark-card border border-brand-600/50 ring-1 ring-brand-600/20'
+            : 'bg-white dark:bg-surface-dark-card border border-brand-600 dark:border-brand-400/60'
         }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
               subscription?.subscription_cancel_at
                 ? 'bg-warning/20 text-warning dark:bg-warning/25'
                 : 'bg-brand-600 text-white dark:bg-brand-600 dark:text-white'
@@ -232,14 +232,10 @@ export default function PricingPage() {
 
       {/* Savings callout banner */}
       {!isPremium && (
-        <div className="mb-8 flex items-center justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-surface-subtle dark:bg-surface-dark-subtle text-brand-700 dark:text-brand-400 text-sm font-semibold px-4 py-1.5 rounded-full border border-surface-hairline dark:border-surface-dark-hairline">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            {t('pricing.savingsCallout')}
-          </span>
-        </div>
+        // Plain line, not a tinted pill with an icon (ui-quality-principles #2).
+        <p className="-mt-6 mb-8 text-center text-sm font-medium text-ink-muted dark:text-white">
+          {t('pricing.savingsCallout')}
+        </p>
       )}
 
       {/* Plan Cards */}
@@ -249,11 +245,11 @@ export default function PricingPage() {
         <div className="flex flex-col rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
           {/* header */}
           <div className="px-6 pt-6 pb-4">
-            <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
+            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
               {t('pricing.free')}
             </h3>
             <div>
-              <span className="font-semibold tracking-tight text-4xl text-ink-primary dark:text-white">€0</span>
+              <span className="font-semibold tracking-tight tabular-nums text-4xl text-ink-primary dark:text-white">€0</span>
               <span className="text-ink-muted dark:text-white ml-1">{t('pricing.forever')}</span>
             </div>
           </div>
@@ -261,7 +257,7 @@ export default function PricingPage() {
           <div className="px-6 py-4 flex-1">
             <ul className="space-y-3">
               {freeFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-secondary dark:text-white">
+                <li key={i} className="flex items-start gap-2 text-sm text-ink-muted dark:text-white">
                   <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -288,19 +284,19 @@ export default function PricingPage() {
         </div>
 
         {/* ── PREMIUM ── */}
-        <div className="flex flex-col rounded-[10px] border-2 border-brand-600 dark:border-brand-800 bg-white dark:bg-surface-dark-card relative">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-            <span className="bg-brand-700 text-white text-xs font-bold px-4 py-1 rounded-full shadow">
-              {t('pricing.bestValue')}
-            </span>
-          </div>
+        <div className="flex flex-col rounded-[10px] border-2 border-brand-600 dark:border-brand-400/60 bg-white dark:bg-surface-dark-card relative">
           {/* header */}
-          <div className="px-6 pt-8 pb-4">
-            <h3 className="font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
-              {t('pricing.premium')}
-            </h3>
+          <div className="px-6 pt-6 pb-4">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-white">
+                {t('pricing.premium')}
+              </h3>
+              <span className="bg-brand-600 text-white text-xs font-medium px-2 py-0.5 rounded-md">
+                {t('pricing.bestValue')}
+              </span>
+            </div>
             <div className="mb-1">
-              <span className="font-semibold tracking-tight text-5xl text-ink-primary dark:text-white">
+              <span className="font-semibold tracking-tight tabular-nums text-5xl text-ink-primary dark:text-white">
                 {t('pricing.yearlyPrice')}
               </span>
               <span className="text-ink-muted dark:text-white ml-1">{t('pricing.perYear')}</span>

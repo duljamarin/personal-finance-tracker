@@ -133,7 +133,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
       className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full px-4 sm:px-0"
       style={{ '--err': EXPENSE_COLOR }}
     >
-      <h2 className="font-semibold tracking-tight text-lg sm:text-2xl text-ink-primary dark:text-white mb-1 sm:mb-2 flex-shrink-0">
+      <h2 className="text-heading sm:text-title font-display text-ink-primary dark:text-white mb-1 flex-shrink-0">
         {t('recurring.editTitle')}
       </h2>
 
@@ -152,7 +152,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
               {formatCurrency(Number(initial?.amount))}
             </span>
           </div>
-          <p className="mt-2 pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white/60">
+          <p className="mt-2 pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white">
             {t('recurring.readOnlyNote')}
           </p>
         </div>

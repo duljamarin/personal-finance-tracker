@@ -218,14 +218,14 @@ export default function CSVImport({ categories, onImportComplete }) {
           {/* Summary */}
           <div className="flex gap-4">
             <Card className="flex-1 p-4">
-              <div className="text-sm text-ink-secondary dark:text-white">{t('import.validRows')}</div>
-              <div className="text-2xl font-bold text-brand-600 dark:text-brand-400">
+              <div className="text-sm text-ink-muted dark:text-white">{t('import.validRows')}</div>
+              <div className="text-2xl font-semibold tabular-nums text-brand-600 dark:text-brand-400">
                 {previewData.length}
               </div>
             </Card>
             <Card className="flex-1 p-4">
-              <div className="text-sm text-ink-secondary dark:text-white">{t('import.invalidRows')}</div>
-              <div className="text-2xl font-bold text-expense">
+              <div className="text-sm text-ink-muted dark:text-white">{t('import.invalidRows')}</div>
+              <div className="text-2xl font-semibold tabular-nums text-expense">
                 {validationErrors.length}
               </div>
             </Card>

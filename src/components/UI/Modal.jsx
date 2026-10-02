@@ -12,8 +12,11 @@ export default function Modal({ children, onClose, className = '', drawer = fals
   }, [onClose]);
 
   return (
+    // !mt-0: modals are often rendered inside a `space-y-*` page, whose sibling
+    // margin would otherwise push this fixed overlay down and leave an undimmed
+    // strip across the top of the viewport.
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 sm:px-0 bg-black/50 backdrop-blur-[2px] animate-fade-in"
+      className="fixed inset-0 z-50 !mt-0 flex items-end sm:items-center justify-center px-4 sm:px-0 bg-black/50 backdrop-blur-[2px] animate-fade-in"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

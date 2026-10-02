@@ -10,7 +10,10 @@ import ReportIncomeBreakdown from './ReportIncomeBreakdown';
 import ReportDailyTrend from './ReportDailyTrend';
 import ReportTopTransactions from './ReportTopTransactions';
 import ReportPeriodComparison from './ReportPeriodComparison';
-import { toISODate, getThisMonth, getLastMonth, getThisQuarter, getLast3Months, getThisYear } from '../../utils/date';
+import PageHeader from '../UI/PageHeader';
+import SegmentedControl from '../UI/SegmentedControl';
+import { FileText } from 'lucide-react';
+import { formatDate, toISODate, getThisMonth, getLastMonth, getThisQuarter, getLast3Months, getThisYear } from '../../utils/date';
 
 /**
  * Compute the previous period of equal calendar length immediately before startDate.
@@ -47,7 +50,7 @@ const PRESETS = [
 ];
 
 export default function ReportsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addToast } = useToast();
 
   const initial = getThisMonth();
@@ -105,54 +108,40 @@ export default function ReportsPage() {
   const dateInputClass =
     'text-sm px-3 py-2 rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
 
+  const rangeLabel = `${formatDate(new Date(`${startDate}T00:00:00`), i18n.language)} – ${formatDate(new Date(`${endDate}T00:00:00`), i18n.language)}`;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-display font-bold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
-            <svg className="w-8 h-8 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            {t('reports.title')}
-          </h1>
-          <p className="text-ink-muted dark:text-white mt-1">
-            {startDate} - {endDate}
-          </p>
+    <div className="space-y-6">
+      <PageHeader title={t('reports.title')} subtitle={rangeLabel} className="!mb-0" />
+
+      {/* Period selector: presets + custom range in one toolbar */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="max-w-full overflow-x-auto scrollbar-hide">
+          <SegmentedControl
+            value={activePreset}
+            onChange={(key) => {
+              const preset = PRESETS.find(p => p.key === key);
+              if (preset) applyPreset(preset.key, preset.fn);
+            }}
+            options={PRESETS.map(({ key }) => ({ value: key, label: t(`reports.${key}`) }))}
+          />
         </div>
-      </div>
-
-      {/* Period selector */}
-      <div className="flex flex-wrap gap-2 items-center">
-        {PRESETS.map(({ key, fn }) => (
-          <button
-            key={key}
-            onClick={() => applyPreset(key, fn)}
-            className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-              activePreset === key
-                ? 'bg-brand-600 text-white'
-                : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline border border-surface-hairline dark:border-surface-dark-hairline'
-            }`}
-          >
-            {t(`reports.${key}`)}
-          </button>
-        ))}
-
-        {/* Custom date inputs */}
         <div className="flex items-center gap-2">
           <input
             type="date"
             value={startDate}
             max={endDate}
             onChange={handleCustomStart}
+            aria-label={t('reports.periodLabel')}
             className={dateInputClass}
           />
-          <span className="text-ink-muted dark:text-white text-sm">-</span>
+          <span className="text-ink-muted dark:text-white text-sm">–</span>
           <input
             type="date"
             value={endDate}
             min={startDate}
             onChange={handleCustomEnd}
+            aria-label={t('reports.periodLabel')}
             className={dateInputClass}
           />
         </div>
@@ -164,9 +153,9 @@ export default function ReportsPage() {
           <LoadingSpinner size="md" className="min-h-[40vh]" />
         ) : !hasData ? (
           <EmptyState
-            icon={<svg className="w-10 h-10 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
+            icon={<FileText className="w-5 h-5" strokeWidth={1.75} />}
             title={t('reports.noData')}
-            description={`${startDate} - ${endDate}`}
+            description={rangeLabel}
           />
         ) : (
           <>
@@ -181,8 +170,10 @@ export default function ReportsPage() {
               startDate={startDate}
               endDate={endDate}
             />
-            <ReportCategoryBreakdown transactions={transactions} />
-            <ReportIncomeBreakdown transactions={transactions} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+              <ReportCategoryBreakdown transactions={transactions} />
+              <ReportIncomeBreakdown transactions={transactions} />
+            </div>
             <ReportTopTransactions transactions={transactions} />
             <ReportPeriodComparison
               transactions={transactions}

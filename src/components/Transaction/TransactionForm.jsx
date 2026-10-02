@@ -33,7 +33,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [categoryProposalSuccess, setCategoryProposalSuccess] = useState(false)
 	// Single-currency app: every amount is entered and stored in the user's one
 	// chosen currency, so there is no per-transaction picker and no FX rate.
-	const { currency: currencyCode } = useDisplayCurrency()
+	const { currency: currencyCode, symbol: currencySymbol } = useDisplayCurrency()
 
 	// If editing a transaction from a recurring rule
 	const isFromRecurring = initial?.source_recurring_id
@@ -274,7 +274,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 
 	return (
 		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-5 w-full">
-			<h2 className="text-lg sm:text-2xl font-semibold tracking-tight text-ink-primary dark:text-white mb-1 sm:mb-2 flex-shrink-0">
+			<h2 className="text-heading sm:text-title font-display text-ink-primary dark:text-white mb-1 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
@@ -290,12 +290,59 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								{t('recurring.generatedFromRule')}
 							</span>
 						</div>
-						<p className="text-xs text-ink-muted dark:text-white/70 leading-relaxed">
+						<p className="text-xs text-ink-muted dark:text-white leading-relaxed">
 							{t('recurring.editInstanceNote')}
 						</p>
 					</div>
 				)}
 				
+				{/* Type, then the amount as the focal field: the way money apps lead. */}
+				<div className="flex flex-col gap-3">
+					<div role="group" aria-label={t('transactions.type')} className="grid grid-cols-2 p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
+						{[
+							{ value: 'expense', label: t('transactions.expense'), activeText: 'text-expense' },
+							{ value: 'income', label: t('transactions.income'), activeText: 'text-brand-600 dark:text-brand-400' },
+						].map(opt => (
+							<button
+								key={opt.value}
+								type="button"
+								aria-pressed={type === opt.value}
+								onClick={() => setType(opt.value)}
+								className={`px-4 py-2 rounded-[5px] font-medium text-sm transition-colors ${
+									type === opt.value
+										? `bg-white dark:bg-surface-dark-elevated shadow-xs ${opt.activeText}`
+										: 'text-ink-muted dark:text-white hover:text-ink-primary'
+								}`}
+							>
+								{opt.label}
+							</button>
+						))}
+					</div>
+					{errors.type && (
+						<span className="text-xs text-expense font-medium">{t(errors.type)}</span>
+					)}
+
+					<div className="flex flex-col gap-1.5">
+						<label htmlFor="tx-amount" className="text-sm font-medium text-ink-primary dark:text-white">
+							{t('transactions.amountLabel')}
+						</label>
+						<Input
+							id="tx-amount"
+							type="number"
+							inputMode="decimal"
+							placeholder={t('transactions.amountPlaceholder')}
+							value={amount}
+							onChange={handleAmountChange}
+							error={errors.amount ? t(errors.amount) : undefined}
+							leadingIcon={<span className="text-xl font-semibold">{currencySymbol}</span>}
+							// Room for multi-letter symbols (C$, CHF) beside the large figure.
+							className={`!py-3.5 !text-3xl font-semibold tabular-nums tracking-tight ${
+								(currencySymbol || '').length > 2 ? '!pl-[4.5rem]' : (currencySymbol || '').length > 1 ? '!pl-14' : ''
+							}`}
+						/>
+					</div>
+				</div>
+
 				{/* Title */}
 				<div className="flex flex-col gap-1.5">
 					<label className="text-sm font-medium text-ink-primary dark:text-white">
@@ -308,65 +355,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						error={errors.title ? t(errors.title) : undefined}
 					/>
 				</div>
-
-				{/* Type & Amount — type toggle full width, amount + label inline */}
-				<div className="flex flex-col gap-3">
-					{/* Type toggle */}
-					<div className="flex gap-2">
-						{[
-							{
-								value: 'expense',
-								label: t('transactions.expense'),
-								icon: (
-									<svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-										<path d="M3 7 L9 13 L13 10 L21 18" /><path d="M14 18 L21 18 L21 11" />
-									</svg>
-								),
-								activeClass: 'bg-expense border-expense text-white',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-expense/50',
-							},
-							{
-								value: 'income',
-								label: t('transactions.income'),
-								icon: (
-									<svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-										<path d="M3 17 L9 11 L13 14 L21 6" /><path d="M14 6 L21 6 L21 13" />
-									</svg>
-								),
-								activeClass: 'bg-brand-600 border-brand-600 text-white',
-								inactiveClass: 'bg-white dark:bg-surface-dark-card border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-brand-400',
-							},
-						].map(opt => (
-							<button
-								key={opt.value}
-								type="button"
-								onClick={() => setType(opt.value)}
-								className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-md border font-medium text-sm transition-colors ${type === opt.value ? opt.activeClass : opt.inactiveClass}`}
-							>
-								{opt.icon}
-								{opt.label}
-							</button>
-						))}
-					</div>
-					{errors.type && (
-						<span className="text-xs text-expense font-medium">{t(errors.type)}</span>
-					)}
-
-					{/* Amount */}
-					<div className="flex flex-col gap-1.5">
-						<label className="text-sm font-medium text-ink-primary dark:text-white">
-							{t('transactions.amountLabel')}
-						</label>
-						<Input
-							type="number"
-							placeholder={t('transactions.amountPlaceholder')}
-							value={amount}
-							onChange={handleAmountChange}
-							error={errors.amount ? t(errors.amount) : undefined}
-						/>
-					</div>
-				</div>
-
 
 				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
 				<div className="flex flex-col gap-1 sm:gap-2">
@@ -384,7 +372,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 									{isSplit ? t('split.singleCategory') : t('split.enableSplit')}
 								</button>
 							) : (
-								<span className="flex items-center gap-1.5 text-xs text-ink-muted/60 dark:text-white/60">
+								<span className="flex items-center gap-1.5 text-xs text-ink-muted dark:text-white">
 									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
 									</svg>
@@ -512,19 +500,34 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				)}
 				</div>
 
-				{/* Tags */}
-				<div className="flex flex-col gap-1.5">
-					<label className="text-sm font-medium text-ink-primary dark:text-white">
-						{t('transactions.tagsLabel')}
-						<span className="text-xs text-ink-muted dark:text-white font-normal ml-1">
-							{t('transactions.tagsOptional')}
-						</span>
-					</label>
-					<Input
-						placeholder={t('transactions.tagsPlaceholder')}
-						value={tags}
-						onChange={e => setTags(e.target.value)}
-					/>
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+					{/* Date */}
+					<div className="flex flex-col gap-1.5">
+						<label className="text-sm font-medium text-ink-primary dark:text-white">
+							{t('transactions.dateLabel')}
+						</label>
+						<Input
+							type="date"
+							value={date}
+							onChange={handleDateChange}
+							error={errors.date ? t(errors.date) : undefined}
+							className="[color-scheme:light] dark:[color-scheme:dark]"
+						/>
+					</div>
+					{/* Tags */}
+					<div className="flex flex-col gap-1.5">
+						<label className="text-sm font-medium text-ink-primary dark:text-white">
+							{t('transactions.tagsLabel')}
+							<span className="text-xs text-ink-muted dark:text-white font-normal ml-1">
+								{t('transactions.tagsOptional')}
+							</span>
+						</label>
+						<Input
+							placeholder={t('transactions.tagsPlaceholder')}
+							value={tags}
+							onChange={e => setTags(e.target.value)}
+						/>
+					</div>
 				</div>
 
 				{/* Recurring Transaction Toggle - only show for new transactions, hide when split is enabled or editing split transaction */}
@@ -547,19 +550,6 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					/>
 				)}
 
-				{/* Date */}
-				<div className="flex flex-col gap-1.5">
-					<label className="text-sm font-medium text-ink-primary dark:text-white">
-						{t('transactions.dateLabel')}
-					</label>
-					<Input
-						type="date"
-						value={date}
-						onChange={handleDateChange}
-						error={errors.date ? t(errors.date) : undefined}
-						className="[color-scheme:light] dark:[color-scheme:dark]"
-					/>
-				</div>
 			</div>
 
 			{/* Buttons */}

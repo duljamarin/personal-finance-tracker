@@ -77,7 +77,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         // history exists, not a judgement on the spending.
         return {
           label: t('benchmark.statusNew'),
-          pillClass: 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white/70',
+          pillClass: 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white',
           borderClass: 'border-l-2 border-l-surface-outline dark:border-l-surface-dark-outline',
           cardBgClass: 'bg-white dark:bg-surface-dark-card',
           progressColor: 'var(--c-brand-accent)',
@@ -141,10 +141,10 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
   }
 
   const periodButtonBase =
-    'px-4 py-2 rounded-md font-medium text-sm transition-colors';
-  const periodActive = 'bg-brand-600 text-white';
-  const periodInactive =
-    'bg-white dark:bg-surface-dark-elevated border border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle';
+    'px-3 py-1.5 rounded-[5px] font-medium text-sm transition-colors';
+  // Segmented-control styling (see UI/SegmentedControl): neutral thumb, not a brand fill.
+  const periodActive = 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white shadow-xs';
+  const periodInactive = 'text-ink-muted dark:text-white hover:text-ink-primary';
 
   return (
     <Card className="mt-4 sm:mt-6">
@@ -152,11 +152,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <span className="eyebrow block mb-2">{t('benchmark.title')}</span>
-            <h2 className="font-semibold tracking-tight text-xl sm:text-2xl text-ink-primary dark:text-white flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
+            <h2 className="text-heading text-ink-primary dark:text-white">
               {t('benchmark.title')}
             </h2>
             <p className="text-ink-muted dark:text-white text-sm mt-1">
@@ -166,7 +162,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
 
           {/* Period selector */}
           {isPremium ? (
-            <div className="flex gap-2">
+            <div className="inline-flex p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
               <button
                 onClick={() => setMonths(1)}
                 className={`${periodButtonBase} ${months === 1 ? periodActive : periodInactive}`}
@@ -181,8 +177,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
               </button>
             </div>
           ) : (
-            <div className="flex gap-2 items-center">
-              <span className={`${periodButtonBase} ${periodActive}`}>
+            <div className="flex gap-3 items-center">
+              <span className={`${periodButtonBase} bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white`}>
                 {t('benchmark.period1Month')}
               </span>
               <a href="/pricing" className="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">
@@ -210,13 +206,8 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
 
           if (visible.length === 0) {
             return (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md flex items-center justify-center mx-auto mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-ink-muted dark:text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold tracking-tight text-ink-primary dark:text-white mb-2">
+              <div className="text-center py-10">
+                <h3 className="text-sm font-medium text-ink-primary dark:text-white mb-1">
                   {t('benchmark.noData')}
                 </h3>
                 <p className="text-ink-muted dark:text-white text-sm max-w-sm mx-auto">
@@ -235,7 +226,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                   <p className="text-sm font-semibold text-ink-primary dark:text-white mb-1">
                     {t('benchmark.buildingBaseline')}
                   </p>
-                  <p className="text-sm text-ink-muted dark:text-white/70 leading-relaxed">
+                  <p className="text-sm text-ink-muted dark:text-white leading-relaxed">
                     {t('benchmark.buildingBaselineDesc')}
                   </p>
                 </div>
@@ -288,7 +279,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                           0/month average would be worse than saying nothing, so
                           state the situation instead. */}
                       {benchmark.months_with_data === 0 ? (
-                        <p className="mt-2 text-xs text-ink-muted dark:text-white/70 leading-relaxed">
+                        <p className="mt-2 text-xs text-ink-muted dark:text-white leading-relaxed">
                           {t('benchmark.noBaselineYet')}
                         </p>
                       ) : isPremium ? (
@@ -307,13 +298,13 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                           <div className="flex items-center justify-between text-xs text-ink-muted dark:text-white gap-3">
                             <div>
                               <span className="eyebrow block mb-0.5">{t('benchmark.typical')}</span>
-                              <span className="font-semibold tracking-tight text-ink-secondary dark:text-white">
+                              <span className="font-semibold tracking-tight text-ink-muted dark:text-white">
                                 {formatCurrency(Number(benchmark.lower_threshold), { compact: true })} - {formatCurrency(Number(benchmark.upper_threshold), { compact: true })}
                               </span>
                             </div>
                             <div className="text-right">
                               <span className="eyebrow block mb-0.5">{t('benchmark.average')}</span>
-                              <span className="font-semibold tracking-tight text-ink-secondary dark:text-white">
+                              <span className="font-semibold tracking-tight text-ink-muted dark:text-white">
                                 {formatCurrency(Number(benchmark.avg_monthly_spending), { compact: true })}/{t('benchmark.month')}
                               </span>
                             </div>

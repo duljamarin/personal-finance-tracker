@@ -60,7 +60,7 @@ export default function ScoreGauge({ score = 0, start = true, size = 200 }) {
         >
           {Math.round(clamped)}
         </span>
-        <span className="text-xs text-ink-muted dark:text-white/60 mt-1">/100</span>
+        <span className="text-xs text-ink-muted dark:text-white mt-1">/100</span>
       </div>
     </div>
   );

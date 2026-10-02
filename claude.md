@@ -37,13 +37,15 @@ src/
 │   │                   # ReportTopTransactions
 │   ├── Budgets/        # BudgetsPage, BudgetForm, BudgetCard
 │   ├── Dashboard/      # Dashboard, SummaryCards, CashFlowForecast, ChartWithTimeRange,
-│   │                   # BudgetSummaryBar, AddTransactionCTA, FirstRunGuide
+│   │                   # BudgetSummaryBar, FirstRunGuide
 │   ├── Onboarding/     # OnboardingWizard, ProgressBar, steps/
 │   ├── Subscription/   # PremiumFeatureLock, UpgradeBanner
 │   ├── Pricing/        # PricingPage
 │   ├── UI/             # Button, Card, Input, Modal, PasswordInput, CustomSelect,
 │   │                   # CategoryIconSvg, ConfirmDeleteModal, EmptyState, Icon,
-│   │                   # LoadingSpinner, Skeleton
+│   │                   # LoadingSpinner, Skeleton, PageHeader, StatStrip,
+│   │                   # MonthSwitcher, SegmentedControl, CategoryAvatar
+│   ├── Landing/        # HeroPreview (static dashboard mock for the landing hero)
 │   └── Header, Footer, Sidebar, LandingPage, ThemeToggle, LanguageSwitcher,
 │       ErrorBoundary, CatchAllRedirect
 ├── context/
@@ -249,7 +251,7 @@ Avoid unicolor red: keep percentage red (`#DC2626`), supporting text muted (`dar
 ## Notes for AI Assistants
 
 1. **API layer is modular** — check `src/utils/api/` (not a single api.js) before adding functions
-2. **Use existing UI primitives** — `Button, Card, Input, Modal, CustomSelect, CategoryIconSvg, PasswordInput`
+2. **Use existing UI primitives** — `Button, Card, Input, Modal, CustomSelect, CategoryIconSvg, PasswordInput`. Page layout: every authenticated page starts with `PageHeader`; summary figures go in `StatStrip` (one hairline-divided panel, not equal stat cards); view filters use `SegmentedControl`; month-scoped pages use `MonthSwitcher`; category markers use `CategoryAvatar`. Lists (transactions, budgets, recurring, categories) are divided rows in one card, with edit/delete revealed on hover. Pages must not add their own `max-w-* mx-auto px-* py-*` wrapper (AuthenticatedLayout already pads).
 3. **i18n both files** — every new string goes in `en/` AND `sq/` simultaneously
 4. **Database changes** — new migration in `supabase_migrations/YYYYMMDDHHMMSS_desc.sql` with RLS. For every new table, also add explicit `GRANT SELECT, INSERT, UPDATE, DELETE ON public.<table> TO authenticated;` (and `TO service_role;`, plus `TO anon;` only if anonymous/unauthenticated access is actually needed). Supabase no longer grants Data API access to new `public` tables by default — enforced on new projects since 2026-05-30 and on all existing projects from 2026-10-30. RLS policies remain the real access boundary; the grant only makes the table reachable via supabase-js/PostgREST/GraphQL at all. Without it, calls fail with error `42501`.
 5. **Subscription gating** — check `isPremium || isTrialing`, not just `isPremium`
@@ -259,10 +261,10 @@ Avoid unicolor red: keep percentage red (`#DC2626`), supporting text muted (`dar
 9. **Dark mode** — do not add `dark:text-gray-*` or `dark:text-ink-dark-*`; always `dark:text-white`. See Design System section above.
 10. **Performance / Core Web Vitals** — target: Mobile ≥90, Desktop ≥99. Current baselines: Mobile 82→90+, Desktop 99 (SEO 100, Best Practices 100). Rules:
     - **Never add eager imports of heavy libs** (Recharts, PapaParse, Supabase) in components that render on the landing page. Always use `lazy()` + `Suspense`.
-    - **DemoWorkspace** (`src/components/Landing/DemoWorkspace.jsx`) must stay lazy-loaded inside LandingPage — it pulls Recharts (107 KiB).
+    - **Landing hero preview** (`src/components/Landing/HeroPreview.jsx`) is static HTML/CSS + lucide on purpose. Never import Recharts or fetch data in it; the H1 is the LCP element.
     - **LandingPage** itself must stay `lazy()` in `App.jsx` — it was previously an eager import causing Recharts to enter the critical bundle.
     - **CLS rule**: any component mounted inside a `Suspense` that has visible height must have a `fallback` with a matching `minHeight` (or `min-h-*`) so the footer doesn't shift when content loads.
-    - **LCP image**: the showcase image (`src/assets/showcase-finance.jpg`) uses `loading="eager" fetchPriority="high"` — do not change to `loading="lazy"`.
+    - **LCP**: the hero has no image; the H1 is the LCP element. If an above-the-fold image is ever reintroduced, give it `loading="eager" fetchPriority="high"`, never `lazy`.
     - **`netlify.toml`** — exists at project root. All `/assets/*` served with `Cache-Control: max-age=31536000, immutable`. Do not remove this file.
     - **Critical CSS**: `vite.config.js` uses `critters` to inline above-the-fold CSS and load full stylesheet async — eliminates render-blocking CSS. Do not remove `criticalCssPlugin` from `vite.config.js`.
     - **Resource hints**: `resourceHintsPlugin` in `vite.config.js` injects `modulepreload` for `recharts` and locale chunks per HTML entry. Do not remove.

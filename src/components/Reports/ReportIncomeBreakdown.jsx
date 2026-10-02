@@ -54,7 +54,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
   if (categoryData.length === 0) {
     return (
       <Card padding="md">
-        <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-4">
+        <h3 className="text-heading text-ink-primary dark:text-white mb-4">
           {t('reports.incomeByCategory')}
         </h3>
         <p className="text-sm text-ink-muted dark:text-white text-center py-6">
@@ -66,7 +66,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
 
   return (
     <Card padding="md">
-      <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-5">
+      <h3 className="text-heading text-ink-primary dark:text-white mb-5">
         {t('reports.incomeByCategory')}
       </h3>
 
@@ -153,7 +153,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
                 </td>
                 <td className="py-2.5 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <div className="w-16 h-1.5 bg-surface-hairline dark:bg-surface-dark-elevated rounded-full overflow-hidden">
+                    <div className="w-12 h-1.5 bg-surface-hairline dark:bg-surface-dark-elevated rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -162,7 +162,7 @@ export default function ReportIncomeBreakdown({ transactions }) {
                         }}
                       />
                     </div>
-                    <span className="text-ink-muted dark:text-white tabular-nums w-10 text-right">
+                    <span className="text-ink-muted dark:text-white tabular-nums w-12 text-right whitespace-nowrap">
                       {row.pct}%
                     </span>
                   </div>

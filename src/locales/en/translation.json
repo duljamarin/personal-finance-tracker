@@ -33,7 +33,10 @@
       "loanCalculator": "Loan calculator",
       "allTools": "All tools",
       "toggle": "Show tools menu"
-    }
+    },
+    "groupMoney": "Money",
+    "groupPlanning": "Planning",
+    "openMenu": "Open menu"
   },
   "common": {
     "cancel": "Cancel",
@@ -79,7 +82,20 @@
       "step2Desc": "Visualize your spending patterns with charts and summaries.",
       "step3Title": "Reach your goals",
       "step3Desc": "Set budgets and monitor your financial health over time."
-    }
+    },
+    "overview": "Overview",
+    "balanceAllTime": "Balance",
+    "balanceNote": "Net of every transaction you have recorded",
+    "incomeMonth": "Income in {{month}}",
+    "spendingMonth": "Spending in {{month}}",
+    "savingsRate": "Savings rate",
+    "savingsRateNote": "Share of this month's income you kept",
+    "vsLastMonth": "{{value}} vs same days last month",
+    "noLastMonth": "Nothing to compare with yet",
+    "spendingByCategory": "Spending by category",
+    "incomeBySource": "Income by category",
+    "allTime": "All time",
+    "noIncomeYet": "No income recorded this month yet"
   },
   "cashFlow": {
     "title": "Cash Flow Forecast",
@@ -158,7 +174,14 @@
     "templateGroceries": "Weekly Groceries",
     "templateSalary": "Monthly Salary",
     "noTransactionsDesc": "Add your first transaction to start tracking your finances.",
-    "clearFilters": "Clear all filters"
+    "clearFilters": "Clear all filters",
+    "recent": "Recent transactions",
+    "viewAll": "View all",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "subtitle": "Every income and expense you have recorded",
+    "count_one": "{{count}} transaction",
+    "count_other": "{{count}} transactions"
   },
   "categories": {
     "title": "Categories",
@@ -171,7 +194,11 @@
     "noCategories": "No categories found",
     "exists": "Category already exists",
     "deleteConfirm": "Deleting this category will delete all associated transactions. Are you sure?",
-    "searchPlaceholder": "Search categories..."
+    "searchPlaceholder": "Search categories...",
+    "subtitle": "Group transactions so budgets and reports add up",
+    "txCount_one": "{{count}} transaction",
+    "txCount_other": "{{count}} transactions",
+    "spentThisMonth": "Spent this month"
   },
   "forms": {
     "save": "Save",
@@ -395,7 +422,8 @@
       "oct": "Oct",
       "nov": "Nov",
       "dec": "Dec"
-    }
+    },
+    "cashFlow": "Cash flow"
   },
   "toolsIndex": {
     "eyebrow": "Free tools",
@@ -913,6 +941,15 @@
         "entertainment": "Entertainment",
         "transport": "Transport"
       }
+    },
+    "preview": {
+      "label": "Preview of the dashboard with sample data",
+      "tx": {
+        "market": "Supermarket",
+        "salary": "Monthly salary",
+        "fuel": "Fuel",
+        "rent": "Rent"
+      }
     }
   },
   "currency": {
@@ -1044,7 +1081,16 @@
     "editInstanceNote": "You are editing this transaction instance only. To change the recurring rule configuration, go to the Recurring page.",
     "alsoUpdateTemplate": "Also update the recurring template for future transactions",
     "templateUpdated": "Recurring template updated successfully",
-    "templateUpdateError": "Failed to update recurring template"
+    "templateUpdateError": "Failed to update recurring template",
+    "monthlyIncome": "Recurring income a month",
+    "monthlyCosts": "Recurring costs a month",
+    "activeCount": "Active schedules",
+    "estimateNote": "Estimated from each schedule",
+    "netNote": "Net {{amount}} a month",
+    "next": "Next {{date}}",
+    "ranTimes_one": "Ran {{count}} time",
+    "ranTimes_other": "Ran {{count}} times",
+    "endsOn": "Ends {{date}}"
   },
   "benchmark": {
     "title": "Spending Insights",
@@ -1168,7 +1214,11 @@
       "overdue": "Overdue",
       "noDeadline": "No deadline",
       "addContribution": "Manage Funds",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "ofTarget": "of {{amount}}",
+      "perMonth": "Save {{amount}} a month to finish on time",
+      "daysLeftCount_one": "{{count}} day left",
+      "daysLeftCount_other": "{{count}} days left"
     },
     "contributions": {
       "title": "Contributions",
@@ -1187,7 +1237,9 @@
       "totalSaved": "Total Saved",
       "totalTarget": "Total Target",
       "activeGoals": "Active Goals",
-      "completedGoals": "Completed"
+      "completedGoals": "Completed",
+      "ofTarget": "of {{amount}} across all goals",
+      "progress": "Overall progress"
     },
     "filters": {
       "all": "All",
@@ -1225,7 +1277,9 @@
       "spent": "spent",
       "of": "of",
       "remaining": "remaining",
-      "overflow": "over budget"
+      "overflow": "over budget",
+      "left": "{{amount}} left",
+      "over": "{{amount}} over"
     },
     "forecast": {
       "onTrack": "On track - projected {{amount}} by month end",
@@ -1258,7 +1312,16 @@
       "copied": "Budgets copied from previous month",
       "copyEmpty": "No budgets found in the previous month to copy",
       "error": "An error occurred"
-    }
+    },
+    "leftToSpend": "Left to spend",
+    "overBudgetTotal": "Over budget",
+    "ofBudgeted": "{{spent}} spent of {{budgeted}}",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "perDay": "About {{amount}} a day",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "categoriesHeading": "Categories"
   },
   "pricing": {
     "title": "Simple, Honest Pricing",
@@ -1804,7 +1867,9 @@
     "avgDailySpend": "Avg Daily Spend",
     "noExpenses": "No expenses in this period",
     "noIncome": "No income in this period",
-    "date": "Date"
+    "date": "Date",
+    "prevCount": "{{count}} in the previous period",
+    "periodLabel": "Period"
   },
   "settings": {
     "currency": {

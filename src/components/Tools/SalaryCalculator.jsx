@@ -85,7 +85,7 @@ function ModeToggle({ mode, onChange, t }) {
             className={`min-w-0 px-1.5 sm:px-4 py-2 text-[11px] sm:text-label rounded-control transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
               active
                 ? 'bg-brand-600 text-white font-semibold'
-                : 'text-ink-muted dark:text-white/70 hover:text-ink-primary dark:hover:text-white'
+                : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-white'
             }`}
           >
             {t(`salaryCalc.modes.${id}`)}
@@ -109,8 +109,8 @@ function Row({ label, value, sign, emphasis = false, muted = false }) {
           emphasis
             ? 'font-semibold text-ink-primary dark:text-white'
             : muted
-              ? 'text-ink-muted dark:text-white/60'
-              : 'text-ink-muted dark:text-white/80'
+              ? 'text-ink-muted dark:text-white'
+              : 'text-ink-muted dark:text-white'
         }`}
       >
         {label}
@@ -145,7 +145,7 @@ function SplitBar({ b, t }) {
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5">
         {parts.map((p) => (
-          <span key={p.label} className="inline-flex items-center gap-1.5 text-xs text-ink-muted dark:text-white/60">
+          <span key={p.label} className="inline-flex items-center gap-1.5 text-xs text-ink-muted dark:text-white">
             <span className={`w-2 h-2 rounded-full ${p.cls}`} />
             {p.label}
           </span>
@@ -172,7 +172,7 @@ function SalaryTable({ year, onPick, t }) {
       <h2 className="font-display text-heading text-ink-primary dark:text-white mb-2">
         {t('salaryCalc.table.title')}
       </h2>
-      <p className="text-body text-ink-muted dark:text-white/80 mb-5">
+      <p className="text-body text-ink-muted dark:text-white mb-5">
         {t('salaryCalc.table.desc', { year })}
       </p>
 
@@ -181,19 +181,19 @@ function SalaryTable({ year, onPick, t }) {
         <table className="w-full min-w-[520px] border-collapse">
           <thead>
             <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-              <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white/60">
+              <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white">
                 {t('salaryCalc.table.gross')}
               </th>
-              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white/60">
+              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">
                 {t('salaryCalc.table.tax')}
               </th>
-              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white/60">
+              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">
                 {t('salaryCalc.table.contrib')}
               </th>
               <th scope="col" className="text-right py-2.5 px-3 text-label font-semibold text-ink-primary dark:text-white">
                 {t('salaryCalc.table.net')}
               </th>
-              <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white/60">
+              <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white">
                 {t('salaryCalc.table.employerCost')}
               </th>
             </tr>
@@ -217,16 +217,16 @@ function SalaryTable({ year, onPick, t }) {
                 <td className="py-2.5 pr-3 text-body tabular-nums font-medium text-ink-primary dark:text-white">
                   {money(r.gross)}
                 </td>
-                <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white/70">
+                <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
                   {money(r.incomeTax)}
                 </td>
-                <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white/70">
+                <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
                   {money(r.employeeContribTotal)}
                 </td>
                 <td className="py-2.5 px-3 text-body tabular-nums text-right font-semibold text-ink-primary dark:text-white">
                   {money(r.net)}
                 </td>
-                <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white/70">
+                <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
                   {money(r.employerCost)}
                 </td>
               </tr>
@@ -256,7 +256,7 @@ function WhenToUse({ t }) {
             <h3 className="text-body font-semibold text-ink-primary dark:text-white mb-1">
               {t(`salaryCalc.whenToUse.${key}Title`)}
             </h3>
-            <p className="text-label text-ink-muted dark:text-white/70 leading-relaxed mb-2">
+            <p className="text-label text-ink-muted dark:text-white leading-relaxed mb-2">
               {t(`salaryCalc.whenToUse.${key}Desc`)}
             </p>
             <span className="inline-block text-xs font-medium tabular-nums text-brand-600 dark:text-brand-400">
@@ -370,7 +370,7 @@ export default function SalaryCalculator() {
         <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
           {t('salaryCalc.title', { year: config.YEAR })}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed max-w-xl">
+        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
           {t('salaryCalc.intro', { year: config.YEAR })}
         </p>
       </div>
@@ -390,7 +390,7 @@ export default function SalaryCalculator() {
               />
             </div>
           ) : (
-            <span className="text-label text-ink-muted dark:text-white/60 tabular-nums">
+            <span className="text-label text-ink-muted dark:text-white tabular-nums">
               {t('salaryCalc.taxYearWithValue', { year: config.LABEL })}
             </span>
           )}
@@ -438,7 +438,7 @@ export default function SalaryCalculator() {
                 className={`px-3 py-1.5 text-label rounded-control border tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
                   selected
                     ? 'border-brand-600 text-brand-600 dark:text-brand-400 dark:border-brand-400 font-semibold'
-                    : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white/70 hover:border-ink-muted/40 dark:hover:border-white/20'
+                    : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-ink-muted/40 dark:hover:border-white/20'
                 }`}
               >
                 {money(p / 1000)}K
@@ -451,12 +451,12 @@ export default function SalaryCalculator() {
       {/* ── Result ─────────────────────────────────────────────────────── */}
       {breakdown && (
         <div className="mt-6 bg-white dark:bg-surface-dark-card border-l-2 border-l-brand-600 dark:border-l-brand-400 border-t border-r border-b border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
-          <p className="text-label text-ink-muted dark:text-white/60 mb-1">
+          <p className="text-label text-ink-muted dark:text-white mb-1">
             {t(`salaryCalc.headlineLabel.${mode}`)}
           </p>
-          <p className="font-display text-[2.5rem] sm:text-[3rem] leading-none font-bold tabular-nums tracking-tight text-ink-primary dark:text-white">
+          <p className="text-[2.5rem] sm:text-[3rem] leading-none font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
             {money(headline)}
-            <span className="text-xl font-medium text-ink-muted dark:text-white/50 ml-2">{currency}</span>
+            <span className="text-xl font-medium text-ink-muted dark:text-white ml-2">{currency}</span>
           </p>
 
           {belowMinimum && (
@@ -494,7 +494,7 @@ export default function SalaryCalculator() {
             )}
           </div>
 
-          <p className="mt-4 text-label text-ink-muted dark:text-white/60">
+          <p className="mt-4 text-label text-ink-muted dark:text-white">
             {t('salaryCalc.effectiveRate')}{' '}
             <span className="tabular-nums font-medium text-ink-primary dark:text-white">{pct(effectiveRate)}</span>
           </p>
@@ -514,7 +514,7 @@ export default function SalaryCalculator() {
         <h2 className="font-display text-heading text-ink-primary dark:text-white mb-4">
           {t('salaryCalc.example.title', { gross: money(example.gross) })}
         </h2>
-        <div className="space-y-3 text-body text-ink-muted dark:text-white/80 leading-relaxed">
+        <div className="space-y-3 text-body text-ink-muted dark:text-white leading-relaxed">
           <p>{t('salaryCalc.example.p1', { gross: money(example.gross), tax: money(example.incomeTax) })}</p>
           <p>
             {t('salaryCalc.example.p2', {
@@ -539,18 +539,18 @@ export default function SalaryCalculator() {
               employerCost: money(example.employerCost),
             })}
           </p>
-          <p className="text-label text-ink-muted dark:text-white/60 pt-2">
+          <p className="text-label text-ink-muted dark:text-white pt-2">
             {t('salaryCalc.example.capNote', { cap: money(config.CONTRIB.BASE_MAX) })}
           </p>
         </div>
 
-        <p className="mt-6 text-label text-ink-muted dark:text-white/60 leading-relaxed">
+        <p className="mt-6 text-label text-ink-muted dark:text-white leading-relaxed">
           {t('salaryCalc.disclaimer', { year: config.YEAR })}
         </p>
       </section>
 
       <div className="mt-10 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white/80 mb-4">
+        <p className="text-body text-ink-muted dark:text-white mb-4">
           {t('salaryCalc.ctaText')}
         </p>
         <Link

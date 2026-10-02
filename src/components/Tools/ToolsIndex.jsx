@@ -94,7 +94,7 @@ export default function ToolsIndex() {
         <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
           {t('toolsIndex.title')}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed max-w-xl">
+        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
           {t('toolsIndex.intro')}
         </p>
       </div>
@@ -112,7 +112,7 @@ export default function ToolsIndex() {
               <h2 className="font-display text-heading text-ink-primary dark:text-white mb-1">
                 {t(tool.labelKey)}
               </h2>
-              <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed">
+              <p className="text-body text-ink-muted dark:text-white leading-relaxed">
                 {t(tool.descKey)}
               </p>
             </div>
@@ -123,7 +123,7 @@ export default function ToolsIndex() {
 
       {/* ── CTA to the app ─────────────────────────────────────────────── */}
       <div className="mt-12 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white/80 mb-4 max-w-xl">
+        <p className="text-body text-ink-muted dark:text-white mb-4 max-w-xl">
           {t('toolsIndex.ctaText')}
         </p>
         <Link

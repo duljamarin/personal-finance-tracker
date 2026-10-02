@@ -7,13 +7,12 @@ import EncryptionPromptBanner from '../Encryption/EncryptionPromptBanner';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 import { QUOTA_VISIBLE_AT } from '../../config/app';
 import HealthScore from '../HealthScore/HealthScore';
-import LoadingSpinner from '../UI/LoadingSpinner';
 import SummaryCards from './SummaryCards';
 import BudgetSummaryBar from './BudgetSummaryBar';
 import ChartWithTimeRange from './ChartWithTimeRange';
-import AddTransactionCTA from './AddTransactionCTA';
 import CashFlowForecast from './CashFlowForecast';
 import FirstRunGuide from './FirstRunGuide';
+import { Plus } from 'lucide-react';
 
 const Transactions = lazy(() => import('../Transactions/Transactions'));
 const CategoryPieChart = lazy(() => import('../Transactions/CategoryPieChart'));
@@ -74,7 +73,7 @@ export default function Dashboard() {
     <>
       {/* Welcome greeting toast */}
       {showGreeting && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-brand-600 text-white px-5 py-3 rounded-md shadow-lg shadow-brand-500/30 text-sm font-medium animate-fade-in-out max-w-sm text-center">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-brand-600 text-white px-5 py-3 rounded-md shadow-tier2 text-sm font-medium animate-fade-in-out max-w-sm text-center">
           {t('dashboard.welcomeBack')}, {username}!
         </div>
       )}
@@ -97,115 +96,102 @@ export default function Dashboard() {
       )}
 
       {/* Page header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-display font-bold text-ink-primary dark:text-white tracking-tight">
+      <div className="flex items-end justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <p className="text-sm text-ink-muted dark:text-white">{formatTodayLabel()}</p>
+          <h1 className="mt-1 text-title font-display text-ink-primary dark:text-white truncate">
             {username ? `${getTimeGreeting(t)}, ${username}` : t('dashboard.title')}
           </h1>
-          <p className="text-sm text-ink-muted dark:text-white mt-0.5">
-            {formatTodayLabel()}
-          </p>
         </div>
         <button
           onClick={handleAddTransaction}
-          className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
+          className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors shrink-0"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
+          <Plus className="w-4 h-4" strokeWidth={2} />
           {t('dashboard.addTransaction')}
         </button>
       </div>
 
-      {/* Summary cards */}
+      {error && (
+        <div className="mb-6 p-4 bg-expense-bg border border-expense/30 rounded-container text-expense font-medium text-sm">
+          {error}
+        </div>
+      )}
+
       <SummaryCards
         totalIncome={totalIncome}
         totalExpense={totalExpense}
         net={net}
         loading={loading}
+        transactions={transactions}
       />
 
-      {!loading && transactions.length === 0 ? (
-        <FirstRunGuide onAddTransaction={handleAddTransaction} />
-      ) : (
-        <>
-          <div className="mt-6">
-            <AddTransactionCTA onClick={handleAddTransaction} />
-          </div>
-
-          {/* Reserve height so this block (each child loads its own data async)
-              doesn't shove the page/footer down as it fills in — main field-CLS
-              source on the dashboard (sel. div.mt-8.space-y-6, 0.749). */}
-          <div className="mt-8 space-y-6 min-h-[600px]">
-            <BudgetSummaryBar reloadTrigger={totalExpense} />
-            <ChartWithTimeRange transactions={transactions} />
-            <CashFlowForecast />
-          </div>
-        </>
+      {!loading && transactions.length === 0 && (
+        <div className="mt-6">
+          <FirstRunGuide onAddTransaction={handleAddTransaction} />
+        </div>
       )}
 
-      <div className="mt-8">
-        {error && (
-          <div className="mb-6 p-4 bg-expense-bg border border-expense/30 rounded-container text-expense font-medium text-sm">
-            {error}
+      {/* Overview grid. The main column carries the trend and the ledger; the
+          side column the "am I on track" signals. Reserved min-height keeps
+          the async children from pushing the footer around (CLS). */}
+      <Suspense fallback={<div className="mt-6 min-h-[600px]" />}>
+        {(loading || transactions.length > 0) && (
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start min-h-[600px]">
+            <div className="lg:col-span-2 space-y-6 min-w-0">
+              <ChartWithTimeRange transactions={transactions} />
+              {loading ? (
+                <div className="flex items-center justify-center py-12 text-sm text-ink-primary dark:text-white bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-600 dark:border-brand-400 mr-3"></div>
+                  {t('dashboard.loadingData')}
+                </div>
+              ) : (
+                <Transactions variant="recent" limit={8} />
+              )}
+            </div>
+
+            <div className="space-y-6 min-w-0">
+              <BudgetSummaryBar reloadTrigger={totalExpense} />
+              <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline">
+                <div className="flex items-baseline justify-between mb-4">
+                  <h2 className="text-heading text-ink-primary dark:text-white">{t('dashboard.spendingByCategory')}</h2>
+                  <span className="text-xs text-ink-muted dark:text-white">{t('dashboard.allTime')}</span>
+                </div>
+                {/* Own Suspense boundary: mounting alongside the transaction
+                    list let ResponsiveContainer measure 0x0 mid-layout and
+                    never redraw. Fallback matches the chart's height. */}
+                <Suspense fallback={<div className="min-h-[180px]" />}>
+                  <CategoryPieChart transactions={transactions} type="expense" layout="stacked" />
+                </Suspense>
+              </div>
+            </div>
           </div>
         )}
 
-        <Suspense fallback={<LoadingSpinner size="md" text={t('dashboard.loadingData')} />}>
-          {loading ? (
-            <div className="flex items-center justify-center py-12 text-ink-primary dark:text-white">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 dark:border-brand-400 mr-3"></div>
-              {t('dashboard.loadingData')}
-            </div>
-          ) : (
-            <Transactions />
-          )}
+        {/* Mounted even with no transactions: it owns the add-transaction
+            drawer that FirstRunGuide and the header button open. */}
+        {!loading && transactions.length === 0 && <Transactions variant="recent" />}
 
-          {/* Category breakdowns side by side.
-              CategoryPieChart gets its own Suspense boundary, separate from
-              Transactions above — mounting both in the same commit (the
-              shared Suspense resolving) let Recharts' ResponsiveContainer
-              measure its container via ResizeObserver while Transactions'
-              much larger layout was still settling, sometimes catching a
-              0x0 read and never redrawing the <svg> afterwards. Isolating
-              the chart's mount from that layout shift fixes it; the
-              fallback height matches the chart's own rendered height so it
-              doesn't introduce new CLS. */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6 mb-6">
-            <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
-                  {t('transactions.incomes')} {t('chart.byCategory')}
-                </h3>
-                <span className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-white/70">
-                  <span className="w-2 h-2 rounded-full bg-brand-600 dark:bg-brand-400" />
-                  {t('transactions.incomes')}
-                </span>
+        {!loading && transactions.length > 0 && (
+          <div className="mt-6 space-y-6">
+            <CashFlowForecast />
+            <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline">
+              <div className="flex items-baseline justify-between mb-4">
+                <h2 className="text-heading text-ink-primary dark:text-white">{t('dashboard.incomeBySource')}</h2>
+                <span className="text-xs text-ink-muted dark:text-white">{t('dashboard.allTime')}</span>
               </div>
               <Suspense fallback={<div className="min-h-[180px]" />}>
                 <CategoryPieChart transactions={transactions} type="income" />
               </Suspense>
             </div>
-            <div className="bg-white dark:bg-surface-dark-card rounded-[10px] p-6 sm:p-7 border border-surface-hairline dark:border-surface-dark-hairline">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
-                  {t('transactions.expenses')} {t('chart.byCategory')}
-                </h3>
-                <span className="flex items-center gap-1.5 text-xs font-medium text-ink-muted dark:text-white/70">
-                  <span className="w-2 h-2 rounded-full bg-expense" />
-                  {t('transactions.expenses')}
-                </span>
-              </div>
-              <Suspense fallback={<div className="min-h-[180px]" />}>
-                <CategoryPieChart transactions={transactions} type="expense" />
-              </Suspense>
-            </div>
           </div>
+        )}
 
+        <div className="mt-6">
           <CategoryBenchmark onReloadTrigger={mutationCount} />
           <HealthScore onReloadTrigger={mutationCount} />
-        </Suspense>
-      </div>
+        </div>
+      </Suspense>
 
       {/* Mobile FAB */}
       <button
@@ -213,9 +199,7 @@ export default function Dashboard() {
         className="fixed bottom-6 right-6 z-40 lg:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-md shadow-lg transition-all flex items-center justify-center active:scale-95"
         aria-label={t('dashboard.addTransaction')}
       >
-        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-        </svg>
+        <Plus className="w-6 h-6" strokeWidth={2.25} />
       </button>
     </>
   );

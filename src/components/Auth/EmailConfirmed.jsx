@@ -76,7 +76,7 @@ export default function EmailConfirmed() {
               <h2 className="font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-white mb-2">
                 {t('auth.emailConfirmationFailedTitle', 'Email confirmation failed')}
               </h2>
-              <p className="text-ink-secondary dark:text-white text-sm mb-4">
+              <p className="text-ink-muted dark:text-white text-sm mb-4">
                 {t('auth.emailConfirmationFailedDescription', 'The confirmation link is invalid or has expired.')}
               </p>
             </>
@@ -85,7 +85,7 @@ export default function EmailConfirmed() {
               <h2 className="font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-white mb-2">
                 {t('auth.emailConfirmedTitle')}
               </h2>
-              <p className="text-ink-secondary dark:text-white text-sm mb-4">
+              <p className="text-ink-muted dark:text-white text-sm mb-4">
                 {t('auth.emailConfirmedDescription')}
               </p>
               {isLoading ? (

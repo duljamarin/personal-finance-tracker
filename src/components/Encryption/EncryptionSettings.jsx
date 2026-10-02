@@ -155,17 +155,17 @@ export default function EncryptionSettings({ userId }) {
 
   return (
     <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-      <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-1">
+      <h2 className="text-heading text-ink-primary dark:text-white mb-1">
         {t('encryption.settingsTitle')}
       </h2>
-      <p className="text-sm text-ink-muted dark:text-white/70 mb-4">
+      <p className="text-sm text-ink-muted dark:text-white mb-4">
         {t('encryption.settingsDesc')}
       </p>
 
       {!isEncryptionEnabled && (
         <form onSubmit={handleEnable} className="flex flex-col gap-3">
           {isOAuthUser && (
-            <p className="text-sm text-ink-muted dark:text-white/70">
+            <p className="text-sm text-ink-muted dark:text-white">
               {t('encryption.appPasswordExplainer')}
             </p>
           )}
@@ -235,7 +235,7 @@ export default function EncryptionSettings({ userId }) {
                   setChangeMode((m) => (m === 'secret' ? 'recoveryCode' : 'secret'));
                   setChangeError('');
                 }}
-                className="text-sm text-ink-muted dark:text-white/70 hover:text-brand-600 dark:hover:text-brand-500 underline text-left"
+                className="text-sm text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 underline text-left"
               >
                 {changeMode === 'secret'
                   ? t('encryption.forgotSecurityCodeLink')
@@ -291,7 +291,7 @@ export default function EncryptionSettings({ userId }) {
 
           {showRotateRecovery && (
             <form onSubmit={handleRotateRecovery} className="flex flex-col gap-3 border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-3">
-              <p className="text-sm text-ink-muted dark:text-white/70">
+              <p className="text-sm text-ink-muted dark:text-white">
                 {t('encryption.rotateRecoveryDesc')}
               </p>
               <PasswordInput

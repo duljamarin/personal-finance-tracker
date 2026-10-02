@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import Card from '../UI/Card';
+import PageHeader from '../UI/PageHeader';
+import StatStrip from '../UI/StatStrip';
+import SegmentedControl from '../UI/SegmentedControl';
+import { Plus, Target } from 'lucide-react';
 import Button from '../UI/Button';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import EmptyState from '../UI/EmptyState';
@@ -183,23 +186,23 @@ export default function GoalsPage() {
     return <LoadingSpinner size="md" className="min-h-[60vh]" />;
   }
 
+  const overallPct = stats && stats.totalTarget > 0 ? Math.min(100, Math.round((stats.totalSaved / stats.totalTarget) * 100)) : 0;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-display font-bold tracking-tight text-3xl text-ink-primary dark:text-white flex items-center gap-3">
-            <svg className="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-            </svg>
-            {t('goals.title')}
-          </h1>
-          <p className="text-ink-secondary dark:text-white mt-1">{t('goals.subtitle')}</p>
-        </div>
-        <Button onClick={() => setShowGoalForm(true)} disabled={!canAdd}>
-          + {t('goals.addGoal')}
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={t('goals.title')}
+        subtitle={t('goals.subtitle')}
+        className="!mb-0"
+        actions={
+          <Button onClick={() => setShowGoalForm(true)} disabled={!canAdd}>
+            <span className="inline-flex items-center gap-2">
+              <Plus className="w-4 h-4" strokeWidth={2} />
+              {t('goals.addGoal')}
+            </span>
+          </Button>
+        }
+      />
 
       {/* Free plan usage counter */}
       {/* Goals have no month column, unlike budgets: the cap counts goals that
@@ -214,74 +217,50 @@ export default function GoalsPage() {
       {/* Free tier limit banner */}
       {!isPremium && !canAdd && (
         <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-ink-muted dark:text-white/70">
+          <p className="text-sm text-ink-muted dark:text-white">
             {t('limits.goalLimitReached', { limit: goalLimit })}
           </p>
-          <Link to="/pricing" className="text-sm font-semibold text-brand-600 dark:text-brand-500 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
             {t('upgrade.upgradeCta')}
           </Link>
         </div>
       )}
 
-      {/* Stats */}
       {stats && stats.totalGoals > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.totalSaved')}</p>
-              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
-                {fmt(stats.totalSaved)}
-              </p>
-            </div>
-          </Card>
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.totalTarget')}</p>
-              <p className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
-                {fmt(stats.totalTarget)}
-              </p>
-            </div>
-          </Card>
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.activeGoals')}</p>
-              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
-                {stats.activeGoals}
-              </p>
-            </div>
-          </Card>
-          <Card>
-            <div className="p-4">
-              <p className="eyebrow text-ink-muted dark:text-white">{t('goals.stats.completedGoals')}</p>
-              <p className="font-semibold tracking-tight text-2xl text-brand-600 dark:text-brand-500">
-                {stats.completedGoals}
-              </p>
-            </div>
-          </Card>
-        </div>
+        <StatStrip
+          items={[
+            {
+              label: t('goals.stats.totalSaved'),
+              value: fmt(stats.totalSaved),
+              tone: 'income',
+              hero: true,
+              note: t('goals.stats.ofTarget', { amount: fmt(stats.totalTarget) }),
+            },
+            {
+              label: t('goals.stats.progress'),
+              value: `${overallPct}%`,
+              children: (
+                <div className="mt-3 h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden" aria-hidden="true">
+                  <div className="h-full rounded-full bg-brand-500" style={{ width: `${overallPct}%` }} />
+                </div>
+              ),
+            },
+            { label: t('goals.stats.activeGoals'), value: stats.activeGoals },
+            { label: t('goals.stats.completedGoals'), value: stats.completedGoals },
+          ]}
+        />
       )}
 
-      {/* Filters */}
-      <div className="flex gap-2">
-        {['all', 'active', 'completed'].map(f => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-              filter === f
-                ? 'bg-brand-600 text-white'
-                : 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-secondary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline'
-            }`}
-          >
-            {t(`goals.filters.${f}`)}
-          </button>
-        ))}
-      </div>
+      <SegmentedControl
+        value={filter}
+        onChange={setFilter}
+        options={['all', 'active', 'completed'].map(f => ({ value: f, label: t(`goals.filters.${f}`) }))}
+      />
 
       {/* Goals Grid */}
       {goals.length === 0 ? (
         <EmptyState
-          icon={<svg className="w-10 h-10 text-brand-600 dark:text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>}
+          icon={<Target className="w-5 h-5" strokeWidth={1.75} />}
           title={t('goals.noGoals')}
           description={t('goals.noGoalsDesc')}
           action={() => setShowGoalForm(true)}
@@ -289,7 +268,7 @@ export default function GoalsPage() {
           limitText={!isPremium ? t('limits.freeLimit', { limit: goalLimit }) : null}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {goals.map(goal => (
             <GoalCard
               key={goal.id}

@@ -72,8 +72,8 @@ function Row({ label, value, currency, sign, emphasis = false, muted = false }) 
           emphasis
             ? 'font-semibold text-ink-primary dark:text-white'
             : muted
-              ? 'text-ink-muted dark:text-white/60'
-              : 'text-ink-muted dark:text-white/80'
+              ? 'text-ink-muted dark:text-white'
+              : 'text-ink-muted dark:text-white'
         }`}
       >
         {label}
@@ -87,7 +87,7 @@ function Row({ label, value, currency, sign, emphasis = false, muted = false }) 
       >
         {sign === '-' && <span className="text-expense mr-0.5">−</span>}
         {money(value)}
-        <span className="text-ink-muted dark:text-white/50 ml-1 text-sm font-normal">{currency}</span>
+        <span className="text-ink-muted dark:text-white ml-1 text-sm font-normal">{currency}</span>
       </span>
     </div>
   );
@@ -110,7 +110,7 @@ function SplitBar({ principal, interest, t }) {
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5">
         {parts.map((p) => (
-          <span key={p.label} className="inline-flex items-center gap-1.5 text-xs text-ink-muted dark:text-white/60">
+          <span key={p.label} className="inline-flex items-center gap-1.5 text-xs text-ink-muted dark:text-white">
             <span className={`w-2 h-2 rounded-full ${p.cls}`} />
             {p.label}
           </span>
@@ -125,7 +125,7 @@ function Panel({ title, desc, children, className = '' }) {
   return (
     <section className={`mt-12 pt-10 border-t border-surface-hairline dark:border-surface-dark-hairline ${className}`}>
       <h2 className="font-display text-heading text-ink-primary dark:text-white mb-2">{title}</h2>
-      {desc && <p className="text-body text-ink-muted dark:text-white/80 mb-5 max-w-xl leading-relaxed">{desc}</p>}
+      {desc && <p className="text-body text-ink-muted dark:text-white mb-5 max-w-xl leading-relaxed">{desc}</p>}
       {children}
     </section>
   );
@@ -186,7 +186,7 @@ function ScheduleTable({ rows, currency, t }) {
             <p className="text-body text-ink-primary dark:text-white leading-relaxed">
               {t('loanCalc.schedule.explainTitle')}
             </p>
-            <p className="mt-2 text-label text-ink-muted dark:text-white/80 leading-relaxed">
+            <p className="mt-2 text-label text-ink-muted dark:text-white leading-relaxed">
               {t('loanCalc.schedule.explainBody')}
             </p>
           </div>
@@ -197,13 +197,13 @@ function ScheduleTable({ rows, currency, t }) {
               { label: t('loanCalc.schedule.lastRow'), r: last },
             ].map(({ label, r }) => (
               <div key={label} className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-4">
-                <p className="text-label text-ink-muted dark:text-white/60 mb-2">{label}</p>
+                <p className="text-label text-ink-muted dark:text-white mb-2">{label}</p>
                 <div className="flex justify-between text-sm tabular-nums text-ink-primary dark:text-white">
-                  <span className="text-ink-muted dark:text-white/70">{t('loanCalc.schedule.colInterest')}</span>
+                  <span className="text-ink-muted dark:text-white">{t('loanCalc.schedule.colInterest')}</span>
                   <span>{money(r.interest)} {currency}</span>
                 </div>
                 <div className="flex justify-between text-sm tabular-nums text-ink-primary dark:text-white mt-1">
-                  <span className="text-ink-muted dark:text-white/70">{t('loanCalc.schedule.colPrincipal')}</span>
+                  <span className="text-ink-muted dark:text-white">{t('loanCalc.schedule.colPrincipal')}</span>
                   <span>{money(r.principal)} {currency}</span>
                 </div>
               </div>
@@ -215,13 +215,13 @@ function ScheduleTable({ rows, currency, t }) {
             <table className="w-full min-w-[460px] border-collapse">
               <thead>
                 <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-                  <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white/60">
+                  <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white">
                     {t('loanCalc.schedule.year', { year: '' }).trim()}
                   </th>
-                  <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white/60">
+                  <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">
                     {t('loanCalc.schedule.yearInterest')}
                   </th>
-                  <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white/60">
+                  <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">
                     {t('loanCalc.schedule.yearPrincipal')}
                   </th>
                   <th scope="col" className="text-right py-2.5 pl-3 text-label font-semibold text-ink-primary dark:text-white">
@@ -238,7 +238,7 @@ function ScheduleTable({ rows, currency, t }) {
                     <td className="py-2.5 px-3 text-body tabular-nums text-right text-expense">
                       {money(g.interest)}
                     </td>
-                    <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white/70">
+                    <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
                       {money(g.principal)}
                     </td>
                     <td className="py-2.5 pl-3 text-body tabular-nums text-right font-semibold text-ink-primary dark:text-white">
@@ -463,7 +463,7 @@ export default function LoanCalculator() {
         <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
           {t('loanCalc.title')}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white/80 leading-relaxed max-w-xl">
+        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
           {t('loanCalc.intro')}
         </p>
       </div>
@@ -528,15 +528,15 @@ export default function LoanCalculator() {
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-ink-muted dark:text-white/50 pointer-events-none">{cur}</span>
                 </div>
-                <p className="mt-1 text-xs text-ink-muted dark:text-white/60">{t('loanCalc.property.downLabel')}</p>
+                <p className="mt-1 text-xs text-ink-muted dark:text-white">{t('loanCalc.property.downLabel')}</p>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-label">
-              <span className="text-ink-muted dark:text-white/70">
+              <span className="text-ink-muted dark:text-white">
                 {t('loanCalc.property.loanAmount')}{' '}
                 <span className="tabular-nums font-semibold text-ink-primary dark:text-white">{money(property.principal)} {cur}</span>
               </span>
-              <span className="text-ink-muted dark:text-white/70">
+              <span className="text-ink-muted dark:text-white">
                 {t('loanCalc.property.ltv')}{' '}
                 <span className={`tabular-nums font-semibold ${property.ltv > DEFAULTS.LTV_WARN ? 'text-warning' : 'text-ink-primary dark:text-white'}`}>
                   {pct0(property.ltv)}
@@ -575,7 +575,7 @@ export default function LoanCalculator() {
                     className={`px-3 py-1.5 text-label rounded-control border tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
                       selected
                         ? 'border-brand-600 text-brand-600 dark:text-brand-400 dark:border-brand-400 font-semibold'
-                        : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white/70 hover:border-ink-muted/40 dark:hover:border-white/20'
+                        : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-ink-muted/40 dark:hover:border-white/20'
                     }`}
                   >
                     {money(p / 1000)}K
@@ -611,7 +611,7 @@ export default function LoanCalculator() {
                   { id: 'ref-floor', label: t('loanCalc.bankRate.floor'), value: refFloor, set: setRefFloor },
                 ].map((f) => (
                   <div key={f.id} className="flex items-center gap-3">
-                    <label htmlFor={f.id} className="flex-1 text-xs text-ink-muted dark:text-white/70">{f.label}</label>
+                    <label htmlFor={f.id} className="flex-1 text-xs text-ink-muted dark:text-white">{f.label}</label>
                     <div className="relative w-24">
                       <input
                         id={f.id}
@@ -626,7 +626,7 @@ export default function LoanCalculator() {
                     </div>
                   </div>
                 ))}
-                <p className="text-xs text-ink-muted dark:text-white/60 pt-0.5">
+                <p className="text-xs text-ink-muted dark:text-white pt-0.5">
                   {t('loanCalc.bankRate.applied')}{' '}
                   <span className="tabular-nums font-semibold text-ink-primary dark:text-white">{pct1(baseRate)}</span>
                 </p>
@@ -691,11 +691,11 @@ export default function LoanCalculator() {
             />
             <span className="text-label font-medium text-ink-primary dark:text-white">{t('loanCalc.twoPhase.toggle')}</span>
           </label>
-          <p className="mt-1.5 ml-6 text-xs text-ink-muted dark:text-white/60 max-w-lg leading-relaxed">{t('loanCalc.twoPhase.hint')}</p>
+          <p className="mt-1.5 ml-6 text-xs text-ink-muted dark:text-white max-w-lg leading-relaxed">{t('loanCalc.twoPhase.hint')}</p>
           {twoPhase && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <div>
-                <label htmlFor="fixed-years" className="block text-xs font-medium text-ink-muted dark:text-white/70 mb-1.5">{t('loanCalc.twoPhase.fixedYears')}</label>
+                <label htmlFor="fixed-years" className="block text-xs font-medium text-ink-muted dark:text-white mb-1.5">{t('loanCalc.twoPhase.fixedYears')}</label>
                 <div className="py-2.5 px-3 text-body tabular-nums bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white border border-surface-outline dark:border-surface-dark-outline rounded-md">
                   {t('loanCalc.inputs.termYears', { count: fixedYears })}
                 </div>
@@ -712,7 +712,7 @@ export default function LoanCalculator() {
                 />
               </div>
               <div>
-                <label htmlFor="var-rate" className="block text-xs font-medium text-ink-muted dark:text-white/70 mb-1.5">{t('loanCalc.twoPhase.variableRate')}</label>
+                <label htmlFor="var-rate" className="block text-xs font-medium text-ink-muted dark:text-white mb-1.5">{t('loanCalc.twoPhase.variableRate')}</label>
                 <div className="relative">
                   <input
                     id="var-rate"
@@ -741,7 +741,7 @@ export default function LoanCalculator() {
             />
             <span className="text-label font-medium text-ink-primary dark:text-white">{t('loanCalc.dayCount.toggle')}</span>
           </label>
-          <p className="mt-1.5 ml-6 text-xs text-ink-muted dark:text-white/60 max-w-lg leading-relaxed">{t('loanCalc.dayCount.hint')}</p>
+          <p className="mt-1.5 ml-6 text-xs text-ink-muted dark:text-white max-w-lg leading-relaxed">{t('loanCalc.dayCount.hint')}</p>
         </div>
 
         {/* EUR-only exchange rate — clearly an adjustable estimate. */}
@@ -765,7 +765,7 @@ export default function LoanCalculator() {
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-ink-muted dark:text-white/50 pointer-events-none">ALL/EUR</span>
             </div>
-            <p className="mt-1.5 text-xs text-ink-muted dark:text-white/60 max-w-md leading-relaxed">
+            <p className="mt-1.5 text-xs text-ink-muted dark:text-white max-w-md leading-relaxed">
               {t('loanCalc.inputs.exchangeRateHint')}
             </p>
           </div>
@@ -787,7 +787,7 @@ export default function LoanCalculator() {
           {showFees && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
               <div>
-                <label htmlFor="fee-disb" className="block text-xs font-medium text-ink-muted dark:text-white/70 mb-1.5">
+                <label htmlFor="fee-disb" className="block text-xs font-medium text-ink-muted dark:text-white mb-1.5">
                   {t('loanCalc.inputs.disbursementFee')}
                 </label>
                 <div className="relative">
@@ -804,7 +804,7 @@ export default function LoanCalculator() {
                 </div>
               </div>
               <div>
-                <label htmlFor="fee-ins" className="block text-xs font-medium text-ink-muted dark:text-white/70 mb-1.5">
+                <label htmlFor="fee-ins" className="block text-xs font-medium text-ink-muted dark:text-white mb-1.5">
                   {t('loanCalc.inputs.annualInsurance')}
                 </label>
                 <input
@@ -818,7 +818,7 @@ export default function LoanCalculator() {
                 />
               </div>
               <div>
-                <label htmlFor="fee-up" className="block text-xs font-medium text-ink-muted dark:text-white/70 mb-1.5">
+                <label htmlFor="fee-up" className="block text-xs font-medium text-ink-muted dark:text-white mb-1.5">
                   {t('loanCalc.inputs.upfrontCosts')}
                 </label>
                 <input
@@ -844,26 +844,26 @@ export default function LoanCalculator() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-2 items-center">
               <div>
-                <p className="text-label text-ink-muted dark:text-white/60 mb-1">
+                <p className="text-label text-ink-muted dark:text-white mb-1">
                   {t('loanCalc.twoPhase.phase1Label', { years: t('loanCalc.inputs.termYears', { count: fixedYears }) })}
                 </p>
-                <p className="font-display text-[2rem] sm:text-[2.5rem] leading-none font-bold tabular-nums tracking-tight text-ink-primary dark:text-white">
+                <p className="text-[2rem] sm:text-[2.5rem] leading-none font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
                   {money(result.twoPhase.phase1.payment)}
-                  <span className="text-lg font-medium text-ink-muted dark:text-white/50 ml-1.5">{cur}</span>
+                  <span className="text-lg font-medium text-ink-muted dark:text-white ml-1.5">{cur}</span>
                 </p>
               </div>
-              <div className="hidden sm:flex items-center justify-center text-ink-muted dark:text-white/40" aria-hidden="true">
+              <div className="hidden sm:flex items-center justify-center text-ink-muted dark:text-white" aria-hidden="true">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
               </div>
               <div>
-                <p className="text-label text-ink-muted dark:text-white/60 mb-1">{t('loanCalc.twoPhase.phase2Label')}</p>
-                <p className={`font-display text-[2rem] sm:text-[2.5rem] leading-none font-bold tabular-nums tracking-tight ${result.twoPhase.paymentDelta > 0 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
+                <p className="text-label text-ink-muted dark:text-white mb-1">{t('loanCalc.twoPhase.phase2Label')}</p>
+                <p className={`text-[2rem] sm:text-[2.5rem] leading-none font-semibold tabular-nums tracking-tight ${result.twoPhase.paymentDelta > 0 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
                   {money(result.twoPhase.phase2.payment)}
-                  <span className="text-lg font-medium text-ink-muted dark:text-white/50 ml-1.5">{cur}</span>
+                  <span className="text-lg font-medium text-ink-muted dark:text-white ml-1.5">{cur}</span>
                 </p>
               </div>
             </div>
-            <p className="mt-4 text-body text-ink-muted dark:text-white/80">
+            <p className="mt-4 text-body text-ink-muted dark:text-white">
               {t('loanCalc.twoPhase.change', {
                 sign: result.twoPhase.paymentDelta >= 0 ? '+' : '−',
                 amount: money(Math.abs(result.twoPhase.paymentDelta)),
@@ -874,13 +874,13 @@ export default function LoanCalculator() {
           </>
         ) : (
           <>
-            <p className="text-label text-ink-muted dark:text-white/60 mb-1">{t('loanCalc.headline.label')}</p>
-            <p className="font-display text-[2.5rem] sm:text-[3rem] leading-none font-bold tabular-nums tracking-tight text-ink-primary dark:text-white">
+            <p className="text-label text-ink-muted dark:text-white mb-1">{t('loanCalc.headline.label')}</p>
+            <p className="text-[2.5rem] sm:text-[3rem] leading-none font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
               {money(result.payment)}
-              <span className="text-xl font-medium text-ink-muted dark:text-white/50 ml-2">{cur}</span>
+              <span className="text-xl font-medium text-ink-muted dark:text-white ml-2">{cur}</span>
             </p>
             {isEur && eurToAll > 0 && (
-              <p className="mt-2 text-body text-ink-muted dark:text-white/70 tabular-nums">
+              <p className="mt-2 text-body text-ink-muted dark:text-white tabular-nums">
                 {t('loanCalc.headline.eurEquivalent', { amount: money(result.payment * eurToAll) })}
               </p>
             )}
@@ -896,7 +896,7 @@ export default function LoanCalculator() {
           )}
         </div>
 
-        <p className="mt-4 text-label text-ink-muted dark:text-white/60">
+        <p className="mt-4 text-label text-ink-muted dark:text-white">
           {t('loanCalc.breakdown.interestShare')}{' '}
           <span className="tabular-nums font-semibold text-expense">{pct0(interestShare)}</span>
         </p>
@@ -905,7 +905,7 @@ export default function LoanCalculator() {
 
         {/* Mandatory days/360 disclosure — the result is indicative and may differ
             from a bank offer by roughly 1% because banks apply days/360. */}
-        <p className="mt-6 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white/60 leading-relaxed">
+        <p className="mt-6 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white leading-relaxed">
           {t('loanCalc.dayCount.note')}
         </p>
       </div>
@@ -940,7 +940,7 @@ export default function LoanCalculator() {
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-ink-muted dark:text-white/50 pointer-events-none">ALL</span>
         </div>
-        <p className="mt-1.5 text-xs text-ink-muted dark:text-white/60">{t('loanCalc.dti.incomeHint')}</p>
+        <p className="mt-1.5 text-xs text-ink-muted dark:text-white">{t('loanCalc.dti.incomeHint')}</p>
 
         {dti && (
           <div className="mt-5 rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5">
@@ -953,11 +953,11 @@ export default function LoanCalculator() {
                   dtiLevel === 'ok' ? 'bg-brand-600 dark:bg-brand-400' : dtiLevel === 'warn' ? 'bg-warning' : 'bg-expense'
                 }`}
               />
-              <span className="text-label text-ink-muted dark:text-white/80">
+              <span className="text-label text-ink-muted dark:text-white">
                 {t(`loanCalc.dti.level${dtiLevel === 'ok' ? 'Ok' : dtiLevel === 'warn' ? 'Warn' : 'High'}`)}
               </span>
             </div>
-            <p className="mt-3 text-xs text-ink-muted dark:text-white/60 leading-relaxed">
+            <p className="mt-3 text-xs text-ink-muted dark:text-white leading-relaxed">
               {t('loanCalc.dti.orientation')}
             </p>
           </div>
@@ -970,18 +970,18 @@ export default function LoanCalculator() {
           <table className="w-full min-w-[380px] border-collapse">
             <thead>
               <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-                <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white/60">{t('loanCalc.rateShock.colScenario')}</th>
-                <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white/60">{t('loanCalc.rateShock.colInstallment')}</th>
-                <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white/60">{t('loanCalc.rateShock.colDelta')}</th>
+                <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white">{t('loanCalc.rateShock.colScenario')}</th>
+                <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">{t('loanCalc.rateShock.colInstallment')}</th>
+                <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white">{t('loanCalc.rateShock.colDelta')}</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
                 <td className="py-2.5 pr-3 text-body tabular-nums text-ink-primary dark:text-white">
-                  {pct1(baseRate)} <span className="text-xs text-ink-muted dark:text-white/50">{t('loanCalc.rateShock.now')}</span>
+                  {pct1(baseRate)} <span className="text-xs text-ink-muted dark:text-white">{t('loanCalc.rateShock.now')}</span>
                 </td>
                 <td className="py-2.5 px-3 text-body tabular-nums text-right font-semibold text-ink-primary dark:text-white">{money(rShocks.length ? monthlyPayment(principal, baseRate, months) : result.payment)} {cur}</td>
-                <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white/60">—</td>
+                <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white">—</td>
               </tr>
               {rShocks.map((s) => {
                 const isFloorPinned = s.shock < 0 && Math.abs(s.delta) < 0.005;
@@ -989,7 +989,7 @@ export default function LoanCalculator() {
                   <tr key={s.shock} className="border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0">
                     <td className="py-2.5 pr-3 text-body tabular-nums text-ink-primary dark:text-white">
                       {pct1(s.rate)}{' '}
-                      <span className="text-xs text-ink-muted dark:text-white/50">
+                      <span className="text-xs text-ink-muted dark:text-white">
                         {s.shock >= 0
                           ? t('loanCalc.rateShock.plus', { pp: Math.round(s.shock * 100) })
                           : t('loanCalc.rateShock.minus', { pp: Math.abs(Math.round(s.shock * 100)) })}
@@ -999,7 +999,7 @@ export default function LoanCalculator() {
                       )}
                     </td>
                     <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-primary dark:text-white">{money(s.payment)} {cur}</td>
-                    <td className={`py-2.5 pl-3 text-body tabular-nums text-right ${s.delta > 0.005 ? 'text-expense' : s.delta < -0.005 ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted dark:text-white/60'}`}>
+                    <td className={`py-2.5 pl-3 text-body tabular-nums text-right ${s.delta > 0.005 ? 'text-expense' : s.delta < -0.005 ? 'text-brand-600 dark:text-brand-400' : 'text-ink-muted dark:text-white'}`}>
                       {s.delta > 0.005 ? '+' : s.delta < -0.005 ? '−' : ''}{money(Math.abs(s.delta))}
                     </td>
                   </tr>
@@ -1020,16 +1020,16 @@ export default function LoanCalculator() {
             <table className="w-full min-w-[380px] border-collapse">
               <thead>
                 <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-                  <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white/60">{t('loanCalc.fxShock.colScenario')}</th>
-                  <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white/60">{t('loanCalc.fxShock.colInstallment')}</th>
-                  <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white/60">{t('loanCalc.fxShock.colDelta')}</th>
+                  <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white">{t('loanCalc.fxShock.colScenario')}</th>
+                  <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">{t('loanCalc.fxShock.colInstallment')}</th>
+                  <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white">{t('loanCalc.fxShock.colDelta')}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-                  <td className="py-2.5 pr-3 text-body tabular-nums text-ink-muted dark:text-white/70">{eurToAll} ALL/EUR</td>
+                  <td className="py-2.5 pr-3 text-body tabular-nums text-ink-muted dark:text-white">{eurToAll} ALL/EUR</td>
                   <td className="py-2.5 px-3 text-body tabular-nums text-right font-semibold text-ink-primary dark:text-white">{money(result.payment * eurToAll)} ALL</td>
-                  <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white/60">—</td>
+                  <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white">—</td>
                 </tr>
                 {xShocks.map((s) => (
                   <tr key={s.shock} className="border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0">
@@ -1066,7 +1066,7 @@ export default function LoanCalculator() {
             top-up. Spell out the new total so the extra isn't mistaken for a
             higher base installment. */}
         {extraMonthly > 0 && (
-          <p className="mt-2.5 text-label text-ink-muted dark:text-white/80 leading-relaxed max-w-lg">
+          <p className="mt-2.5 text-label text-ink-muted dark:text-white leading-relaxed max-w-lg">
             {t('loanCalc.early.totalPayment', {
               total: `${money(result.payment + extraMonthly)} ${cur}`,
               base: `${money(result.payment)} ${cur}`,
@@ -1078,24 +1078,24 @@ export default function LoanCalculator() {
         {early ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
             <div className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5">
-              <p className="text-label text-ink-muted dark:text-white/60 mb-1">{t('loanCalc.early.monthsSaved')}</p>
-              <p className="font-display text-2xl font-bold tabular-nums text-ink-primary dark:text-white">
+              <p className="text-label text-ink-muted dark:text-white mb-1">{t('loanCalc.early.monthsSaved')}</p>
+              <p className="text-2xl font-semibold tabular-nums text-ink-primary dark:text-white">
                 {early.monthsSaved >= 12
                   ? t('loanCalc.early.yearsMonths', { years: Math.floor(early.monthsSaved / 12), months: early.monthsSaved % 12 })
                   : t('loanCalc.early.monthsValue', { count: early.monthsSaved })}
               </p>
             </div>
             <div className="rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5">
-              <p className="text-label text-ink-muted dark:text-white/60 mb-1">{t('loanCalc.early.interestSaved')}</p>
-              <p className="font-display text-2xl font-bold tabular-nums text-brand-600 dark:text-brand-400">
-                {money(early.interestSaved)} <span className="text-sm font-medium text-ink-muted dark:text-white/50">{cur}</span>
+              <p className="text-label text-ink-muted dark:text-white mb-1">{t('loanCalc.early.interestSaved')}</p>
+              <p className="text-2xl font-semibold tabular-nums text-brand-600 dark:text-brand-400">
+                {money(early.interestSaved)} <span className="text-sm font-medium text-ink-muted dark:text-white">{cur}</span>
               </p>
             </div>
           </div>
         ) : (
-          <p className="mt-4 text-label text-ink-muted dark:text-white/60">{t('loanCalc.early.none')}</p>
+          <p className="mt-4 text-label text-ink-muted dark:text-white">{t('loanCalc.early.none')}</p>
         )}
-        <p className="mt-4 text-xs text-ink-muted dark:text-white/60 leading-relaxed max-w-lg">{t('loanCalc.early.note')}</p>
+        <p className="mt-4 text-xs text-ink-muted dark:text-white leading-relaxed max-w-lg">{t('loanCalc.early.note')}</p>
       </Panel>
 
       {/* ── Amortization schedule (collapsed) ──────────────────────────── */}
@@ -1109,7 +1109,7 @@ export default function LoanCalculator() {
           years: t('loanCalc.inputs.termYears', { count: DEFAULTS.TERM_YEARS }),
         })}
       >
-        <div className="space-y-3 text-body text-ink-muted dark:text-white/80 leading-relaxed">
+        <div className="space-y-3 text-body text-ink-muted dark:text-white leading-relaxed">
           <p>
             {t('loanCalc.example.p1', {
               amount: `${money(DEFAULTS.PRINCIPAL)} ALL`,
@@ -1126,14 +1126,14 @@ export default function LoanCalculator() {
             })}
           </p>
         </div>
-        <p className="mt-6 text-label text-ink-muted dark:text-white/60 leading-relaxed">
+        <p className="mt-6 text-label text-ink-muted dark:text-white leading-relaxed">
           {t('loanCalc.example.disclaimer')}
         </p>
       </Panel>
 
       {/* ── Bridge CTA ─────────────────────────────────────────────────── */}
       <div className="mt-10 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white/80 mb-4 max-w-xl">{t('loanCalc.cta.text')}</p>
+        <p className="text-body text-ink-muted dark:text-white mb-4 max-w-xl">{t('loanCalc.cta.text')}</p>
         <Link
           to={localizedPath('/register', i18n.language)}
           className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"

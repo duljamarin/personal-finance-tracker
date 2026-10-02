@@ -31,7 +31,7 @@ export default function InAppBrowserWarning() {
           <p className="text-sm font-semibold text-ink-primary dark:text-white">
             {t('auth.inAppBrowserTitle')}
           </p>
-          <p className="text-sm text-ink-secondary dark:text-white/80 mt-1">
+          <p className="text-sm text-ink-muted dark:text-white mt-1">
             {t('auth.inAppBrowserDesc')}
           </p>
         </div>

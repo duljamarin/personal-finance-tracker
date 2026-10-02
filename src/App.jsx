@@ -43,6 +43,7 @@ function DashboardShell() {
 
 const Sidebar = lazy(() => import('./components/Sidebar.jsx'));
 const Dashboard = lazy(() => import('./components/Dashboard/Dashboard.jsx'));
+const TransactionsPage = lazy(() => import('./components/Transactions/Transactions.jsx'));
 const CategoriesPage = lazy(() => import('./components/Categories/CategoriesPage.jsx'));
 const RecurringPage = lazy(() => import('./components/Recurring/RecurringPage.jsx'));
 const GoalsPage = lazy(() => import('./components/Goals/GoalsPage.jsx'));
@@ -210,7 +211,7 @@ function AuthenticatedLayout({ children }) {
         <Sidebar />
       </Suspense>
       <main className="flex-1 min-w-0 overflow-x-hidden">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-6 sm:pt-6 lg:py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:py-8">
           {children}
         </div>
       </main>
@@ -379,6 +380,9 @@ function InnerAppContent() {
             <Routes>
               <Route path="/account" element={
                 <PrivateRoute><AccountPage /></PrivateRoute>
+              } />
+              <Route path="/transactions" element={
+                <PrivateRoute><TransactionsPage /></PrivateRoute>
               } />
               <Route path="/categories" element={
                 <PrivateRoute><CategoriesPage /></PrivateRoute>

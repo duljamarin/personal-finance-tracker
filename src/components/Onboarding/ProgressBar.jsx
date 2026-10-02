@@ -22,7 +22,7 @@ export default function ProgressBar({ currentStep, totalSteps, stepLabels }) {
           const circle = isCompleted
             ? 'bg-brand-600 text-white border-brand-600'
             : isCurrent
-              ? 'bg-brand-600 text-white border-brand-600 shadow-md shadow-brand-500/30 ring-4 ring-brand-500/15'
+              ? 'bg-brand-600 text-white border-brand-600'
               : 'bg-white dark:bg-surface-dark-card border-surface-hairline dark:border-surface-dark-hairline';
 
           return (
@@ -36,7 +36,7 @@ export default function ProgressBar({ currentStep, totalSteps, stepLabels }) {
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
-                  String(step).padStart(2, '0')
+                  step
                 )}
               </div>
               {step < totalSteps && (

@@ -1,11 +1,12 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Card from '../UI/Card';
-import Icon from '../UI/Icon';
+import { Pencil, Trash2 } from 'lucide-react';
+import CategoryAvatar from '../UI/CategoryAvatar';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { progressColor } from '../../utils/chartColors';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
+// One budget as a list row (rendered inside BudgetsPage's divided list).
 export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete }) {
   const { t } = useTranslation();
   const { format: fmt } = useDisplayCurrency();
@@ -17,8 +18,6 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
   const displayPercent = Math.min(percentUsed, 100);
   const remaining = budgetAmount - spentAmount;
   const isOverBudget = spentAmount > budgetAmount;
-
-  const getProgressColor = () => progressColor(ratio);
 
   // Forecast calculation for the current month
   const getForecast = () => {
@@ -33,83 +32,68 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
   const forecast = getForecast();
 
   return (
-    <Card>
-      <div className="p-4 sm:p-6">
-        {/* Header: category name + action buttons */}
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="min-w-0 [overflow-wrap:anywhere] font-semibold tracking-tight text-lg text-ink-primary dark:text-white">
+    <div className="group flex items-start gap-3 px-4 sm:px-5 py-4 bg-white dark:bg-surface-dark-card">
+      <CategoryAvatar category={budget.category} />
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="min-w-0 [overflow-wrap:anywhere] text-sm font-medium text-ink-primary dark:text-white">
             {translateCategoryName(budget.category?.name || '')}
           </h3>
-          <div className="flex gap-1 flex-shrink-0">
-            <button
-              onClick={() => onEdit(budget)}
-              className="p-2 text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 transition"
-              title={t('budgets.editBudget')}
-            >
-              <Icon name="edit" />
-            </button>
-            <button
-              onClick={() => onDelete(budget)}
-              className="p-2 text-ink-muted dark:text-white hover:text-expense dark:hover:text-expense transition"
-              title={t('budgets.deleteConfirm')}
-            >
-              <Icon name="delete" />
-            </button>
-          </div>
+          <span className="shrink-0 text-sm tabular-nums text-ink-muted dark:text-white">
+            <span className="font-semibold text-ink-primary dark:text-white">{fmt(spentAmount)}</span>
+            {' / '}{fmt(budgetAmount)}
+          </span>
         </div>
 
-        {/* Spent / Budget amounts */}
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-ink-secondary dark:text-white">
-            <span className="font-semibold text-ink-primary dark:text-white">
-              {fmt(spentAmount)}
-            </span>
-            {' '}{t('budgets.card.spent')} {t('budgets.card.of')} {fmt(budgetAmount)}
-          </span>
-          <span className={`font-semibold ${isOverBudget ? 'text-expense dark:text-expense' : 'text-ink-secondary dark:text-white'}`}>
+        <div className="mt-2 flex items-center gap-3">
+          <div className="flex-1 h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${displayPercent}%`, backgroundColor: progressColor(ratio) }}
+            />
+          </div>
+          <span className={`w-10 text-right text-xs font-semibold tabular-nums ${isOverBudget ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
             {percentUsed}%
           </span>
         </div>
 
-        {/* Progress bar */}
-        <div className="w-full bg-surface-hairline dark:bg-surface-dark-hairline rounded-full h-2 overflow-hidden mb-1">
-          <div
-            className="h-full transition-all duration-300"
-            style={{ width: `${displayPercent}%`, backgroundColor: getProgressColor() }}
-          />
-        </div>
-
-        {/* Overflow indicator */}
-        {isOverBudget && (
-          <p className="text-xs text-ink-muted dark:text-white/60 mt-1">
-            {fmt(Math.abs(remaining))} {t('budgets.card.overflow')}
-          </p>
-        )}
-
-        {/* Remaining (when not over budget) */}
-        {!isOverBudget && (
-          <p className="text-xs text-ink-muted dark:text-white mt-1">
-            {fmt(remaining)} {t('budgets.card.remaining')}
-          </p>
-        )}
-
-        {/* Forecast line */}
-        <div className="mt-3 pt-3 border-t border-surface-hairline dark:border-surface-dark-hairline">
+        {/* Over-budget hierarchy: the % above carries the red; this line stays quiet. */}
+        <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-xs text-ink-muted dark:text-white">
+          <span className="tabular-nums">
+            {isOverBudget
+              ? t('budgets.card.over', { amount: fmt(Math.abs(remaining)) })
+              : t('budgets.card.left', { amount: fmt(remaining) })}
+          </span>
           {forecast && (
-            <p className={`text-sm font-medium ${forecast.willExceed ? 'text-expense/80 dark:text-expense/70' : 'text-brand-600 dark:text-brand-500'}`}>
+            <span className={`tabular-nums ${forecast.willExceed ? 'text-expense' : ''}`}>
               {forecast.willExceed
                 ? t('budgets.forecast.willExceed', { amount: fmt(forecast.exceedBy) })
-                : t('budgets.forecast.onTrack', { amount: fmt(forecast.projected) })
-              }
-            </p>
+                : t('budgets.forecast.onTrack', { amount: fmt(forecast.projected) })}
+            </span>
           )}
-          {isFutureMonth && (
-            <p className="text-sm text-ink-muted dark:text-white">
-              {t('budgets.forecast.notStarted')}
-            </p>
-          )}
+          {isFutureMonth && <span>{t('budgets.forecast.notStarted')}</span>}
         </div>
       </div>
-    </Card>
+
+      <div className="flex gap-0.5 shrink-0 -mr-1.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+        <button
+          onClick={() => onEdit(budget)}
+          className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted dark:text-white hover:text-ink-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+          title={t('budgets.editBudget')}
+          aria-label={t('budgets.editBudget')}
+        >
+          <Pencil className="w-4 h-4" strokeWidth={1.75} />
+        </button>
+        <button
+          onClick={() => onDelete(budget)}
+          className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted dark:text-white hover:text-expense dark:hover:text-expense hover:bg-expense/5 transition-colors"
+          title={t('budgets.deleteConfirm')}
+          aria-label={t('budgets.delete.title')}
+        >
+          <Trash2 className="w-4 h-4" strokeWidth={1.75} />
+        </button>
+      </div>
+    </div>
   );
 });

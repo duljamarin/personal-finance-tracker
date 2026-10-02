@@ -153,14 +153,14 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
               <circle cx="50" cy="50" r={r} fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" className={scoreColors.stroke} style={{ strokeDasharray: circ, strokeDashoffset: offset, transition: 'stroke-dashoffset 0.5s ease-in-out' }} />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-lg font-bold tabular-nums ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
+              <span className={`text-lg font-semibold tabular-nums ${scoreColors.text}`}>{Math.round(score.totalScore)}</span>
             </div>
           </div>
           <div>
             <p className={`text-xl font-semibold tracking-tight ${scoreColors.text}`}>{getScoreLabel(score.totalScore)}</p>
             <p className="text-sm text-ink-muted dark:text-white">{t('healthScore.title')}</p>
             {scoreMonthLabel && (
-              <p className="text-xs text-ink-muted dark:text-white/70 mt-0.5">{scoreMonthLabel}</p>
+              <p className="text-xs text-ink-muted dark:text-white mt-0.5">{scoreMonthLabel}</p>
             )}
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-lg font-semibold text-ink-primary dark:text-white tracking-tight">
+            <h2 className="text-heading text-ink-primary dark:text-white">
               {t('healthScore.title')}
             </h2>
             {/* Name the month the score is for. The headline figures (income,
@@ -209,7 +209,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                 style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.6s ease-in-out' }} />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className={`text-4xl font-bold tabular-nums tracking-tight leading-none ${scoreColors.text}`}>
+              <span className={`text-4xl font-semibold tabular-nums tracking-tight leading-none ${scoreColors.text}`}>
                 {Math.round(score.totalScore)}
               </span>
               <span className={`text-xs font-medium mt-1.5 ${scoreColors.label}`}>
@@ -286,12 +286,12 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
                 <div key={label} className={`p-3.5 rounded-md bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 ${rail}`}>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm font-semibold text-ink-primary dark:text-white">{label}</span>
-                    <span className="text-[10px] font-semibold text-ink-muted dark:text-white/60 tabular-nums">{t('healthScore.pillarWeight', { weight })}</span>
+                    <span className="text-[10px] font-semibold text-ink-muted dark:text-white tabular-nums">{t('healthScore.pillarWeight', { weight })}</span>
                   </div>
-                  <p className="text-xs text-ink-muted dark:text-white/70 leading-relaxed">{desc}</p>
+                  <p className="text-xs text-ink-muted dark:text-white leading-relaxed">{desc}</p>
                 </div>
               ))}
-              <p className="col-span-full text-[10px] text-ink-muted/70 dark:text-white/70 text-center">{t('healthScore.howItWorksSummary')}</p>
+              <p className="col-span-full text-[10px] text-ink-muted dark:text-white text-center">{t('healthScore.howItWorksSummary')}</p>
             </div>
           )}
         </div>
@@ -299,7 +299,7 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         {/* Insights */}
         {score.insights?.length > 0 && isPaid && (
           <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
-            <p className="eyebrow text-[10px] mb-3">{t('healthScore.insights')}</p>
+            <p className="eyebrow mb-3">{t('healthScore.insights')}</p>
             <ul className="space-y-2.5">
               {score.insights.map((insight, i) => (
                 <li key={i} className="flex items-start gap-2.5">
@@ -317,25 +317,25 @@ export default function HealthScore({ onReloadTrigger, compact = false }) {
         {isPaid && (
           <div className="mt-5 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
             {scoreMonthLabel && (
-              <p className="eyebrow text-[10px] mb-3 text-center">
+              <p className="eyebrow mb-3 text-center">
                 {scoreMonthLabel}
               </p>
             )}
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="eyebrow text-[10px] mb-1">{t('healthScore.income')}</p>
+                <p className="eyebrow mb-1">{t('healthScore.income')}</p>
                 <p className="text-sm font-semibold tabular-nums text-brand-600 dark:text-brand-400">
                   {fmt(score.totalIncome)}
                 </p>
               </div>
               <div>
-                <p className="eyebrow text-[10px] mb-1">{t('healthScore.expenses')}</p>
+                <p className="eyebrow mb-1">{t('healthScore.expenses')}</p>
                 <p className="text-sm font-semibold tabular-nums text-expense dark:text-expense">
                   {fmt(score.totalExpenses)}
                 </p>
               </div>
               <div>
-                <p className="eyebrow text-[10px] mb-1">{t('healthScore.saved')}</p>
+                <p className="eyebrow mb-1">{t('healthScore.saved')}</p>
                 <p className={`text-sm font-semibold tabular-nums ${score.savingsAmount >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-expense dark:text-expense'}`}>
                   {fmt(score.savingsAmount)}
                 </p>

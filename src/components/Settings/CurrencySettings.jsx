@@ -108,10 +108,10 @@ export default function CurrencySettings() {
   if (pending) {
     return (
       <Card padding="lg" className="border border-expense/40">
-        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-2">
+        <h2 className="text-heading text-ink-primary dark:text-white mb-2">
           {t('settings.currency.title')}
         </h2>
-        <p className="text-sm text-ink-secondary dark:text-white/80 mb-4">
+        <p className="text-sm text-ink-muted dark:text-white mb-4">
           {t('settings.currency.resumeDesc', { from: pending.from, to: pending.to })}
         </p>
         <Button
@@ -121,7 +121,7 @@ export default function CurrencySettings() {
           {converting ? t('settings.currency.converting') : t('settings.currency.resume')}
         </Button>
         {converting && progress && (
-          <p className="text-xs text-ink-muted dark:text-white/60 mt-3">
+          <p className="text-xs text-ink-muted dark:text-white mt-3">
             {t('settings.currency.progress', { done: progress.done, total: progress.total })}
           </p>
         )}
@@ -132,10 +132,10 @@ export default function CurrencySettings() {
   return (
     <>
       <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-2">
+        <h2 className="text-heading text-ink-primary dark:text-white mb-2">
           {t('settings.currency.title')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-white/70 mb-4">
+        <p className="text-sm text-ink-muted dark:text-white mb-4">
           {t('settings.currency.description')}
         </p>
 
@@ -177,7 +177,7 @@ export default function CurrencySettings() {
               {converting ? t('settings.currency.converting') : t('settings.currency.change')}
             </Button>
             {loadingRate && (
-              <p className="text-xs text-ink-muted dark:text-white/60 mt-2">
+              <p className="text-xs text-ink-muted dark:text-white mt-2">
                 {t('settings.currency.loadingRate')}
               </p>
             )}
@@ -190,7 +190,7 @@ export default function CurrencySettings() {
         {converting && (
           <div className="mt-4 flex items-center gap-3">
             <LoadingSpinner size="sm" />
-            <p className="text-sm text-ink-secondary dark:text-white/80">
+            <p className="text-sm text-ink-muted dark:text-white">
               {progress
                 ? t('settings.currency.progress', { done: progress.done, total: progress.total })
                 : t('settings.currency.converting')}
@@ -202,17 +202,17 @@ export default function CurrencySettings() {
       {confirmOpen && (
       <Modal onClose={() => setConfirmOpen(false)}>
         <div className="p-6">
-          <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-3">
+          <h3 className="text-heading text-ink-primary dark:text-white mb-3">
             {t('settings.currency.confirmTitle', { from: current, to: target })}
           </h3>
 
-          <p className="text-sm text-ink-secondary dark:text-white/80 mb-4">
+          <p className="text-sm text-ink-muted dark:text-white mb-4">
             {t('settings.currency.confirmBody')}
           </p>
 
           {sampleTo !== null && (
             <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-md p-3 mb-4 text-sm">
-              <span className="text-ink-muted dark:text-white/70">
+              <span className="text-ink-muted dark:text-white">
                 {t('settings.currency.example')}:{' '}
               </span>
               <span className="font-semibold tabular-nums text-ink-primary dark:text-white">
@@ -221,7 +221,7 @@ export default function CurrencySettings() {
             </div>
           )}
 
-          <p className="text-xs text-ink-muted dark:text-white/60 mb-5">
+          <p className="text-xs text-ink-muted dark:text-white mb-5">
             {t('settings.currency.confirmWarning')}
           </p>
 

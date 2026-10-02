@@ -55,3 +55,34 @@ export function getThisYear() {
   const end = new Date(now.getFullYear(), 11, 31);
   return { start: toISODate(start), end: toISODate(end) };
 }
+
+// Albanian names spelled out by hand: Intl's sq-AL data is missing from some
+// browser ICU builds (headless Chromium among them), which silently falls back
+// to English and yields "Të ardhurat në October".
+const SQ_MONTHS = ['janar', 'shkurt', 'mars', 'prill', 'maj', 'qershor', 'korrik', 'gusht', 'shtator', 'tetor', 'nëntor', 'dhjetor'];
+const SQ_MONTHS_SHORT = ['jan', 'shk', 'mar', 'pri', 'maj', 'qer', 'kor', 'gus', 'sht', 'tet', 'nën', 'dhj'];
+const SQ_WEEKDAYS_SHORT = ['Die', 'Hën', 'Mar', 'Mër', 'Enj', 'Pre', 'Sht'];
+const isSq = (language) => String(language || '').toLowerCase().startsWith('sq');
+
+/** Full month name, e.g. "October" / "tetor". */
+export function formatMonthName(date, language) {
+  if (isSq(language)) return SQ_MONTHS[date.getMonth()];
+  return date.toLocaleDateString('en-US', { month: 'long' });
+}
+
+/** Compact day label for list headers, e.g. "Wed, Sep 30" / "Mër, 30 sht". */
+export function formatShortDay(date, language, { withYear = false } = {}) {
+  if (isSq(language)) {
+    const base = `${SQ_WEEKDAYS_SHORT[date.getDay()]}, ${date.getDate()} ${SQ_MONTHS_SHORT[date.getMonth()]}`;
+    return withYear ? `${base} ${date.getFullYear()}` : base;
+  }
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric', ...(withYear ? { year: 'numeric' } : {}),
+  });
+}
+
+/** Medium date for ranges and captions, e.g. "Oct 1, 2026" / "1 tet 2026". */
+export function formatDate(date, language) {
+  if (isSq(language)) return `${date.getDate()} ${SQ_MONTHS_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}

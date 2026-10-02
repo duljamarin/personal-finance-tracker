@@ -9,7 +9,7 @@ import { localizedPath } from '../lib/tools';
 
 function BrandMark() {
   return (
-    <span className="inline-flex items-center justify-center w-9 h-9 bg-brand-600 rounded-md shadow-sm shadow-brand-500/25">
+    <span className="inline-flex items-center justify-center w-9 h-9 bg-brand-600 rounded-md">
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
@@ -54,7 +54,7 @@ export default function Header() {
               {location.pathname !== '/register' && location.pathname !== '/sq/register' && (
                 <Link
                   to={localizedPath('/register', i18n.language)}
-                  className="ml-1 px-5 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30"
+                  className="ml-1 px-5 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all"
                 >
                   {t('auth.register')}
                 </Link>
@@ -64,7 +64,7 @@ export default function Header() {
           {accessToken && (
             <Link
               to="/dashboard"
-              className="ml-1 px-5 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all shadow-sm shadow-brand-500/20 hover:shadow-md hover:shadow-brand-500/30"
+              className="ml-1 px-5 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-all"
             >
               {t('nav.dashboard')}
             </Link>
@@ -116,7 +116,7 @@ export default function Header() {
                 </Link>
                 <Link
                   to={localizedPath('/register', i18n.language)}
-                  className="mx-1 mt-1 px-3 py-2.5 text-sm font-medium text-center text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors shadow-sm shadow-brand-500/20"
+                  className="mx-1 mt-1 px-3 py-2.5 text-sm font-medium text-center text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {t('auth.register')}
@@ -125,7 +125,7 @@ export default function Header() {
             ) : (
               <Link
                 to="/dashboard"
-                className="mx-1 mt-1 px-3 py-2.5 text-sm font-medium text-center text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors shadow-sm shadow-brand-500/20"
+                className="mx-1 mt-1 px-3 py-2.5 text-sm font-medium text-center text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 {t('nav.dashboard')}

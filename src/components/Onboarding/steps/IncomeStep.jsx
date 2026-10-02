@@ -50,7 +50,7 @@ export default function IncomeStep({ income, payday, onIncomeChange, onPaydayCha
         <div>
           <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
             {t('onboarding.income.paydayLabel')}
-            <span className="text-ink-muted dark:text-white/60 font-normal ml-1">
+            <span className="text-ink-muted dark:text-white font-normal ml-1">
               {t('onboarding.income.optional')}
             </span>
           </label>

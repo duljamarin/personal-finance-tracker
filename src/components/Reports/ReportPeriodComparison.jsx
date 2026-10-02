@@ -21,7 +21,7 @@ function formatLabel(dateStr) {
 
 function PctChange({ current, previous, positiveIsGood }) {
   const { t } = useTranslation();
-  if (previous === 0) return <span className="text-xs text-ink-muted/60 dark:text-white/60">-</span>;
+  if (previous === 0) return <span className="text-xs text-ink-muted dark:text-white">-</span>;
 
   const pct = (((current - previous) / previous) * 100).toFixed(1);
   const isUp = current > previous;
@@ -102,10 +102,10 @@ export default function ReportPeriodComparison({
 
   return (
     <Card padding="md">
-      <h3 className="text-base font-semibold text-ink-primary dark:text-white mb-1">
+      <h3 className="text-heading text-ink-primary dark:text-white mb-1">
         {t('reports.periodComparison')}
       </h3>
-      <p className="text-xs text-ink-muted/60 dark:text-white/60 mb-4">
+      <p className="text-xs text-ink-muted dark:text-white mb-4">
         {t('reports.currentPeriod')}: {formatLabel(startDate)} - {formatLabel(endDate)}
         {' · '}
         {t('reports.previousPeriod')}: {formatLabel(prevStartDate)} - {formatLabel(prevEndDate)}
@@ -133,7 +133,8 @@ export default function ReportPeriodComparison({
             <Legend wrapperStyle={{ fontSize: '12px' }} />
             <Bar dataKey={currentLabel} fill={INCOME_COLOR} radius={[4, 4, 0, 0]} />
             {/* previous period: brand-300 tint (lighter teal) — no CSS var, brand-ramp literal */}
-            <Bar dataKey={previousLabel} fill="#79dbc5" radius={[4, 4, 0, 0]} />
+            {/* Previous period recedes as a neutral; the old mint was pre-repaint teal. */}
+            <Bar dataKey={previousLabel} fill={dark ? '#4A4A52' : '#CFCBC0'} radius={[4, 4, 0, 0]} />
           </BarChart>
         </div>
 
@@ -151,7 +152,7 @@ export default function ReportPeriodComparison({
                     <p className="text-sm font-semibold text-ink-primary dark:text-white">
                       {fmt(row.curr)}
                     </p>
-                    <p className="text-xs text-ink-muted/60 dark:text-white/60">
+                    <p className="text-xs text-ink-muted dark:text-white">
                       {t('reports.previousPeriod')}: {fmt(row.prev)}
                     </p>
                   </div>

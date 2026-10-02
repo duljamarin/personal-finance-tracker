@@ -49,7 +49,7 @@ export default function EncryptionPromptBanner() {
           <h3 className="font-semibold tracking-tight text-sm text-ink-primary dark:text-white mb-0.5">
             {t('encryption.promptTitle')}
           </h3>
-          <p className="text-sm text-ink-muted dark:text-white/70">
+          <p className="text-sm text-ink-muted dark:text-white">
             {t('encryption.promptDesc')}
           </p>
         </div>
