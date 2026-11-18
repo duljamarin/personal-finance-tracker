@@ -1363,7 +1363,10 @@
     "perDay": "About {{amount}} a day",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
-    "categoriesHeading": "Categories"
+    "categoriesHeading": "Categories",
+    "onPace": "On pace to land at {{amount}}",
+    "forecastBar": "Spent {{spent}} of {{limit}}, projected {{projected}} by month end",
+    "onPaceLabel": "On pace to land at"
   },
   "pricing": {
     "title": "Simple, Honest Pricing",

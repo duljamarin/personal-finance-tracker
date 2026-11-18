@@ -47,23 +47,23 @@ export default function BudgetForm({ budget, availableCategories, onSave, onClos
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display text-title text-ink-primary dark:text-white mb-6">
+      <h2 className="font-display text-title text-fg mb-6">
         {isEditing ? t('budgets.editBudget') : t('budgets.addBudget')}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {isEditing ? (
           <div>
-            <label className="block text-sm font-medium text-ink-muted dark:text-white mb-1">
+            <label className="block text-sm font-medium text-fg mb-1">
               {t('budgets.form.category')}
             </label>
-            <p className="px-3 py-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md text-ink-muted dark:text-white">
+            <p className="px-3 py-2 bg-inner rounded-input text-fg">
               {translateCategoryName(budget.category?.name || '')}
             </p>
           </div>
         ) : (
           <div>
-            <label className="block text-sm font-medium text-ink-muted dark:text-white mb-1">
+            <label className="block text-sm font-medium text-fg mb-1">
               {t('budgets.form.category')}
             </label>
             <CustomSelect
@@ -83,7 +83,7 @@ export default function BudgetForm({ budget, availableCategories, onSave, onClos
                   value: cat.id,
                   label: translateCategoryName(cat.name),
                   leading: (
-                    <span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+                    <span className="w-6 h-6 rounded-input bg-inner flex items-center justify-center text-brand-text flex-shrink-0">
                       <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
                     </span>
                   ),
@@ -91,7 +91,7 @@ export default function BudgetForm({ budget, availableCategories, onSave, onClos
               })}
             />
             {errors.category && (
-              <p className="mt-2 text-xs text-expense flex items-center gap-1.5">
+              <p className="mt-2 text-sm text-expense flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                 </svg>

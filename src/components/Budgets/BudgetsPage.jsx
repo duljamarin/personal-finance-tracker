@@ -15,10 +15,13 @@ import { useFormModal } from '../../hooks/useFormModal';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { MONTH_KEYS } from '../../utils/constants';
-import { progressColor } from '../../utils/chartColors';
 import PageHeader from '../UI/PageHeader';
 import MonthSwitcher from '../UI/MonthSwitcher';
-import { Plus, Copy, PieChart } from 'lucide-react';
+import { Copy, PieChart, ArrowRight } from 'lucide-react';
+import Card from '../UI/Card';
+import { useCountUp } from '../../hooks/useCountUp';
+import { MINUS } from '../../utils/bento';
+import { dataDelay, delayStyle } from '../../utils/motion';
 import { Link } from 'react-router-dom';
 
 export default function BudgetsPage() {
@@ -53,6 +56,7 @@ export default function BudgetsPage() {
     budgets.reduce((sum, b) => sum + (Number(expensesByCategory[b.category_id]) || 0), 0), [budgets, expensesByCategory]);
 
   const totalRemaining = totalBudgeted - totalSpent;
+  const remainingShown = useCountUp(totalRemaining, { delay: dataDelay(0) });
   const percentUsed = totalBudgeted > 0 ? Math.round((totalSpent / totalBudgeted) * 100) : 0;
 
   // Categories that don't already have a budget for the selected month
@@ -199,31 +203,29 @@ export default function BudgetsPage() {
   const monthLabel = `${t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`)} ${selectedYear}`;
   const overallRatio = totalBudgeted > 0 ? totalSpent / totalBudgeted : 0;
   const canCreate = canCreateBudget(budgets.length);
+  // Month-end projection at the current pace (same formula as each budget's
+  // forecast line), only while the month is running.
+  const projectedTotal = isCurrentMonth ? (totalSpent / Math.max(1, today.getDate())) * daysInMonth : null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-gap">
       <PageHeader
         title={t('budgets.title')}
         subtitle={t('budgets.subtitle')}
         actions={
           <>
-            <Button variant="secondary" onClick={handleCopyFromPrevious} disabled={!canCreate}>
-              <span className="inline-flex items-center gap-2">
-                <Copy className="w-4 h-4" strokeWidth={1.75} />
-                {t('budgets.copyFromPrevious')}
-              </span>
+            <Button variant="secondary" onClick={handleCopyFromPrevious} disabled={!canCreate} type="button">
+              <Copy className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
+              {t('budgets.copyFromPrevious')}
             </Button>
-            <Button onClick={openBudgetForm} disabled={!canCreate}>
-              <span className="inline-flex items-center gap-2">
-                <Plus className="w-4 h-4" strokeWidth={2} />
-                {t('budgets.addBudget')}
-              </span>
+            <Button onClick={openBudgetForm} disabled={!canCreate} leading="plus" type="button">
+              {t('budgets.addBudget')}
             </Button>
           </>
         }
         className="!mb-0"
       >
-        <div className="mt-4">
+        <div>
           <MonthSwitcher
             label={monthLabel}
             onPrev={goToPrevMonth}
@@ -250,19 +252,21 @@ export default function BudgetsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && budgets.length >= budgetLimit && (
-        <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-ink-muted dark:text-white">
+        <Card padding="sm" className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-base font-semibold text-fg">
             {t('limits.budgetLimitReached', { limit: budgetLimit })}
           </p>
-          <Link to="/pricing" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="group btn-motion btn-lift inline-flex items-center gap-2 min-h-11 px-5 rounded-pill bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold whitespace-nowrap">
             {t('upgrade.upgradeCta')}
+            <ArrowRight className="arrow-nudge w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
           </Link>
-        </div>
+        </Card>
       )}
 
       {budgets.length === 0 ? (
         <EmptyState
-          icon={<PieChart className="w-5 h-5" strokeWidth={1.75} />}
+          icon={<PieChart className="w-[22px] h-[22px]" strokeWidth={2} />}
+          actionIcon="plus"
           title={t('budgets.noData')}
           description={t('budgets.noDataDesc')}
           action={openBudgetForm}
@@ -271,55 +275,61 @@ export default function BudgetsPage() {
         />
       ) : (
         <>
-          {/* Month overview: one hero figure (what's left), one bar for the
-              whole month, then the supporting numbers. */}
-          <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5 sm:p-6">
+          {/* Month overview (spec 4.3): the one hero tile. What's left as the
+              kpi, spent of budgeted, days left, daily allowance and the
+              month-end projection at the current pace. */}
+          <Card variant="hero" index={0} className="flex flex-col gap-gap">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div className="min-w-0">
-                <p className="eyebrow">{totalRemaining >= 0 ? t('budgets.leftToSpend') : t('budgets.overBudgetTotal')}</p>
-                <p className={`mt-2 [overflow-wrap:anywhere] text-4xl sm:text-[2.75rem] font-semibold tabular-nums tracking-tight leading-none ${totalRemaining < 0 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
-                  {fmt(Math.abs(totalRemaining))}
+                <p className="text-sm font-bold">{totalRemaining >= 0 ? t('budgets.leftToSpend') : t('budgets.overBudgetTotal')}</p>
+                <p className="mt-1 [overflow-wrap:anywhere] text-kpi font-extrabold tabular-nums">
+                  {totalRemaining < 0 ? MINUS : ''}{fmt(Math.abs(remainingShown))}
                 </p>
-                <p className="mt-3 text-sm text-ink-muted dark:text-white tabular-nums">
+                <p className="mt-1 text-sm font-semibold tabular-nums">
                   {t('budgets.ofBudgeted', { spent: fmt(totalSpent), budgeted: fmt(totalBudgeted) })}
                 </p>
               </div>
               {daysLeft !== null && (
-                <div className="sm:text-right">
-                  <p className="text-sm font-medium text-ink-primary dark:text-white tabular-nums">
-                    {t('budgets.daysLeft', { count: daysLeft })}
-                  </p>
-                  {perDay !== null && (
-                    <p className="mt-1 text-sm text-ink-muted dark:text-white tabular-nums">
-                      {t('budgets.perDay', { amount: fmt(perDay) })}
-                    </p>
+                <div className="flex flex-wrap gap-2.5">
+                  <div className="px-3.5 py-2.5 rounded-icon bg-hero-inset">
+                    <p className="text-sm font-semibold">{t('budgets.daysLeft', { count: daysLeft })}</p>
+                    {perDay !== null && (
+                      <p className="text-h3 font-extrabold tabular-nums">{t('budgets.perDay', { amount: fmt(perDay) })}</p>
+                    )}
+                  </div>
+                  {projectedTotal !== null && (
+                    <div className="px-3.5 py-2.5 rounded-icon bg-hero-inset max-w-[260px]">
+                      <p className="text-sm font-semibold">{t('budgets.onPaceLabel')}</p>
+                      <p className="text-h3 font-extrabold tabular-nums">{fmt(projectedTotal)}</p>
+                    </div>
                   )}
                 </div>
               )}
             </div>
-            <div className="mt-5 flex items-center gap-3">
-              <div className="flex-1 h-2 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
+            <div className="flex items-center gap-3">
+              {/* On the green tile the bar is white on a lighter inset; the
+                  over-budget state is carried by the label and the %. */}
+              <div className="flex-1 h-3.5 rounded-pill bg-hero-inset overflow-hidden">
                 <div
-                  className="h-full rounded-full transition-all duration-300"
-                  style={{ width: `${Math.min(100, overallRatio * 100)}%`, backgroundColor: progressColor(overallRatio) }}
+                  className="h-full rounded-pill origin-left animate-grow-x bar-w bg-white"
+                  style={{ width: `${Math.min(100, overallRatio * 100)}%`, ...delayStyle(dataDelay(0)) }}
                 />
               </div>
-              <span className={`text-sm font-semibold tabular-nums ${percentUsed > 100 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
-                {percentUsed}%
-              </span>
+              <span className="text-h3 font-extrabold tabular-nums">{percentUsed}%</span>
             </div>
-          </section>
+          </Card>
 
-          {/* Category budgets as one list, not a wall of cards */}
-          <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
-            <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline">
-              <h2 className="text-heading text-ink-primary dark:text-white">{t('budgets.categoriesHeading')}</h2>
-              <span className="text-xs text-ink-muted dark:text-white tabular-nums">{budgets.length}</span>
+          {/* One tile per category budget */}
+          <section aria-labelledby="budget-categories" className="flex flex-col gap-gap">
+            <div className="flex items-baseline justify-between gap-3 px-1">
+              <h2 id="budget-categories" className="text-h3 font-bold text-fg">{t('budgets.categoriesHeading')}</h2>
+              <span className="inline-flex items-center px-3 py-1 rounded-pill bg-tile border border-line text-sm font-bold text-fg tabular-nums">{budgets.length}</span>
             </div>
-            <div className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
-              {budgets.map(budget => (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gap">
+              {budgets.map((budget, i) => (
                 <BudgetCard
                   key={budget.id}
+                  index={i + 1}
                   budget={budget}
                   spent={expensesByCategory[budget.category_id] || 0}
                   isCurrentMonth={isCurrentMonth}

@@ -1363,7 +1363,10 @@
     "perDay": "Rreth {{amount}} në ditë",
     "prevMonth": "Muaji i kaluar",
     "nextMonth": "Muaji i ardhshëm",
-    "categoriesHeading": "Kategoritë"
+    "categoriesHeading": "Kategoritë",
+    "onPace": "Me këtë ritëm mbyll muajin me {{amount}}",
+    "forecastBar": "Shpenzuar {{spent}} nga {{limit}}, parashikim {{projected}} në fund të muajit",
+    "onPaceLabel": "Me këtë ritëm mbyll me"
   },
   "pricing": {
     "title": "Çmim i Thjeshtë dhe i Ndershëm",
