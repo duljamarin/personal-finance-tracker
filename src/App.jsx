@@ -202,6 +202,10 @@ function EncryptionGate() {
 }
 
 export function AuthenticatedLayout({ children }) {
+  // Remount the page after an unlock: pages that fetch on mount (budgets,
+  // goals, net worth, reports...) loaded locked placeholders while the
+  // UnlockModal was up. The modal blocks input, so no state is lost.
+  const { unlockEpoch = 0 } = useCrypto() || {};
   return (
     // Bento shell (design-system 3.5): --page background, GAP padding, floating nav tile.
     <div className="flex min-h-screen bg-page font-sans lg:gap-gap lg:p-gap">
@@ -209,7 +213,7 @@ export function AuthenticatedLayout({ children }) {
         <Sidebar />
       </Suspense>
       <main className="flex-1 min-w-0 overflow-x-hidden">
-        <div className="max-w-content mx-auto px-gap pt-20 pb-24 lg:p-0">
+        <div key={unlockEpoch} className="max-w-content mx-auto px-gap pt-20 pb-24 lg:p-0">
           {children}
         </div>
       </main>

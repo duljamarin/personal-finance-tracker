@@ -13,7 +13,7 @@ export function TransactionProvider({ children }) {
   const { addToast } = useToast();
   const { t } = useTranslation();
   const { refreshSubscription } = useSubscription();
-  const { status: cryptoStatus } = useCrypto();
+  const { unlockEpoch = 0, migrationEpoch = 0 } = useCrypto();
 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,16 +73,21 @@ export function TransactionProvider({ children }) {
   }, [user?.id, authLoading]);
 
   // Re-fetch once the user unlocks encryption after a restored session
-  // (initial load may have rendered locked-placeholder values).
-  const prevCryptoStatusRef = useRef(cryptoStatus);
+  // (initial load rendered locked placeholders) and when a background
+  // encryption migration finishes. mutationCount is bumped too, so every
+  // consumer that re-fetches on it (dashboard budgets, health, goals, coming
+  // up) replaces its placeholders as well; before, only this list reloaded
+  // and the dashboard tiles stayed empty until a page refresh.
+  const cryptoEpoch = unlockEpoch + migrationEpoch;
+  const lastCryptoEpochRef = useRef(cryptoEpoch);
   useEffect(() => {
-    const prev = prevCryptoStatusRef.current;
-    prevCryptoStatusRef.current = cryptoStatus;
-    if (prev === 'locked' && cryptoStatus === 'unlocked' && user?.id) {
-      reloadTransactions();
-      reloadCategories();
-    }
-  }, [cryptoStatus, user?.id, reloadTransactions, reloadCategories]);
+    if (lastCryptoEpochRef.current === cryptoEpoch) return;
+    lastCryptoEpochRef.current = cryptoEpoch;
+    if (!user?.id) return;
+    reloadTransactions();
+    reloadCategories();
+    setMutationCount((c) => c + 1);
+  }, [cryptoEpoch, user?.id, reloadTransactions, reloadCategories]);
 
   // options.successMessage lets the caller word the toast (quick-add sheet:
   // "Saved: {title} {amount}"). Resolves true on success, false on failure.

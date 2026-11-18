@@ -44,6 +44,11 @@ export async function initForUser(userId) {
   }
 
   const row = await fetchUserKeys(userId).catch(() => null);
+  // Registration races this: RegisterForm's setupEncryption can insert the
+  // keys and unlock while the fetch above (sent before the insert) is in
+  // flight. Downgrading to 'off'/'locked' then would drop the DEK, so new
+  // rows read as ciphertext until a page refresh. Keep a fresh unlock.
+  if (keyring.getStatus() === 'unlocked' && currentUserId === userId) return;
   if (!row) {
     keyring.setOff();
     return;

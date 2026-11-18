@@ -17,8 +17,20 @@ export function CryptoProvider({ children }) {
   const [pendingRecoveryCode, setPendingRecoveryCode] = useState(null);
   const migrationRunningRef = useRef(false);
   const lastUserIdRef = useRef(null);
+  // Change signals for data consumers. Anything fetched while the keyring was
+  // 'locked' holds placeholders, and only a re-fetch replaces them:
+  //  - unlockEpoch bumps on every locked -> unlocked transition (UnlockModal);
+  //  - migrationEpoch bumps when a background (de)encryption migration ends.
+  const [unlockEpoch, setUnlockEpoch] = useState(0);
+  const [migrationEpoch, setMigrationEpoch] = useState(0);
+  const prevStatusRef = useRef(status);
 
   useEffect(() => keyring.subscribe(setStatus), []);
+
+  useEffect(() => {
+    if (prevStatusRef.current === 'locked' && status === 'unlocked') setUnlockEpoch((n) => n + 1);
+    prevStatusRef.current = status;
+  }, [status]);
 
   const refreshKeysRow = useCallback(async (userId) => {
     if (!userId) return setKeysRow(null);
@@ -55,6 +67,7 @@ export function CryptoProvider({ children }) {
           await finishDisablingEncryption(user.id);
         }
         await refreshKeysRow(user.id);
+        setMigrationEpoch((n) => n + 1);
       })
       .catch((e) => console.error('E2EE migration error:', e))
       .finally(() => {
@@ -90,6 +103,8 @@ export function CryptoProvider({ children }) {
 
   const value = {
     status, // 'loading' | 'off' | 'unlocked' | 'locked'
+    unlockEpoch,
+    migrationEpoch,
     keysRow,
     isEncryptionEnabled: !!keysRow,
     isMigrating: keysRow?.encryption_status === 'migrating' || keysRow?.encryption_status === 'disabling',
