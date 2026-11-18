@@ -202,10 +202,9 @@ export default function CSVImport({ categories, onImportComplete }) {
       <Button
         onClick={() => fileInputRef.current?.click()}
         variant="secondary"
-        size="sm"
-        className="flex items-center gap-2"
+        type="button"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-[18px] h-[18px]" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
         </svg>
         {t('transactions.import')}
@@ -217,15 +216,15 @@ export default function CSVImport({ categories, onImportComplete }) {
         <div className="space-y-4">
           {/* Summary */}
           <div className="flex gap-4">
-            <Card className="flex-1 p-4">
-              <div className="text-sm text-ink-muted dark:text-white">{t('import.validRows')}</div>
-              <div className="text-2xl font-semibold tabular-nums text-brand-600 dark:text-brand-400">
+            <Card variant="inner" className="flex-1">
+              <div className="text-sm font-bold text-fg">{t('import.validRows')}</div>
+              <div className="text-h1 font-extrabold tabular-nums text-brand-text">
                 {previewData.length}
               </div>
             </Card>
-            <Card className="flex-1 p-4">
-              <div className="text-sm text-ink-muted dark:text-white">{t('import.invalidRows')}</div>
-              <div className="text-2xl font-semibold tabular-nums text-expense">
+            <Card variant="inner" className="flex-1">
+              <div className="text-sm font-bold text-fg">{t('import.invalidRows')}</div>
+              <div className="text-h1 font-extrabold tabular-nums text-expense">
                 {validationErrors.length}
               </div>
             </Card>
@@ -239,7 +238,7 @@ export default function CSVImport({ categories, onImportComplete }) {
             const capped = currentMonthRows.length - Math.min(currentMonthRows.length, remaining);
             if (capped <= 0) return null;
             return (
-              <div className="flex items-start gap-2 p-3 bg-warning-bg dark:bg-warning/15 border border-warning/40 rounded-control text-sm text-warning">
+              <div className="flex items-start gap-2 p-3 bg-warning-bg dark:bg-warning/15 border border-warning/40 rounded-input text-sm text-warning">
                 <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
@@ -254,7 +253,7 @@ export default function CSVImport({ categories, onImportComplete }) {
               <h3 className="text-sm font-semibold text-expense mb-2">
                 {t('import.errors')}
               </h3>
-              <div className="space-y-1 text-xs">
+              <div className="space-y-1 text-sm">
                 {validationErrors.map((err, i) => (
                   <div key={i} className="text-expense">
                     {t('import.lineError', { line: err.line })}: {err.errors.join(', ')}
@@ -267,10 +266,10 @@ export default function CSVImport({ categories, onImportComplete }) {
           {/* Preview Table */}
           {previewData.length > 0 && (
             <div className="max-h-96 overflow-auto overflow-x-auto">
-              <h3 className="text-sm font-semibold mb-2 text-ink-primary dark:text-white">
+              <h3 className="text-sm font-semibold mb-2 text-fg">
                 {t('import.preview')} ({previewData.slice(0, 10).length} {t('import.of')} {previewData.length})
               </h3>
-              <table className="w-full text-xs">
+              <table className="w-full text-sm">
                 <thead className="bg-surface-subtle dark:bg-surface-dark-elevated sticky top-0">
                   <tr>
                     <th className="px-2 py-1 text-left">{t('transactions.titleLabel')}</th>
@@ -280,16 +279,16 @@ export default function CSVImport({ categories, onImportComplete }) {
                     <th className="px-2 py-1 text-left">{t('transactions.date')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
+                <tbody className="divide-y divide-line">
                   {previewData.slice(0, 10).map((row, i) => (
-                    <tr key={i} className="text-ink-primary dark:text-white">
+                    <tr key={i} className="text-fg">
                       <td className="px-2 py-1">{row.title}</td>
                       <td className="px-2 py-1">
-                        <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold bg-surface-subtle dark:bg-surface-dark-subtle ${
-                          row.type === 'income'
-                            ? 'text-brand-600 dark:text-brand-400'
-                            : 'text-expense'
-                        }`}>
+                        <span className={`inline-block px-1.5 py-0.5 rounded-input text-sm font-semibold bg-inner ${
+ row.type === 'income'
+ ? 'text-brand-text'
+ : 'text-expense'
+ }`}>
                           {row.type === 'income' ? t('transactions.income') : t('transactions.expense')}
                         </span>
                       </td>

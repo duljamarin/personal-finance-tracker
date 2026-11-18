@@ -1,14 +1,13 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Download, Search, X, SlidersHorizontal, Pencil, Trash2, Repeat, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { Download, Search, X, SlidersHorizontal, Pencil, Trash2, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import { toCSV, downloadCSV } from '../../utils/csv';
 import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import TransactionForm from '../Transaction/TransactionForm';
 import CSVImport from './CSVImport';
-import { translateCategoryName, getCategoryIcon } from '../../utils/categoryTranslation';
-import { CategoryIconSvg } from '../UI/CategoryIconSvg';
+import { translateCategoryName } from '../../utils/categoryTranslation';
 import CustomSelect from '../UI/CustomSelect';
 import { processRecurringTransactions, addRecurringTransaction, updateRecurringTransaction, fetchRecurringTransactions, addTransactionWithSplits, updateTransactionWithSplits, fetchTransactionSplits, fetchSplitsForTransactions } from '../../utils/api';
 import { useToast } from '../../context/ToastContext';
@@ -18,7 +17,13 @@ import { RECURRING_FILTERS } from '../../utils/constants';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import CategoryAvatar from '../UI/CategoryAvatar';
-import { formatShortDay, toISODate } from '../../utils/date';
+import Card from '../UI/Card';
+import Button from '../UI/Button';
+import Chip from '../UI/Chip';
+import PageHeader from '../UI/PageHeader';
+import SegmentedControl from '../UI/SegmentedControl';
+import { ActivityRow, DayHeader, useDayLabel, useFreshIds } from '../Dashboard/ActivityFeed';
+import { rowDelay } from '../../utils/motion';
 import { signed } from '../../utils/bento';
 
 // Consecutive rows sharing a date become one group, in list order (the list
@@ -57,7 +62,7 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     updateTransaction: onUpdate,
     deleteTransaction: onDelete,
   } = useTransactions();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { format: formatCurrency, currency } = useDisplayCurrency();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -242,23 +247,14 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     return () => window.removeEventListener('openEditTransaction', handleOpenEdit);
   }, []);
 
+  // Native selects in the Bento input style (R_INPUT, 2px --line, BRAND focus).
   const selectClass =
-    'px-3 py-2 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ' +
-    'border border-surface-hairline dark:border-surface-dark-hairline rounded-md ' +
-    'hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 ' +
-    'focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors';
+    'min-h-11 pl-3.5 py-2 text-sm font-bold bg-tile text-fg border-2 border-line hover:border-inner-2 ' +
+    'focus:border-brand-600 dark:focus:border-brand-400 rounded-input btn-motion';
 
-  const todayKey = toISODate(new Date());
-  const yesterdayKey = toISODate(new Date(Date.now() - 86400000));
-  const thisYear = String(new Date().getFullYear());
-  function dayLabel(key) {
-    if (key === todayKey) return t('transactions.today');
-    if (key === yesterdayKey) return t('transactions.yesterday');
-    if (!key) return '';
-    const d = new Date(`${key}T00:00:00`);
-    if (Number.isNaN(d.getTime())) return key;
-    return formatShortDay(d, i18n.language, { withYear: !key.startsWith(thisYear) });
-  }
+  const dayLabel = useDayLabel();
+  const fresh = useFreshIds(items, false);
+  const filterKey = [yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery.trim()].join('|');
 
   const rows = isRecent ? items.slice(0, limit) : visibleItems;
   const groups = groupByDate(rows);
@@ -270,7 +266,7 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     setRecurringFilter(RECURRING_FILTERS.ALL);
   };
 
-  const renderRow = (item) => {
+  const renderRow = (item, delay) => {
     const catName = item.category?.name || '';
     // Split rows have no single category: label them with their parts
     // (largest share first) so the line is never blank.
@@ -278,7 +274,6 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     const splitNames = itemSplits.map(s => s.categoryName).filter(Boolean);
     const iconCategory = item.category
       || (Array.isArray(categories) ? categories.find(c => c.id === itemSplits[0]?.category_id) : null);
-    const amountStr = formatCurrency(Number(item.amount));
     const metaParts = [];
     if (catName) {
       metaParts.push(translateCategoryName(catName));
@@ -288,6 +283,7 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
         (splitNames.length > 2 ? ` +${splitNames.length - 2}` : '')
       );
     }
+    if (item.source_recurring_id) metaParts.push(t('recurring.badge'));
     if (Array.isArray(item.tags) && item.tags.length > 0) {
       metaParts.push(
         item.tags.slice(0, 2).map(tag => `#${tag}`).join(' ') +
@@ -295,86 +291,67 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
       );
     }
 
+    const iconBtn = 'btn-motion inline-flex items-center justify-center w-11 h-11 rounded-pill text-fg hover:bg-inner-2';
     return (
-      <li key={item.id} className="group relative flex items-center hover:bg-ink-primary/[0.025] dark:hover:bg-ink-dark-primary/[0.04] transition-colors">
-        <button
-          type="button"
-          onClick={() => handleEdit(item)}
-          title={t('transactions.edit')}
-          className="flex-1 min-w-0 flex items-center gap-3 pl-4 sm:pl-5 pr-3 py-3 text-left focus:outline-none focus-visible:bg-ink-primary/[0.04]"
-        >
-          <CategoryAvatar category={iconCategory} fallbackName={splitNames[0] || item.title} />
-          <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-2 min-w-0">
-              <span className="text-sm font-medium text-ink-primary dark:text-white truncate">{item.title}</span>
-              {item.source_recurring_id && (
-                <span className="inline-flex items-center gap-1 shrink-0 text-[11px] font-medium text-ink-muted dark:text-white" title={t('recurring.badge')}>
-                  <Repeat className="w-3 h-3" strokeWidth={2} aria-hidden="true" />
-                  <span className="hidden sm:inline">{t('recurring.badge')}</span>
-                </span>
-              )}
-            </span>
-            {metaParts.length > 0 && (
-              <span className="block text-xs text-ink-muted dark:text-white truncate mt-0.5">
-                {metaParts.join(' · ')}
-              </span>
-            )}
-          </span>
-          <span
-            className={`shrink-0 text-sm font-semibold tabular-nums ${item.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-white'}`}
-          >
-            {item.type === 'income' ? '+' : '−'}{amountStr}
-          </span>
-        </button>
-        {!isRecent && (
-          <div className="flex items-center gap-0.5 pr-2 sm:pr-3 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+      <ActivityRow
+        key={item.id}
+        tx={item}
+        category={iconCategory}
+        meta={metaParts.join(' · ')}
+        delay={delay}
+        fresh={fresh.has(item.id)}
+        onOpen={() => handleEdit(item)}
+        openLabel={t('transactions.edit')}
+        actions={!isRecent && (
+          <>
             <button
-              className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+              type="button"
+              className={`hidden sm:inline-flex ${iconBtn}`}
               onClick={() => handleEdit(item)}
               title={t('transactions.edit')}
               aria-label={t('transactions.edit')}
             >
-              <Pencil className="w-4 h-4" strokeWidth={1.75} />
+              <Pencil className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
             </button>
             <button
-              className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted hover:text-expense dark:text-white dark:hover:text-expense hover:bg-expense/5 transition-colors"
+              type="button"
+              className={`${iconBtn} hover:text-danger`}
               onClick={() => setTxToDelete(item)}
               title={t('transactions.deleteBtn')}
               aria-label={t('transactions.deleteBtn')}
             >
-              <Trash2 className="w-4 h-4" strokeWidth={1.75} />
+              <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
             </button>
-          </div>
+          </>
         )}
-      </li>
+      />
     );
   };
 
-  const renderGroups = () => (
-    <div>
-      {groups.map(group => {
-        const dayNet = group.items.reduce(
-          (sum, i) => sum + (i.type === 'income' ? 1 : -1) * (Number(i.amount) || 0),
-          0
-        );
-        return (
-          <section key={group.key || 'nodate'}>
-            <div className="flex items-center justify-between px-4 sm:px-5 py-2 bg-surface-page dark:bg-surface-dark-page border-y border-surface-hairline dark:border-surface-dark-hairline">
-              <h3 className="text-xs font-medium text-ink-muted dark:text-white">{dayLabel(group.key)}</h3>
-              {!isRecent && (
-                <span className="text-xs font-medium tabular-nums text-ink-muted dark:text-white">
-                  {dayNet >= 0 ? '+' : '−'}{formatCurrency(Math.abs(dayNet))}
-                </span>
-              )}
-            </div>
-            <ul className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
-              {group.items.map(renderRow)}
-            </ul>
-          </section>
-        );
-      })}
-    </div>
-  );
+  // Day groups in the Activity design (spec 4.2). Rows rise in on mount and
+  // whenever a filter changes (the list is keyed on the filter set).
+  const renderGroups = () => {
+    let n = 0;
+    return (
+      <div key={filterKey} className="flex flex-col gap-1">
+        {groups.map(group => {
+          const dayNet = group.items.reduce(
+            (sum, i) => sum + (i.type === 'income' ? 1 : -1) * (Number(i.amount) || 0),
+            0
+          );
+          const headerDelay = rowDelay(n++, 0);
+          return (
+            <section key={group.key || 'nodate'}>
+              <DayHeader label={dayLabel(group.key)} net={dayNet} delay={headerDelay} withActions={!isRecent} />
+              <ul className="flex flex-col gap-1">
+                {group.items.map(item => renderRow(item, rowDelay(n++, 0)))}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Quick-add toast (design-system 3.6): "Saved: {title} {amount}".
   const savedMessage = (data) => t('transactions.savedToast', {
@@ -472,24 +449,21 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
 
   if (isHost) return modals;
 
-  // ── Dashboard: recent activity card ────────────────────────────────────
+  // ── Dashboard: recent activity card (legacy variant) ──────────────────
   if (isRecent) {
     return (
       <>
         {items.length > 0 && (
-          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
-            <div className="flex items-center justify-between px-4 sm:px-5 py-4">
-              <h2 className="text-heading text-ink-primary dark:text-white">{t('transactions.recent')}</h2>
-              <Link
-                to="/transactions"
-                className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700"
-              >
+          <Card padding="sm">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <h2 className="text-h3 font-bold text-fg">{t('transactions.recent')}</h2>
+              <Link to="/transactions" className="group inline-flex items-center gap-1.5 text-sm font-bold text-brand-text">
                 {t('transactions.viewAll')}
-                <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
+                <ArrowRight className="arrow-nudge w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
               </Link>
             </div>
             {renderGroups()}
-          </div>
+          </Card>
         )}
         {modals}
       </>
@@ -503,44 +477,32 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
 
   return (
     <div>
-      {/* Page header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-title font-display text-ink-primary dark:text-white">
-            {t('transactions.title')}
-          </h1>
-          <p className="text-sm text-ink-muted dark:text-white mt-1 tabular-nums">
-            {t('transactions.count', { count: items.length })}
-          </p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <CSVImport categories={categories} onImportComplete={() => { onReload(); reloadCategories(); }} />
-          <button
-            onClick={exportCSV}
-            className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white px-3.5 py-2 rounded-md font-medium text-sm transition-colors"
-          >
-            <Download className="w-4 h-4" strokeWidth={1.75} />
-            <span className="hidden sm:inline">{t('transactions.export')}</span>
-            <span className="sm:hidden">CSV</span>
-          </button>
-          <button
-            onClick={handleAdd}
-            className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors"
-          >
-            <Plus className="w-4 h-4" strokeWidth={2} />
-            <span className="hidden sm:inline">{t('transactions.addNew')}</span>
-            <span className="sm:hidden">{t('forms.add')}</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title={t('transactions.title')}
+        chip={t('transactions.count', { count: items.length })}
+        actions={(
+          <>
+            <CSVImport categories={categories} onImportComplete={() => { onReload(); reloadCategories(); }} />
+            <Button variant="secondary" onClick={exportCSV} type="button">
+              <Download className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
+              <span className="hidden sm:inline">{t('transactions.export')}</span>
+              <span className="sm:hidden">CSV</span>
+            </Button>
+            <Button onClick={handleAdd} leading="plus" type="button">
+              <span className="hidden sm:inline">{t('transactions.addNew')}</span>
+              <span className="sm:hidden">{t('forms.add')}</span>
+            </Button>
+          </>
+        )}
+      />
 
-      <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
+      <Card index={0} padding="sm" className="flex flex-col gap-gap">
         {/* Toolbar: search + filters */}
-        <div className="p-3 sm:p-4 border-b border-surface-hairline dark:border-surface-dark-hairline space-y-3">
+        <div className="flex flex-col gap-3">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-ink-muted dark:text-white/60">
-                <Search className="w-4 h-4" strokeWidth={1.75} />
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-fg">
+                <Search className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
               </div>
               <input
                 ref={searchInputRef}
@@ -549,74 +511,56 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder={t('transactions.searchPlaceholder')}
                 aria-label={t('transactions.search')}
-                className="w-full pl-9 pr-9 py-2 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/50 dark:placeholder:text-white/40 border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors"
+                className="w-full min-h-11 pl-11 pr-11 py-2.5 text-base font-bold bg-tile text-fg placeholder:font-medium placeholder:text-ink-muted/50 dark:placeholder:text-white/40 border-2 border-line hover:border-inner-2 focus:border-brand-600 dark:focus:border-brand-400 rounded-input btn-motion"
               />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute inset-y-0 right-2.5 flex items-center text-ink-muted hover:text-ink-primary dark:text-white dark:hover:text-white"
+                  className="btn-motion absolute inset-y-0 right-0.5 my-auto w-11 h-11 flex items-center justify-center rounded-pill text-fg hover:bg-inner"
                   aria-label={t('transactions.clearFilters')}
                 >
-                  <X className="w-4 h-4" strokeWidth={1.75} />
+                  <X className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
                 </button>
               )}
             </div>
-            <button
+            <Chip
               onClick={() => setShowFilters(!showFilters)}
+              selected={showFilters || hasActiveFilters}
               aria-expanded={showFilters}
-              className={`sm:hidden inline-flex items-center gap-2 border px-3 py-2 rounded-md font-medium text-sm text-ink-primary dark:text-white transition-colors ${
-                showFilters || hasActiveFilters
-                  ? 'border-ink-muted/50 dark:border-white/40'
-                  : 'border-surface-hairline dark:border-surface-dark-hairline'
-              }`}
+              className="sm:hidden"
             >
-              <SlidersHorizontal className="w-4 h-4" strokeWidth={1.75} />
+              <SlidersHorizontal className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
               {t('transactions.filter')}
-            </button>
+            </Chip>
           </div>
 
           <div className={`${showFilters ? 'flex' : 'hidden'} sm:flex items-center gap-2 flex-wrap`}>
-            {/* Type segmented control */}
-            <div className="inline-flex p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
-              {['all', 'income', 'expense'].map(type => {
-                const active = typeFilter === type;
-                return (
-                  <button
-                    key={type}
-                    onClick={() => setTypeFilter(type)}
-                    aria-pressed={active}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-[5px] transition-colors ${
-                      active
-                        ? 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white shadow-xs'
-                        : 'text-ink-muted dark:text-white hover:text-ink-primary'
-                    }`}
-                  >
-                    {type === 'all' ? t('transactions.all') : type === 'income' ? t('transactions.incomes') : t('transactions.expenses')}
-                  </button>
-                );
-              })}
-            </div>
+            <SegmentedControl
+              ariaLabel={t('transactions.type')}
+              value={typeFilter || 'all'}
+              onChange={setTypeFilter}
+              size="sm"
+              options={[
+                { value: 'all', label: t('transactions.all') },
+                { value: 'expense', label: t('transactions.expenses') },
+                { value: 'income', label: t('transactions.incomes') },
+              ]}
+            />
 
-            <div className="w-[200px]">
+            <div className="w-[220px]">
               <CustomSelect
                 value={categoryFilter}
                 onChange={val => setCategoryFilter(val)}
                 ariaLabel={t('transactions.category')}
-                className="!px-3 !py-2 !text-sm"
+                className="!py-2 !text-sm"
                 options={[
                   { value: 'All', label: t('transactions.all') },
-                  ...(Array.isArray(categories) ? categories : []).map(cat => {
-                    const iconKey = getCategoryIcon(cat);
-                    return {
-                      value: cat.id,
-                      label: translateCategoryName(cat.name),
-                      leading: (
-                        <span className="w-5 h-5 rounded flex items-center justify-center bg-surface-subtle dark:bg-surface-dark-subtle text-brand-600 dark:text-brand-400 flex-shrink-0">
-                          <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3 h-3" />
-                        </span>
-                      ),
-                    };
-                  }),
+                  ...(Array.isArray(categories) ? categories : []).map(cat => ({
+                    value: cat.id,
+                    label: translateCategoryName(cat.name),
+                    leading: <CategoryAvatar category={cat} size="sm" />,
+                  })),
                 ]}
               />
             </div>
@@ -636,69 +580,58 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
             )}
 
             {hasActiveFilters && (
-              <button
-                onClick={resetFilters}
-                className="px-2 py-2 text-sm font-medium text-ink-muted dark:text-white hover:text-ink-primary underline-offset-2 hover:underline"
-              >
+              <Button variant="ghost" size="sm" type="button" onClick={resetFilters}>
                 {t('transactions.clearFilters')}
-              </button>
+              </Button>
             )}
           </div>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center px-4">
-            <Search className="w-6 h-6 text-ink-muted dark:text-white/60 mb-4" strokeWidth={1.75} />
-            <h3 className="text-heading text-ink-primary dark:text-white mb-1.5">
+          <div className="tile-inner flex flex-col items-center justify-center py-14 px-4 text-center">
+            <span className="w-12 h-12 rounded-icon bg-tile text-brand-text flex items-center justify-center mb-4" aria-hidden="true">
+              <Search className="w-[22px] h-[22px]" strokeWidth={2} />
+            </span>
+            <h3 className="text-h3 font-bold text-fg mb-1.5">
               {searchQuery.trim() ? t('transactions.noSearchResults') : t('transactions.noTransactions')}
             </h3>
-            <p className="text-sm text-ink-muted dark:text-white mb-6 max-w-sm">
+            <p className="text-base text-fg mb-6 max-w-sm [overflow-wrap:anywhere]">
               {searchQuery.trim() ? `"${searchQuery}"` : t('transactions.noTransactionsDesc')}
             </p>
             {items.length === 0 && !searchQuery && (
-              <button
-                onClick={handleAdd}
-                className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors"
-              >
-                <Plus className="w-4 h-4" strokeWidth={2} />
+              <Button onClick={handleAdd} leading="plus" type="button">
                 {t('transactions.addNew')}
-              </button>
+              </Button>
             )}
             {items.length > 0 && !searchQuery && (
-              <button
-                onClick={resetFilters}
-                className="inline-flex items-center gap-2 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white px-4 py-2 rounded-md font-medium text-sm transition-colors hover:border-ink-muted/40"
-              >
+              <Button variant="secondary" onClick={resetFilters} type="button">
                 {t('transactions.clearFilters')}
-              </button>
+              </Button>
             )}
           </div>
         ) : (
           <>
             {renderGroups()}
             {hasMore && (
-              <div className="flex justify-center p-3 border-t border-surface-hairline dark:border-surface-dark-hairline">
-                <button
-                  onClick={() => setShowAll(prev => !prev)}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-ink-primary dark:text-white rounded-md font-medium text-sm hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
-                >
+              <div className="flex justify-center">
+                <Button variant="ghost" type="button" onClick={() => setShowAll(prev => !prev)}>
                   {showAll ? (
                     <>
-                      <ChevronUp className="w-4 h-4" strokeWidth={1.75} />
+                      <ChevronUp className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
                       {t('transactions.showLess')}
                     </>
                   ) : (
                     <>
-                      <ChevronDown className="w-4 h-4" strokeWidth={1.75} />
+                      <ChevronDown className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
                       {t('transactions.showAll', { count: filtered.length })}
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             )}
           </>
         )}
-      </div>
+      </Card>
 
       {modals}
     </div>

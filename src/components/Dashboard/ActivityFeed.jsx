@@ -33,10 +33,15 @@ export function useDayLabel() {
 }
 
 /** Day group header: label left, the day's net total right. */
-export function DayHeader({ label, net, delay }) {
+export function DayHeader({ label, net, delay, withActions = false }) {
   const { format } = useDisplayCurrency();
+  // withActions: rows carry trailing edit/delete buttons (44px each, edit is
+  // hidden below sm), so the day total shifts left to line up with amounts.
   return (
-    <div className="animate-rise flex justify-between gap-3 px-3 pt-2.5 pb-1 text-sm font-extrabold" style={delayStyle(delay)}>
+    <div
+      className={`animate-rise flex justify-between gap-3 pl-3 pt-2.5 pb-1 text-sm font-extrabold ${withActions ? 'pr-[64px] sm:pr-[110px]' : 'pr-3'}`}
+      style={delayStyle(delay)}
+    >
       <span className="text-fg">{label}</span>
       <span className={`tabular-nums ${net > 0 ? 'text-brand-text' : 'text-fg'}`}>
         {net > 0 ? '+' : net < 0 ? MINUS : ''}{format(Math.abs(net))}
@@ -65,23 +70,25 @@ export function ActivityRow({ tx, category, meta, budgetRatio, delay, fresh, onO
         type="button"
         onClick={onOpen}
         title={openLabel}
-        className="flex-1 min-w-0 flex items-center gap-[14px] p-3 text-left rounded-icon"
+        className="flex-1 min-w-0 flex items-center gap-3 sm:gap-[14px] px-2 py-3 sm:p-3 text-left rounded-icon"
       >
         <span className="activity-icon shrink-0">
           <CategoryAvatar category={category} fallbackName={tx.title} size="lg" />
         </span>
         <span className="flex-1 min-w-0">
+          {/* >=640px: title | amount, then meta. Narrow screens give the title
+              the full width and move the amount onto the meta line. */}
           <span className="flex items-baseline justify-between gap-3">
             <span className="min-w-0 flex items-center gap-2">
-              <span className="font-extrabold text-fg truncate">{tx.title}</span>
+              <span className="font-extrabold text-fg line-clamp-2 break-words sm:line-clamp-1">{tx.title}</span>
               {tx.source_recurring_id && <Repeat className="w-4 h-4 shrink-0 text-fg" strokeWidth={2} aria-hidden="true" />}
             </span>
-            <span className={`text-h3 font-extrabold tabular-nums whitespace-nowrap ${income ? 'text-brand-text' : 'text-fg'}`}>
+            <span className={`hidden sm:inline text-h3 font-extrabold tabular-nums whitespace-nowrap ${income ? 'text-brand-text' : 'text-fg'}`}>
               {signed(format(baseAmountOf(tx)), income)}
             </span>
           </span>
-          {(meta || typeof budgetRatio === 'number') && (
-            <span className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-semibold text-fg">
+          <span className="mt-0.5 flex items-center justify-between gap-3">
+            <span className="min-w-0 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-semibold text-fg">
               {meta && <span className="min-w-0 truncate">{meta}</span>}
               {typeof budgetRatio === 'number' && (
                 <span className="flex-[1_1_80px] max-w-[140px]">
@@ -89,7 +96,10 @@ export function ActivityRow({ tx, category, meta, budgetRatio, delay, fresh, onO
                 </span>
               )}
             </span>
-          )}
+            <span className={`sm:hidden shrink-0 text-h3 font-extrabold tabular-nums whitespace-nowrap ${income ? 'text-brand-text' : 'text-fg'}`}>
+              {signed(format(baseAmountOf(tx)), income)}
+            </span>
+          </span>
         </span>
       </button>
       {actions && (
@@ -112,6 +122,27 @@ function SummaryBox({ label, value, income, delay }) {
       </p>
     </div>
   );
+}
+
+/**
+ * Ids of transactions that appeared after the first loaded render (added
+ * while this list is mounted). Those rows get the row-new entrance.
+ */
+export function useFreshIds(transactions, loading) {
+  const seenRef = useRef(null);
+  const [fresh, setFresh] = useState(() => new Set());
+  useEffect(() => {
+    if (loading) return;
+    const ids = (transactions || []).map((tx) => tx.id);
+    if (seenRef.current === null) {
+      seenRef.current = new Set(ids);
+      return;
+    }
+    const added = ids.filter((id) => !seenRef.current.has(id));
+    ids.forEach((id) => seenRef.current.add(id));
+    if (added.length) setFresh(new Set(added));
+  }, [transactions, loading]);
+  return fresh;
 }
 
 const openEdit = (tx) => window.dispatchEvent(new CustomEvent('openEditTransaction', { detail: tx }));
@@ -166,20 +197,7 @@ export default function ActivityFeed({
     ...(stack.other > 0 ? [{ key: 'other', label: t('dashboard.otherCategories'), value: stack.other, color: 'var(--inner-2)', display: format(stack.other, { decimals: 0 }) }] : []),
   ];
 
-  // row-new: ids that appear after the first loaded render.
-  const seenRef = useRef(null);
-  const [fresh, setFresh] = useState(() => new Set());
-  useEffect(() => {
-    if (loading) return;
-    const ids = (transactions || []).map((tx) => tx.id);
-    if (seenRef.current === null) {
-      seenRef.current = new Set(ids);
-      return;
-    }
-    const added = ids.filter((id) => !seenRef.current.has(id));
-    ids.forEach((id) => seenRef.current.add(id));
-    if (added.length) setFresh(new Set(added));
-  }, [transactions, loading]);
+  const fresh = useFreshIds(transactions, loading);
 
   // First mount waits for the tile; later filter/month switches start at 0.
   const playedRef = useRef(false);
