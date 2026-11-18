@@ -11,7 +11,7 @@ const LANGS = [
   { code: 'en', label: 'EN' },
 ];
 
-function LanguageSwitcher() {
+function LanguageSwitcher({ vertical = false }) {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,16 +36,17 @@ function LanguageSwitcher() {
   };
 
   return (
-    <div className="inline-flex items-center gap-0.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-0.5">
+    <div className={`inline-flex ${vertical ? 'flex-col' : ''} items-center gap-0.5 text-sm rounded-pill bg-inner p-1`}>
       {LANGS.map(({ code, label }) => (
         <button
           key={code}
+          type="button"
           onClick={() => changeLanguage(code)}
           aria-current={current === code ? 'true' : undefined}
-          className={`px-2 py-1 rounded-[5px] font-medium transition-colors ${
+          className={`btn-motion min-w-11 h-11 px-2.5 rounded-pill font-bold ${
             current === code
               ? 'bg-brand-600 text-white'
-              : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary'
+              : 'text-fg hover:bg-inner-2'
           }`}
         >
           {label}

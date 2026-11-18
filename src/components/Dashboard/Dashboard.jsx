@@ -196,10 +196,11 @@ export default function Dashboard() {
       {/* Mobile FAB */}
       <button
         onClick={handleAddTransaction}
-        className="fixed bottom-6 right-6 z-40 lg:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-md shadow-lg transition-all flex items-center justify-center active:scale-95"
+        type="button"
+        className="group btn-motion btn-lift fixed bottom-6 right-6 z-40 lg:hidden w-14 h-14 bg-brand-600 hover:bg-brand-700 text-white rounded-pill shadow-sheet flex items-center justify-center"
         aria-label={t('dashboard.addTransaction')}
       >
-        <Plus className="w-6 h-6" strokeWidth={2.25} />
+        <Plus className="plus-spin w-6 h-6" strokeWidth={2.6} aria-hidden="true" />
       </button>
     </>
   );

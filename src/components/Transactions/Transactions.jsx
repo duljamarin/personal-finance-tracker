@@ -19,6 +19,7 @@ import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import CategoryAvatar from '../UI/CategoryAvatar';
 import { formatShortDay, toISODate } from '../../utils/date';
+import { signed } from '../../utils/bento';
 
 // Consecutive rows sharing a date become one group, in list order (the list
 // arrives newest first), so the ledger reads like a bank statement.
@@ -361,7 +362,14 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     </div>
   );
 
-  // Delete confirm + add/edit drawer, shared by both variants.
+  // Quick-add toast (design-system 3.6): "Saved: {title} {amount}".
+  const savedMessage = (data) => t('transactions.savedToast', {
+    title: data.title,
+    amount: signed(formatCurrency(Number(data.amount)), data.type === 'income'),
+    interpolation: { escapeValue: false },
+  });
+
+  // Delete confirm + add/edit sheet, shared by both variants.
   const modals = (
     <>
       {txToDelete && (
@@ -378,7 +386,11 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
       )}
 
       {showModal && (
-        <Modal drawer onClose={() => { setShowModal(false); setEditTx(null); setPrefillData(null); }}>
+        <Modal
+          variant="sheet"
+          ariaLabel={editTx ? t('transactions.editTransaction') : t('transactions.addNew')}
+          onClose={() => { setShowModal(false); setEditTx(null); setPrefillData(null); }}
+        >
           <TransactionForm
             initial={editTx || prefillData}
             onSubmit={async data => {
@@ -418,7 +430,7 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
               } else if (data.has_splits && data.splits?.length > 0) {
                 try {
                   await addTransactionWithSplits(data, data.splits);
-                  addToast(t('messages.transactionAdded'), 'success');
+                  addToast(savedMessage(data), 'success');
                   await onReload();
                   await refreshSubscription();
                 } catch (e) {
@@ -429,7 +441,7 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
                 setEditTx(null);
                 setPrefillData(null);
               } else if (onAdd) {
-                await onAdd(data);
+                await onAdd(data, { successMessage: savedMessage(data) });
                 setShowModal(false);
                 setEditTx(null);
                 setPrefillData(null);

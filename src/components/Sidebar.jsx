@@ -11,7 +11,7 @@ import LanguageSwitcher from './LanguageSwitcher.jsx';
 import {
   LayoutDashboard, PieChart, Target, TrendingUp, Repeat,
   Tag, FileText, Bell, Rocket, User, CreditCard, ArrowLeftRight,
-  LogOut, ChevronsLeft, Menu as MenuIcon,
+  LogOut, ChevronsLeft, Menu as MenuIcon, X,
 } from 'lucide-react';
 
 // Grouped the way people think about their money: the day-to-day ledger
@@ -39,10 +39,10 @@ const navGroups = [
   },
 ];
 
-function BrandMark({ compact = false }) {
+function BrandMark() {
   return (
-    <span className={`inline-flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-10 h-10'} bg-brand-600 rounded-md flex-shrink-0`}>
-      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <span className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-icon shrink-0" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
       </svg>
@@ -50,25 +50,56 @@ function BrandMark({ compact = false }) {
   );
 }
 
-function NavItem({ item, isActive, collapsed, onClick }) {
-  const { t } = useTranslation();
-  const { Icon: NavIcon } = item;
+function UnreadBadge({ count, className = '' }) {
+  if (!count) return null;
+  return (
+    <span className={`flex h-[22px] min-w-[22px] px-1.5 items-center justify-center rounded-pill bg-brand-600 text-white text-min font-extrabold tabular-nums ${className}`}>
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
+
+/**
+ * Label visibility by layout (design-system §3.5):
+ *   mobile drawer      always labelled
+ *   desktop ≥1280      icon + label (unless the user collapsed the panel)
+ *   desktop 1024-1279  icon-only rail, label as tooltip + aria-label
+ */
+function labelClasses(mobile, collapsed) {
+  if (mobile) return { label: '', tip: 'hidden', rail: false };
+  if (collapsed) return { label: 'hidden', tip: 'hidden lg:block', rail: true };
+  return { label: 'hidden xl:inline', tip: 'hidden lg:block xl:hidden', rail: false };
+}
+
+function Tooltip({ text, className }) {
+  return (
+    <span
+      role="presentation"
+      className={`${className} pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 px-3 py-1.5 rounded-pill text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 btn-motion`}
+      style={{ backgroundColor: 'var(--toast-bg)', color: 'var(--toast-fg)' }}
+    >
+      {text}
+    </span>
+  );
+}
+
+function NavItem({ to, label, Icon, isActive, cls, onClick, badge }) {
   return (
     <Link
-      to={item.path}
+      to={to}
       onClick={onClick}
-      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
-        isActive
-          ? 'bg-brand-600 text-white'
-          : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
-      } ${collapsed ? 'justify-center' : ''}`}
-      title={collapsed ? t(item.labelKey) : undefined}
+      aria-label={label}
+      aria-current={isActive ? 'page' : undefined}
+      className={`nav-item group relative flex items-center gap-1 h-12 rounded-icon text-base font-bold text-fg btn-motion ${
+        isActive ? 'bg-inner-2' : 'hover:bg-inner'
+      }`}
     >
-      <NavIcon
-        className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
-        strokeWidth={1.75}
-      />
-      {!collapsed && <span>{t(item.labelKey)}</span>}
+      <span className={`nav-icon relative w-12 h-12 shrink-0 rounded-icon flex items-center justify-center ${isActive ? 'text-brand-text' : ''}`}>
+        <Icon className="w-[22px] h-[22px]" strokeWidth={2} aria-hidden="true" />
+        {badge}
+      </span>
+      <span className={`${cls.label} truncate pr-3`}>{label}</span>
+      <Tooltip text={label} className={cls.tip} />
     </Link>
   );
 }
@@ -130,235 +161,254 @@ export default function Sidebar() {
   };
 
   const notifActive = location.pathname === '/notifications';
+  const initial = (user?.user_metadata?.username || user?.email || '?')[0].toUpperCase();
 
-  const sidebarContent = (
-    <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-4 h-16 shrink-0 border-b border-surface-hairline dark:border-surface-dark-hairline`}>
-        <BrandMark compact />
-        {!collapsed && (
-          <span className="text-base font-semibold text-ink-primary dark:text-white tracking-tight truncate">
+  const renderContent = (mobile) => {
+    const cls = labelClasses(mobile, collapsed);
+    // Rail-only pieces (1024-1279, or collapsed): compact language toggle,
+    // icon link to pricing. Full pieces show where labels show.
+    const fullOnly = mobile ? '' : collapsed ? 'hidden' : 'hidden xl:flex';
+    const railOnly = mobile ? 'hidden' : collapsed ? 'flex' : 'flex xl:hidden';
+    const closeMobile = () => setMobileOpen(false);
+
+    return (
+      <div className="flex flex-col gap-2">
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-2 min-w-0">
+          <BrandMark />
+          <span className={`${cls.label} text-lg font-extrabold tracking-[-0.01em] text-fg truncate`}>
             {t('app.shortName')}
           </span>
-        )}
-      </div>
+        </div>
 
-      {/* Main nav */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        {navGroups.map((group, gi) => (
-          <div key={group.key} className={gi > 0 ? 'mt-6' : ''}>
-            {collapsed ? (
-              gi > 0 && <div className="mx-3 mb-3 border-t border-surface-hairline dark:border-surface-dark-hairline" />
-            ) : (
-              <p className="eyebrow px-3 mb-2">{t(group.labelKey)}</p>
-            )}
-            <div className="space-y-0.5">
+        {/* Main nav */}
+        <nav aria-label={t('nav.main')} className="flex flex-col gap-1">
+          {navGroups.map((group, gi) => (
+            <div key={group.key} className={`flex flex-col gap-1 ${gi > 0 ? 'mt-3' : ''}`}>
+              {gi > 0 && <div className={`${mobile ? 'hidden' : collapsed ? 'block' : 'block xl:hidden'} mx-2 mb-2 border-t border-line`} />}
+              <p className={`${mobile ? 'block' : collapsed ? 'hidden' : 'hidden xl:block'} px-3 pb-1 text-sm font-bold text-fg`}>
+                {t(group.labelKey)}
+              </p>
               {group.items.map(item => (
                 <NavItem
                   key={item.key}
-                  item={item}
+                  to={item.path}
+                  label={t(item.labelKey)}
+                  Icon={item.Icon}
                   isActive={location.pathname === item.path}
-                  collapsed={collapsed}
-                  onClick={() => setMobileOpen(false)}
+                  cls={cls}
+                  onClick={closeMobile}
                 />
               ))}
             </div>
-          </div>
-        ))}
+          ))}
 
-        <div className={collapsed ? 'mt-3' : 'mt-6'}>
-
-        {/* Notifications */}
-        <Link
-          to="/notifications"
-          onClick={() => setMobileOpen(false)}
-          className={`relative flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors group ${
-            notifActive
-              ? 'bg-brand-600 text-white'
-              : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/5'
-          } ${collapsed ? 'justify-center' : ''}`}
-        >
-          <span className="relative">
-            <Bell
-              className={`w-5 h-5 ${notifActive ? 'text-white' : 'text-ink-muted/80 dark:text-white/80 group-hover:text-ink-primary dark:group-hover:text-ink-dark-primary'}`}
-              strokeWidth={1.75}
+          <div className="mt-3 flex flex-col gap-1">
+            <NavItem
+              to="/notifications"
+              label={t('notifications.title')}
+              Icon={Bell}
+              isActive={notifActive}
+              cls={cls}
+              onClick={closeMobile}
+              badge={<UnreadBadge count={unreadCount} className="absolute -top-0.5 -right-0.5" />}
             />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-expense text-white text-[9px] font-bold leading-none">
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </span>
-            )}
-          </span>
-          {!collapsed && <span>{t('notifications.title')}</span>}
-        </Link>
-        </div>
-      </nav>
+          </div>
+        </nav>
 
-      {/* Upgrade / Manage Subscription CTA */}
-      {!collapsed && (
-        <div className="px-3 pb-3">
+        {/* Upgrade / Manage Subscription CTA (full), icon link (rail) */}
+        <div className={`${fullOnly} flex-col mt-2`}>
           {showUpgrade ? (
-            <Link
-              to="/pricing"
-              className="block w-full rounded-container border border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle p-3"
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <Rocket className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
-                <span className="text-xs font-semibold text-ink-primary dark:text-white">{t('upgrade.proPlan')}</span>
-              </div>
-              <p className="text-xs text-ink-muted dark:text-white mb-2.5 leading-relaxed">
-                {t('upgrade.unlockAll')}
-              </p>
-              <span className="flex items-center justify-center w-full px-3 py-1.5 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors">
+            <Link to="/pricing" onClick={closeMobile} className="tile-inner p-gap flex flex-col gap-2 btn-motion hover:bg-inner-2">
+              <span className="flex items-center gap-2">
+                <Rocket className="w-[18px] h-[18px] text-brand-text" strokeWidth={2} aria-hidden="true" />
+                <span className="text-sm font-extrabold text-fg">{t('upgrade.proPlan')}</span>
+              </span>
+              <span className="text-sm font-semibold text-fg">{t('upgrade.unlockAll')}</span>
+              <span className="mt-1 flex items-center justify-center min-h-11 px-4 rounded-pill bg-brand-600 text-white text-sm font-bold">
                 {t('upgrade.goPremium')}
               </span>
             </Link>
           ) : (
             <Link
               to="/pricing"
-              className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-ink-primary dark:text-white bg-surface-subtle dark:bg-surface-dark-subtle hover:bg-surface-hairline dark:hover:bg-surface-dark-hairline rounded-md transition-colors border border-surface-hairline dark:border-surface-dark-hairline"
+              onClick={closeMobile}
+              className="flex items-center justify-center gap-2 min-h-11 px-4 rounded-pill border-2 border-line text-sm font-bold text-fg btn-motion hover:bg-inner"
             >
-              <CreditCard className="w-4 h-4 text-brand-600 dark:text-brand-400" strokeWidth={1.75} />
+              <CreditCard className="w-[18px] h-[18px] text-brand-text" strokeWidth={2} aria-hidden="true" />
               {t('pricing.managePlan')}
             </Link>
           )}
         </div>
-      )}
+        <div className={`${railOnly} flex-col mt-2`}>
+          <NavItem
+            to="/pricing"
+            label={showUpgrade ? t('upgrade.goPremium') : t('pricing.managePlan')}
+            Icon={showUpgrade ? Rocket : CreditCard}
+            isActive={false}
+            cls={cls}
+            onClick={closeMobile}
+          />
+        </div>
 
-      {/* Bottom section */}
-      <div className="border-t border-surface-hairline dark:border-surface-dark-hairline px-3 py-3 shrink-0 space-y-2">
-        <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} px-1`}>
-          {!collapsed && <LanguageSwitcher />}
-          <div className="flex items-center gap-1">
+        {/* Preferences */}
+        <div className="mt-2 pt-3 border-t border-line flex flex-col gap-2">
+          <div className={`${fullOnly} items-center justify-between gap-1`}>
+            <LanguageSwitcher />
+            <div className="flex items-center">
+              <ThemeToggle />
+              {!mobile && (
+                <button
+                  type="button"
+                  onClick={() => setCollapsed(c => !c)}
+                  className="btn-motion w-11 h-11 inline-flex items-center justify-center rounded-pill text-fg hover:bg-inner"
+                  aria-label={t('nav.collapseSidebar')}
+                >
+                  <ChevronsLeft className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
+                </button>
+              )}
+            </div>
+          </div>
+          <div className={`${railOnly} flex-col items-center gap-1`}>
+            <LanguageSwitcher vertical />
             <ThemeToggle />
-            <button
-              onClick={() => setCollapsed(c => !c)}
-              className="hidden lg:flex p-2 rounded-md text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
-              aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              <ChevronsLeft className={`w-4 h-4 transition-transform ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.75} />
-            </button>
+            {collapsed && (
+              <button
+                type="button"
+                onClick={() => setCollapsed(false)}
+                className="hidden xl:inline-flex btn-motion w-11 h-11 items-center justify-center rounded-pill text-fg hover:bg-inner"
+                aria-label={t('nav.expandSidebar')}
+              >
+                <ChevronsLeft className="w-5 h-5 rotate-180" strokeWidth={2} aria-hidden="true" />
+              </button>
+            )}
           </div>
         </div>
 
         {/* Profile */}
         <div className="relative" ref={profileRef}>
           <button
+            type="button"
             onClick={() => setProfileOpen(p => !p)}
-            // Collapsed hides the currency chip, so keep it reachable on hover.
-            title={collapsed ? currencyCode : undefined}
-            className={`w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors ${collapsed ? 'justify-center' : ''}`}
+            aria-expanded={profileOpen}
+            aria-label={user?.user_metadata?.username || user?.email || t('nav.myProfile')}
+            // Rail hides the currency chip, so keep it reachable on hover.
+            title={cls.label ? currencyCode : undefined}
+            className="w-full flex items-center gap-3 p-1 rounded-icon btn-motion hover:bg-inner"
           >
-            <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
-              {(user?.user_metadata?.username || user?.email || '?')[0].toUpperCase()}
-            </div>
-            {!collapsed && (
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-medium text-ink-primary dark:text-white truncate">
-                  {user?.user_metadata?.username || user?.email}
-                </p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  {showProBadge && (
-                    <span className="inline-block px-1.5 py-0.5 text-[9px] font-bold uppercase text-white bg-brand-600 rounded">PRO</span>
-                  )}
-                  {/* The app is single-currency; surfacing it here saves opening
-                      Account just to check which currency the numbers are in.
-                      Neutral fill, not a brand badge: it is reference data, not
-                      a status that needs to pop like PRO. */}
-                  <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white">
-                    <CurrencyFlag code={currencyCode} />
-                    <span className="text-[10px] font-medium tracking-wide leading-none">{currencyCode}</span>
-                  </span>
-                </div>
-              </div>
-            )}
+            <span className="w-10 h-10 rounded-pill bg-brand-600 flex items-center justify-center text-white text-base font-extrabold shrink-0" aria-hidden="true">
+              {initial}
+            </span>
+            <span className={`${cls.label ? cls.label.replace('inline', 'block') : 'block'} flex-1 min-w-0 text-left`}>
+              <span className="block text-sm font-bold text-fg truncate">
+                {user?.user_metadata?.username || user?.email}
+              </span>
+              <span className="flex items-center gap-1.5 mt-1">
+                {showProBadge && (
+                  <span className="inline-flex items-center h-[22px] px-2 rounded-pill bg-brand-600 text-white text-min font-extrabold">PRO</span>
+                )}
+                {/* The app is single-currency; surfacing it here saves opening
+                    Account just to check which currency the numbers are in.
+                    Neutral fill: reference data, not a status that must pop. */}
+                <span className="inline-flex items-center gap-1.5 h-[22px] px-2 rounded-pill bg-inner text-fg">
+                  <CurrencyFlag code={currencyCode} />
+                  <span className="text-min font-bold">{currencyCode}</span>
+                </span>
+              </span>
+            </span>
           </button>
 
           {profileOpen && (
-            <div className={`absolute ${collapsed ? 'left-full ml-2' : 'left-0 right-0'} bottom-full mb-2 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container shadow-lg z-50 py-1.5 animate-scale-in min-w-[200px]`}>
+            <div className={`absolute ${mobile ? 'left-0 right-0 bottom-full mb-2' : collapsed ? 'left-full ml-2 bottom-0' : 'left-full ml-2 bottom-0 xl:left-0 xl:right-0 xl:ml-0 xl:bottom-full xl:mb-2'} bg-tile border border-line rounded-inner shadow-sheet z-50 p-1.5 animate-sheet-in min-w-[220px]`}>
               <Link
                 to="/account"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}
-                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+                className="flex items-center gap-2.5 min-h-11 px-3 rounded-input text-sm font-bold text-fg btn-motion hover:bg-inner"
               >
-                <User className="h-4 w-4 text-ink-muted dark:text-white" strokeWidth={1.75} />
+                <User className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden="true" />
                 {t('nav.myProfile')}
               </Link>
               <Link
                 to="/pricing"
                 onClick={() => { setProfileOpen(false); setMobileOpen(false); }}
-                className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+                className="flex items-center gap-2.5 min-h-11 px-3 rounded-input text-sm font-bold text-fg btn-motion hover:bg-inner"
               >
-                <CreditCard className="h-4 w-4 text-ink-muted dark:text-white" strokeWidth={1.75} />
+                <CreditCard className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden="true" />
                 {t('nav.subscription')}
               </Link>
-              <div className="border-t border-surface-hairline dark:border-surface-dark-hairline my-1" />
+              <div className="border-t border-line my-1" />
               <button
+                type="button"
                 onClick={() => { setProfileOpen(false); handleLogout(); }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-expense dark:text-expense hover:bg-expense/5 dark:hover:bg-expense/10 transition-colors text-left"
+                className="w-full flex items-center gap-2.5 min-h-11 px-3 rounded-input text-sm font-bold text-danger btn-motion hover:bg-inner text-left"
               >
-                <LogOut className="h-4 w-4" strokeWidth={1.75} />
+                <LogOut className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden="true" />
                 {t('nav.logout')}
               </button>
             </div>
           )}
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className={`hidden lg:flex flex-col shrink-0 h-screen sticky top-0 bg-white dark:bg-surface-dark-card border-r border-surface-hairline dark:border-surface-dark-hairline transition-all duration-200 ${collapsed ? 'w-[68px]' : 'w-64'}`}>
-        {sidebarContent}
+      {/* Desktop: floating tile panel, top-aligned, not sticky (§3.5).
+          232px with labels (≥1280), 72px icon rail (1024-1279 or collapsed). */}
+      <aside className={`hidden lg:block shrink-0 self-start tile rounded-shell p-3 w-[72px] ${collapsed ? '' : 'xl:w-[232px]'}`}>
+        {renderContent(false)}
       </aside>
 
-      {/* Mobile top bar — replaces a floating menu button that sat on top of
-          page headings. Fixed height h-14; AuthenticatedLayout pads for it. */}
-      <div className="lg:hidden fixed top-0 inset-x-0 z-40 h-14 flex items-center gap-3 px-3 bg-white/95 dark:bg-surface-dark-card/95 backdrop-blur border-b border-surface-hairline dark:border-surface-dark-hairline">
+      {/* Mobile top bar (<1024). Fixed height h-16; AuthenticatedLayout pads for it. */}
+      <div className="lg:hidden fixed top-0 inset-x-0 z-40 h-16 flex items-center gap-2 px-3 bg-page border-b border-line">
         <button
+          type="button"
           onClick={() => setMobileOpen(true)}
-          className="p-2 rounded-md text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+          className="btn-motion w-11 h-11 inline-flex items-center justify-center rounded-pill text-fg hover:bg-inner"
           aria-label={t('nav.openMenu')}
+          aria-expanded={mobileOpen}
         >
-          <MenuIcon className="w-5 h-5" strokeWidth={1.75} />
+          <MenuIcon className="w-[22px] h-[22px]" strokeWidth={2} aria-hidden="true" />
         </button>
         <Link to="/dashboard" className="flex items-center gap-2 min-w-0">
-          <BrandMark compact />
-          <span className="text-sm font-semibold text-ink-primary dark:text-white tracking-tight truncate">
+          <span className="inline-flex items-center justify-center w-10 h-10 bg-brand-600 rounded-input shrink-0" aria-hidden="true">
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 17 L10 11 L14 14 L20 6" />
+              <path d="M15 6 L20 6 L20 11" />
+            </svg>
+          </span>
+          <span className="text-base font-extrabold text-fg truncate">
             {t('app.shortName')}
           </span>
         </Link>
         <Link
           to="/notifications"
-          className="relative ml-auto p-2 rounded-md text-ink-primary dark:text-white hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+          className="btn-motion relative ml-auto w-11 h-11 inline-flex items-center justify-center rounded-pill text-fg hover:bg-inner"
           aria-label={t('notifications.title')}
         >
-          <Bell className="w-5 h-5" strokeWidth={1.75} />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-expense text-white text-[9px] font-bold leading-none">
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
-          )}
+          <Bell className="w-[22px] h-[22px]" strokeWidth={2} aria-hidden="true" />
+          <UnreadBadge count={unreadCount} className="absolute -top-0.5 -right-0.5" />
         </Link>
       </div>
 
-      {/* Mobile overlay */}
+      {/* Mobile drawer */}
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-black/50 animate-fade-in"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-surface-dark-card border-r border-surface-hairline dark:border-surface-dark-hairline animate-slide-in-left">
+          <aside className="absolute left-gap top-gap bottom-gap w-[min(288px,calc(100vw-32px))] overflow-y-auto tile rounded-shell p-3 animate-sheet-in">
             <button
+              type="button"
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-3 p-1.5 rounded-md text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
+              className="btn-motion absolute top-3 right-3 w-11 h-11 inline-flex items-center justify-center rounded-pill text-fg hover:bg-inner"
+              aria-label={t('nav.closeMenu')}
             >
-              <ChevronsLeft className="w-5 h-5" strokeWidth={1.75} />
+              <X className="w-5 h-5" strokeWidth={2.4} aria-hidden="true" />
             </button>
-            {sidebarContent}
+            {renderContent(true)}
           </aside>
         </div>
       )}

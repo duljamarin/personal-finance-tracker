@@ -24,6 +24,7 @@ module.exports = {
       // Tailwind's sm/base/lg steps are re-pointed onto the scale so legacy
       // call sites inherit it; the named steps are what new code uses.
       fontSize: {
+        min: ['14px', { lineHeight: '1.2' }],            // TYPE_MIN (badges only)
         sm: ['15px', { lineHeight: '1.5' }],             // caption = TYPE_MIN + 1
         base: ['17px', { lineHeight: '1.55' }],          // body    = TYPE_MIN + 3
         lg: ['19px', { lineHeight: '1.3' }],             // h3      = body + 2

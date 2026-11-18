@@ -98,75 +98,79 @@
   .reveal-pending { opacity: 0; }
 }
 
-/* ── Tile (Card) — hover lift only on pointer devices ───────────────────────── */
-.tile {
-  background-color: var(--tile);
-  border: 1px solid var(--line);
-  border-radius: 22px; /* R_TILE */
-  transition: transform var(--d-enter) var(--ease-spring), box-shadow var(--d-fast) var(--ease-std);
-}
-.tile-hero {
-  background-color: var(--hero-tile);
-  border-color: var(--hero-tile);
-  color: var(--white);
-}
-.tile-inner {
-  background-color: var(--inner);
-  border: 0;
-  border-radius: 18px; /* R_INNER */
-}
-@media (hover: hover) {
-  .tile-lift:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--tile-shadow);
+/* Bento component classes live in the components layer so Tailwind utilities
+   on the same element (rounded-shell, bg-hero, p-*) can override them. */
+@layer components {
+  /* ── Tile (Card) — hover lift only on pointer devices ───────────────────────── */
+  .tile {
+    background-color: var(--tile);
+    border: 1px solid var(--line);
+    border-radius: 22px; /* R_TILE */
+    transition: transform var(--d-enter) var(--ease-spring), box-shadow var(--d-fast) var(--ease-std);
   }
-}
+  .tile-hero {
+    background-color: var(--hero-tile);
+    border-color: var(--hero-tile);
+    color: var(--white);
+  }
+  .tile-inner {
+    background-color: var(--inner);
+    border: 0;
+    border-radius: 18px; /* R_INNER */
+  }
+  @media (hover: hover) {
+    .tile-lift:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--tile-shadow);
+    }
+  }
 
-/* Buttons and chips (§3.2): colors D_FAST EASE_STD, transform spring.
-   Lift and press only on pointer devices and never while disabled. */
-.btn-motion {
-  transition: background-color var(--d-fast) var(--ease-std), color var(--d-fast) var(--ease-std),
-    border-color var(--d-fast) var(--ease-std), transform var(--d-fast) var(--ease-spring);
-}
-@media (hover: hover) {
-  .btn-lift:not(:disabled):hover { transform: translateY(-2px); }
-  .chip-lift:not(:disabled):hover { transform: translateY(-1px); }
-}
-.btn-lift:not(:disabled):active { transform: scale(.97); }
+  /* Buttons and chips (§3.2): colors D_FAST EASE_STD, transform spring.
+     Lift and press only on pointer devices and never while disabled. */
+  .btn-motion {
+    transition: background-color var(--d-fast) var(--ease-std), color var(--d-fast) var(--ease-std),
+      border-color var(--d-fast) var(--ease-std), transform var(--d-fast) var(--ease-spring);
+  }
+  @media (hover: hover) {
+    .btn-lift:not(:disabled):hover { transform: translateY(-2px); }
+    .chip-lift:not(:disabled):hover { transform: translateY(-1px); }
+  }
+  .btn-lift:not(:disabled):active { transform: scale(.97); }
 
-/* Inputs (§4.4): the 2px BRAND border is the focus signal, no outline ring. */
-input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
+  /* Inputs (§4.4): the 2px BRAND border is the focus signal, no outline ring. */
+  input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
 
-/* Progress ring arc: value changes ease the dash offset (I2: data only). */
-.ring-arc { transition: stroke-dashoffset var(--d-data) var(--ease-out); }
+  /* Progress ring arc: value changes ease the dash offset (I2: data only). */
+  .ring-arc { transition: stroke-dashoffset var(--d-data) var(--ease-out); }
 
-/* Sliding pill / indicator easing (SegmentedControl, filters) */
-.slide-pill {
-  transition: transform var(--d-enter) var(--ease-spring), width var(--d-enter) var(--ease-spring);
-}
+  /* Sliding pill / indicator easing (SegmentedControl, filters) */
+  .slide-pill {
+    transition: transform var(--d-enter) var(--ease-spring), width var(--d-enter) var(--ease-spring);
+  }
 
-/* Data bars: width/height transition on value change only (I2) */
-.bar-w { transition: width var(--d-data) var(--ease-out); }
-.bar-h { transition: height var(--d-data) var(--ease-out); }
+  /* Data bars: width/height transition on value change only (I2) */
+  .bar-w { transition: width var(--d-data) var(--ease-out); }
+  .bar-h { transition: height var(--d-data) var(--ease-out); }
 
-/* Interactive affordances shared by buttons and links (§3.2) */
-.plus-spin { transition: transform var(--d-enter) var(--ease-spring); }
-.group:hover .plus-spin { transform: rotate(90deg); }
-.arrow-nudge { transition: transform var(--d-fast) var(--ease-spring); }
-.group:hover .arrow-nudge { transform: translateX(4px); }
+  /* Interactive affordances shared by buttons and links (§3.2) */
+  .plus-spin { transition: transform var(--d-enter) var(--ease-spring); }
+  .group:hover .plus-spin { transform: rotate(90deg); }
+  .arrow-nudge { transition: transform var(--d-fast) var(--ease-spring); }
+  .group:hover .arrow-nudge { transform: translateX(4px); }
 
-/* Activity row hover (§3.8) */
-.activity-row { transition: background-color var(--d-fast) var(--ease-std), transform var(--d-enter) var(--ease-spring); }
-.activity-row .activity-icon { transition: transform var(--d-enter) var(--ease-spring); }
-@media (hover: hover) {
-  .activity-row:hover { background-color: var(--inner); transform: translateX(4px); }
-  .activity-row:hover .activity-icon { transform: rotate(-6deg) scale(1.07); }
-}
+  /* Activity row hover (§3.8) */
+  .activity-row { transition: background-color var(--d-fast) var(--ease-std), transform var(--d-enter) var(--ease-spring); }
+  .activity-row .activity-icon { transition: transform var(--d-enter) var(--ease-spring); }
+  @media (hover: hover) {
+    .activity-row:hover { background-color: var(--inner); transform: translateX(4px); }
+    .activity-row:hover .activity-icon { transform: rotate(-6deg) scale(1.07); }
+  }
 
-/* Nav item hover (§3.5) */
-.nav-icon { transition: transform var(--d-fast) var(--ease-spring), background-color var(--d-fast) var(--ease-std); }
-@media (hover: hover) {
-  .nav-item:hover .nav-icon { transform: scale(1.06); }
+  /* Nav item hover (§3.5) */
+  .nav-icon { transition: transform var(--d-fast) var(--ease-spring), background-color var(--d-fast) var(--ease-std); }
+  @media (hover: hover) {
+    .nav-item:hover .nav-icon { transform: scale(1.06); }
+  }
 }
 
 /* P5: one focus ring for every interactive element */

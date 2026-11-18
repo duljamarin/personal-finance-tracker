@@ -14,6 +14,7 @@ import { CryptoProvider, useCrypto } from './context/CryptoContext';
 import { TransactionProvider } from './context/TransactionContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import LoadingSpinner from './components/UI/LoadingSpinner.jsx';
+import Skeleton from './components/UI/Skeleton.jsx';
 
 const UnlockModal = lazy(() => import('./components/Encryption/UnlockModal.jsx'));
 const MigrationBanner = lazy(() => import('./components/Encryption/MigrationBanner.jsx'));
@@ -24,18 +25,14 @@ function DashboardShell() {
   const username = typeof window !== 'undefined' ? localStorage.getItem('username') : '';
   return (
     <div className="min-h-[60vh]">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-ink-primary dark:text-white tracking-tight">
-            {username || ' '}
-          </h1>
-          <div className="h-4 w-40 mt-1 rounded bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />
-        </div>
+      <div className="flex items-center gap-[14px] px-1 py-1.5 mb-gap">
+        <h1 className="text-h1 font-extrabold text-fg">
+          {username || '\u00a0'}
+        </h1>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {[0, 1, 2].map(i => (
-          <div key={i} className="h-28 rounded-[10px] bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />
-        ))}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-gap">
+        <Skeleton variant="card" className="lg:col-span-7 !h-[280px]" />
+        <Skeleton variant="card" className="lg:col-span-5 !h-[280px]" />
       </div>
     </div>
   );
@@ -141,15 +138,16 @@ function AuthGlobalUI({ showLoadingOverlay = true }) {
   return (
     <>
       {authError && (
-        <div className="fixed top-[4.5rem] sm:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-expense-bg dark:bg-expense-tint border border-expense/30 text-expense pl-5 pr-3 py-3 rounded-container shadow-tier2 text-sm font-medium animate-fade-in max-w-md backdrop-blur-sm">
+        <div role="alert" className="fixed top-20 sm:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-tile border-2 border-expense text-expense pl-5 pr-1.5 py-1.5 rounded-pill shadow-sheet text-sm font-bold animate-toast-in max-w-[calc(100vw-32px)] sm:max-w-md">
           <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
           </svg>
           <span className="flex-1 text-center">{getErrorMessage(authError)}</span>
           <button
+            type="button"
             onClick={clearError}
-            aria-label="Dismiss"
-            className="flex-shrink-0 ml-1 p-1 rounded-md hover:bg-expense/10 transition-colors"
+            aria-label={t('upgrade.dismiss')}
+            className="btn-motion flex-shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-pill hover:bg-inner"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -162,9 +160,8 @@ function AuthGlobalUI({ showLoadingOverlay = true }) {
           render their own loading spinner — showing this too would double up. */}
       {showLoadingOverlay && authLoading && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-surface-dark-tertiary rounded-container p-8 shadow-lg">
-            <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-ink-muted dark:text-white font-medium text-sm text-center">{ready ? t('dashboard.processing') : ''}</p>
+          <div className="tile rounded-shell p-tile shadow-sheet">
+            <LoadingSpinner size="lg" text={ready ? t('dashboard.processing') : ''} />
           </div>
         </div>
       )}
@@ -206,12 +203,13 @@ function EncryptionGate() {
 
 function AuthenticatedLayout({ children }) {
   return (
-    <div className="flex min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
-      <Suspense fallback={null}>
+    // Bento shell (design-system 3.5): --page background, GAP padding, floating nav tile.
+    <div className="flex min-h-screen bg-page font-sans lg:gap-gap lg:p-gap">
+      <Suspense fallback={<div className="hidden lg:block shrink-0 w-[72px] xl:w-[232px]" />}>
         <Sidebar />
       </Suspense>
       <main className="flex-1 min-w-0 overflow-x-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:py-8">
+        <div className="max-w-content mx-auto px-gap pt-20 pb-24 lg:p-0">
           {children}
         </div>
       </main>
@@ -223,9 +221,9 @@ function AuthenticatedLayout({ children }) {
 /* Public layout without sidebar */
 function PublicLayout({ children }) {
   return (
-    <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
+    <div className="min-h-screen bg-page font-sans">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
+      <div className="max-w-content mx-auto px-gap sm:px-6 lg:px-10 pb-6 flex flex-col">
         <main className="flex-1 min-h-[calc(100vh-4rem)]">
           {children}
         </main>
@@ -315,7 +313,7 @@ function InnerAppContent() {
   if (authLoading && !isPublicRoute) {
     return (
       <ErrorBoundary>
-        <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
+        <div className="min-h-screen bg-page font-sans">
           <LoadingSpinner size="md" text="" className="min-h-screen" />
         </div>
       </ErrorBoundary>
@@ -326,7 +324,7 @@ function InnerAppContent() {
     <ErrorBoundary>
       <AuthGlobalUI showLoadingOverlay={isPublicRoute} />
       {isOnboardingRoute ? (
-        <div className="min-h-screen bg-surface-page dark:bg-surface-dark transition-colors duration-300 font-sans">
+        <div className="min-h-screen bg-page font-sans">
           <Routes>
             <Route path="/onboarding" element={
               <OnboardingRoute>

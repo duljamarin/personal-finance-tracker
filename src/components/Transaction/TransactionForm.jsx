@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../UI/Input'
 import Button from '../UI/Button'
@@ -13,6 +13,15 @@ import TransactionSplitForm from './TransactionSplitForm'
 import TransactionRecurringSection from './TransactionRecurringSection'
 import { CategoryIconSvg } from '../UI/CategoryIconSvg'
 import CustomSelect from '../UI/CustomSelect'
+import SegmentedControl from '../UI/SegmentedControl'
+import Chip from '../UI/Chip'
+import CategoryAvatar from '../UI/CategoryAvatar'
+import { useTransactions } from '../../context/TransactionContext'
+import { ArrowLeftRight, Lock, Plus, Repeat } from 'lucide-react'
+
+// Quick-add shows this many category chips (most used for the chosen type);
+// the rest stay one tap away behind "More" (design-system 3.6).
+const CHIP_COUNT = 6
 
 export default function TransactionForm({ onSubmit, onCancel, initial, onCategoryAdded, allowRecurring = false }) {
 	const { t } = useTranslation()
@@ -49,6 +58,25 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	const [endType, setEndType] = useState(initial?.endDate || initial?.end_date ? 'date' : initial?.occurrencesLimit || initial?.occurrences_limit ? 'count' : 'never')
 	const [endDate, setEndDate] = useState(initial?.endDate || initial?.end_date || '')
 	const [occurrencesLimit, setOccurrencesLimit] = useState(initial?.occurrencesLimit || initial?.occurrences_limit || '')
+
+	const { transactions: allTransactions } = useTransactions()
+	const [showMoreCategories, setShowMoreCategories] = useState(false)
+
+	// Most used categories for the selected type, ties kept in list order.
+	const chipCategories = useMemo(() => {
+		const counts = new Map()
+		for (const tx of allTransactions || []) {
+			if (tx.type !== type) continue
+			const id = tx.category?.id || tx.category_id
+			if (id) counts.set(String(id), (counts.get(String(id)) || 0) + 1)
+		}
+		const ranked = [...categories].sort((a, b) => (counts.get(String(b.id)) || 0) - (counts.get(String(a.id)) || 0))
+		const top = ranked.slice(0, CHIP_COUNT)
+		// A category picked through "More" stays visible as a selected chip.
+		const picked = categories.find(c => String(c.id) === String(categoryId))
+		if (picked && !top.some(c => c.id === picked.id)) top.push(picked)
+		return top
+	}, [allTransactions, categories, type, categoryId])
 
 	useEffect(() => {
 		fetchCategories().then(cats => {
@@ -273,82 +301,69 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 	}
 
 	return (
-		<form onSubmit={submit} className="flex flex-col gap-3 sm:gap-5 w-full">
-			<h2 className="text-heading sm:text-title font-display text-ink-primary dark:text-white mb-1 flex-shrink-0">
+		<form onSubmit={submit} className="flex flex-col gap-4 w-full">
+			<h2 className="text-h3 font-bold text-fg pr-12 flex-shrink-0">
 				{initial?.id ? t('transactions.editTransaction') : t('transactions.addNew')}
 			</h2>
 
-			<div className="flex flex-col gap-3 sm:gap-5">
+			<div className="flex flex-col gap-4">
 				{/* Show recurring badge if editing a transaction from recurring rule */}
 				{isFromRecurring && (
-					<div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-data-violet rounded-container p-3 sm:p-4">
-						<div className="flex items-center gap-2 mb-1.5">
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-data-violet flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-							</svg>
-							<span className="text-xs sm:text-sm font-semibold text-ink-primary dark:text-white">
+					<div className="tile-inner p-gap">
+						<div className="flex items-center gap-2 mb-1">
+							<Repeat className="h-[18px] w-[18px] text-brand-text flex-shrink-0" strokeWidth={2} aria-hidden="true" />
+							<span className="text-sm font-extrabold text-fg">
 								{t('recurring.generatedFromRule')}
 							</span>
 						</div>
-						<p className="text-xs text-ink-muted dark:text-white leading-relaxed">
+						<p className="text-sm font-semibold text-fg">
 							{t('recurring.editInstanceNote')}
 						</p>
 					</div>
 				)}
-				
-				{/* Type, then the amount as the focal field: the way money apps lead. */}
-				<div className="flex flex-col gap-3">
-					<div role="group" aria-label={t('transactions.type')} className="grid grid-cols-2 p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
-						{[
-							{ value: 'expense', label: t('transactions.expense'), activeText: 'text-expense' },
-							{ value: 'income', label: t('transactions.income'), activeText: 'text-brand-600 dark:text-brand-400' },
-						].map(opt => (
-							<button
-								key={opt.value}
-								type="button"
-								aria-pressed={type === opt.value}
-								onClick={() => setType(opt.value)}
-								className={`px-4 py-2 rounded-[5px] font-medium text-sm transition-colors ${
-									type === opt.value
-										? `bg-white dark:bg-surface-dark-elevated shadow-xs ${opt.activeText}`
-										: 'text-ink-muted dark:text-white hover:text-ink-primary'
-								}`}
-							>
-								{opt.label}
-							</button>
-						))}
-					</div>
-					{errors.type && (
-						<span className="text-xs text-expense font-medium">{t(errors.type)}</span>
-					)}
 
-					<div className="flex flex-col gap-1.5">
-						<label htmlFor="tx-amount" className="text-sm font-medium text-ink-primary dark:text-white">
-							{t('transactions.amountLabel')}
-						</label>
-						<Input
-							id="tx-amount"
-							type="number"
-							inputMode="decimal"
-							placeholder={t('transactions.amountPlaceholder')}
-							value={amount}
-							onChange={handleAmountChange}
-							error={errors.amount ? t(errors.amount) : undefined}
-							leadingIcon={<span className="text-xl font-semibold">{currencySymbol}</span>}
-							// Room for multi-letter symbols (C$, CHF) beside the large figure.
-							className={`!py-3.5 !text-3xl font-semibold tabular-nums tracking-tight ${
-								(currencySymbol || '').length > 2 ? '!pl-[4.5rem]' : (currencySymbol || '').length > 1 ? '!pl-14' : ''
-							}`}
-						/>
-					</div>
+				{/* Type, then the amount as the visual hero of the form (36px / 800). */}
+				<SegmentedControl
+					ariaLabel={t('transactions.type')}
+					value={type}
+					onChange={setType}
+					className="w-full"
+					options={[
+						{ value: 'expense', label: t('transactions.expense') },
+						{ value: 'income', label: t('transactions.income') },
+					]}
+				/>
+				{errors.type && (
+					<span className="text-sm text-expense font-semibold">{t(errors.type)}</span>
+				)}
+
+				<div className="flex flex-col gap-1.5">
+					<label htmlFor="tx-amount" className="text-sm font-bold text-fg">
+						{t('transactions.amountLabel')}
+					</label>
+					<Input
+						id="tx-amount"
+						type="number"
+						inputMode="decimal"
+						placeholder={t('transactions.amountPlaceholder')}
+						value={amount}
+						onChange={handleAmountChange}
+						error={errors.amount ? t(errors.amount) : undefined}
+						leadingIcon={<span className="text-[36px] leading-none font-extrabold">{currencySymbol}</span>}
+						// Room for multi-letter symbols (C$, CHF) beside the large figure.
+						className={`!py-1.5 !text-[36px] !leading-tight !font-extrabold tabular-nums tracking-[-0.02em] ${
+							(currencySymbol || '').length > 2 ? '!pl-24' : (currencySymbol || '').length > 1 ? '!pl-[4.5rem]' : '!pl-12'
+						}`}
+					/>
 				</div>
 
 				{/* Title */}
 				<div className="flex flex-col gap-1.5">
-					<label className="text-sm font-medium text-ink-primary dark:text-white">
+					<label htmlFor="tx-title" className="text-sm font-bold text-fg">
 						{t('transactions.titleLabel')}
 					</label>
 					<Input
+						id="tx-title"
 						placeholder={t('transactions.titlePlaceholder')}
 						value={title}
 						onChange={handleTitleChange}
@@ -356,26 +371,24 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					/>
 				</div>
 
-				{/* Category / Split Toggle - hide when recurring is enabled or editing recurring transaction */}
-				<div className="flex flex-col gap-1 sm:gap-2">
-					<div className="flex items-center justify-between min-h-[1.25rem]">
+				{/* Category: chips for the most used + More (CustomSelect) + new category.
+				    Split toggle hidden when recurring is enabled or editing a recurring row. */}
+				<div className="flex flex-col gap-2">
+					<div className="flex items-center justify-between gap-2 min-h-[1.25rem]">
+						<span className="text-sm font-bold text-fg">{t('transactions.category')}</span>
 						{!isRecurring && !initial?.source_recurring_id && (
 							canSplitTransaction ? (
 								<button
 									type="button"
 									onClick={() => { setIsSplit(v => !v); setSplits([]); }}
-								className="flex items-center gap-1.5 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
+									className="btn-motion inline-flex items-center gap-1.5 min-h-11 px-3 -mr-3 rounded-pill text-sm font-bold text-brand-text hover:bg-inner"
 								>
-									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-									</svg>
+									<ArrowLeftRight className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
 									{isSplit ? t('split.singleCategory') : t('split.enableSplit')}
 								</button>
 							) : (
-								<span className="flex items-center gap-1.5 text-xs text-ink-muted dark:text-white">
-									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-									</svg>
+								<span className="inline-flex items-center gap-1.5 text-sm font-semibold text-fg">
+									<Lock className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
 									{t('split.premiumOnly')}
 								</span>
 							)
@@ -392,96 +405,106 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 						/>
 					) : (
 					<>
-					<div className="flex items-center gap-2">
-						<div className="flex-1 min-w-0">
-							<CustomSelect
-								value={categoryId}
-								onChange={handleCategoryChange}
-								error={!!errors.categoryId}
-								placeholder={t('transactions.selectCategory')}
-								ariaLabel={t('transactions.selectCategory')}
-								options={categories.map(cat => {
-									const iconKey = getCategoryIcon(cat)
-									return {
-										value: cat.id,
-										label: translateCategoryName(cat.name),
-										leading: (
-											<span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
-												<CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
-											</span>
-										),
-									}
-								})}
-							/>
-						</div>
-						<button
-							type="button"
+					<div role="group" aria-label={t('transactions.selectCategory')} className="flex flex-wrap gap-2">
+						{chipCategories.map(cat => {
+							const iconKey = getCategoryIcon(cat)
+							return (
+								<Chip
+									key={cat.id}
+									selected={String(categoryId) === String(cat.id)}
+									onClick={() => { handleCategoryChange(String(cat.id)); setShowMoreCategories(false) }}
+								>
+									{iconKey && <CategoryIconSvg iconKey={iconKey} className="w-4 h-4" />}
+									{translateCategoryName(cat.name)}
+								</Chip>
+							)
+						})}
+						{categories.length > chipCategories.length && (
+							<Chip selected={showMoreCategories} onClick={() => setShowMoreCategories(v => !v)}>
+								{t('transactions.moreCategories')}
+							</Chip>
+						)}
+						<Chip
+							selected={showProposalInput}
 							onClick={() => { setShowProposalInput(v => !v); setCategoryProposalSuccess(false); }}
+							aria-label={t('categoryProposal.other')}
 							title={t('categoryProposal.other')}
-							className={`flex-shrink-0 w-9 self-stretch rounded-md border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
-								showProposalInput
-									? 'bg-brand-600 border-brand-600 text-white'
-									: 'border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400'
-							}`}
+							className="!px-3"
 						>
-							<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-								<path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-							</svg>
-						</button>
+							<Plus className="w-4 h-4" strokeWidth={2.6} aria-hidden="true" />
+						</Chip>
 					</div>
+					{showMoreCategories && (
+						<CustomSelect
+							defaultOpen
+							value={categoryId}
+							onChange={(v) => { handleCategoryChange(v); setShowMoreCategories(false) }}
+							error={!!errors.categoryId}
+							placeholder={t('transactions.selectCategory')}
+							ariaLabel={t('transactions.selectCategory')}
+							options={categories.map(cat => {
+								const iconKey = getCategoryIcon(cat)
+								return {
+									value: cat.id,
+									label: translateCategoryName(cat.name),
+									leading: <CategoryAvatar category={cat} size="sm" />,
+								}
+							})}
+						/>
+					)}
 					{errors.categoryId && (
-						<span className="text-xs text-expense dark:text-expense font-medium">{t(errors.categoryId)}</span>
+						<span className="text-sm text-expense font-semibold">{t(errors.categoryId)}</span>
 					)}
 
 					{showProposalInput && (
-						<div className="mt-2 sm:mt-3 p-3 sm:p-4 bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-lg">
-							<label className="text-xs sm:text-sm font-medium text-ink-primary dark:text-white mb-1 sm:mb-2 block">
+						<div className="tile-inner p-gap flex flex-col gap-3">
+							<label htmlFor="tx-new-category" className="text-sm font-bold text-fg">
 								{t('categoryProposal.proposedName')}
 							</label>
 							<div className="flex flex-col sm:flex-row gap-2 sm:items-center">
 								<div className="flex items-center gap-2 flex-1 min-w-0">
-									<span className="w-9 h-9 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+									<span className="w-11 h-11 rounded-icon bg-tile flex items-center justify-center text-brand-text flex-shrink-0" aria-hidden="true">
 										{CATEGORY_ICONS[proposedCategoryEmoji] && (
-											<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+											<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
 												<path d={CATEGORY_ICONS[proposedCategoryEmoji]} />
 											</svg>
 										)}
 									</span>
-									<Input
-										placeholder={t('categoryProposal.proposedNamePlaceholder')}
-										value={proposedCategoryName}
-										onChange={e => setProposedCategoryName(e.target.value)}
-										className="flex-1 border p-1.5 sm:p-2 text-xs sm:text-sm rounded-md bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 border-surface-outline dark:border-surface-dark-outline min-w-0"
-									/>
+									<div className="flex-1 min-w-0">
+										<Input
+											id="tx-new-category"
+											placeholder={t('categoryProposal.proposedNamePlaceholder')}
+											value={proposedCategoryName}
+											onChange={e => setProposedCategoryName(e.target.value)}
+										/>
+									</div>
 								</div>
-								<Button
-									type="button"
-									onClick={handleSubmitProposal}
-									className="px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md text-xs sm:text-sm whitespace-nowrap w-full sm:w-auto"
-								>
+								<Button type="button" onClick={handleSubmitProposal} className="w-full sm:w-auto whitespace-nowrap">
 									{t('categoryProposal.submit')}
 								</Button>
 							</div>
 							{/* Icon picker */}
-							<div className="mt-2 sm:mt-3">
-								<label className="eyebrow mb-1.5 block">
+							<div>
+								<p className="text-sm font-bold text-fg mb-1.5">
 									{t('categories.emojiLabel')}
-								</label>
-								<div className="grid grid-cols-8 sm:grid-cols-12 gap-1 max-h-32 overflow-y-auto scrollbar-hide p-2 bg-surface-subtle dark:bg-surface-dark-subtle rounded-md border border-surface-hairline dark:border-surface-dark-hairline">
+								</p>
+								<div className="grid grid-cols-6 sm:grid-cols-8 gap-1 max-h-40 overflow-y-auto scrollbar-hide p-1.5 bg-tile rounded-input">
 									{ICON_PALETTE.map(key => (
 										<button
 											key={key}
 											type="button"
 											title={key}
+											aria-label={key}
+											aria-pressed={proposedCategoryEmoji === key}
 											onClick={() => setProposedCategoryEmoji(key)}
-											className={`w-8 h-8 flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
+											className={`btn-motion w-11 h-11 flex items-center justify-center rounded-input ${
 												proposedCategoryEmoji === key
 													? 'bg-brand-600 text-white'
-													: 'text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle hover:text-brand-600 dark:hover:text-brand-400'
+													: 'text-fg hover:bg-inner'
 											}`}
 										>
 											{CATEGORY_ICONS[key] && (
-												<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+												<svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
 													<path d={CATEGORY_ICONS[key]} />
 												</svg>
 											)}
@@ -490,7 +513,7 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 								</div>
 							</div>
 							{categoryProposalSuccess && (
-								<p className="text-xs text-brand-600 dark:text-brand-400 mt-2">
+								<p className="text-sm font-semibold text-brand-text">
 									{t('categoryProposal.submittedDesc')}
 								</p>
 							)}
@@ -500,13 +523,14 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 				)}
 				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 					{/* Date */}
 					<div className="flex flex-col gap-1.5">
-						<label className="text-sm font-medium text-ink-primary dark:text-white">
+						<label htmlFor="tx-date" className="text-sm font-bold text-fg">
 							{t('transactions.dateLabel')}
 						</label>
 						<Input
+							id="tx-date"
 							type="date"
 							value={date}
 							onChange={handleDateChange}
@@ -516,13 +540,14 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 					</div>
 					{/* Tags */}
 					<div className="flex flex-col gap-1.5">
-						<label className="text-sm font-medium text-ink-primary dark:text-white">
+						<label htmlFor="tx-tags" className="text-sm font-bold text-fg">
 							{t('transactions.tagsLabel')}
-							<span className="text-xs text-ink-muted dark:text-white font-normal ml-1">
+							<span className="font-semibold ml-1">
 								{t('transactions.tagsOptional')}
 							</span>
 						</label>
 						<Input
+							id="tx-tags"
 							placeholder={t('transactions.tagsPlaceholder')}
 							value={tags}
 							onChange={e => setTags(e.target.value)}
@@ -553,17 +578,17 @@ export default function TransactionForm({ onSubmit, onCancel, initial, onCategor
 			</div>
 
 			{/* Buttons */}
-			<div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline flex-col sm:flex-row flex-shrink-0">
+			<div className="flex gap-2 pt-2 flex-shrink-0">
 				<Button
 					type="button"
-					variant="secondary"
-					className="flex-1"
+					variant="ghost"
 					onClick={onCancel}
 				>
 					{t('forms.cancel')}
 				</Button>
 				<Button
 					type="submit"
+					size="lg"
 					className="flex-1"
 				>
 					{t('transactions.saveTransaction')}

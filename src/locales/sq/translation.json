@@ -13,7 +13,9 @@
   },
   "theme": {
     "light": "Modalitet i çelët",
-    "dark": "Modalitet i errët"
+    "dark": "Modalitet i errët",
+    "toLight": "Kalo në modalitetin e çelët",
+    "toDark": "Kalo në modalitetin e errët"
   },
   "nav": {
     "dashboard": "Paneli",
@@ -36,7 +38,11 @@
     },
     "groupMoney": "Paratë",
     "groupPlanning": "Planifikimi",
-    "openMenu": "Hap menynë"
+    "openMenu": "Hap menynë",
+    "expandSidebar": "Zgjero panelin anësor",
+    "collapseSidebar": "Mblidh panelin anësor",
+    "closeMenu": "Mbyll menynë",
+    "main": "Aplikacioni"
   },
   "common": {
     "cancel": "Anulo",
@@ -95,7 +101,8 @@
     "spendingByCategory": "Shpenzimet sipas kategorisë",
     "incomeBySource": "Të ardhurat sipas kategorisë",
     "allTime": "Gjithë kohën",
-    "noIncomeYet": "Ende nuk ka të ardhura këtë muaj"
+    "noIncomeYet": "Ende nuk ka të ardhura këtë muaj",
+    "dayOfMonth": "Dita {{day}} nga {{total}}"
   },
   "cashFlow": {
     "title": "Parashikimi i Fluksit të Parasë",
@@ -181,7 +188,9 @@
     "yesterday": "Dje",
     "subtitle": "Çdo e ardhur dhe shpenzim që keni regjistruar",
     "count_one": "{{count}} transaksion",
-    "count_other": "{{count}} transaksione"
+    "count_other": "{{count}} transaksione",
+    "savedToast": "U ruajt: {{title}} {{amount}}",
+    "moreCategories": "Më shumë"
   },
   "categories": {
     "title": "Kategoritë",

@@ -84,19 +84,23 @@ export function TransactionProvider({ children }) {
     }
   }, [cryptoStatus, user?.id, reloadTransactions, reloadCategories]);
 
-  const addTransaction = useCallback(async (item) => {
+  // options.successMessage lets the caller word the toast (quick-add sheet:
+  // "Saved: {title} {amount}"). Resolves true on success, false on failure.
+  const addTransaction = useCallback(async (item, options = {}) => {
     try {
       const newItem = await apiAddTransaction(item);
       setTransactions(prev => [newItem, ...prev]);
       setMutationCount(c => c + 1);
-      addToast(t('messages.transactionAdded'), 'success');
+      addToast(options.successMessage || t('messages.transactionAdded'), 'success');
       refreshSubscription();
+      return true;
     } catch (e) {
       if (e?.code === 'P0001' || e?.message?.includes('transaction limit')) {
         addToast(t('upgrade.transactionLimitReached'), 'warning');
       } else {
         addToast(t('messages.error'), 'error');
       }
+      return false;
     }
   }, [addToast, t, refreshSubscription]);
 
