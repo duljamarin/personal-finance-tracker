@@ -187,8 +187,8 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
       <div>
 
         {/* Header */}
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 mb-6">
-          <div className="min-w-0">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 mb-6">
+          <div className="min-w-0 flex-1">
             <h2 className="text-h3 font-bold text-fg">
               {variant === 'details' ? t('healthScore.detailsTitle') : t('healthScore.title')}
             </h2>
@@ -201,11 +201,23 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
                 : t('healthScore.description')}
             </p>
           </div>
+          {/* The score this section explains, large on the right. Number in
+              ink/white for contrast in both themes; the band color sits on
+              the dot next to its label. */}
           {variant === 'details' && (
-            <span className="inline-flex items-center h-9 px-3.5 rounded-pill bg-inner text-sm font-extrabold tabular-nums text-fg shrink-0">
-              <span className={`w-2.5 h-2.5 rounded-pill mr-2 ${scoreColors.dot}`} aria-hidden="true" />
-              {t('healthScore.scoreOutOf', { score: Math.round(score.totalScore), label: getScoreLabel(score.totalScore) })}
-            </span>
+            <div className="shrink-0 flex items-baseline gap-3 sm:block sm:text-right">
+              <span className="sr-only">
+                {t('healthScore.scoreOutOf', { score: Math.round(score.totalScore), label: getScoreLabel(score.totalScore) })}
+              </span>
+              <p className="leading-none tabular-nums text-fg whitespace-nowrap" aria-hidden="true">
+                <span className="text-h1 font-extrabold tracking-[-0.02em]">{Math.round(score.totalScore)}</span>
+                <span className="text-h3 font-bold">/100</span>
+              </p>
+              <p className="sm:mt-1.5 inline-flex items-center gap-1.5 text-sm font-bold text-fg whitespace-nowrap" aria-hidden="true">
+                <span className={`w-2.5 h-2.5 rounded-pill ${scoreColors.dot}`} />
+                {getScoreLabel(score.totalScore)}
+              </p>
+            </div>
           )}
         </div>
 
