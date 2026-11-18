@@ -991,7 +991,9 @@
         "salary": "Monthly salary",
         "fuel": "Fuel",
         "rent": "Rent"
-      }
+      },
+      "keptIn": "+{{amount}} kept in {{month}}",
+      "addedJustNow": "added just now"
     }
   },
   "currency": {

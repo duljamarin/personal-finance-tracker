@@ -54,8 +54,8 @@ export default function EmailConfirmed() {
   const isError = status === 'error';
 
   return (
-    <div className="max-w-md mx-auto mt-8 sm:mt-12 lg:mt-16 px-4">
-      <div className="bg-white dark:bg-surface-dark-card rounded-container shadow-sm p-6 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-surface-hairline dark:border-surface-dark-hairline text-center">
+    <div className="max-w-[440px] mx-auto mt-8 sm:mt-12 lg:mt-16">
+      <div className="tile p-tile-dense sm:p-tile flex flex-col gap-5 sm:gap-6 border border-line text-center">
         {isError ? (
           <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto bg-expense">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,27 +73,27 @@ export default function EmailConfirmed() {
         <div>
           {isError ? (
             <>
-              <h2 className="font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-white mb-2">
+              <h2 className="font-semibold tracking-[-0.01em] text-2xl sm:text-3xl text-fg mb-2">
                 {t('auth.emailConfirmationFailedTitle', 'Email confirmation failed')}
               </h2>
-              <p className="text-ink-muted dark:text-white text-sm mb-4">
+              <p className="text-fg text-sm mb-4">
                 {t('auth.emailConfirmationFailedDescription', 'The confirmation link is invalid or has expired.')}
               </p>
             </>
           ) : (
             <>
-              <h2 className="font-semibold tracking-tight text-2xl sm:text-3xl text-ink-primary dark:text-white mb-2">
+              <h2 className="font-semibold tracking-[-0.01em] text-2xl sm:text-3xl text-fg mb-2">
                 {t('auth.emailConfirmedTitle')}
               </h2>
-              <p className="text-ink-muted dark:text-white text-sm mb-4">
+              <p className="text-fg text-sm mb-4">
                 {t('auth.emailConfirmedDescription')}
               </p>
               {isLoading ? (
-                <p className="text-sm text-ink-muted dark:text-white">
+                <p className="text-sm text-fg">
                   {t('auth.verifyingEmail', 'Verifying your email, please wait...')}
                 </p>
               ) : (
-                <p className="text-sm text-ink-muted dark:text-white">
+                <p className="text-sm text-fg">
                   {t('auth.redirectingToDashboard', 'Redirecting you to your dashboard...')}
                 </p>
               )}

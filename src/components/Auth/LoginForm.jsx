@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import AuthLayout from './AuthLayout';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
@@ -84,27 +85,27 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+    <AuthLayout>
 
-      <div className="relative w-full max-w-md">
+      
         {/* Logomark + titles */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-icon mb-5">
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+          <h1 className="text-h1 font-extrabold text-fg mb-3">
             {t('auth.loginTitle')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
+          <p className="text-base text-fg max-w-sm mx-auto">
             {t('auth.signInDescription')}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+        <div className="tile p-tile-dense sm:p-tile">
           {/* Google OAuth — hidden inside in-app WebViews (Instagram/LinkedIn/
               Facebook/TikTok), which Google blocks with "Error 403:
               disallowed_useragent". No code-side workaround exists; we guide
@@ -115,7 +116,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 text-ink-primary dark:text-white px-4 py-3 rounded-md font-medium text-sm transition-colors"
+              className="btn-motion btn-lift w-full min-h-11 flex items-center justify-center gap-3 bg-tile border-2 border-line hover:border-fg text-fg px-4 py-3 rounded-pill font-bold text-sm"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -129,9 +130,9 @@ export default function LoginForm() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
-            <span className="text-xs text-ink-muted dark:text-white font-medium">{t('auth.or')}</span>
-            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
+            <div className="flex-1 h-px bg-inner-2" />
+            <span className="text-sm text-fg font-medium">{t('auth.or')}</span>
+            <div className="flex-1 h-px bg-inner-2" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -153,7 +154,7 @@ export default function LoginForm() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">{t('auth.password')}</label>
+              <label className="block text-sm font-medium text-fg mb-2">{t('auth.password')}</label>
               <PasswordInput
                 value={password}
                 onChange={e => {
@@ -169,7 +170,7 @@ export default function LoginForm() {
                 }
               />
               {passwordError && (
-                <p className="mt-2 text-xs text-expense flex items-center gap-1.5">
+                <p className="mt-2 text-sm text-expense flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                   </svg>
@@ -186,27 +187,27 @@ export default function LoginForm() {
                   onChange={e => setRememberMe(e.target.checked)}
                   className="peer sr-only"
                 />
-                <span className="w-[18px] h-[18px] rounded-[5px] border-[1.5px] border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card flex items-center justify-center transition-colors group-hover:border-brand-500/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/30">
+                <span className="w-[18px] h-[18px] rounded-input border-[1.5px] border-line bg-tile flex items-center justify-center transition-colors group-hover:border-brand-500/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/30">
                   <svg className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: rememberMe ? 1 : 0 }}>
                     <path d="M4.5 12.75 10.5 18 20 6" />
                   </svg>
                 </span>
-                <span className="text-sm text-ink-primary dark:text-white">{t('auth.rememberMe')}</span>
+                <span className="text-sm text-fg">{t('auth.rememberMe')}</span>
               </label>
-              <Link to={localizedPath('/forgot-password', i18n.language)} className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
+              <Link to={localizedPath('/forgot-password', i18n.language)} className="text-sm text-brand-text hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors">
                 {t('auth.forgotPassword')}
               </Link>
             </div>
 
             {formError && (
-              <div className="bg-expense-bg border border-expense/30 text-expense text-center text-sm p-3 rounded-md">
+              <div className="bg-expense-bg border border-expense/30 text-expense text-center text-sm p-3 rounded-input">
                 {t(formError)}
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               disabled={loading}
             >
               {t('auth.signIn')}
@@ -214,11 +215,11 @@ export default function LoginForm() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-ink-muted dark:text-white mt-8">
+        <p className="text-center text-sm text-fg mt-8">
           {t('auth.noAccount')}{' '}
-          <Link to={localizedPath('/register', i18n.language)} className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.createAccount')}</Link>
+          <Link to={localizedPath('/register', i18n.language)} className="text-brand-text font-medium hover:underline">{t('auth.createAccount')}</Link>
         </p>
-      </div>
-    </div>
+      
+    </AuthLayout>
   );
 }

@@ -312,17 +312,6 @@
 .dark textarea::placeholder    { color: rgba(255,255,255,0.4) !important; }
 
 
-/* ── Onboarding ProgressBar labels & step counter ──────────────────────────*/
-.progressbar-label--active      { color: #0B5D3B !important; }
-.progressbar-label--inactive    { color: rgba(47,47,44,0.5) !important; }
-.progressbar-step-of            { color: rgba(47,47,44,0.6) !important; }
-.dark .progressbar-label--active   { color: var(--c-brand-accent) !important; }
-.dark .progressbar-label--inactive { color: rgba(255,255,255,0.45) !important; }
-.dark .progressbar-step-of         { color: rgba(255,255,255,0.55) !important; }
-/* Inactive circle numbers — keep them muted, not full white */
-.progressbar-circle--inactive   { color: rgba(47,47,44,0.5) !important; }
-.dark .progressbar-circle--inactive { color: rgba(255,255,255,0.4) !important; }
-
 /* Prevent selection/focus rectangles on Recharts SVG charts */
 .recharts-wrapper,
 .recharts-wrapper svg,
@@ -346,40 +335,4 @@
 .recharts-cursor {
   fill: none !important;
   stroke: none !important;
-}
-
-/* Animations */
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-8px); }
-  15% { opacity: 1; transform: translateY(0); }
-  85% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-8px); }
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-fade-in-out {
-  animation: fadeInOut 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes celebrate {
-  0% { opacity: 0; transform: scale(0.5); }
-  60% { transform: scale(1.08); }
-  100% { opacity: 1; transform: scale(1); }
-}
-.animate-celebrate {
-  animation: celebrate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

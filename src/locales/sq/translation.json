@@ -991,7 +991,9 @@
         "salary": "Paga mujore",
         "fuel": "Karburant",
         "rent": "Qiraja"
-      }
+      },
+      "keptIn": "+{{amount}} të kursyera në {{month}}",
+      "addedJustNow": "shtuar tani"
     }
   },
   "currency": {

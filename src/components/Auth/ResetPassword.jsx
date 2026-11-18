@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import AuthLayout from './AuthLayout';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
@@ -162,8 +163,8 @@ export default function ResetPassword() {
   if (checkingSession) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="w-12 h-12 border-4 border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 rounded-full animate-spin mb-4" />
-        <p className="text-ink-muted dark:text-white font-medium">{t('auth.verifying')}</p>
+        <div className="w-12 h-12 border-4 border-line border-t-brand-600 rounded-full animate-spin mb-4" />
+        <p className="text-fg font-medium">{t('auth.verifying')}</p>
       </div>
     );
   }
@@ -207,31 +208,31 @@ export default function ResetPassword() {
   }
 
   const pwInputClass = (hasError) =>
-    `w-full border py-3 px-3.5 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 rounded-md transition-colors ${hasError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'}`;
+    `w-full border-2 py-3 px-3.5 pr-10 text-base focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 rounded-input transition-colors ${hasError ? 'border-expense' : 'border-line hover:border-inner-2'}`;
 
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+    <AuthLayout>
 
-      <div className="relative w-full max-w-md">
+      
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-icon mb-5">
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+          <h1 className="text-h1 font-extrabold text-fg mb-3">
             {t('auth.resetPasswordTitle')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
+          <p className="text-base text-fg max-w-sm mx-auto">
             {t('auth.resetPasswordDescription')}
           </p>
         </div>
 
-        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+        <div className="tile p-tile-dense sm:p-tile">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">
+              <label className="block text-sm font-medium text-fg mb-2">
                 {t('auth.newPassword')}
               </label>
               <PasswordInput
@@ -243,11 +244,11 @@ export default function ResetPassword() {
                 placeholder={t('auth.passwordPlaceholder')}
                 className={pwInputClass(passwordError)}
               />
-              {passwordError && <span className="text-expense text-xs mt-2 block">{t(passwordError)}</span>}
+              {passwordError && <span className="text-expense text-sm mt-2 block">{t(passwordError)}</span>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">
+              <label className="block text-sm font-medium text-fg mb-2">
                 {t('auth.confirmNewPassword')}
               </label>
               <PasswordInput
@@ -259,19 +260,19 @@ export default function ResetPassword() {
                 placeholder={t('auth.confirmPasswordPlaceholder')}
                 className={pwInputClass(confirmPasswordError)}
               />
-              {confirmPasswordError && <span className="text-expense text-xs mt-2 block">{t(confirmPasswordError)}</span>}
+              {confirmPasswordError && <span className="text-expense text-sm mt-2 block">{t(confirmPasswordError)}</span>}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
             >
               {loading ? t('auth.resetting') : t('auth.resetPassword')}
             </button>
           </form>
         </div>
-      </div>
-    </div>
+      
+    </AuthLayout>
   );
 }

@@ -37,7 +37,10 @@ const PAGES = {
   reports: () => import('../../src/components/Reports/ReportsPage.jsx'),
   notifications: () => import('../../src/components/Notifications/NotificationsPage.jsx'),
   account: () => import('../../src/components/Auth/AccountPage.jsx'),
+  onboarding: () => import('../../src/components/Onboarding/OnboardingWizard.jsx'),
 };
+// Full-screen flows render without the app shell, as in App.jsx.
+const BARE = new Set(['onboarding']);
 const { default: Page } = await (PAGES[page] || PAGES.dashboard)();
 
 createRoot(document.getElementById('root')).render(
@@ -45,6 +48,8 @@ createRoot(document.getElementById('root')).render(
     h(ThemeProvider, null,
       h(ToastProvider, null,
         h(TransactionProvider, null,
-          h(AuthenticatedLayout, null,
-            h(Suspense, { fallback: null }, h(Page)))))))
+          BARE.has(page)
+            ? h(Suspense, { fallback: null }, h(Page))
+            : h(AuthenticatedLayout, null,
+              h(Suspense, { fallback: null }, h(Page)))))))
 );

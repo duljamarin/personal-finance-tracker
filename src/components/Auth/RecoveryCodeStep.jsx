@@ -42,15 +42,15 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
     <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12">
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-fg tracking-[-0.01em] leading-[1.1] mb-3">
             {t('encryption.resetRecoveryTitle')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
+          <p className="text-base text-fg max-w-sm mx-auto">
             {t('encryption.resetRecoveryDesc')}
           </p>
         </div>
 
-        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+        <div className="bg-tile rounded-tile border border-line p-7 sm:p-8 ">
           {mode === 'enter' ? (
             <form onSubmit={handleSubmit} className="space-y-5">
               <input
@@ -58,30 +58,30 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder={t('encryption.enterRecoveryCode')}
-                className="w-full border rounded-md px-4 py-3 font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+                className="w-full border-2 rounded-input px-4 py-3 font-mono focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line"
               />
               {error && <p className="text-sm text-expense">{error}</p>}
               <button
                 type="submit"
                 disabled={busy || !code}
-                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               >
                 {busy ? t('encryption.unlocking') : t('encryption.unlock')}
               </button>
               <button
                 type="button"
                 onClick={() => setMode('lost')}
-                className="w-full text-sm text-ink-muted dark:text-white hover:text-expense underline text-center"
+                className="w-full text-sm text-fg hover:text-expense underline text-center"
               >
                 {t('encryption.lostRecoveryCode')}
               </button>
             </form>
           ) : (
             <div className="space-y-5">
-              <div className="border border-expense rounded-md p-3 bg-expense-bg text-sm text-expense">
+              <div className="border border-expense rounded-input p-3 bg-expense-bg text-sm text-expense">
                 {t('encryption.lostRecoveryCodeWarning')}
               </div>
-              <label className="flex items-start gap-2 text-sm text-ink-muted dark:text-white cursor-pointer">
+              <label className="flex items-start gap-2 text-sm text-fg cursor-pointer">
                 <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} className="mt-0.5" />
                 {t('encryption.lostRecoveryCodeAck')}
               </label>
@@ -89,14 +89,14 @@ export default function RecoveryCodeStep({ onSubmitCode, onLostCode }) {
                 type="button"
                 disabled={!ack || busy}
                 onClick={handleLostCode}
-                className="w-full bg-danger hover:bg-danger-hover text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                className="w-full bg-danger hover:bg-danger-hover text-white font-medium py-3 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               >
                 {busy ? t('encryption.disabling') : t('encryption.continueWithNewKey')}
               </button>
               <button
                 type="button"
                 onClick={() => setMode('enter')}
-                className="w-full text-sm text-ink-muted dark:text-white hover:text-brand-600 underline text-center"
+                className="w-full text-sm text-fg hover:text-brand-600 underline text-center"
               >
                 {t('common.back')}
               </button>

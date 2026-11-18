@@ -21,7 +21,7 @@ function buildSlides(snapshot) {
 }
 
 function CountCurrency({ value, currency, className, decimals = 0, start }) {
-  const n = useCountUp(value, { duration: 1300, start });
+  const n = useCountUp(value, { start });
   return <span className={className}>{formatCurrency(n, currency, { decimals })}</span>;
 }
 
@@ -56,13 +56,13 @@ export default function FinancialReveal({ snapshot, currency, seededSummary, onD
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-surface-page dark:bg-surface-dark-page flex flex-col">
+    <div className="fixed inset-0 z-50 bg-inner flex flex-col">
       {/* Progress segments */}
       <div className="flex gap-1.5 px-4 pt-4 sm:px-8">
         {slides.map((s, i) => (
-          <div key={s} className="flex-1 h-1 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
+          <div key={s} className="flex-1 h-1 rounded-full bg-inner-2 overflow-hidden">
             <div
-              className={`h-full bg-brand-600 transition-all ${i < index ? 'w-full' : i === index ? 'w-full' : 'w-0'}`}
+              className={`h-full bg-brand-600 btn-motion ${i < index ? 'w-full' : i === index ? 'w-full' : 'w-0'}`}
               style={{ transitionDuration: i === index && !paused && !isLast ? `${SLIDE_MS}ms` : '300ms' }}
             />
           </div>
@@ -77,7 +77,7 @@ export default function FinancialReveal({ snapshot, currency, seededSummary, onD
         onPointerUp={() => setPaused(false)}
         onPointerLeave={() => setPaused(false)}
       >
-        <div key={current} className="w-full max-w-md text-center animate-fade-in">
+        <div key={current} className="w-full max-w-md text-center animate-rise">
           {current === 'score' && <SlideScore snapshot={snapshot} t={t} />}
           {current === 'projection' && <SlideProjection snapshot={snapshot} currency={currency} t={t} />}
           {current === 'benchmark' && <SlideBenchmark snapshot={snapshot} currency={currency} t={t} />}
@@ -103,14 +103,14 @@ export default function FinancialReveal({ snapshot, currency, seededSummary, onD
 function SlideScore({ snapshot, t }) {
   return (
     <div className="space-y-6">
-      <p className="eyebrow">{t('onboarding.reveal.scoreEyebrow')}</p>
+      <p className="text-sm font-bold text-fg">{t('onboarding.reveal.scoreEyebrow')}</p>
       <div className="flex justify-center">
         <ScoreGauge score={snapshot.score} size={220} />
       </div>
-      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-primary dark:text-white">
+      <h2 className="text-h1 font-extrabold text-fg">
         {t('onboarding.reveal.scoreTitle')}
       </h2>
-      <p className="text-ink-muted dark:text-white">
+      <p className="text-fg">
         {snapshot.hasIncome
           ? t('onboarding.reveal.scoreSubtitle')
           : t('onboarding.reveal.scoreSubtitleNoIncome')}
@@ -124,19 +124,18 @@ function SlideProjection({ snapshot, currency, t }) {
   const amount = Math.abs(snapshot.projectedAnnual);
   return (
     <div className="space-y-5">
-      <p className="eyebrow">{t('onboarding.reveal.projectionEyebrow')}</p>
+      <p className="text-sm font-bold text-fg">{t('onboarding.reveal.projectionEyebrow')}</p>
       <div
-        className="font-display font-bold tracking-tight leading-none"
-        style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: positive ? '#0B5D3B' : '#DC2626' }}
+        className={`text-kpi font-extrabold tabular-nums ${positive ? 'text-brand-text' : 'text-fg'}`}
       >
         <CountCurrency value={amount} currency={currency} decimals={0} start />
       </div>
-      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-primary dark:text-white">
+      <h2 className="text-h1 font-extrabold text-fg">
         {positive
           ? t('onboarding.reveal.projectionTitlePositive')
           : t('onboarding.reveal.projectionTitleNegative')}
       </h2>
-      <p className="text-ink-muted dark:text-white">
+      <p className="text-fg">
         {positive
           ? t('onboarding.reveal.projectionSubPositive', {
               amount: formatCurrency(Math.abs(snapshot.monthlySavings), currency, { decimals: 0 }),
@@ -154,8 +153,8 @@ function SlideBenchmark({ snapshot, currency, t }) {
   const maxPct = Math.max(yourPct, refPct, 1);
   return (
     <div className="space-y-6">
-      <p className="eyebrow">{t('onboarding.reveal.benchmarkEyebrow')}</p>
-      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-primary dark:text-white">
+      <p className="text-sm font-bold text-fg">{t('onboarding.reveal.benchmarkEyebrow')}</p>
+      <h2 className="text-h1 font-extrabold text-fg">
         {/* A bill left uncategorized has no name to show, and the coarse bucket
             can be 'other', which has no label of its own. Fall back to a generic
             "this expense" rather than leaking a raw i18n key. */}
@@ -166,11 +165,11 @@ function SlideBenchmark({ snapshot, currency, t }) {
       </h2>
 
       <div className="space-y-3 text-left">
-        <BenchmarkBar label={t('onboarding.reveal.you')} pct={yourPct} maxPct={maxPct} color="#DC2626" />
-        <BenchmarkBar label={t('onboarding.reveal.typical')} pct={refPct} maxPct={maxPct} color="#0B5D3B" />
+        <BenchmarkBar label={t('onboarding.reveal.you')} pct={yourPct} maxPct={maxPct} color="var(--c-data-sand)" />
+        <BenchmarkBar label={t('onboarding.reveal.typical')} pct={refPct} maxPct={maxPct} color="var(--brand-text)" />
       </div>
 
-      <p className="text-ink-muted dark:text-white">
+      <p className="text-fg">
         {t('onboarding.reveal.benchmarkOpportunity', {
           amount: formatCurrency(opp.potentialAnnual, currency, { decimals: 0 }),
         })}
@@ -184,12 +183,12 @@ function BenchmarkBar({ label, pct, maxPct, color }) {
   return (
     <div>
       <div className="flex justify-between text-sm mb-1">
-        <span className="text-ink-primary dark:text-white">{label}</span>
+        <span className="text-fg">{label}</span>
         <span className="tabular-nums font-semibold" style={{ color }}>{pct}%</span>
       </div>
-      <div className="h-3 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
+      <div className="h-3 rounded-full bg-inner-2 overflow-hidden">
         <div
-          className="h-full rounded-full transition-all duration-700"
+          className="h-full rounded-full btn-motion duration-700"
           style={{ width, backgroundColor: color }}
         />
       </div>
@@ -200,24 +199,24 @@ function BenchmarkBar({ label, pct, maxPct, color }) {
 function SlideReady({ snapshot, currency, seededSummary, t }) {
   return (
     <div className="space-y-6">
-      <div className="animate-celebrate inline-flex items-center justify-center w-16 h-16 bg-brand-600 rounded-md shadow-lg">
+      <div className="animate-pop inline-flex items-center justify-center w-16 h-16 bg-brand-600 rounded-icon">
         <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 13l4 4L19 7" />
         </svg>
       </div>
-      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-primary dark:text-white">
+      <h2 className="text-h1 font-extrabold text-fg">
         {t('onboarding.reveal.readyTitle')}
       </h2>
 
       {snapshot.hasIncome && snapshot.safeToSpendPerDay > 0 && (
-        <p className="text-ink-muted dark:text-white">
+        <p className="text-fg">
           {t('onboarding.reveal.safeToSpend', {
             amount: formatCurrency(snapshot.safeToSpendPerDay, currency, { decimals: 0 }),
           })}
         </p>
       )}
 
-      <ul className="text-left max-w-xs mx-auto space-y-2 text-sm text-ink-primary dark:text-white">
+      <ul className="text-left max-w-xs mx-auto space-y-2 text-sm text-fg">
         {seededSummary.recurring > 0 && (
           <ReadyItem text={t('onboarding.reveal.seededRecurring', { count: seededSummary.recurring })} />
         )}
@@ -236,7 +235,7 @@ function SlideReady({ snapshot, currency, seededSummary, t }) {
 function ReadyItem({ text }) {
   return (
     <li className="flex items-start gap-2">
-      <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+      <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-text" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
       </svg>
       <span>{text}</span>

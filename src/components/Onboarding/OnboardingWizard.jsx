@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
@@ -22,6 +22,7 @@ import { computeSnapshot } from '../../utils/reveal/computeSnapshot';
 import Button from '../UI/Button';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import ProgressBar from './ProgressBar';
+import { D_ENTER, prefersReducedMotion } from '../../utils/motion';
 import CurrencyStep from './steps/CurrencyStep';
 import IncomeStep from './steps/IncomeStep';
 import ExpensesStep from './steps/ExpensesStep';
@@ -48,6 +49,20 @@ export default function OnboardingWizard() {
   const TOTAL_STEPS = steps.length;
 
   const [currentStep, setCurrentStep] = useState(1);
+  // Step change (spec 4.5): the outgoing step fades out with translateX(-GAP)
+  // for D_ENTER, then the incoming step mounts with rise. Reduced motion skips.
+  const [leaving, setLeaving] = useState(false);
+  const stepTimerRef = useRef(null);
+  useEffect(() => () => clearTimeout(stepTimerRef.current), []);
+  const changeStep = (delta) => {
+    if (prefersReducedMotion()) { setCurrentStep((s) => s + delta); return; }
+    setLeaving(true);
+    clearTimeout(stepTimerRef.current);
+    stepTimerRef.current = setTimeout(() => {
+      setCurrentStep((s) => s + delta);
+      setLeaving(false);
+    }, D_ENTER);
+  };
   const [submitting, setSubmitting] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -76,11 +91,11 @@ export default function OnboardingWizard() {
   }
 
   function handleNext() {
-    if (currentStep < TOTAL_STEPS) setCurrentStep((s) => s + 1);
+    if (currentStep < TOTAL_STEPS) changeStep(1);
   }
 
   function handleBack() {
-    if (currentStep > 1) setCurrentStep((s) => s - 1);
+    if (currentStep > 1) changeStep(-1);
   }
 
   function handleSkip() {
@@ -381,18 +396,18 @@ export default function OnboardingWizard() {
     const username =
       (typeof window !== 'undefined' && localStorage.getItem('username')) || '';
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-surface-page dark:bg-surface-dark-page px-4">
-        <div className="animate-celebrate inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-brand-600 rounded-md mb-6">
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-page px-4">
+        <div className="animate-pop inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-brand-600 rounded-tile mb-6">
           <svg viewBox="0 0 24 24" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] text-center mb-3">
+        <h1 className="text-h1 font-extrabold text-fg text-center mb-3">
           {username
             ? `${t('onboarding.wizard.successTitle').replace(/!$/, '')}, ${username}!`
             : t('onboarding.wizard.successTitle')}
         </h1>
-        <p className="text-base text-ink-muted dark:text-white text-center max-w-md">
+        <p className="text-base text-fg text-center max-w-md">
           {t('onboarding.wizard.successSubtitle')}
         </p>
       </div>
@@ -414,20 +429,20 @@ export default function OnboardingWizard() {
   const canSkip = stepKey !== 'currency';
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
+    <div className="relative min-h-screen bg-page flex items-center justify-center px-gap py-12 overflow-hidden">
       <div className="relative w-full max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-md mb-5">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-icon mb-5">
             <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+          <h1 className="text-h1 font-extrabold text-fg mb-3">
             {t('onboarding.wizard.title')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-white max-w-md mx-auto">
+          <p className="text-base text-fg max-w-md mx-auto">
             {t('onboarding.wizard.subtitle')}
           </p>
         </div>
@@ -439,15 +454,15 @@ export default function OnboardingWizard() {
         />
 
         {/* Step content — split layout */}
-        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline shadow-sm">
-          <div className="grid lg:grid-cols-[5fr_7fr]">
+        <div key={currentStep} className={`tile p-3 ${leaving ? 'animate-step-out' : 'animate-rise'}`}>
+          <div className="grid lg:grid-cols-[5fr_7fr] gap-3">
             {/* Illustration column */}
-            <div className="hidden lg:flex items-center justify-center p-8 bg-surface-subtle dark:bg-surface-dark-subtle border-r border-surface-hairline dark:border-surface-dark-hairline rounded-l-xl overflow-hidden">
+            <div className="hidden lg:flex items-center justify-center p-8 tile-inner overflow-hidden">
               <div className="w-full max-w-[320px]">{StepArt && <StepArt />}</div>
             </div>
 
             {/* Form column */}
-            <div className="p-6 sm:p-8 overflow-visible">
+            <div className="p-3 sm:p-5 overflow-visible">
               {stepKey === 'currency' && (
                 <CurrencyStep
                   currency={wizardData.currency}
@@ -493,10 +508,10 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center justify-between mt-gap">
           <div>
             {currentStep > 1 && (
-              <Button variant="secondary" onClick={handleBack} disabled={submitting}>
+              <Button variant="secondary" onClick={handleBack} disabled={submitting || leaving} type="button">
                 {t('onboarding.wizard.back')}
               </Button>
             )}
@@ -504,13 +519,14 @@ export default function OnboardingWizard() {
 
           <div className="flex items-center gap-3">
             {canSkip && !isLastStep && (
-              <Button variant="ghost" onClick={handleSkip} disabled={submitting}>
+              <Button variant="ghost" onClick={handleSkip} disabled={submitting || leaving} type="button">
                 {t('onboarding.wizard.skip')}
               </Button>
             )}
 
             {isLastStep ? (
               <Button
+                type="button"
                 onClick={handleFinish}
                 disabled={submitting}
               >
@@ -518,7 +534,10 @@ export default function OnboardingWizard() {
               </Button>
             ) : (
               <Button
+                type="button"
                 onClick={handleNext}
+                disabled={leaving}
+                trailing="arrow"
               >
                 {t('onboarding.wizard.next')}
               </Button>

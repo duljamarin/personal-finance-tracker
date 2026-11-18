@@ -27,10 +27,10 @@ export default function IncomeStep({ income, payday, onIncomeChange, onPaydayCha
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
+        <h2 className="font-semibold tracking-[-0.01em] text-2xl text-fg">
           {t('onboarding.income.title')}
         </h2>
-        <p className="text-ink-muted dark:text-white mt-2">
+        <p className="text-fg mt-2">
           {t('onboarding.income.subtitle')}
         </p>
       </div>
@@ -44,13 +44,13 @@ export default function IncomeStep({ income, payday, onIncomeChange, onPaydayCha
           placeholder={placeholder}
           value={income}
           onChange={(e) => onIncomeChange(e.target.value)}
-          leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
+          leadingIcon={<span className="text-sm font-medium text-fg">{symbol}</span>}
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
+          <label className="block text-sm font-medium text-fg mb-1.5">
             {t('onboarding.income.paydayLabel')}
-            <span className="text-ink-muted dark:text-white font-normal ml-1">
+            <span className="text-fg font-medium ml-1">
               {t('onboarding.income.optional')}
             </span>
           </label>

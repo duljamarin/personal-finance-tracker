@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import AuthLayout from './AuthLayout';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
@@ -11,9 +12,7 @@ import Input from '../UI/Input';
 // remounting everything inside it (including the email <Input>) on every
 // keystroke, which dropped focus after each character typed.
 const Shell = ({ children }) => (
-  <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
-    <div className="relative w-full max-w-md">{children}</div>
-  </div>
+  <AuthLayout>{children}</AuthLayout>
 );
 
 export default function ForgotPassword() {
@@ -55,21 +54,21 @@ export default function ForgotPassword() {
   if (success) {
     return (
       <Shell>
-        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-8 sm:p-10 text-center shadow-sm">
+        <div className="tile p-tile-dense sm:p-tile text-center">
           <div className="w-16 h-16 bg-brand-600 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
             </svg>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+          <h1 className="text-h1 font-extrabold text-fg mb-3">
             {t('auth.checkYourEmail')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-white mb-8">
+          <p className="text-base text-fg mb-8">
             {t('auth.resetEmailSent')}
           </p>
           <Link
             to={localizedPath('/login', i18n.language)}
-            className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
+            className="inline-flex items-center gap-2 text-brand-text hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -84,21 +83,21 @@ export default function ForgotPassword() {
   return (
     <Shell>
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-icon mb-5">
           <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 17 L10 11 L14 14 L20 6" />
             <path d="M15 6 L20 6 L20 11" />
           </svg>
         </div>
-        <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+        <h1 className="text-h1 font-extrabold text-fg mb-3">
           {t('auth.forgotPasswordTitle')}
         </h1>
-        <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
+        <p className="text-base text-fg max-w-sm mx-auto">
           {t('auth.forgotPasswordDescription')}
         </p>
       </div>
 
-      <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+      <div className="tile p-tile-dense sm:p-tile">
         <form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label={t('auth.email')}
@@ -120,7 +119,7 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
           >
             {loading ? t('auth.sending') : t('auth.sendResetLink')}
           </button>
@@ -128,7 +127,7 @@ export default function ForgotPassword() {
           <div className="text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
+              className="inline-flex items-center gap-2 text-brand-text hover:text-brand-700 dark:hover:text-brand-300 font-medium transition-colors text-sm"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

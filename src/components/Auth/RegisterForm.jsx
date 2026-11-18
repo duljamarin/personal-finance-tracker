@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import AuthLayout from './AuthLayout';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useCrypto } from '../../context/CryptoContext';
@@ -146,25 +147,25 @@ export default function RegisterForm() {
   }
 
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center px-4 py-12 overflow-hidden">
+    <AuthLayout>
 
-      <div className="relative w-full max-w-md">
+      
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-md mb-5">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-600 rounded-icon mb-5">
             <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 17 L10 11 L14 14 L20 6" />
               <path d="M15 6 L20 6 L20 11" />
             </svg>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-primary dark:text-white tracking-tight leading-[1.1] mb-3">
+          <h1 className="text-h1 font-extrabold text-fg mb-3">
             {t('auth.registerTitle')}
           </h1>
-          <p className="text-base text-ink-muted dark:text-white max-w-sm mx-auto">
+          <p className="text-base text-fg max-w-sm mx-auto">
             {t('auth.joinDescription')}
           </p>
         </div>
 
-        <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-7 sm:p-8 shadow-sm">
+        <div className="tile p-tile-dense sm:p-tile">
           {/* Google OAuth — hidden inside in-app WebViews (Instagram/LinkedIn/
               Facebook/TikTok), which Google blocks with "Error 403:
               disallowed_useragent". No code-side workaround exists; we guide
@@ -175,7 +176,7 @@ export default function RegisterForm() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 text-ink-primary dark:text-white px-4 py-3 rounded-md font-medium text-sm transition-colors"
+              className="btn-motion btn-lift w-full min-h-11 flex items-center justify-center gap-3 bg-tile border-2 border-line hover:border-fg text-fg px-4 py-3 rounded-pill font-bold text-sm"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -188,9 +189,9 @@ export default function RegisterForm() {
           )}
 
           <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
-            <span className="text-xs text-ink-muted dark:text-white font-medium">{t('auth.or')}</span>
-            <div className="flex-1 h-px bg-surface-hairline dark:bg-surface-dark-hairline" />
+            <div className="flex-1 h-px bg-inner-2" />
+            <span className="text-sm text-fg font-medium">{t('auth.or')}</span>
+            <div className="flex-1 h-px bg-inner-2" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -223,7 +224,7 @@ export default function RegisterForm() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">{t('auth.preferredLanguage')}</label>
+              <label className="block text-sm font-medium text-fg mb-2">{t('auth.preferredLanguage')}</label>
               <select
                 value={language}
                 onChange={e => {
@@ -235,7 +236,7 @@ export default function RegisterForm() {
                   // chosen language instead of falling back to English.
                   if (typeof i18n.changeLanguage === 'function') i18n.changeLanguage(lng);
                 }}
-                className="w-full border border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 rounded-md px-3.5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white transition-colors"
+                className="w-full border-2 border-line hover:border-inner-2 rounded-input px-3.5 py-3 text-base focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg transition-colors"
               >
                 <option value="en">{t('languages.english', 'English')}</option>
                 <option value="sq">{t('languages.albanian', 'Shqip (Albanian)')}</option>
@@ -243,7 +244,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-2">{t('auth.password')}</label>
+              <label className="block text-sm font-medium text-fg mb-2">{t('auth.password')}</label>
               <PasswordInput
                 name="password"
                 id="password"
@@ -259,7 +260,7 @@ export default function RegisterForm() {
                 }
               />
               {passwordError && (
-                <p className="mt-2 text-xs text-expense flex items-center gap-1.5">
+                <p className="mt-2 text-sm text-expense flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                   </svg>
@@ -276,36 +277,36 @@ export default function RegisterForm() {
                   onChange={e => { setAgreeTerms(e.target.checked); if (termsError) setTermsError(''); }}
                   className="peer sr-only"
                 />
-                <span className="mt-0.5 w-[18px] h-[18px] rounded-[5px] border-[1.5px] border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card flex items-center justify-center transition-colors group-hover:border-brand-500/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/30 flex-shrink-0">
+                <span className="mt-0.5 w-[18px] h-[18px] rounded-input border-[1.5px] border-line bg-tile flex items-center justify-center transition-colors group-hover:border-brand-500/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/30 flex-shrink-0">
                   <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: agreeTerms ? 1 : 0 }}>
                     <path d="M4.5 12.75 10.5 18 20 6" />
                   </svg>
                 </span>
-                <span className="text-sm text-ink-primary dark:text-white leading-relaxed">
+                <span className="text-sm text-fg leading-relaxed">
                   {t('auth.agreeToTerms')}{' '}
-                  <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.termsOfService')}</Link>
+                  <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-brand-text font-medium hover:underline">{t('auth.termsOfService')}</Link>
                   {' '}{t('auth.andThe')}{' '}
-                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.privacyPolicy')}</Link>
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-text font-medium hover:underline">{t('auth.privacyPolicy')}</Link>
                 </span>
               </label>
-              {termsError && <span className="text-expense text-xs mt-2 block">{t(termsError)}</span>}
+              {termsError && <span className="text-expense text-sm mt-2 block">{t(termsError)}</span>}
             </div>
 
             {formError && (
-              <div className="bg-expense-bg border border-expense/30 text-expense text-center text-sm p-3 rounded-md">
+              <div className="bg-expense-bg border border-expense/30 text-expense text-center text-sm p-3 rounded-input">
                 {t(formError)}
               </div>
             )}
 
             {successMessage && (
-              <div className="bg-brand-500/10 dark:bg-brand-500/15 border-l-2 border-l-brand-600 dark:border-l-brand-400 text-brand-700 dark:text-brand-300 text-center text-sm p-3 rounded-md animate-fade-out">
+              <div className="bg-brand-500/10 dark:bg-brand-500/15 border-l-2 border-l-brand-600 dark:border-l-brand-400 text-brand-700 dark:text-brand-300 text-center text-sm p-3 rounded-input animate-fade-out">
                 {t(successMessage)}
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               disabled={loading}
             >
               {t('auth.createAccount')}
@@ -313,11 +314,11 @@ export default function RegisterForm() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-ink-muted dark:text-white mt-8">
+        <p className="text-center text-sm text-fg mt-8">
           {t('auth.hasAccount')}{' '}
-          <Link to={localizedPath('/login', i18n.language)} className="text-brand-600 dark:text-brand-400 font-medium hover:underline">{t('auth.signIn')}</Link>
+          <Link to={localizedPath('/login', i18n.language)} className="text-brand-text font-medium hover:underline">{t('auth.signIn')}</Link>
         </p>
-      </div>
+      
 
       {pendingRecoveryCode && (
         <RecoveryCodeModal
@@ -329,6 +330,6 @@ export default function RegisterForm() {
           }}
         />
       )}
-    </div>
+    </AuthLayout>
   );
 }

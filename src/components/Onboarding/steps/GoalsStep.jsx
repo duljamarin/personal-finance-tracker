@@ -90,10 +90,10 @@ export default function GoalsStep({ goals, onChange, currency, income }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
+        <h2 className="font-semibold tracking-[-0.01em] text-2xl text-fg">
           {t('onboarding.goals.title')}
         </h2>
-        <p className="text-ink-muted dark:text-white mt-2">
+        <p className="text-fg mt-2">
           {t('onboarding.goals.subtitle')}
         </p>
       </div>
@@ -113,7 +113,7 @@ export default function GoalsStep({ goals, onChange, currency, income }) {
                 'px-3 py-1.5 text-sm rounded-full border inline-flex items-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ' +
                 (selected
                   ? 'border-brand-600 bg-brand-600 text-white font-medium'
-                  : 'border-surface-outline dark:border-surface-dark-outline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
+                  : 'border-line bg-tile text-fg hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
               }
             >
               {selected ? (
@@ -131,7 +131,7 @@ export default function GoalsStep({ goals, onChange, currency, income }) {
 
       <div className="max-w-md mx-auto space-y-4">
         {goals.length === 0 && (
-          <p className="text-center text-sm text-ink-muted dark:text-white">
+          <p className="text-center text-sm text-fg">
             {t('onboarding.goals.empty')}
           </p>
         )}
@@ -158,7 +158,7 @@ export default function GoalsStep({ goals, onChange, currency, income }) {
                 placeholder={placeholder}
                 value={goal.amount}
                 onChange={(e) => updateGoal(index, 'amount', e.target.value)}
-                leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
+                leadingIcon={<span className="text-sm font-medium text-fg">{symbol}</span>}
               />
               <Input
                 label={t('onboarding.goals.targetDateLabel')}
@@ -170,7 +170,7 @@ export default function GoalsStep({ goals, onChange, currency, income }) {
             <button
               type="button"
               onClick={() => removeGoal(index)}
-              className="mt-7 p-2 text-ink-muted dark:text-white hover:text-expense transition-colors"
+              className="mt-7 p-2 text-fg hover:text-expense transition-colors"
               aria-label={t('onboarding.goals.remove')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

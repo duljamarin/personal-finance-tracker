@@ -62,7 +62,7 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
             value: cat.id,
             label: translateCategoryName(cat.name),
             leading: (
-              <span className="w-6 h-6 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+              <span className="w-6 h-6 rounded-input bg-inner flex items-center justify-center text-brand-text flex-shrink-0">
                 <CategoryIconSvg iconKey={iconKey || 'Shopping'} className="w-3.5 h-3.5" />
               </span>
             ),
@@ -101,10 +101,10 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="font-semibold tracking-tight text-2xl text-ink-primary dark:text-white">
+        <h2 className="font-semibold tracking-[-0.01em] text-2xl text-fg">
           {t('onboarding.budgets.title')}
         </h2>
-        <p className="text-ink-muted dark:text-white mt-2">
+        <p className="text-fg mt-2">
           {t('onboarding.budgets.subtitle')}
         </p>
       </div>
@@ -125,7 +125,7 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
                   'px-3 py-1.5 text-sm rounded-full border inline-flex items-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ' +
                   (selected
                     ? 'border-brand-600 bg-brand-600 text-white font-medium'
-                    : 'border-surface-outline dark:border-surface-dark-outline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
+                    : 'border-line bg-tile text-fg hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400')
                 }
               >
                 {selected ? (
@@ -146,7 +146,7 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
 
       <div className="max-w-md mx-auto space-y-4">
         {budgets.length === 0 && (
-          <p className="text-center text-sm text-ink-muted dark:text-white">
+          <p className="text-center text-sm text-fg">
             {suggestions.length > 0
               ? t('onboarding.budgets.empty')
               : t('onboarding.budgets.emptyNoBills')}
@@ -165,7 +165,7 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
             >
               <div className="flex-1 space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
+                  <label className="block text-sm font-medium text-fg mb-1.5">
                     {t('onboarding.budgets.categoryLabel')}
                   </label>
                   <CustomSelect
@@ -184,13 +184,13 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
                   placeholder={placeholder}
                   value={budget.amount}
                   onChange={(e) => updateBudget(index, 'amount', e.target.value)}
-                  leadingIcon={<span className="text-sm font-medium text-ink-muted dark:text-white">{symbol}</span>}
+                  leadingIcon={<span className="text-sm font-medium text-fg">{symbol}</span>}
                 />
               </div>
               <button
                 type="button"
                 onClick={() => removeBudget(index)}
-                className="mt-7 p-2 text-ink-muted dark:text-white hover:text-expense transition-colors"
+                className="mt-7 p-2 text-fg hover:text-expense transition-colors"
                 aria-label={t('onboarding.budgets.remove')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,7 +208,7 @@ export default function BudgetsStep({ budgets, onChange, categories, currency, e
               if (budgets.length >= MAX_BUDGETS) return;
               onChange([...budgets, { id: crypto.randomUUID(), categoryId: '', amount: '' }]);
             }}
-            className="w-full text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline py-1"
+            className="w-full text-sm font-medium text-brand-text hover:underline py-1"
           >
             {t('onboarding.budgets.addCustom')}
           </button>
