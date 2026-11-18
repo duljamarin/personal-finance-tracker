@@ -101,7 +101,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display text-title text-fg mb-6">
+      <h2 className="text-h3 font-bold text-fg mb-6">
         {isEditing ? t('goals.editGoal') : t('goals.addGoal')}
       </h2>
 
@@ -125,7 +125,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder={t('goals.form.descriptionPlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-line rounded-input dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-tile text-fg"
+            className="w-full px-3 py-2 border-2 border-line rounded-input focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg"
           />
         </div>
 
@@ -162,7 +162,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-input border font-medium text-sm transition-colors ${
  formData.goalType === type
  ? 'bg-brand-600 border-brand-600 text-white'
- : 'bg-tile border-surface-outline dark:border-surface-dark-outline text-fg hover:border-brand-400 dark:hover:border-brand-600'
+ : 'bg-tile border-line text-fg hover:border-brand-400 dark:hover:border-brand-600'
  }`}
               >
                 <span className={`flex-shrink-0 ${formData.goalType === type ? 'text-white' : 'text-fg'}`}>
@@ -181,7 +181,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
           <select
             value={formData.priority}
             onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-line rounded-input appearance-none dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-tile text-fg"
+            className="w-full px-3 py-2 border-2 border-line rounded-input appearance-none focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg"
           >
             {priorities.map(p => (
               <option key={p.value} value={p.value}>

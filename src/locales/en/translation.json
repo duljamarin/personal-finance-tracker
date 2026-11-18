@@ -1853,7 +1853,8 @@
       "goalMilestoneDesc": "Celebrate when you reach milestones on your financial goals",
       "trialExpiring": "Trial Expiration Reminders",
       "trialExpiringDesc": "Get notified before your trial period ends"
-    }
+    },
+    "unreadLabel": "Unread"
   },
   "split": {
     "title": "Split Transaction",

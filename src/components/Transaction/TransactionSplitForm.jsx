@@ -132,10 +132,10 @@ export default function TransactionSplitForm({
                   'w-full py-3 px-3.5 text-sm rounded-input border bg-tile ' +
                   'text-fg ' +
                   'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
-                  ' dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition-colors ' +
+                  ' focus:border-brand-600 dark:focus:border-brand-400 transition-colors ' +
                   (errors[`split_${index}_amount`]
                     ? 'border-expense'
-                    : 'border-line hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40')
+                    : 'border-line hover:border-inner-2')
                 }
               />
               {errors[`split_${index}_amount`] && (
@@ -165,7 +165,7 @@ export default function TransactionSplitForm({
               type="button"
               onClick={() => handleRemoveSplit(index)}
               disabled={splits.length <= 1}
-              className="shrink-0 flex items-center justify-center w-8 h-8 rounded-input text-expense hover:text-expense hover:bg-expense/5 dark:hover:bg-expense/10 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+              className="btn-motion shrink-0 flex items-center justify-center w-11 h-11 rounded-pill text-danger hover:bg-inner disabled:opacity-25 disabled:cursor-not-allowed"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

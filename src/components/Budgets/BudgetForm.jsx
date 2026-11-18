@@ -47,7 +47,7 @@ export default function BudgetForm({ budget, availableCategories, onSave, onClos
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display text-title text-fg mb-6">
+      <h2 className="text-h3 font-bold text-fg mb-6">
         {isEditing ? t('budgets.editBudget') : t('budgets.addBudget')}
       </h2>
 

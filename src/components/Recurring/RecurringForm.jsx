@@ -9,12 +9,12 @@ import { EXPENSE_COLOR } from '../../utils/chartColors';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 const inputBaseClass =
-  'w-full px-3 py-2.5 text-sm rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
+  'w-full px-3 py-2.5 text-sm rounded-input border-2 bg-tile text-fg focus:border-brand-600 dark:focus:border-brand-400 transition';
 const inputErrorClass = 'border-[color:var(--err)]';
-const inputNormalClass = 'border-surface-hairline dark:border-surface-dark-hairline';
+const inputNormalClass = 'border-line';
 
 const selectClass =
-  'appearance-none w-full pl-3 pr-9 py-2.5 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
+  'appearance-none w-full pl-3 pr-9 py-2.5 text-sm rounded-input border-2 border-line bg-tile text-fg focus:border-brand-600 dark:focus:border-brand-400 transition';
 
 export default function RecurringForm({ onSubmit, onCancel, initial }) {
   const { t } = useTranslation();
@@ -133,26 +133,26 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
       className="flex flex-col gap-3 sm:gap-6 w-full sm:max-w-2xl sm:mx-auto h-full px-4 sm:px-0"
       style={{ '--err': EXPENSE_COLOR }}
     >
-      <h2 className="text-heading sm:text-title font-display text-ink-primary dark:text-white mb-1 flex-shrink-0">
+      <h2 className="text-heading sm:text-h1 font-extrabold text-fg mb-1 flex-shrink-0">
         {t('recurring.editTitle')}
       </h2>
 
       <div className="flex flex-col gap-3 sm:gap-6 overflow-y-auto flex-1 pr-2 sm:pr-3">
         {/* Transaction Info (read-only) */}
-        <div className="bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-4">
+        <div className="bg-inner border border-line rounded-input p-4">
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-semibold tracking-tight text-sm sm:text-base text-ink-primary dark:text-white truncate">
+            <h3 className="font-semibold tracking-[-0.01em] text-sm sm:text-base text-fg truncate">
               {initial?.title}
             </h3>
             <span
-              className={`font-semibold tabular-nums text-base sm:text-lg flex-shrink-0 ${initial?.type === 'income' ? 'text-brand-600 dark:text-brand-400' : ''}`}
+              className={`font-semibold tabular-nums text-base sm:text-lg flex-shrink-0 ${initial?.type === 'income' ? 'text-brand-text' : ''}`}
               style={initial?.type === 'expense' ? { color: EXPENSE_COLOR } : undefined}
             >
               {initial?.type === 'expense' ? '-' : '+'}
               {formatCurrency(Number(initial?.amount))}
             </span>
           </div>
-          <p className="mt-2 pt-2 border-t border-surface-hairline dark:border-surface-dark-hairline text-xs text-ink-muted dark:text-white">
+          <p className="mt-2 pt-2 border-t border-line text-sm text-fg">
             {t('recurring.readOnlyNote')}
           </p>
         </div>
@@ -160,7 +160,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
         {/* Frequency & Interval */}
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <div className="flex flex-col gap-1 sm:gap-2">
-            <label className="eyebrow">
+            <label className="text-sm font-bold text-fg">
               {t('recurring.frequency')}
             </label>
             <div className="relative">
@@ -177,7 +177,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
             </div>
           </div>
           <div className="flex flex-col gap-1 sm:gap-2">
-            <label className="eyebrow">
+            <label className="text-sm font-bold text-fg">
               {t('recurring.every')}
             </label>
             <div className="flex items-center gap-1 sm:gap-2">
@@ -188,12 +188,12 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 onChange={handleIntervalCountChange}
                 className={`${inputClass(errors.intervalCount)} w-16 sm:w-20`}
               />
-              <span className="text-xs sm:text-sm text-ink-muted dark:text-white">
+              <span className="text-sm sm:text-sm text-fg">
                 {t(`recurring.${frequency}Unit`, { count: Number(intervalCount) || 1 })}
               </span>
             </div>
             {errors.intervalCount && (
-              <span className="text-xs font-medium" style={{ color: EXPENSE_COLOR }}>
+              <span className="text-sm font-medium" style={{ color: EXPENSE_COLOR }}>
                 {t(errors.intervalCount)}
               </span>
             )}
@@ -202,7 +202,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
 
         {/* End Condition */}
         <div className="flex flex-col gap-1 sm:gap-2">
-          <label className="eyebrow">
+          <label className="text-sm font-bold text-fg">
             {t('recurring.ends')}
           </label>
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -211,11 +211,11 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
                 key={option}
                 type="button"
                 onClick={() => setEndType(option)}
-                className={`px-3 py-1.5 sm:px-3 sm:py-2 text-xs rounded-md font-medium border transition-colors ${
-                  endType === option
-                    ? 'bg-brand-600 text-white border-brand-600'
-                    : 'bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white border-surface-hairline dark:border-surface-dark-hairline hover:border-brand-500/40'
-                }`}
+                className={`px-3 py-1.5 sm:px-3 sm:py-2 text-sm rounded-input font-medium border transition-colors ${
+ endType === option
+ ? 'bg-brand-600 text-white border-brand-600'
+ : 'bg-tile text-fg border-line hover:border-brand-500/40'
+ }`}
               >
                 {t(`recurring.end${option.charAt(0).toUpperCase() + option.slice(1)}`)}
               </button>
@@ -226,7 +226,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
         {/* End Date Input */}
         {endType === 'date' && (
           <div className="flex flex-col gap-1 sm:gap-2">
-            <label className="eyebrow">
+            <label className="text-sm font-bold text-fg">
               {t('recurring.endDate')}
             </label>
             <Input
@@ -237,7 +237,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
               className={`${inputClass(errors.endDate)} [color-scheme:light] dark:[color-scheme:dark]`}
             />
             {errors.endDate && (
-              <span className="text-xs font-medium" style={{ color: EXPENSE_COLOR }}>
+              <span className="text-sm font-medium" style={{ color: EXPENSE_COLOR }}>
                 {t(errors.endDate)}
               </span>
             )}
@@ -247,7 +247,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
         {/* Occurrences Count Input */}
         {endType === 'count' && (
           <div className="flex flex-col gap-1 sm:gap-2">
-            <label className="eyebrow">
+            <label className="text-sm font-bold text-fg">
               {t('recurring.occurrences')}
             </label>
             <Input
@@ -259,7 +259,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
               className={inputClass(errors.occurrencesLimit)}
             />
             {errors.occurrencesLimit && (
-              <span className="text-xs font-medium" style={{ color: EXPENSE_COLOR }}>
+              <span className="text-sm font-medium" style={{ color: EXPENSE_COLOR }}>
                 {t(errors.occurrencesLimit)}
               </span>
             )}
@@ -268,7 +268,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline flex-col sm:flex-row flex-shrink-0 mt-auto">
+      <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-line flex-col sm:flex-row flex-shrink-0 mt-auto">
         <Button
           type="button"
           variant="secondary"
@@ -279,7 +279,7 @@ export default function RecurringForm({ onSubmit, onCancel, initial }) {
         </Button>
         <Button
           type="submit"
-          className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md"
+          className="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-input"
         >
           {t('recurring.saveChanges')}
         </Button>

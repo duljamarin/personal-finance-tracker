@@ -66,10 +66,10 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
   return (
     <Modal onClose={() => {}}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-heading text-ink-primary dark:text-white">
+        <h2 className="text-heading text-fg">
           {t('encryption.unlockTitle')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-white">
+        <p className="text-sm text-fg">
           {t('encryption.unlockDesc')}
         </p>
 
@@ -80,7 +80,7 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder={isAppPassword ? t('encryption.enterAppPassword') : t('encryption.enterPassword')}
               autoComplete="current-password"
-              className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border-2 rounded-input px-4 py-3 pr-12 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line"
             />
             {error && <p className="text-sm text-expense">{error}</p>}
             <Button type="submit" disabled={busy || !password}>
@@ -89,7 +89,7 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
             <button
               type="button"
               onClick={() => { setMode('recovery'); setError(''); }}
-              className="text-sm text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 underline text-center"
+              className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-500 underline text-center"
             >
               {t('encryption.useRecoveryCodeInstead')}
             </button>
@@ -103,7 +103,7 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
               value={recoveryCode}
               onChange={(e) => setRecoveryCode(e.target.value)}
               placeholder={t('encryption.enterRecoveryCode')}
-              className="w-full border rounded-md px-4 py-3 font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border-2 rounded-input px-4 py-3 font-mono focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line"
             />
             {error && <p className="text-sm text-expense">{error}</p>}
             <Button type="submit" disabled={busy || !recoveryCode}>
@@ -113,14 +113,14 @@ export default function UnlockModal({ onUnlocked, onSetupNewKey }) {
               <button
                 type="button"
                 onClick={() => { setMode('password'); setError(''); }}
-                className="text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 underline"
+                className="text-fg hover:text-brand-600 dark:hover:text-brand-500 underline"
               >
                 {t('common.back')}
               </button>
               <button
                 type="button"
                 onClick={() => { setMode('lost'); setError(''); }}
-                className="text-ink-muted dark:text-white hover:text-expense underline"
+                className="text-fg hover:text-expense underline"
               >
                 {t('encryption.lostRecoveryCode')}
               </button>
@@ -156,10 +156,10 @@ function LostCodeConfirm({ onBack, onConfirm, busy, isAppPassword }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="border border-expense rounded-md p-3 bg-expense-bg text-sm text-expense">
+      <div className="border border-expense rounded-input p-3 bg-expense-bg text-sm text-expense">
         {t('encryption.lostRecoveryCodeWarning')}
       </div>
-      <label className="flex items-start gap-2 text-sm text-ink-muted dark:text-white cursor-pointer">
+      <label className="flex items-start gap-2 text-sm text-fg cursor-pointer">
         <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} className="mt-0.5" />
         {t('encryption.lostRecoveryCodeAck')}
       </label>
@@ -169,7 +169,7 @@ function LostCodeConfirm({ onBack, onConfirm, busy, isAppPassword }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder={isAppPassword ? t('encryption.createAppPassword') : t('encryption.enterPassword')}
           autoComplete={isAppPassword ? 'new-password' : 'current-password'}
-          className="w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+          className="w-full border-2 rounded-input px-4 py-3 pr-12 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line"
         />
       )}
       <Button
@@ -179,7 +179,7 @@ function LostCodeConfirm({ onBack, onConfirm, busy, isAppPassword }) {
       >
         {t('encryption.continueWithNewKey')}
       </Button>
-      <button type="button" onClick={onBack} className="text-sm text-ink-muted dark:text-white hover:text-brand-600 underline text-center">
+      <button type="button" onClick={onBack} className="text-sm text-fg hover:text-brand-600 underline text-center">
         {t('common.back')}
       </button>
     </div>

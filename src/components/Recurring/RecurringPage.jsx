@@ -5,7 +5,9 @@ import PageHeader from '../UI/PageHeader';
 import StatStrip from '../UI/StatStrip';
 import EmptyState from '../UI/EmptyState';
 import CategoryAvatar from '../UI/CategoryAvatar';
-import { Pause, Play, Pencil, Trash2, Repeat as RepeatIcon } from 'lucide-react';
+import { Pause, Play, Pencil, Trash2, ArrowRight, Repeat as RepeatIcon } from 'lucide-react';
+import Card from '../UI/Card';
+import { dataDelay, delayStyle, rowDelay } from '../../utils/motion';
 import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import { fetchRecurringTransactions, deleteRecurringTransaction, pauseRecurringTransaction, resumeRecurringTransaction, processRecurringTransactions } from '../../utils/api';
@@ -123,11 +125,10 @@ export default function RecurringPage() {
   });
 
   const iconBtn =
-    'inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted dark:text-white ' +
-    'hover:text-ink-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors';
+    'btn-motion inline-flex items-center justify-center w-11 h-11 rounded-pill text-fg hover:bg-inner-2';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-gap">
       <PageHeader title={t('recurring.manageTitle')} subtitle={t('recurring.manageDescription')} className="!mb-0" />
 
       {/* Free plan usage counter. Counts ACTIVE templates only, matching both
@@ -141,25 +142,28 @@ export default function RecurringPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && activeRecurringCount >= recurringLimit && (
-        <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-ink-muted dark:text-white">
+        <Card padding="sm" className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-base font-semibold text-fg">
             {t('limits.recurringLimitReached', { limit: recurringLimit })}
           </p>
-          <Link to="/pricing" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="group btn-motion btn-lift inline-flex items-center gap-2 min-h-11 px-5 rounded-pill bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold whitespace-nowrap">
             {t('upgrade.upgradeCta')}
+            <ArrowRight className="arrow-nudge w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
           </Link>
-        </div>
+        </Card>
       )}
 
       {recurrings.length === 0 ? (
         <EmptyState
-          icon={<RepeatIcon className="w-5 h-5" strokeWidth={1.75} />}
+          icon={<RepeatIcon className="w-[22px] h-[22px]" strokeWidth={2} />}
           title={t('recurring.noRecurring')}
           description={t('recurring.noRecurringDesc')}
         />
       ) : (
         <>
           <StatStrip
+            variant="hero"
+            index={0}
             items={[
               {
                 label: t('recurring.monthlyCosts'),
@@ -177,8 +181,8 @@ export default function RecurringPage() {
             ]}
           />
 
-          <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
-            <ul className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
+          <Card as="section" index={1} padding="sm">
+            <ul className="flex flex-col gap-1">
               {sorted.map(recurring => {
                 const ends = recurring.end_date
                   ? t('recurring.endsOn', { date: fmtDate(recurring.end_date) })
@@ -193,32 +197,38 @@ export default function RecurringPage() {
                 ].filter(Boolean);
 
                 return (
-                  <li key={recurring.id} className={`group flex items-center gap-3 px-4 sm:px-5 py-3.5 ${recurring.is_active ? '' : 'bg-surface-page/60 dark:bg-surface-dark-page/60'}`}>
-                    <CategoryAvatar category={recurring.category} fallbackName={recurring.title} />
+                  <li
+                    key={recurring.id}
+                    className={`activity-row animate-rise group flex items-center gap-[14px] p-3 rounded-icon ${recurring.is_active ? '' : 'bg-inner'}`}
+                    style={delayStyle(rowDelay(sorted.indexOf(recurring), dataDelay(1)))}
+                  >
+                    <span className="activity-icon shrink-0">
+                      <CategoryAvatar category={recurring.category} fallbackName={recurring.title} size="lg" />
+                    </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 min-w-0">
-                        <p className={`text-sm font-medium [overflow-wrap:anywhere] ${recurring.is_active ? 'text-ink-primary dark:text-white' : 'text-ink-muted dark:text-white'}`}>
+                        <p className="font-extrabold text-fg [overflow-wrap:anywhere]">
                           {recurring.title}
                         </p>
                         {!recurring.is_active && (
-                          <span className="shrink-0 px-1.5 py-0.5 rounded-md text-[11px] font-medium bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white">
+                          <span className="shrink-0 inline-flex items-center h-[26px] px-2.5 rounded-pill bg-tile border border-line text-min font-bold text-fg">
                             {t('recurring.paused')}
                           </span>
                         )}
                       </div>
-                      <p className="mt-0.5 text-xs text-ink-muted dark:text-white">{meta.join(' · ')}</p>
+                      <p className="mt-0.5 text-sm font-semibold text-fg">{meta.join(' · ')}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className={`text-sm font-semibold tabular-nums ${recurring.type === 'income' ? 'text-brand-600 dark:text-brand-400' : 'text-ink-primary dark:text-white'}`}>
+                      <p className={`text-h3 font-extrabold tabular-nums ${recurring.type === 'income' ? 'text-brand-text' : 'text-fg'}`}>
                         {recurring.type === 'income' ? '+' : '−'}{formatCurrency(Number(recurring.amount))}
                       </p>
                       {recurring.is_active && recurring.next_run_at && (
-                        <p className="mt-0.5 text-xs text-ink-muted dark:text-white tabular-nums">
+                        <p className="mt-0.5 text-sm font-semibold text-fg tabular-nums">
                           {t('recurring.next', { date: fmtDate(recurring.next_run_at) })}
                         </p>
                       )}
                     </div>
-                    <div className="flex gap-0.5 shrink-0 -mr-1.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+                    <div className="flex gap-0.5 shrink-0 -mr-1.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 btn-motion [@media(hover:none)]:opacity-100">
                       <button
                         onClick={() => handleToggleActive(recurring)}
                         className={iconBtn}
@@ -226,26 +236,26 @@ export default function RecurringPage() {
                         title={recurring.is_active ? t('recurring.pause') : t('recurring.resume')}
                       >
                         {recurring.is_active
-                          ? <Pause className="w-4 h-4" strokeWidth={1.75} />
-                          : <Play className="w-4 h-4" strokeWidth={1.75} />}
+                          ? <Pause className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
+                          : <Play className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />}
                       </button>
                       <button onClick={() => handleEdit(recurring)} className={iconBtn} aria-label={t('transactions.edit')} title={t('transactions.edit')}>
-                        <Pencil className="w-4 h-4" strokeWidth={1.75} />
+                        <Pencil className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(recurring)}
-                        className={`${iconBtn} hover:!text-expense hover:!bg-expense/5`}
+                        className={`${iconBtn} hover:!text-danger`}
                         aria-label={t('transactions.deleteBtn')}
                         title={t('transactions.deleteBtn')}
                       >
-                        <Trash2 className="w-4 h-4" strokeWidth={1.75} />
+                        <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
                       </button>
                     </div>
                   </li>
                 );
               })}
             </ul>
-          </section>
+          </Card>
         </>
       )}
 

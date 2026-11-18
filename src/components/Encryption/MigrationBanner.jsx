@@ -16,14 +16,14 @@ export default function MigrationBanner() {
     : '';
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 max-w-xs w-full sm:w-80 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container shadow-tier2 px-4 py-3 flex items-center gap-3 animate-fade-in">
+    <div className="fixed bottom-4 right-4 z-40 max-w-xs w-full sm:w-80 bg-tile border border-line rounded-tile shadow-sheet px-4 py-3 flex items-center gap-3 animate-fade-in">
       <div className="w-5 h-5 flex-shrink-0 border-2 border-brand-500/30 border-t-brand-500 rounded-full animate-spin" />
       <div className="min-w-0">
-        <p className="text-sm font-medium text-ink-primary dark:text-white truncate">
+        <p className="text-sm font-medium text-fg truncate">
           {reversing ? t('encryption.migrationReversingTitle') : t('encryption.migrationTitle')}
         </p>
         {label && (
-          <p className="text-xs text-ink-muted dark:text-white truncate">{label}</p>
+          <p className="text-sm text-fg truncate">{label}</p>
         )}
       </div>
     </div>

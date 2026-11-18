@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimation } from '../../utils/chartTheme';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
-import useDarkMode from '../../hooks/useDarkMode';
-import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
+import { INCOME_COLOR } from '../../utils/chartColors';
+// V4: spending / liability series use the category palette, never red.
+const EXPENSE_COLOR = 'var(--c-data-sand)';
 
 const ASSETS_COLOR = INCOME_COLOR;
 const LIABILITIES_COLOR = 'var(--c-data-blue)';
@@ -12,8 +14,8 @@ const NETWORTH_COLOR = 'var(--c-data-violet)';
 function CustomTooltip({ active, payload, label, fmt }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
+      <div className={CHART_TOOLTIP_CLASS}>
+        <p className="font-semibold text-sm text-fg mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: {fmt(Number(entry.value))}
@@ -25,10 +27,43 @@ function CustomTooltip({ active, payload, label, fmt }) {
   return null;
 }
 
+/**
+ * Monthly net-worth series: latest snapshot per month (assets, liabilities)
+ * plus tracked cash up to that date; without snapshots, cash alone. Shared by
+ * the chart below and the Net worth hero line.
+ */
+export function buildNetWorthSeries(data, transactions = []) {
+  const cashUpTo = (dateStr) => {
+    let net = 0;
+    for (const tx of transactions) {
+      if ((tx.date || '').slice(0, 10) <= dateStr) {
+        const amount = tx.base_amount ?? tx.amount ?? 0;
+        net += tx.type === 'income' ? amount : -amount;
+      }
+    }
+    return net;
+  };
+  if (data && data.length > 0) {
+    const monthMap = {};
+    for (const item of data) {
+      const key = item.snapshot_date.slice(0, 7);
+      if (!monthMap[key] || item.snapshot_date > monthMap[key].snapshot_date) monthMap[key] = item;
+    }
+    return Object.values(monthMap)
+      .sort((a, b) => a.snapshot_date.localeCompare(b.snapshot_date))
+      .map((item) => {
+        const cash = cashUpTo(item.snapshot_date.slice(0, 10));
+        return { date: item.snapshot_date, netWorth: item.total_assets + cash - item.total_liabilities };
+      });
+  }
+  const months = [...new Set(transactions.map((tx) => (tx.date || '').slice(0, 7)).filter(Boolean))].sort();
+  return months.map((m) => ({ date: `${m}-01`, netWorth: cashUpTo(`${m}-31`) }));
+}
+
 export default function NetWorthChart({ data, transactions = [] }) {
   const { t } = useTranslation();
   const { format: fmt, symbol } = useDisplayCurrency();
-  const [dark] = useDarkMode();
+  const anim = useChartAnimation();
 
   // Compute cumulative cash flow up to a given date string (YYYY-MM-DD)
   const getCashFlowUpTo = (dateStr) => {
@@ -103,7 +138,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
 
   if (chartData.length === 0) {
     return (
-      <div className="text-center py-8 text-ink-muted dark:text-white">
+      <div className="tile-inner text-center py-8 text-base font-bold text-fg">
         {t('chart.noData')}
       </div>
     );
@@ -112,15 +147,15 @@ export default function NetWorthChart({ data, transactions = [] }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.08} className="text-surface-hairline dark:text-surface-dark-hairline" />
+        <CartesianGrid {...CHART_GRID} />
         <XAxis
           dataKey="date"
-          tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
+          {...AXIS_PROPS}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
+          {...AXIS_PROPS}
           axisLine={false}
           tickLine={false}
           tickFormatter={(value) => {
@@ -131,14 +166,14 @@ export default function NetWorthChart({ data, transactions = [] }) {
           width={60}
         />
         <Tooltip content={<CustomTooltip fmt={fmt} />} />
-        <Legend wrapperStyle={{ fontSize: '12px' }} />
+        <Legend wrapperStyle={{ fontSize: 14, fontWeight: 600 }} formatter={(value) => <span className="text-fg">{value}</span>} />
         {hasAssetData && (
           <Line
             type="monotone"
             dataKey={t('networth.assets')}
             stroke={ASSETS_COLOR}
             strokeWidth={2}
-            dot={{ fill: ASSETS_COLOR, r: 3 }}
+            dot={{ fill: ASSETS_COLOR, r: 3 }} {...anim}
           />
         )}
         <Line
@@ -147,7 +182,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
           stroke={LIABILITIES_COLOR}
           strokeWidth={2}
           dot={{ fill: LIABILITIES_COLOR, r: 3 }}
-          strokeDasharray="5 3"
+          strokeDasharray="5 3" {...anim}
         />
         {hasAssetData && (
           <Line
@@ -155,7 +190,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
             dataKey={t('networth.liabilities')}
             stroke={EXPENSE_COLOR}
             strokeWidth={2}
-            dot={{ fill: EXPENSE_COLOR, r: 3 }}
+            dot={{ fill: EXPENSE_COLOR, r: 3 }} {...anim}
           />
         )}
         <Line
@@ -163,7 +198,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
           dataKey={t('networth.netWorth')}
           stroke={NETWORTH_COLOR}
           strokeWidth={3}
-          dot={{ fill: NETWORTH_COLOR, r: 3 }}
+          dot={{ fill: NETWORTH_COLOR, r: 3 }} {...anim}
         />
       </LineChart>
     </ResponsiveContainer>

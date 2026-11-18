@@ -106,18 +106,20 @@ export default function ReportsPage() {
   const hasData = transactions.length > 0;
 
   const dateInputClass =
-    'text-sm px-3 py-2 rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
+    'min-h-11 text-sm font-bold px-3 py-2 rounded-input border-2 border-line hover:border-inner-2 bg-tile text-fg focus:border-brand-600 dark:focus:border-brand-400 btn-motion [color-scheme:light] dark:[color-scheme:dark]';
 
   const rangeLabel = `${formatDate(new Date(`${startDate}T00:00:00`), i18n.language)} – ${formatDate(new Date(`${endDate}T00:00:00`), i18n.language)}`;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-gap">
       <PageHeader title={t('reports.title')} subtitle={rangeLabel} className="!mb-0" />
 
       {/* Period selector: presets + custom range in one toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="max-w-full overflow-x-auto scrollbar-hide">
           <SegmentedControl
+            track="tile"
+            ariaLabel={t('reports.periodLabel')}
             value={activePreset}
             onChange={(key) => {
               const preset = PRESETS.find(p => p.key === key);
@@ -135,7 +137,7 @@ export default function ReportsPage() {
             aria-label={t('reports.periodLabel')}
             className={dateInputClass}
           />
-          <span className="text-ink-muted dark:text-white text-sm">–</span>
+          <span className="text-fg text-sm font-bold" aria-hidden="true">–</span>
           <input
             type="date"
             value={endDate}
@@ -148,12 +150,12 @@ export default function ReportsPage() {
       </div>
 
       {/* Report content */}
-      <div className="space-y-6">
+      <div className="space-y-gap">
         {loading ? (
           <LoadingSpinner size="md" className="min-h-[40vh]" />
         ) : !hasData ? (
           <EmptyState
-            icon={<FileText className="w-5 h-5" strokeWidth={1.75} />}
+            icon={<FileText className="w-[22px] h-[22px]" strokeWidth={2} />}
             title={t('reports.noData')}
             description={rangeLabel}
           />
@@ -164,15 +166,16 @@ export default function ReportsPage() {
               prevTransactions={prevTransactions}
               startDate={startDate}
               endDate={endDate}
+              index={0}
             />
             <ReportDailyTrend
               transactions={transactions}
               startDate={startDate}
               endDate={endDate}
             />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              <ReportCategoryBreakdown transactions={transactions} />
-              <ReportIncomeBreakdown transactions={transactions} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-gap items-start">
+              <ReportCategoryBreakdown transactions={transactions} index={2} />
+              <ReportIncomeBreakdown transactions={transactions} index={3} />
             </div>
             <ReportTopTransactions transactions={transactions} />
             <ReportPeriodComparison

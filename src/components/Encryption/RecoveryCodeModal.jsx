@@ -40,15 +40,15 @@ export default function RecoveryCodeModal({ recoveryCode, onDone }) {
   return (
     <Modal onClose={() => {}}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-heading text-ink-primary dark:text-white">
+        <h2 className="text-heading text-fg">
           {t('encryption.recoveryCodeTitle')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-white">
+        <p className="text-sm text-fg">
           {t('encryption.recoveryCodeDesc')}
         </p>
 
-        <div className="border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-4 bg-surface-subtle dark:bg-surface-dark-subtle">
-          <div className="font-mono text-base tracking-wider text-ink-primary dark:text-white text-center break-all select-all">
+        <div className="border border-line rounded-input p-4 bg-inner">
+          <div className="font-mono text-base text-fg text-center break-all select-all">
             {recoveryCode}
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function RecoveryCodeModal({ recoveryCode, onDone }) {
           </Button>
         </div>
 
-        <label className="flex items-start gap-2 text-sm text-ink-muted dark:text-white cursor-pointer">
+        <label className="flex items-start gap-2 text-sm text-fg cursor-pointer">
           <input
             type="checkbox"
             checked={confirmed}

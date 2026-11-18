@@ -5,10 +5,10 @@ import { useToast } from '../../context/ToastContext';
 import { fetchNotificationSettings, updateNotificationSettings } from '../../utils/api';
 
 const numberInputClass =
-  'ml-2 w-20 px-2 py-1 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
+  'ml-2 w-20 px-2 py-1 text-sm rounded-input border-2 border-line bg-tile text-fg focus:border-brand-600 dark:focus:border-brand-400 transition';
 
 const toggleClass =
-  'w-5 h-5 rounded accent-brand-600 focus:ring-2 focus:ring-brand-500/20 disabled:opacity-50';
+  'w-5 h-5 rounded-input accent-brand-600 disabled:opacity-50';
 
 export default function NotificationSettings() {
   const { t } = useTranslation();
@@ -105,31 +105,31 @@ export default function NotificationSettings() {
   };
 
   if (loading) {
-    return <div className="text-ink-muted dark:text-white">{t('messages.loading')}</div>;
+    return <div className="text-fg">{t('messages.loading')}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white mb-4">
+        <h3 className="font-semibold tracking-[-0.01em] text-lg text-fg mb-4">
           {t('notifications.notificationTypes')}
         </h3>
 
         {/* Individual Notification Types */}
         <div className="space-y-3">
           {/* Budget Overrun */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline px-4 py-3 border-l-4 border-l-expense">
+          <div className="bg-tile rounded-tile border border-line px-4 py-3 border-l-4 border-l-expense">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-ink-primary dark:text-white">
+                <div className="font-medium text-fg">
                   {t('notifications.types.budgetOverrun')}
                 </div>
-                <div className="text-sm text-ink-muted dark:text-white mt-1">
+                <div className="text-sm text-fg mt-1">
                   {t('notifications.types.budgetOverrunDesc')}
                 </div>
                 {settings.budget_overrun_enabled && (
                   <div className="mt-2">
-                    <label className="text-xs text-ink-muted dark:text-white">
+                    <label className="text-sm text-fg">
                       {t('notifications.budgetThreshold')}:
                     </label>
                     <input
@@ -143,7 +143,7 @@ export default function NotificationSettings() {
                       className={numberInputClass}
                       disabled={!settings.email_enabled}
                     />
-                    <span className="ml-1 text-xs text-ink-muted dark:text-white">%</span>
+                    <span className="ml-1 text-sm text-fg">%</span>
                   </div>
                 )}
               </div>
@@ -158,18 +158,18 @@ export default function NotificationSettings() {
           </div>
 
           {/* Recurring Due */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-brand-500 px-4 py-3">
+          <div className="bg-tile rounded-tile border border-line border-l-4 border-l-brand-500 px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-ink-primary dark:text-white">
+                <div className="font-medium text-fg">
                   {t('notifications.types.recurringDue')}
                 </div>
-                <div className="text-sm text-ink-muted dark:text-white mt-1">
+                <div className="text-sm text-fg mt-1">
                   {t('notifications.types.recurringDueDesc')}
                 </div>
                 {settings.recurring_due_enabled && (
                   <div className="mt-2">
-                    <div className="text-xs text-ink-muted dark:text-white mb-1.5">
+                    <div className="text-sm text-fg mb-1.5">
                       {t('notifications.advanceDays')}:
                     </div>
                     <div className="flex flex-wrap gap-1.5" role="radiogroup">
@@ -186,10 +186,10 @@ export default function NotificationSettings() {
                               handleChange('recurring_advance_days', days);
                             }}
                             className={
-                              'min-w-[3rem] px-2.5 py-1 text-xs rounded-md border tabular-nums transition ' +
+                              'min-w-[3rem] px-2.5 py-1 text-sm rounded-input border tabular-nums transition ' +
                               (active
                                 ? 'border-brand-600 bg-brand-600 text-white font-medium'
-                                : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-brand-500/50')
+                                : 'border-line text-fg hover:border-brand-500/50')
                             }
                           >
                             {days === 0
@@ -212,18 +212,18 @@ export default function NotificationSettings() {
           </div>
 
           {/* Goal Milestone */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-data-blue px-4 py-3">
+          <div className="bg-tile rounded-tile border border-line border-l-4 border-l-data-blue px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-ink-primary dark:text-white">
+                <div className="font-medium text-fg">
                   {t('notifications.types.goalMilestone')}
                 </div>
-                <div className="text-sm text-ink-muted dark:text-white mt-1">
+                <div className="text-sm text-fg mt-1">
                   {t('notifications.types.goalMilestoneDesc')}
                 </div>
                 {settings.goal_milestone_enabled && (
                   <div className="mt-2">
-                    <label className="text-xs text-ink-muted dark:text-white">
+                    <label className="text-sm text-fg">
                       {t('notifications.milestoneInterval')}:
                     </label>
                     <input
@@ -236,7 +236,7 @@ export default function NotificationSettings() {
                       onBlur={() => handleNumberBlur('goal_milestone_percentage')}
                       className={numberInputClass}
                     />
-                    <span className="ml-1 text-xs text-ink-muted dark:text-white">%</span>
+                    <span className="ml-1 text-sm text-fg">%</span>
                   </div>
                 )}
               </div>
@@ -250,13 +250,13 @@ export default function NotificationSettings() {
           </div>
 
           {/* Trial Expiring */}
-          <div className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline border-l-4 border-l-warning px-4 py-3">
+          <div className="bg-tile rounded-tile border border-line border-l-4 border-l-warning px-4 py-3">
             <label className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="font-medium text-ink-primary dark:text-white">
+                <div className="font-medium text-fg">
                   {t('notifications.types.trialExpiring')}
                 </div>
-                <div className="text-sm text-ink-muted dark:text-white mt-1">
+                <div className="text-sm text-fg mt-1">
                   {t('notifications.types.trialExpiringDesc')}
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function NotificationSettings() {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
+      <div className="flex justify-end pt-4 border-t border-line">
         <Button onClick={handleSave} disabled={saving}>
           {saving ? t('account.saving') : t('forms.save')}
         </Button>

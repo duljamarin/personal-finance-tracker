@@ -6,24 +6,10 @@ import { useCountUp } from '../../hooks/useCountUp';
 import { dataDelay, delayStyle } from '../../utils/motion';
 import { formatMonthName, formatMonthShort } from '../../utils/date';
 import { monthKeyOf } from '../../utils/finance/dashboardModel';
+import { linePath } from '../../utils/bento';
 
 const W = 600;
 const H = 120;
-const PAD = 8;
-
-function linePath(values) {
-  if (values.length < 2) return '';
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const span = max - min || 1;
-  return values
-    .map((v, i) => {
-      const x = (i / (values.length - 1)) * W;
-      const y = PAD + (1 - (v - min) / span) * (H - PAD * 2);
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
-    })
-    .join(' ');
-}
 
 // Delta vs the same day-span of last month, white on the hero tile (V5:
 // brand or red text would fail contrast on green, so the arrow carries it).
@@ -114,7 +100,6 @@ export default function BalanceTile({ net, totals, series, monthRef, index = 0, 
               strokeLinecap="round"
               pathLength="1"
               strokeDasharray="1"
-              vectorEffect="non-scaling-stroke"
               className="animate-draw"
               style={{ stroke: 'var(--white)', strokeDashoffset: 0, '--len': 1, ...delayStyle(delay) }}
             />

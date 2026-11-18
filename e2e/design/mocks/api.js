@@ -71,13 +71,25 @@ export async function fetchHealthScoreHistory(months = 12) {
 }
 export const fetchCategoryBenchmarks = () => ok([]);
 
-export const fetchAssets = () => ok([]);
+const ASSETS = [
+  { id: 'a1', name: 'Savings account', type: 'asset', asset_type: 'savings', current_value: 8200 },
+  { id: 'a2', name: 'Index fund', type: 'asset', asset_type: 'investment', current_value: 5400 },
+  { id: 'l1', name: 'Car loan', type: 'liability', asset_type: 'car_loan', current_value: 6100 },
+];
+export const fetchAssets = () => ok(ASSETS);
 export const addAsset = ok;
 export const updateAsset = ok;
 export const deleteAsset = ok;
-export const fetchNetWorthHistory = () => ok([]);
+export const fetchNetWorthHistory = () => ok(Array.from({ length: 8 }, (_, i) => {
+  const d = new Date(); d.setMonth(d.getMonth() - 7 + i, 1);
+  return { snapshot_date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-01`, total_assets: 11000 + i * 380, total_liabilities: 7800 - i * 230 };
+}));
 
-export const fetchNotifications = () => ok([]);
+export const fetchNotifications = () => ok([
+  { id: 'n1', notification_type: 'budget_exceeded', title: 'Budget exceeded', message: 'Transportation is over its monthly budget.', is_read: false, created_at: new Date().toISOString(), metadata: {} },
+  { id: 'n2', notification_type: 'goal_milestone', title: 'Goal milestone', message: 'Emergency fund passed 70%.', is_read: false, created_at: new Date(Date.now() - 86400000).toISOString(), metadata: {} },
+  { id: 'n3', notification_type: 'recurring_upcoming', title: 'Upcoming payment', message: 'Phone plan runs in 4 days.', is_read: true, created_at: new Date(Date.now() - 3 * 86400000).toISOString(), metadata: {} },
+]);
 export const markNotificationAsRead = ok;
 export const markAllNotificationsAsRead = ok;
 export const deleteNotification = ok;

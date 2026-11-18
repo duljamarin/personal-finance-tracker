@@ -41,12 +41,12 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, scopeNote,
   const barColor = progressColor(pct);
 
   return (
-    <div className={`flex items-center gap-4 px-4 py-3 rounded-input border text-sm ${
+    <div className={`flex items-center gap-4 px-gap py-3 rounded-tile border text-sm ${
  isAtLimit
  ? 'bg-expense-bg border-expense/30'
  : isNearLimit
  ? 'bg-warning-bg border-warning/30'
- : 'bg-surface-page dark:bg-surface-dark-elevated border-line'
+ : 'bg-tile border-line'
  }`}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1.5 gap-2">

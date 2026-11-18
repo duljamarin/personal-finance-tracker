@@ -46,7 +46,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display text-title text-fg mb-2">
+      <h2 className="text-h3 font-bold text-fg mb-2">
         {t('goals.contributions.add')}
       </h2>
       <p className="text-fg mb-6">
@@ -62,7 +62,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
  action === 'add'
  ? 'bg-brand-600 text-white'
- : 'bg-tile text-fg hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+ : 'bg-tile text-fg hover:bg-inner'
  }`}
           >
             {t('goals.contributions.add')}
@@ -73,7 +73,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
  action === 'withdraw'
  ? 'bg-expense text-white'
- : 'bg-tile text-fg hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+ : 'bg-tile text-fg hover:bg-inner'
  }`}
           >
             {t('goals.contributions.withdraw')}
@@ -113,7 +113,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onChange={(e) => setNote(e.target.value)}
             placeholder={t('goals.contributions.notePlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-line rounded-input dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-tile text-fg"
+            className="w-full px-3 py-2 border-2 border-line rounded-input focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg"
           />
         </div>
 

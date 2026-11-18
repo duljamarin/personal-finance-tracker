@@ -9,8 +9,8 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimation } from '../../utils/chartTheme';
 import Card from '../UI/Card';
-import useDarkMode from '../../hooks/useDarkMode';
 import { INCOME_COLOR } from '../../utils/chartColors';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
@@ -21,14 +21,14 @@ function formatLabel(dateStr) {
 
 function PctChange({ current, previous, positiveIsGood }) {
   const { t } = useTranslation();
-  if (previous === 0) return <span className="text-xs text-ink-muted dark:text-white">-</span>;
+  if (previous === 0) return <span className="text-sm text-fg">-</span>;
 
   const pct = (((current - previous) / previous) * 100).toFixed(1);
   const isUp = current > previous;
   const isGood = positiveIsGood ? isUp : !isUp;
 
   return (
-    <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isGood ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
+    <span className={`inline-flex items-center gap-0.5 text-sm font-medium text-fg`}>
       {isUp ? (
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -46,8 +46,8 @@ function PctChange({ current, previous, positiveIsGood }) {
 function CustomTooltip({ active, payload, label, fmt }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
+      <div className={CHART_TOOLTIP_CLASS}>
+        <p className="font-semibold text-sm text-fg mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.name} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: {fmt(Number(entry.value))}
@@ -68,7 +68,7 @@ export default function ReportPeriodComparison({
   prevEndDate,
 }) {
   const { t } = useTranslation();
-  const [dark] = useDarkMode();
+  const anim = useChartAnimation();
   const { format: fmt, symbol } = useDisplayCurrency();
 
   const calcTotals = (txs) => {
@@ -102,10 +102,10 @@ export default function ReportPeriodComparison({
 
   return (
     <Card padding="md">
-      <h3 className="text-heading text-ink-primary dark:text-white mb-1">
+      <h3 className="text-heading text-fg mb-1">
         {t('reports.periodComparison')}
       </h3>
-      <p className="text-xs text-ink-muted dark:text-white mb-4">
+      <p className="text-sm text-fg mb-4">
         {t('reports.currentPeriod')}: {formatLabel(startDate)} - {formatLabel(endDate)}
         {' · '}
         {t('reports.previousPeriod')}: {formatLabel(prevStartDate)} - {formatLabel(prevEndDate)}
@@ -115,26 +115,26 @@ export default function ReportPeriodComparison({
         {/* Bar chart */}
         <div className="flex-1 overflow-x-auto">
           <BarChart width={500} height={240} data={chartData} barGap={4} barCategoryGap="35%">
-            <CartesianGrid vertical={false} stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.6} />
+            <CartesianGrid {...CHART_GRID} />
             <XAxis
               dataKey="name"
-              tick={{ fontSize: 12, fill: dark ? '#FFFFFF' : '#6b7280' }}
+              {...AXIS_PROPS}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               tickFormatter={(v) => `${symbol}${Math.round(v)}`}
-              tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
+              {...AXIS_PROPS}
               axisLine={false}
               tickLine={false}
               width={70}
             />
             <Tooltip content={<CustomTooltip fmt={fmt} />} />
-            <Legend wrapperStyle={{ fontSize: '12px' }} />
-            <Bar dataKey={currentLabel} fill={INCOME_COLOR} radius={[4, 4, 0, 0]} />
+            <Legend wrapperStyle={{ fontSize: 14, fontWeight: 600 }} formatter={(value) => <span className="text-fg">{value}</span>} />
+            <Bar dataKey={currentLabel} fill={INCOME_COLOR} radius={BAR_RADIUS} {...anim} />
             {/* previous period: brand-300 tint (lighter teal) — no CSS var, brand-ramp literal */}
             {/* Previous period recedes as a neutral; the old mint was pre-repaint teal. */}
-            <Bar dataKey={previousLabel} fill={dark ? '#4A4A52' : '#CFCBC0'} radius={[4, 4, 0, 0]} />
+            <Bar dataKey={previousLabel} fill="var(--inner-2)" radius={BAR_RADIUS} {...anim} />
           </BarChart>
         </div>
 
@@ -145,14 +145,14 @@ export default function ReportPeriodComparison({
               { label: t('reports.income'), curr: curr.income, prev: prev.income, positiveIsGood: true },
               { label: t('reports.expenses'), curr: curr.expenses, prev: prev.expenses, positiveIsGood: false },
             ].map((row) => (
-              <div key={row.label} className="p-3 rounded-lg bg-surface-secondary dark:bg-surface-dark-elevated">
-                <p className="text-xs text-ink-muted dark:text-white mb-1">{row.label}</p>
+              <div key={row.label} className="tile-inner p-gap">
+                <p className="text-sm text-fg mb-1">{row.label}</p>
                 <div className="flex items-end justify-between gap-2">
                   <div>
-                    <p className="text-sm font-semibold text-ink-primary dark:text-white">
+                    <p className="text-sm font-semibold text-fg">
                       {fmt(row.curr)}
                     </p>
-                    <p className="text-xs text-ink-muted dark:text-white">
+                    <p className="text-sm text-fg">
                       {t('reports.previousPeriod')}: {fmt(row.prev)}
                     </p>
                   </div>

@@ -9,17 +9,19 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimation } from '../../utils/chartTheme';
 import Card from '../UI/Card';
 import { toISODate } from '../../utils/date';
-import useDarkMode from '../../hooks/useDarkMode';
-import { INCOME_COLOR, EXPENSE_COLOR } from '../../utils/chartColors';
+import { INCOME_COLOR } from '../../utils/chartColors';
+// V4: spending / liability series use the category palette, never red.
+const EXPENSE_COLOR = 'var(--c-data-sand)';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 function CustomTooltip({ active, payload, label, fmt }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{label}</p>
+      <div className={CHART_TOOLTIP_CLASS}>
+        <p className="font-semibold text-sm text-fg mb-1">{label}</p>
         {payload.map((entry) => (
           <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
             {entry.name}: {fmt(Number(entry.value))}
@@ -33,7 +35,7 @@ function CustomTooltip({ active, payload, label, fmt }) {
 
 export default function ReportDailyTrend({ transactions, startDate, endDate }) {
   const { t } = useTranslation();
-  const [dark] = useDarkMode();
+  const anim = useChartAnimation();
   const { format: fmt, symbol } = useDisplayCurrency();
 
   const dailyData = useMemo(() => {
@@ -72,7 +74,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
 
   return (
     <Card padding="md">
-      <h3 className="text-heading text-ink-primary dark:text-white mb-4">
+      <h3 className="text-heading text-fg mb-4">
         {t('reports.dailySpendingTrend')}
       </h3>
       <div className="w-full">
@@ -88,17 +90,17 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                   <stop offset="95%" stopColor={EXPENSE_COLOR} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid vertical={false} stroke={dark ? '#1F1F22' : '#EDEDE8'} strokeOpacity={0.6} />
+              <CartesianGrid {...CHART_GRID} />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
+                {...AXIS_PROPS}
                 axisLine={false}
                 tickLine={false}
                 interval="preserveStartEnd"
               />
               <YAxis
                 tickFormatter={(v) => `${symbol}${Math.round(v)}`}
-                tick={{ fontSize: 11, fill: dark ? '#FFFFFF' : '#6b7280' }}
+                {...AXIS_PROPS}
                 axisLine={false}
                 tickLine={false}
                 width={60}
@@ -110,7 +112,7 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 name={t('reports.dailyIncome')}
                 stroke={INCOME_COLOR}
                 strokeWidth={2}
-                fill="url(#colorIncome)"
+                fill="url(#colorIncome)" {...anim}
               />
               <Area
                 type="monotone"
@@ -118,20 +120,20 @@ export default function ReportDailyTrend({ transactions, startDate, endDate }) {
                 name={t('reports.dailyExpenses')}
                 stroke={EXPENSE_COLOR}
                 strokeWidth={2}
-                fill="url(#colorExpenses)"
+                fill="url(#colorExpenses)" {...anim}
               />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-2">
+      <div className="flex items-center justify-center gap-[18px] mt-3">
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-income" />
-          <span className="text-xs text-ink-muted dark:text-white">{t('reports.dailyIncome')}</span>
+          <span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: INCOME_COLOR }} aria-hidden="true" />
+          <span className="text-sm font-semibold text-fg">{t('reports.dailyIncome')}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 rounded bg-expense" />
-          <span className="text-xs text-ink-muted dark:text-white">{t('reports.dailyExpenses')}</span>
+          <span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: EXPENSE_COLOR }} aria-hidden="true" />
+          <span className="text-sm font-semibold text-fg">{t('reports.dailyExpenses')}</span>
         </div>
       </div>
     </Card>

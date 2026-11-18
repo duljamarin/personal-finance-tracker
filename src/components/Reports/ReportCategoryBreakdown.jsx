@@ -1,41 +1,37 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-} from 'recharts';
 import Card from '../UI/Card';
-import { CHART_PALETTE as COLORS } from '../../utils/chartColors';
+import StackedBar from '../UI/StackedBar';
+import ProgressBar from '../UI/ProgressBar';
+import CategoryAvatar, { colorFromName } from '../UI/CategoryAvatar';
+import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
+import { delayStyle, rowDelay, dataDelay } from '../../utils/motion';
 
-function CustomTooltip({ active, payload, fmt }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline px-3.5 py-2 rounded-lg shadow-md">
-        <p className="text-sm font-semibold text-ink-primary dark:text-white">{payload[0].name}</p>
-        <p className="text-sm text-ink-primary dark:text-white tabular-nums mt-0.5">{fmt(payload[0].value)}</p>
-        <p className="text-xs text-ink-muted dark:text-white tabular-nums">{payload[0].payload.pct}%</p>
-      </div>
-    );
-  }
-  return null;
-}
+const STACK_TOP = 5;
 
-export default function ReportCategoryBreakdown({ transactions }) {
+/**
+ * Category breakdown for a report period (spec 4.4): a StackedBar of the top
+ * five categories (the rest grouped as Other) and one row per category with
+ * its share. type="expense" (spending) or "income".
+ */
+export default function ReportCategoryBreakdown({ transactions, type = 'expense', index }) {
   const { t } = useTranslation();
   const { format: fmt } = useDisplayCurrency();
+  const titleKey = type === 'income' ? 'reports.incomeByCategory' : 'reports.categoryBreakdown';
+  const emptyKey = type === 'income' ? 'reports.noIncome' : 'reports.noData';
 
   const categoryData = useMemo(() => {
     const totals = {};
+    const cats = {};
     transactions
-      .filter(tx => tx.type === 'expense')
+      .filter(tx => tx.type === type)
       .forEach(tx => {
-        const name = tx.categories?.name || tx.category?.name || t('transactions.all');
+        const cat = tx.categories || tx.category || null;
+        const name = cat?.name || t('transactions.all');
         const amount = tx.base_amount ?? tx.amount ?? 0;
         totals[name] = (totals[name] || 0) + amount;
+        if (cat && !cats[name]) cats[name] = cat;
       });
 
     const total = Object.values(totals).reduce((s, v) => s + v, 0);
@@ -43,146 +39,67 @@ export default function ReportCategoryBreakdown({ transactions }) {
     return Object.entries(totals)
       .map(([name, value]) => ({
         name,
+        category: cats[name] || null,
         value: parseFloat(value.toFixed(2)),
+        share: total > 0 ? value / total : 0,
         pct: total > 0 ? ((value / total) * 100).toFixed(1) : '0.0',
       }))
       .sort((a, b) => b.value - a.value);
-  }, [transactions, t]);
+  }, [transactions, t, type]);
 
   const total = categoryData.reduce((s, d) => s + d.value, 0);
 
   if (categoryData.length === 0) {
     return (
-      <Card padding="md">
-        <h3 className="text-heading text-ink-primary dark:text-white mb-4">
-          {t('reports.categoryBreakdown')}
-        </h3>
-        <p className="text-sm text-ink-muted dark:text-white text-center py-6">
-          {t('reports.noData')}
-        </p>
+      <Card index={index}>
+        <h2 className="text-h3 font-bold text-fg mb-gap">{t(titleKey)}</h2>
+        <p className="tile-inner text-base font-semibold text-fg text-center py-8">{t(emptyKey)}</p>
       </Card>
     );
   }
 
+  const head = categoryData.slice(0, STACK_TOP);
+  const rest = categoryData.slice(STACK_TOP).reduce((s, d) => s + d.value, 0);
+  const segments = [
+    ...head.map(d => ({ key: d.name, label: translateCategoryName(d.name), value: d.value, color: colorFromName(d.name), display: fmt(d.value, { decimals: 0 }) })),
+    ...(rest > 0 ? [{ key: 'other', label: t('dashboard.otherCategories'), value: rest, color: 'var(--inner-2)', display: fmt(rest, { decimals: 0 }) }] : []),
+  ];
+  const base = dataDelay(index || 0);
+
   return (
-    <Card padding="md">
-      <h3 className="text-heading text-ink-primary dark:text-white mb-5">
-        {t('reports.categoryBreakdown')}
-      </h3>
-
-      {/* Donut + vertical category list */}
-      <div className="flex flex-wrap gap-6 items-center mb-6">
-        <div className="relative w-[180px] h-[180px] shrink-0">
-          <ResponsiveContainer width={180} height={180}>
-            <PieChart>
-              <Pie
-                data={categoryData}
-                cx="50%"
-                cy="50%"
-                outerRadius={85}
-                innerRadius={60}
-                paddingAngle={1.5}
-                dataKey="value"
-                stroke="none"
-              >
-                {categoryData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip fmt={fmt} />} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="space-y-2.5 min-w-0">
-          {categoryData.slice(0, 6).map((entry, index) => (
-            <div key={entry.name} className="flex items-center gap-2.5">
-              <span
-                aria-hidden="true"
-                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                style={{ backgroundColor: COLORS[index % COLORS.length] }}
-              />
-              <span className="text-sm text-ink-primary dark:text-white truncate max-w-[160px]">{entry.name}</span>
-              <span className="text-sm font-semibold text-ink-primary dark:text-white tabular-nums ml-2">{fmt(entry.value, { decimals: 0 })}</span>
-              <span className="text-xs text-ink-muted dark:text-white tabular-nums">{entry.pct}%</span>
-            </div>
-          ))}
-          {categoryData.length > 6 && (
-            <p className="text-xs text-ink-muted dark:text-white pt-1">
-              + {categoryData.length - 6} {t('reports.moreCategories', { defaultValue: 'more' })}
-            </p>
-          )}
-        </div>
+    <Card index={index} className="flex flex-col gap-gap">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className="text-h3 font-bold text-fg">{t(titleKey)}</h2>
+        <span className="text-h3 font-extrabold tabular-nums text-fg">
+          <span className="sr-only">{t('chart.total')}: </span>{fmt(total)}
+        </span>
       </div>
 
-      {/* Full data table */}
-      <div className="overflow-x-auto scrollbar-hide border-t border-surface-hairline dark:border-surface-dark-hairline pt-4">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-              <th className="text-left py-2 pr-4 text-ink-muted dark:text-white font-medium">
-                {t('reports.category')}
-              </th>
-              <th className="text-right py-2 pr-4 text-ink-muted dark:text-white font-medium">
-                {t('reports.amount')}
-              </th>
-              <th className="text-right py-2 text-ink-muted dark:text-white font-medium">
-                {t('reports.percentage')}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {categoryData.map((row, idx) => (
-              <tr
-                key={row.name}
-                className="border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0"
-              >
-                <td className="py-2.5 pr-4">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: COLORS[idx % COLORS.length] }}
-                    />
-                    <span className="text-ink-primary dark:text-white font-medium truncate max-w-[140px]">
-                      {row.name}
-                    </span>
-                  </div>
-                </td>
-                <td className="py-2.5 pr-4 text-right text-ink-primary dark:text-white font-medium tabular-nums">
-                  {fmt(row.value)}
-                </td>
-                <td className="py-2.5 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <div className="w-12 h-1.5 bg-surface-hairline dark:bg-surface-dark-elevated rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${row.pct}%`,
-                          backgroundColor: COLORS[idx % COLORS.length],
-                        }}
-                      />
-                    </div>
-                    <span className="text-ink-muted dark:text-white tabular-nums w-12 text-right whitespace-nowrap">
-                      {row.pct}%
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr className="border-t-2 border-surface-hairline dark:border-surface-dark-hairline">
-              <td className="pt-2.5 pr-4 font-semibold text-ink-primary dark:text-white">Total</td>
-              <td className="pt-2.5 pr-4 text-right font-semibold text-ink-primary dark:text-white tabular-nums">
-                {fmt(total)}
-              </td>
-              <td className="pt-2.5 text-right font-semibold text-ink-muted dark:text-white">
-                100%
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      <StackedBar segments={segments} ariaLabel={t(titleKey)} delay={base} />
+
+      <ul className="flex flex-col gap-1" aria-label={t('reports.category')}>
+        {categoryData.map((entry, i) => (
+          <li
+            key={entry.name}
+            className="activity-row animate-rise flex items-center gap-3 px-2 py-2.5 rounded-icon"
+            style={delayStyle(rowDelay(i, base))}
+          >
+            <span className="activity-icon shrink-0">
+              <CategoryAvatar category={entry.category} fallbackName={entry.name} />
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="font-bold text-fg truncate">{translateCategoryName(entry.name)}</span>
+                <span className="font-extrabold tabular-nums text-fg whitespace-nowrap">{fmt(entry.value)}</span>
+              </span>
+              <span className="mt-1 flex items-center gap-2.5">
+                <ProgressBar ratio={entry.share} height={6} color={colorFromName(entry.name)} animate={false} className="max-w-[160px]" />
+                <span className="text-sm font-semibold tabular-nums text-fg">{entry.pct}%</span>
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
     </Card>
   );
 }

@@ -146,7 +146,7 @@ export default function AccountPage() {
       <Card padding="lg">
         <form onSubmit={handleSaveName} className="flex flex-col gap-4">
           <div>
-            <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
+            <label className="block font-medium text-fg mb-1.5 text-sm">
               {t('account.displayName')}
             </label>
             <input
@@ -154,13 +154,13 @@ export default function AccountPage() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder={t('account.displayNamePlaceholder')}
-              className="w-full border rounded-md px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+              className="w-full border-2 rounded-input px-3.5 py-2.5 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line"
             />
           </div>
           <button
             type="submit"
             disabled={savingName || !displayName.trim()}
-            className="self-end bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="self-end bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm py-2 px-4 rounded-input transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingName ? t('account.saving') : t('account.saveDisplayName')}
           </button>
@@ -171,18 +171,18 @@ export default function AccountPage() {
           password" (Supabase Auth's link-a-password-to-OAuth-identity flow)
           so they can additionally log in with email+password. */}
       <Card padding="lg">
-        <h2 className="text-heading text-ink-primary dark:text-white mb-4">
+        <h2 className="text-heading text-fg mb-4">
           {isOAuthUser ? t('account.setPassword') : t('account.changePassword')}
         </h2>
         {isOAuthUser && (
-          <p className="text-sm text-ink-muted dark:text-white mb-4">
+          <p className="text-sm text-fg mb-4">
             {t('account.setPasswordDesc')}
           </p>
         )}
         <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
           {requiresRewrap && (
             <div>
-              <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
+              <label className="block font-medium text-fg mb-1.5 text-sm">
                 {t('account.currentPassword')}
               </label>
               <PasswordInput
@@ -195,12 +195,12 @@ export default function AccountPage() {
                 autoComplete="current-password"
                 show={showPassword}
                 onToggle={() => setShowPassword(v => !v)}
-                className="w-full border rounded-md px-3.5 py-2.5 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline"
+                className="w-full border-2 rounded-input px-3.5 py-2.5 pr-12 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line"
               />
             </div>
           )}
           <div>
-            <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
+            <label className="block font-medium text-fg mb-1.5 text-sm">
               {t('account.newPassword')}
             </label>
             <PasswordInput
@@ -213,11 +213,11 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-3.5 py-2.5 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border-2 rounded-input px-3.5 py-2.5 pr-12 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion ${passwordError ? 'border-expense' : 'border-line'}`}
             />
           </div>
           <div>
-            <label className="block font-medium text-ink-primary dark:text-white mb-1.5 text-sm">
+            <label className="block font-medium text-fg mb-1.5 text-sm">
               {t('account.confirmPassword')}
             </label>
             <PasswordInput
@@ -230,18 +230,18 @@ export default function AccountPage() {
               autoComplete="new-password"
               show={showPassword}
               onToggle={() => setShowPassword(v => !v)}
-              className={`w-full border rounded-md px-3.5 py-2.5 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all ${passwordError ? 'border-expense' : 'border-surface-hairline dark:border-surface-dark-hairline'}`}
+              className={`w-full border-2 rounded-input px-3.5 py-2.5 pr-12 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion ${passwordError ? 'border-expense' : 'border-line'}`}
             />
           </div>
           {passwordError && (
-            <div className="border border-expense text-expense dark:text-expense text-sm p-3 rounded-md font-medium">
+            <div className="border border-expense text-expense dark:text-expense text-sm p-3 rounded-input font-medium">
               {t(passwordError)}
             </div>
           )}
           <button
             type="submit"
             disabled={savingPassword || !newPassword || !confirmPassword}
-            className="self-end bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="self-end bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-input font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {savingPassword ? t('account.saving') : t('account.savePassword')}
           </button>
@@ -255,14 +255,14 @@ export default function AccountPage() {
       {E2EE_ENABLED && <EncryptionSettings userId={user?.id} />}
 
       {/* Danger Zone: red carries meaning in the heading and the button, not as a wash. */}
-      <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline">
+      <section className="bg-tile rounded-tile border border-line">
         <div className="px-5 sm:px-6 pt-5">
           <h2 className="text-heading text-expense">{t('account.dangerZone')}</h2>
         </div>
         <div className="px-5 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="font-medium text-ink-primary dark:text-white text-sm">{t('account.deleteAccountTitle')}</p>
-            <p className="text-ink-muted dark:text-white text-xs mt-1">{t('account.deleteAccountDesc')}</p>
+            <p className="font-medium text-fg text-sm">{t('account.deleteAccountTitle')}</p>
+            <p className="text-fg text-sm mt-1">{t('account.deleteAccountDesc')}</p>
           </div>
           <Button variant="danger" onClick={() => setShowDeleteModal(true)} className="flex-shrink-0">
             {t('account.deleteAccountBtn')}
@@ -273,7 +273,7 @@ export default function AccountPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
-          <div className="bg-white dark:bg-surface-dark-card rounded-container shadow-tier2 max-w-md w-full p-6 flex flex-col gap-5 border border-surface-hairline dark:border-surface-dark-hairline">
+          <div className="bg-tile rounded-tile shadow-sheet max-w-md w-full p-6 flex flex-col gap-5 border border-line">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-expense-tint">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-expense" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -281,13 +281,13 @@ export default function AccountPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold tracking-tight text-lg text-ink-primary dark:text-white">{t('account.deleteModalTitle')}</h3>
-                <p className="text-sm text-ink-muted dark:text-white mt-1">{t('account.deleteModalDesc')}</p>
+                <h3 className="font-semibold tracking-[-0.01em] text-lg text-fg">{t('account.deleteModalTitle')}</h3>
+                <p className="text-sm text-fg mt-1">{t('account.deleteModalDesc')}</p>
               </div>
             </div>
 
-            <div className="border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-4 bg-surface-subtle dark:bg-surface-dark-subtle">
-              <ul className="text-sm text-ink-muted dark:text-white space-y-1 list-disc list-inside">
+            <div className="border border-line rounded-input p-4 bg-inner">
+              <ul className="text-sm text-fg space-y-1 list-disc list-inside">
                 <li>{t('account.deleteWarn1')}</li>
                 <li>{t('account.deleteWarn2')}</li>
                 <li>{t('account.deleteWarn3')}</li>
@@ -295,7 +295,7 @@ export default function AccountPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink-primary dark:text-white mb-1.5">
+              <label className="block text-sm font-medium text-fg mb-1.5">
                 {t('account.deleteConfirmLabel')}
               </label>
               <input
@@ -303,7 +303,7 @@ export default function AccountPage() {
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full border rounded-md px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline font-mono tracking-widest"
+                className="w-full border-2 rounded-input px-3.5 py-2.5 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line font-mono"
               />
             </div>
 
@@ -311,14 +311,14 @@ export default function AccountPage() {
               <button
                 onClick={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}
                 disabled={deleting}
-                className="flex-1 px-4 py-3 border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white rounded-md font-medium text-sm hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle transition-all disabled:opacity-50"
+                className="flex-1 px-4 py-3 border border-line bg-tile text-fg rounded-input font-medium text-sm hover:bg-inner btn-motion disabled:opacity-50"
               >
                 {t('common.cancel')}
               </button>
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmText !== 'DELETE' || deleting}
-                className="flex-1 px-4 py-3 text-white rounded-md font-medium text-sm shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-danger hover:bg-danger-hover"
+                className="flex-1 px-4 py-3 text-white rounded-input font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-danger hover:bg-danger-hover"
               >
                 {deleting ? t('account.deleting') : t('account.deleteAccountBtn')}
               </button>

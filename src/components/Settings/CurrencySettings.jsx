@@ -17,7 +17,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'ALL', 'CHF', 'JPY', 'CAD', 'AUD'];
 
 const selectClass =
-  'appearance-none w-full px-3 py-2.5 pr-10 text-sm rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition';
+  'appearance-none w-full px-3 py-2.5 pr-10 text-sm rounded-input border-2 border-line bg-tile text-fg focus:border-brand-600 dark:focus:border-brand-400 transition';
 
 export default function CurrencySettings() {
   const { t } = useTranslation();
@@ -108,10 +108,10 @@ export default function CurrencySettings() {
   if (pending) {
     return (
       <Card padding="lg" className="border border-expense/40">
-        <h2 className="text-heading text-ink-primary dark:text-white mb-2">
+        <h2 className="text-heading text-fg mb-2">
           {t('settings.currency.title')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-white mb-4">
+        <p className="text-sm text-fg mb-4">
           {t('settings.currency.resumeDesc', { from: pending.from, to: pending.to })}
         </p>
         <Button
@@ -121,7 +121,7 @@ export default function CurrencySettings() {
           {converting ? t('settings.currency.converting') : t('settings.currency.resume')}
         </Button>
         {converting && progress && (
-          <p className="text-xs text-ink-muted dark:text-white mt-3">
+          <p className="text-sm text-fg mt-3">
             {t('settings.currency.progress', { done: progress.done, total: progress.total })}
           </p>
         )}
@@ -131,11 +131,11 @@ export default function CurrencySettings() {
 
   return (
     <>
-      <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="text-heading text-ink-primary dark:text-white mb-2">
+      <Card padding="lg" className="border border-line">
+        <h2 className="text-heading text-fg mb-2">
           {t('settings.currency.title')}
         </h2>
-        <p className="text-sm text-ink-muted dark:text-white mb-4">
+        <p className="text-sm text-fg mb-4">
           {t('settings.currency.description')}
         </p>
 
@@ -154,7 +154,7 @@ export default function CurrencySettings() {
             ))}
           </select>
           <svg
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted dark:text-white"
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -166,7 +166,7 @@ export default function CurrencySettings() {
         {/* Flag lives outside the select — <option> cannot hold markup. */}
         <div className="flex items-center gap-2 mt-2">
           <CurrencyFlag code={target} />
-          <span className="text-xs font-medium text-ink-primary dark:text-white tracking-wide">
+          <span className="text-sm font-medium text-fg">
             {target}
           </span>
         </div>
@@ -177,12 +177,12 @@ export default function CurrencySettings() {
               {converting ? t('settings.currency.converting') : t('settings.currency.change')}
             </Button>
             {loadingRate && (
-              <p className="text-xs text-ink-muted dark:text-white mt-2">
+              <p className="text-sm text-fg mt-2">
                 {t('settings.currency.loadingRate')}
               </p>
             )}
             {!loadingRate && !rate && (
-              <p className="text-xs text-expense mt-2">{t('settings.currency.rateError')}</p>
+              <p className="text-sm text-expense mt-2">{t('settings.currency.rateError')}</p>
             )}
           </div>
         )}
@@ -190,7 +190,7 @@ export default function CurrencySettings() {
         {converting && (
           <div className="mt-4 flex items-center gap-3">
             <LoadingSpinner size="sm" />
-            <p className="text-sm text-ink-muted dark:text-white">
+            <p className="text-sm text-fg">
               {progress
                 ? t('settings.currency.progress', { done: progress.done, total: progress.total })
                 : t('settings.currency.converting')}
@@ -202,26 +202,26 @@ export default function CurrencySettings() {
       {confirmOpen && (
       <Modal onClose={() => setConfirmOpen(false)}>
         <div className="p-6">
-          <h3 className="text-heading text-ink-primary dark:text-white mb-3">
+          <h3 className="text-heading text-fg mb-3">
             {t('settings.currency.confirmTitle', { from: current, to: target })}
           </h3>
 
-          <p className="text-sm text-ink-muted dark:text-white mb-4">
+          <p className="text-sm text-fg mb-4">
             {t('settings.currency.confirmBody')}
           </p>
 
           {sampleTo !== null && (
-            <div className="bg-surface-subtle dark:bg-surface-dark-subtle rounded-md p-3 mb-4 text-sm">
-              <span className="text-ink-muted dark:text-white">
+            <div className="bg-inner rounded-input p-3 mb-4 text-sm">
+              <span className="text-fg">
                 {t('settings.currency.example')}:{' '}
               </span>
-              <span className="font-semibold tabular-nums text-ink-primary dark:text-white">
+              <span className="font-semibold tabular-nums text-fg">
                 {formatCurrency(sampleFrom, current)} → {formatCurrency(sampleTo, target)}
               </span>
             </div>
           )}
 
-          <p className="text-xs text-ink-muted dark:text-white mb-5">
+          <p className="text-sm text-fg mb-5">
             {t('settings.currency.confirmWarning')}
           </p>
 

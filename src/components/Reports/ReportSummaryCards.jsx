@@ -2,13 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 // goodWhenUp: income up is good, spending up is not — color by meaning, not direction.
+// On the hero tile the delta is white; the arrow-free sign carries direction
+// (brand / red text would fail contrast on green, V5).
 function ChangeIndicator({ current, previous, goodWhenUp = true }) {
   const { t } = useTranslation();
   if (previous === 0 && current === 0) return null;
 
   if (previous === 0) {
     return (
-      <span className="text-xs text-ink-muted dark:text-white">
+      <span className="text-sm font-semibold">
         {t('reports.vsLastPeriod')}
       </span>
     );
@@ -20,13 +22,13 @@ function ChangeIndicator({ current, previous, goodWhenUp = true }) {
   const good = diff === 0 || isUp === goodWhenUp;
 
   return (
-    <span className={`inline-flex items-center gap-0.5 text-xs font-medium tabular-nums ${good ? 'text-brand-600 dark:text-brand-400' : 'text-expense'}`}>
-      {isUp ? '+' : '-'}{Math.abs(pct)}% {t('reports.vsLastPeriod')}
+    <span className="block text-sm font-semibold tabular-nums" data-good={good}>
+      <span className="font-extrabold">{isUp ? '+' : '−'}{Math.abs(pct)}%</span>&nbsp;{t('reports.vsLastPeriod')}
     </span>
   );
 }
 
-export default function ReportSummaryCards({ transactions, prevTransactions, startDate, endDate }) {
+export default function ReportSummaryCards({ transactions, prevTransactions, startDate, endDate, index }) {
   const { t } = useTranslation();
   const { format: fmt } = useDisplayCurrency();
   // Card values are summed from base_amount (EUR).
@@ -103,35 +105,22 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
   const formatValue = (val, format) => {
     if (format === 'percent') return `${val.toFixed(1)}%`;
     if (format === 'number') return val.toString();
-    return `${val < 0 ? '-' : ''}${formatAmount(val)}`;
-  };
-
-  const toneClass = (tone) => {
-    switch (tone) {
-      case 'income':
-        return 'text-brand-600 dark:text-brand-400';
-      case 'brand':
-        return 'text-brand-600 dark:text-brand-400';
-      case 'expense':
-        return '';
-      default:
-        return 'text-ink-primary dark:text-white';
-    }
+    return `${val < 0 ? '−' : ''}${formatAmount(val)}`;
   };
 
   return (
-    // One panel with hairline dividers instead of six floating cards.
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px bg-surface-hairline dark:bg-surface-dark-hairline border border-surface-hairline dark:border-surface-dark-hairline rounded-container overflow-hidden">
+    // The page's one hero tile (spec 4.4: summary cards as a tile row).
+    <div className={`tile tile-hero tile-lift p-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 ${typeof index === 'number' ? 'animate-pop' : ''}`}>
       {cards.map((card) => (
-        <div key={card.label} className="bg-white dark:bg-surface-dark-card p-4 min-w-0">
-          <p className="eyebrow mb-1.5">{card.label}</p>
-          <p className={`min-w-0 [overflow-wrap:anywhere] font-semibold tabular-nums tracking-tight text-xl leading-tight ${card.tone === 'expense' ? 'text-expense' : toneClass(card.tone)}`}>
+        <div key={card.label} className="rounded-inner bg-hero-inset px-[18px] py-[14px] min-w-0">
+          <p className="text-sm font-bold mb-1">{card.label}</p>
+          <p className="min-w-0 [overflow-wrap:anywhere] font-extrabold tabular-nums text-h3">
             {formatValue(card.value, card.format)}
           </p>
           {card.prevValue !== null && (
-            <div className="mt-1.5">
+            <div className="mt-1">
               {card.neutralDelta
-                ? <span className="text-xs text-ink-muted dark:text-white tabular-nums">{t('reports.prevCount', { count: card.prevValue })}</span>
+                ? <span className="text-sm font-semibold tabular-nums">{t('reports.prevCount', { count: card.prevValue })}</span>
                 : <ChangeIndicator current={card.value} previous={card.prevValue} goodWhenUp={card.goodWhenUp !== false} />}
             </div>
           )}

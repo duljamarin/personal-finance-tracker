@@ -14,7 +14,7 @@ import {
 } from '../../utils/crypto/keyLifecycle';
 import RecoveryCodeModal from './RecoveryCodeModal';
 
-const inputClass = 'w-full border rounded-md px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white placeholder:text-ink-muted/40 dark:placeholder:text-white/40 transition-all border-surface-hairline dark:border-surface-dark-hairline';
+const inputClass = 'w-full border-2 rounded-input px-4 py-3 pr-12 focus:border-brand-600 dark:focus:border-brand-400 bg-tile text-fg placeholder:text-ink-muted/40 dark:placeholder:text-white/40 btn-motion border-line';
 
 // AccountPage section: opt-in setup for existing users, and reversal
 // ("Disable encryption") for users who already have it on. Rendered only
@@ -154,18 +154,18 @@ export default function EncryptionSettings({ userId }) {
   }
 
   return (
-    <Card padding="lg" className="border border-surface-hairline dark:border-surface-dark-hairline">
-      <h2 className="text-heading text-ink-primary dark:text-white mb-1">
+    <Card padding="lg" className="border border-line">
+      <h2 className="text-heading text-fg mb-1">
         {t('encryption.settingsTitle')}
       </h2>
-      <p className="text-sm text-ink-muted dark:text-white mb-4">
+      <p className="text-sm text-fg mb-4">
         {t('encryption.settingsDesc')}
       </p>
 
       {!isEncryptionEnabled && (
         <form onSubmit={handleEnable} className="flex flex-col gap-3">
           {isOAuthUser && (
-            <p className="text-sm text-ink-muted dark:text-white">
+            <p className="text-sm text-fg">
               {t('encryption.appPasswordExplainer')}
             </p>
           )}
@@ -211,7 +211,7 @@ export default function EncryptionSettings({ userId }) {
           )}
 
           {showChangeAppPassword && (
-            <form onSubmit={handleChangeAppPassword} className="flex flex-col gap-3 border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-3">
+            <form onSubmit={handleChangeAppPassword} className="flex flex-col gap-3 border border-line rounded-input p-3">
               {changeMode === 'secret' ? (
                 <PasswordInput
                   value={oldAppPassword}
@@ -226,7 +226,7 @@ export default function EncryptionSettings({ userId }) {
                   value={changeRecoveryCode}
                   onChange={(e) => { setChangeRecoveryCode(e.target.value); setChangeError(''); }}
                   placeholder={t('encryption.enterRecoveryCode')}
-                  className={`${inputClass} font-mono tracking-wider`}
+                  className={`${inputClass} font-mono`}
                 />
               )}
               <button
@@ -235,7 +235,7 @@ export default function EncryptionSettings({ userId }) {
                   setChangeMode((m) => (m === 'secret' ? 'recoveryCode' : 'secret'));
                   setChangeError('');
                 }}
-                className="text-sm text-ink-muted dark:text-white hover:text-brand-600 dark:hover:text-brand-500 underline text-left"
+                className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-500 underline text-left"
               >
                 {changeMode === 'secret'
                   ? t('encryption.forgotSecurityCodeLink')
@@ -290,8 +290,8 @@ export default function EncryptionSettings({ userId }) {
           )}
 
           {showRotateRecovery && (
-            <form onSubmit={handleRotateRecovery} className="flex flex-col gap-3 border border-surface-hairline dark:border-surface-dark-hairline rounded-md p-3">
-              <p className="text-sm text-ink-muted dark:text-white">
+            <form onSubmit={handleRotateRecovery} className="flex flex-col gap-3 border border-line rounded-input p-3">
+              <p className="text-sm text-fg">
                 {t('encryption.rotateRecoveryDesc')}
               </p>
               <PasswordInput
@@ -318,7 +318,7 @@ export default function EncryptionSettings({ userId }) {
               {t('encryption.disableButton')}
             </Button>
           ) : (
-            <div className="border border-expense rounded-md p-3 bg-expense-bg flex flex-col gap-3">
+            <div className="border border-expense rounded-input p-3 bg-expense-bg flex flex-col gap-3">
               <p className="text-sm text-expense">{t('encryption.disableWarning')}</p>
               <div className="flex gap-2">
                 <Button variant="secondary" className="flex-1" onClick={() => setShowDisableConfirm(false)} disabled={busy}>

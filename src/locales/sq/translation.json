@@ -1853,7 +1853,8 @@
       "goalMilestoneDesc": "Festoni kur arrini etapa në objektivat tuaj financiare",
       "trialExpiring": "Kujtues për Skadimin e Provës",
       "trialExpiringDesc": "Merrni njoftim para se periudha juaj e provës të përfundojë"
-    }
+    },
+    "unreadLabel": "E palexuar"
   },
   "split": {
     "title": "Ndaj Transaksionin",

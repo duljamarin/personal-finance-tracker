@@ -4,10 +4,14 @@ import PageHeader from '../UI/PageHeader';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
-import { Plus, Pencil, Trash2, Landmark, CreditCard, Wallet } from 'lucide-react';
+import { Pencil, Trash2, Landmark, CreditCard, Wallet } from 'lucide-react';
+import Card from '../UI/Card';
+import { useCountUp } from '../../hooks/useCountUp';
+import { MINUS, linePath } from '../../utils/bento';
+import { dataDelay, delayStyle } from '../../utils/motion';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import AssetForm from './AssetForm';
-import NetWorthChart from './NetWorthChart';
+import NetWorthChart, { buildNetWorthSeries } from './NetWorthChart';
 import { useToast } from '../../context/ToastContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { fetchAssets, addAsset, updateAsset, deleteAsset, fetchNetWorthHistory } from '../../utils/api';
@@ -33,6 +37,12 @@ export default function NetWorthPage() {
     return { income, expenses, net: income - expenses };
   }, [transactions]);
   const { isOpen: showModal, editingItem: editAsset, openAdd: handleAdd, openEdit: handleEdit, close: closeAssetModal } = useFormModal();
+  // Hero count-up (hooks must run before the loading early return).
+  const netWorthTotal = useMemo(() => {
+    const sum = (type) => assets.filter(a => a.type === type).reduce((s, a) => s + (a.current_value || 0), 0);
+    return sum('asset') + cashFlow.net - sum('liability');
+  }, [assets, cashFlow]);
+  const netWorthShown = useCountUp(netWorthTotal, { delay: dataDelay(0) });
   const [assetToDelete, setAssetToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -108,6 +118,8 @@ export default function NetWorthPage() {
 
   const assetsWithCashFlow = totalAssets + cashFlow.net;
   const netWorth = assetsWithCashFlow - totalLiabilities;
+  const heroValues = buildNetWorthSeries(netWorthHistory, transactions).slice(-8).map((p) => p.netWorth);
+  const heroLine = linePath(heroValues);
 
   // Assets/liabilities are stored in the user's single currency, like every
   // other amount, so they render through the same formatter.
@@ -116,45 +128,36 @@ export default function NetWorthPage() {
   const assetRows = assets.filter(a => a.type === 'asset');
   const liabilityRows = assets.filter(a => a.type === 'liability');
 
+  const iconBtn = 'btn-motion inline-flex items-center justify-center w-11 h-11 rounded-pill text-fg hover:bg-inner-2';
   const rowActions = (item) => (
-    <div className="flex gap-0.5 shrink-0 -mr-1.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
-      <button
-        onClick={() => handleEdit(item)}
-        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted dark:text-white hover:text-ink-primary hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 transition-colors"
-        aria-label={t('networth.editAsset')}
-        title={t('networth.editAsset')}
-      >
-        <Pencil className="w-4 h-4" strokeWidth={1.75} />
+    <div className="flex gap-0.5 shrink-0 -mr-1.5 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 btn-motion [@media(hover:none)]:opacity-100">
+      <button type="button" onClick={() => handleEdit(item)} className={iconBtn} aria-label={t('networth.editAsset')} title={t('networth.editAsset')}>
+        <Pencil className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
       </button>
-      <button
-        onClick={() => handleDelete(item.id)}
-        className="inline-flex items-center justify-center w-8 h-8 rounded-md text-ink-muted dark:text-white hover:text-expense dark:hover:text-expense hover:bg-expense/5 transition-colors"
-        aria-label={t('networth.deleteAsset')}
-        title={t('networth.deleteAsset')}
-      >
-        <Trash2 className="w-4 h-4" strokeWidth={1.75} />
+      <button type="button" onClick={() => handleDelete(item.id)} className={`${iconBtn} hover:text-danger`} aria-label={t('networth.deleteAsset')} title={t('networth.deleteAsset')}>
+        <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
       </button>
     </div>
   );
 
-  const ledger = ({ title, total, totalTone, rows, typeKey, Glyph, empty, leading }) => (
-    <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
-      <div className="flex items-baseline justify-between gap-3 px-4 sm:px-5 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="text-heading text-ink-primary dark:text-white">{title}</h2>
-        <span className={`text-sm font-semibold tabular-nums ${totalTone}`}>{total}</span>
+  const ledger = ({ title, total, totalTone, rows, typeKey, Glyph, empty, leading, index }) => (
+    <Card as="section" index={index} padding="sm">
+      <div className="flex items-baseline justify-between gap-3 px-3 pb-2">
+        <h2 className="text-h3 font-bold text-fg">{title}</h2>
+        <span className={`text-h3 font-extrabold tabular-nums ${totalTone}`}>{total}</span>
       </div>
-      <ul className="divide-y divide-surface-hairline dark:divide-surface-dark-hairline">
+      <ul className="flex flex-col gap-1">
         {leading}
         {rows.map(item => (
-          <li key={item.id} className="group flex items-center gap-3 px-4 sm:px-5 py-3">
-            <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white/70" aria-hidden="true">
-              <Glyph className="w-4 h-4" strokeWidth={1.75} />
+          <li key={item.id} className="activity-row group flex items-center gap-[14px] p-3 rounded-icon">
+            <span className="activity-icon w-12 h-12 rounded-icon flex items-center justify-center shrink-0 bg-inner text-brand-text" aria-hidden="true">
+              <Glyph className="w-[22px] h-[22px]" strokeWidth={2} />
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-ink-primary dark:text-white [overflow-wrap:anywhere]">{item.name}</p>
-              <p className="text-xs text-ink-muted dark:text-white">{t(`networth.${typeKey}.${item.asset_type}`)}</p>
+              <p className="font-extrabold text-fg [overflow-wrap:anywhere]">{item.name}</p>
+              <p className="text-sm font-semibold text-fg">{t(`networth.${typeKey}.${item.asset_type}`)}</p>
             </div>
-            <span className="text-sm font-semibold tabular-nums text-ink-primary dark:text-white">
+            <span className="text-h3 font-extrabold tabular-nums text-fg">
               {formatCurrency(item.current_value)}
             </span>
             {rowActions(item)}
@@ -162,87 +165,104 @@ export default function NetWorthPage() {
         ))}
       </ul>
       {rows.length === 0 && !leading && (
-        <p className="px-4 sm:px-5 py-8 text-center text-sm text-ink-muted dark:text-white">{empty}</p>
+        <p className="tile-inner mt-1 px-4 py-8 text-center text-base font-semibold text-fg">{empty}</p>
       )}
       {rows.length === 0 && leading && (
-        <p className="px-4 sm:px-5 py-4 text-sm text-ink-muted dark:text-white border-t border-surface-hairline dark:border-surface-dark-hairline">{empty}</p>
+        <p className="px-3 py-3 text-base font-semibold text-fg">{empty}</p>
       )}
-    </section>
+    </Card>
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-gap">
       <PageHeader
         title={t('networth.title')}
         className="!mb-0"
         actions={
-          <Button onClick={handleAdd}>
-            <span className="inline-flex items-center gap-2">
-              <Plus className="w-4 h-4" strokeWidth={2} />
-              {t('networth.addAsset')}
-            </span>
+          <Button onClick={handleAdd} leading="plus" type="button">
+            {t('networth.addAsset')}
           </Button>
         }
       />
 
-      {/* Hero: the one number, its two components, then the history */}
-      <section className="bg-white dark:bg-surface-dark-card rounded-container border border-surface-hairline dark:border-surface-dark-hairline p-5 sm:p-6">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+      {/* Hero (spec 4.4): net worth kpi, assets / liabilities chips and the
+          net-worth line from the same series as the history chart. */}
+      <Card variant="hero" index={0} className="flex flex-col gap-[14px] overflow-hidden">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-gap">
           <div className="min-w-0">
-            <p className="eyebrow">{t('networth.netWorth')}</p>
-            <p className={`mt-2 [overflow-wrap:anywhere] text-4xl sm:text-5xl font-semibold tabular-nums tracking-tight leading-none ${netWorth < 0 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
-              {netWorth < 0 ? '-' : ''}{fmt(netWorth)}
+            <p className="text-sm font-bold">{t('networth.netWorth')}</p>
+            <p className="mt-1 [overflow-wrap:anywhere] text-kpi font-extrabold tabular-nums">
+              {netWorthShown < 0 ? MINUS : ''}{fmt(netWorthShown)}
             </p>
           </div>
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-1">
-            <div>
-              <dt className="eyebrow">{t('networth.totalAssets')}</dt>
-              <dd className="mt-1 text-lg font-semibold tabular-nums text-brand-600 dark:text-brand-400">{fmt(assetsWithCashFlow)}</dd>
+          <dl className="flex flex-wrap gap-2.5">
+            <div className="px-3.5 py-2.5 rounded-icon bg-hero-inset">
+              <dt className="text-sm font-semibold">{t('networth.totalAssets')}</dt>
+              <dd className="text-h3 font-extrabold tabular-nums">{fmt(assetsWithCashFlow)}</dd>
             </div>
-            <div>
-              <dt className="eyebrow">{t('networth.totalLiabilities')}</dt>
-              <dd className="mt-1 text-lg font-semibold tabular-nums text-expense">{fmt(totalLiabilities)}</dd>
+            <div className="px-3.5 py-2.5 rounded-icon bg-hero-inset">
+              <dt className="text-sm font-semibold">{t('networth.totalLiabilities')}</dt>
+              <dd className="text-h3 font-extrabold tabular-nums">{fmt(totalLiabilities)}</dd>
             </div>
           </dl>
         </div>
-        <div className="mt-6 pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
-          <h2 className="text-sm font-medium text-ink-primary dark:text-white mb-3">{t('networth.historyChart')}</h2>
-          <NetWorthChart data={netWorthHistory} transactions={transactions} />
-        </div>
-      </section>
+        {heroLine && (
+          <svg role="img" aria-label={t('networth.historyChart')} width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="none" className="block">
+            <path d={`${heroLine} L600 120 L0 120 Z`} className="animate-fade-in" style={{ fill: 'var(--hero-area)', ...delayStyle(dataDelay(0) + 300) }} />
+            <path
+              d={heroLine}
+              fill="none"
+              strokeWidth="3"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              pathLength="1"
+              strokeDasharray="1"
+              className="animate-draw"
+              style={{ stroke: 'var(--white)', strokeDashoffset: 0, '--len': 1, ...delayStyle(dataDelay(0)) }}
+            />
+          </svg>
+        )}
+      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      <Card index={1}>
+        <h2 className="text-h3 font-bold text-fg mb-gap">{t('networth.historyChart')}</h2>
+        <NetWorthChart data={netWorthHistory} transactions={transactions} />
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-gap items-start">
         {ledger({
           title: t('networth.assets'),
           total: fmt(assetsWithCashFlow),
-          totalTone: 'text-ink-primary dark:text-white',
+          totalTone: 'text-fg',
           rows: assetRows,
           typeKey: 'assetTypes',
           Glyph: Landmark,
           empty: t('networth.noAssets'),
+          index: 2,
           // Tracked cash is part of the asset side of the sum; show it as a
           // read-only line so the total above is explainable.
           leading: (
-            <li className="flex items-center gap-3 px-4 sm:px-5 py-3">
-              <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white/70" aria-hidden="true">
-                <Wallet className="w-4 h-4" strokeWidth={1.75} />
+            <li className="flex items-center gap-[14px] p-3 rounded-icon bg-inner">
+              <span className="w-12 h-12 rounded-icon flex items-center justify-center shrink-0 bg-tile text-brand-text" aria-hidden="true">
+                <Wallet className="w-[22px] h-[22px]" strokeWidth={2} />
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-ink-primary dark:text-white">{t('networth.cashBalance')}</p>
-                <p className="text-xs text-ink-muted dark:text-white">{t('networth.cashFlowDesc')}</p>
+                <p className="font-extrabold text-fg">{t('networth.cashBalance')}</p>
+                <p className="text-sm font-semibold text-fg">{t('networth.cashFlowDesc')}</p>
               </div>
-              <span className={`text-sm font-semibold tabular-nums ${cashFlow.net < 0 ? 'text-expense' : 'text-ink-primary dark:text-white'}`}>
-                {cashFlow.net < 0 ? '-' : ''}{fmt(cashFlow.net)}
+              <span className="text-h3 font-extrabold tabular-nums text-fg">
+                {cashFlow.net < 0 ? MINUS : ''}{fmt(cashFlow.net)}
               </span>
               {/* Same width as the edit/delete pair on editable rows, so amounts align. */}
-              <span className="w-[66px] -mr-1.5 shrink-0" aria-hidden="true" />
+              <span className="w-[90px] -mr-1.5 shrink-0 hidden sm:block" aria-hidden="true" />
             </li>
           ),
         })}
         {ledger({
           title: t('networth.liabilities'),
           total: fmt(totalLiabilities),
-          totalTone: 'text-expense',
+          totalTone: 'text-fg',
+          index: 3,
           rows: liabilityRows,
           typeKey: 'liabilityTypes',
           Glyph: CreditCard,
@@ -255,7 +275,7 @@ export default function NetWorthPage() {
         <Modal
           onClose={closeAssetModal}
         >
-          <h2 className="font-display text-title text-ink-primary dark:text-white mb-6">
+          <h2 className="text-h3 font-bold text-fg pr-12 mb-gap">
             {editAsset ? t('networth.editAsset') : t('networth.addAsset')}
           </h2>
           <AssetForm
