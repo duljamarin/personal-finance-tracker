@@ -4,14 +4,52 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design tokens (CSS custom properties) ──────────────────────────────────
-   Single source of truth for semantic colors. Tailwind tokens in
-   tailwind.config.cjs read these via var(); inline styles / SVG fills / chart
-   arrays read the same var(), so no hex literal survives. See design-system §2. */
+/* ── Bento design tokens (see .claude/design-system.md §1) ───────────────────
+   Inputs are declared once here; everything else is derived with color-mix.
+   Tailwind (tailwind.config.cjs) maps classes onto these vars, and inline
+   styles / SVG read the same vars, so no component carries a raw value. */
 :root {
+  /* 1.1 color inputs */
+  --brand: #0B5D3B;            /* = brand-600 */
+  --brand-hover: #084C30;      /* = brand-700 */
+  --brand-text-dark: #2E9E6B;  /* = brand-400 */
+  --white: #FFFFFF;
+  --ink: #0F1F17;
+  --dark-base: #0A0D0B;
+
+  /* 1.2 derived, light */
+  --page: color-mix(in srgb, var(--brand) 7%, var(--white));
+  --tile: var(--white);
+  --inner: color-mix(in srgb, var(--brand) 7%, var(--white));
+  --inner-2: color-mix(in srgb, var(--brand) 14%, var(--white));
+  --line: color-mix(in srgb, var(--brand) 12%, var(--white));
+  --text: var(--ink);
+  --brand-text: var(--brand);
+  --hero-tile: var(--brand);
+  --hero-inset: color-mix(in srgb, var(--white) 14%, var(--brand));
+  --tile-shadow: 0 14px 30px -18px color-mix(in srgb, var(--brand) 35%, transparent);
+  --sheet-shadow: 0 30px 60px -30px rgba(15, 31, 23, .45);
+  --pill-shadow: 0 2px 8px rgba(15, 31, 23, .12);
+  --seg-pill: var(--white);
+  --toast-bg: var(--text);
+  --toast-fg: var(--tile);
+  --toast-check: color-mix(in srgb, var(--brand) 45%, var(--white));
+
+  /* 1.5 motion inputs (mirrored for JS in src/utils/motion.js, test-enforced) */
+  --d-fast: 180ms;
+  --d-enter: 380ms;
+  --d-tile: 600ms;
+  --d-data: 700ms;
+  --d-count: 900ms;
+  --d-row-new: 1700ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.32, .64, 1);
+  --ease-std: cubic-bezier(.2, 0, 0, 1);
+
+  /* semantic colors kept from the previous system */
   --c-brand-accent: #2E9E6B;
-  --c-income: #0B5D3B;
-  --c-success: #0B5D3B;
+  --c-income: var(--brand-text);
+  --c-success: var(--brand-text);
   --c-expense: #DC2626;
   --c-expense-bg: #FDEDED;
   --c-expense-tint: rgba(220, 38, 38, 0.10);
@@ -32,11 +70,91 @@
   --c-data-stone: #6E6A5E;
 }
 .dark {
-  /* Positive emphasis uses the brighter forest accent in dark mode. */
-  --c-income: #2E9E6B;
-  --c-success: #2E9E6B;
+  /* 1.2 derived, dark */
+  --page: var(--dark-base);
+  --tile: color-mix(in srgb, var(--brand) 12%, var(--dark-base));
+  --inner: color-mix(in srgb, var(--brand) 20%, var(--dark-base));
+  --inner-2: color-mix(in srgb, var(--brand) 30%, var(--dark-base));
+  --line: color-mix(in srgb, var(--brand) 26%, var(--dark-base));
+  --text: var(--white);
+  --brand-text: var(--brand-text-dark);
+  --seg-pill: var(--inner-2);
   --c-expense-bg: rgba(220, 38, 38, 0.14);
   --c-warning-bg: rgba(180, 83, 9, 0.15);
+}
+
+/* I3: one global reduced-motion rule. JS hooks check the same media query. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Scroll reveal (useRevealOnce): hidden until the observer fires, only when
+   motion is allowed. Opacity only, so layout never moves (I6). */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-pending { opacity: 0; }
+}
+
+/* ── Tile (Card) — hover lift only on pointer devices ───────────────────────── */
+.tile {
+  background-color: var(--tile);
+  border: 1px solid var(--line);
+  border-radius: 22px; /* R_TILE */
+  transition: transform var(--d-enter) var(--ease-spring), box-shadow var(--d-fast) var(--ease-std);
+}
+.tile-hero {
+  background-color: var(--hero-tile);
+  border-color: var(--hero-tile);
+  color: var(--white);
+}
+.tile-inner {
+  background-color: var(--inner);
+  border: 0;
+  border-radius: 18px; /* R_INNER */
+}
+@media (hover: hover) {
+  .tile-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--tile-shadow);
+  }
+}
+
+/* Sliding pill / indicator easing (SegmentedControl, filters) */
+.slide-pill {
+  transition: transform var(--d-enter) var(--ease-spring), width var(--d-enter) var(--ease-spring);
+}
+
+/* Data bars: width/height transition on value change only (I2) */
+.bar-w { transition: width var(--d-data) var(--ease-out); }
+.bar-h { transition: height var(--d-data) var(--ease-out); }
+
+/* Interactive affordances shared by buttons and links (§3.2) */
+.plus-spin { transition: transform var(--d-enter) var(--ease-spring); }
+.group:hover .plus-spin { transform: rotate(90deg); }
+.arrow-nudge { transition: transform var(--d-fast) var(--ease-spring); }
+.group:hover .arrow-nudge { transform: translateX(4px); }
+
+/* Activity row hover (§3.8) */
+.activity-row { transition: background-color var(--d-fast) var(--ease-std), transform var(--d-enter) var(--ease-spring); }
+.activity-row .activity-icon { transition: transform var(--d-enter) var(--ease-spring); }
+@media (hover: hover) {
+  .activity-row:hover { background-color: var(--inner); transform: translateX(4px); }
+  .activity-row:hover .activity-icon { transform: rotate(-6deg) scale(1.07); }
+}
+
+/* Nav item hover (§3.5) */
+.nav-icon { transition: transform var(--d-fast) var(--ease-spring), background-color var(--d-fast) var(--ease-std); }
+@media (hover: hover) {
+  .nav-item:hover .nav-icon { transform: scale(1.06); }
+}
+
+/* P5: one focus ring for every interactive element */
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
 }
 
 @layer utilities {
@@ -67,12 +185,6 @@
   }
   .dark .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #3f3f3a;
-  }
-  .eyebrow {
-    @apply text-[12px] font-medium text-ink-muted;
-  }
-  .dark .eyebrow {
-    color:  #FFFFFF;
   }
   .dark input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
@@ -110,26 +222,22 @@
   }
   body {
     min-height: 100%;
-    background-color: #FAFAF7;
-    color: #111112;
-    font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--page);
+    color: var(--text);
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     font-weight: 500;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+    font-size: 17px;   /* body = TYPE_MIN + 3 */
+    line-height: 1.55;
+    font-variant-numeric: tabular-nums;
   }
   button, input, select, textarea {
-    font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     font-weight: 500;
   }
 
   .dark body {
-    background-color: #0A0A0B;
-    color: #FFFFFF;
+    background-color: var(--page);
+    color: var(--text);
   }
   .dark input,
   .dark textarea,
@@ -145,15 +253,15 @@
   /* Numeric metric helpers — see .claude/design-system.md §1. Numbers are the hero. */
   .metric {
     font-variant-numeric: tabular-nums;
-    font-weight: 650;
+    font-weight: 800;
     letter-spacing: -0.01em;
-    line-height: 1;
+    line-height: 1.05;
   }
   .metric-hero {
     font-variant-numeric: tabular-nums;
-    font-weight: 650;
+    font-weight: 800;
     letter-spacing: -0.02em;
-    line-height: 1;
+    line-height: 1.05;
   }
   .summary-eur-label {
     color: #000;

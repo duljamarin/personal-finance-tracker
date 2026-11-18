@@ -1,50 +1,53 @@
 import { useEffect, useRef, useState } from 'react';
+import { D_COUNT, easeOutCubic, prefersReducedMotion } from '../utils/motion';
 
-// Animate a number from 0 (or `from`) to `to` over `duration` ms using
-// requestAnimationFrame with an ease-out curve. Returns the current value.
-// Restarts whenever `to` changes. Respects prefers-reduced-motion (jumps
-// straight to the target).
-export function useCountUp(to, { duration = 1200, from = 0, start = true } = {}) {
-  const [value, setValue] = useState(start ? from : to);
+/**
+ * Number count-up (I4). requestAnimationFrame + cubic ease-out.
+ *
+ * - First run tweens from `from` (default 0) to `value` after `delay` ms.
+ * - Any later change of `value` (month switch, new transaction) tweens from
+ *   the value currently on screen, never from 0.
+ * - prefers-reduced-motion: the final value is rendered on the first frame.
+ * - `start: false` holds the final value without animating (legacy callers
+ *   that trigger the tween when a section becomes visible).
+ */
+export function useCountUp(value, { duration = D_COUNT, delay = 0, from = 0, start = true } = {}) {
+  const target = Number(value) || 0;
+  const [display, setDisplay] = useState(() => (prefersReducedMotion() || !start ? target : from));
+  const displayRef = useRef(display);
   const rafRef = useRef(null);
-  const startTimeRef = useRef(null);
 
   useEffect(() => {
-    if (!start) {
-      setValue(to);
-      return;
+    displayRef.current = display;
+  }, [display]);
+
+  useEffect(() => {
+    if (!start || prefersReducedMotion()) {
+      displayRef.current = target;
+      setDisplay(target);
+      return undefined;
     }
+    const origin = displayRef.current;
+    if (origin === target) return undefined;
 
-    const prefersReduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      setValue(to);
-      return;
-    }
-
-    const target = Number(to) || 0;
-    startTimeRef.current = null;
-
+    let startAt = null;
     const tick = (now) => {
-      if (startTimeRef.current === null) startTimeRef.current = now;
-      const elapsed = now - startTimeRef.current;
-      const t = Math.min(1, elapsed / duration);
-      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-      setValue(from + (target - from) * eased);
-      if (t < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        setValue(target);
-      }
+      if (startAt === null) startAt = now + delay;
+      const t = Math.min(1, Math.max(0, (now - startAt) / duration));
+      const next = t >= 1 ? target : origin + (target - origin) * easeOutCubic(t);
+      displayRef.current = next;
+      setDisplay(next);
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
     };
-
     rafRef.current = requestAnimationFrame(tick);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [to, duration, from, start]);
+    // delay only matters for the run it starts with; not a dependency on purpose
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target, start, duration]);
 
-  return value;
+  return display;
 }
+
+export default useCountUp;

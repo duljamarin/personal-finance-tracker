@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+// Bento design system — see .claude/design-system.md. Surfaces, radii, motion
+// and type are mapped onto the CSS custom properties declared once in
+// src/index.css. Components use these names, never raw values.
 module.exports = {
   content: [
     './index.html',
@@ -11,92 +14,112 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      // §1.4: Manrope is the only UI face. Mono stays for codes/ciphertext.
       fontFamily: {
-        sans: ['"Inter Tight"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Hanken Grotesk"', '"Inter Tight"', 'system-ui', 'sans-serif'],
+        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
-      // Named type scale (see .claude/design-system.md §2). Each step bakes in
-      // size + line-height + weight so components use `text-title` rather than
-      // re-deriving `text-2xl font-semibold font-display` everywhere.
+      // Type scale derived from TYPE_MIN = 14px. Nothing renders below 14px.
+      // Tailwind's sm/base/lg steps are re-pointed onto the scale so legacy
+      // call sites inherit it; the named steps are what new code uses.
       fontSize: {
-        display: ['2.75rem', { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '700' }],
-        title:   ['1.5rem',  { lineHeight: '1.15', letterSpacing: '-0.01em', fontWeight: '700' }],
-        heading: ['1.125rem', { lineHeight: '1.3', fontWeight: '600' }],
-        body:    ['0.9375rem', { lineHeight: '1.5', fontWeight: '500' }],
-        label:   ['0.8125rem', { lineHeight: '1.4', fontWeight: '500' }],
+        sm: ['15px', { lineHeight: '1.5' }],             // caption = TYPE_MIN + 1
+        base: ['17px', { lineHeight: '1.55' }],          // body    = TYPE_MIN + 3
+        lg: ['19px', { lineHeight: '1.3' }],             // h3      = body + 2
+        caption: ['15px', { lineHeight: '1.5' }],
+        body: ['17px', { lineHeight: '1.55' }],
+        'body-lg': ['18px', { lineHeight: '1.6' }],      // landing body = TYPE_MIN + 4
+        h3: ['19px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '700' }],
+        'h3-lg': ['22px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '700' }],
+        h1: ['clamp(28px, 3vw, 36px)', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '800' }],
+        kpi: ['clamp(40px, 4vw, 52px)', { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '800' }],
+        'h2-lg': ['clamp(30px, 3.2vw, 40px)', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '800' }],
+        'h1-lg': ['clamp(40px, 4.6vw, 60px)', { lineHeight: '1.06', letterSpacing: '-0.02em', fontWeight: '800' }],
+        // Legacy named steps, re-pointed onto the Bento scale.
+        display: ['clamp(40px, 4.6vw, 60px)', { lineHeight: '1.06', letterSpacing: '-0.02em', fontWeight: '800' }],
+        title: ['clamp(28px, 3vw, 36px)', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '800' }],
+        heading: ['19px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '700' }],
+        label: ['15px', { lineHeight: '1.5', fontWeight: '600' }],
       },
       colors: {
-        // ── Brand (forest green) ───────────────────────────────────────────
-        // Tokens read CSS vars (defined in index.css) with a hex fallback so
-        // inline styles / SVG fills can reference the same var(--c-*). Base
-        // #0B5D3B sits at the 600 slot so `bg-brand-600` = primary fill stays
-        // the canonical mapping across every call site. See design-system §2.
+        // ── Bento surfaces (CSS vars; they switch under .dark) ─────────────
+        page: 'var(--page)',
+        tile: 'var(--tile)',
+        inner: 'var(--inner)',
+        'inner-2': 'var(--inner-2)',
+        line: 'var(--line)',
+        fg: 'var(--text)',
+        hero: 'var(--hero-tile)',
+        'hero-inset': 'var(--hero-inset)',
+        // ── Brand (forest green). Ramp unchanged; BRAND = 600. ────────────
         brand: {
           50: '#EDF6F1',
           100: '#D6EBDF',
           200: '#AFD9C4',
           300: '#7FBD9E',
-          400: '#2E9E6B', // dark-mode primary accent (5.8:1 on #111113)
+          400: '#2E9E6B', // BRAND_TEXT_DARK
           accent: 'var(--c-brand-accent, #2E9E6B)',
-          500: '#17804F', // active rails, focus rings, progress
-          600: '#0B5D3B', // primary button fill (7.9:1 with white text)
-          700: '#084C30', // hover
-          800: '#073E28', // active/pressed
+          500: '#17804F',
+          600: '#0B5D3B', // BRAND
+          700: '#084C30', // BRAND_HOVER
+          800: '#073E28',
           900: '#053120',
           950: '#032013',
+          text: 'var(--brand-text)', // BRAND light / brand-400 dark
         },
+        // Legacy surface names re-pointed onto the Bento vars so old call
+        // sites inherit the new look. dark-* names resolve to the same vars,
+        // which already hold the dark values under .dark.
         surface: {
-          DEFAULT: '#ffffff',
-          secondary: '#f9fafb',
-          page: '#FAFAF7',
-          card: '#FFFFFF',
-          hairline: '#EDEDE8',
-          subtle: '#F4F4EF',      // neutral chip/panel fill (replaces pastel washes)
-          outline: '#D8D8CF',     // firmer border for interactive form controls
-          dark: '#0A0A0B',        // unified with body + dark-page (was #0C0C0E)
-          'dark-secondary': '#141417',
-          'dark-tertiary': '#1A1A1E',
-          'dark-elevated': '#222226',
-          'dark-page': '#0A0A0B',
-          'dark-card': '#111113',
-          'dark-hairline': '#1F1F22',
-          'dark-subtle': '#1A1A1E',
-          'dark-outline': '#2C2C31',
-          'dark-deep': '#0C0C0E', // neutral dark band (landing final CTA)
+          DEFAULT: 'var(--tile)',
+          secondary: 'var(--inner)',
+          page: 'var(--page)',
+          card: 'var(--tile)',
+          hairline: 'var(--line)',
+          subtle: 'var(--inner)',
+          outline: 'var(--line)',
+          dark: 'var(--page)',
+          'dark-secondary': 'var(--inner)',
+          'dark-tertiary': 'var(--inner-2)',
+          'dark-elevated': 'var(--tile)',
+          'dark-page': 'var(--page)',
+          'dark-card': 'var(--tile)',
+          'dark-hairline': 'var(--line)',
+          'dark-subtle': 'var(--inner)',
+          'dark-outline': 'var(--line)',
+          'dark-deep': 'var(--page)',
         },
+        // ink = INK. Kept as hex (not a var) so opacity modifiers such as
+        // ring-ink-primary/10 keep working. Dark text is forced white in index.css.
         ink: {
-          primary: '#111112',
-          secondary: '#44443F',
-          muted: '#2F2F2C',
+          primary: '#0F1F17',
+          secondary: '#0F1F17',
+          muted: '#0F1F17',
           'dark-primary': '#FFFFFF',
           'dark-muted': '#FFFFFF',
         },
         // ── Semantic: expense / negative / over-budget (single canonical red)
         expense: {
-          DEFAULT: 'var(--c-expense, #DC2626)',   // solid red (was #e8394d)
+          DEFAULT: 'var(--c-expense, #DC2626)',
           light: '#EF4444',
           bg: 'var(--c-expense-bg, #FDEDED)',
           tint: 'var(--c-expense-tint, rgba(220,38,38,0.10))',
           border: 'var(--c-expense-border, rgba(220,38,38,0.35))',
           'dark-bg': 'rgba(220,38,38,0.14)',
         },
-        // income / success / on-track == brand forest green (one positive color)
         income: 'var(--c-income, #0B5D3B)',
         success: 'var(--c-success, #0B5D3B)',
-        // destructive == expense red (kills the red-600 vs #e8394d split)
         danger: {
           DEFAULT: 'var(--c-danger, #DC2626)',
           hover: 'var(--c-danger-hover, #B91C1C)',
         },
-        // warning: deeper amber (AA-safe as body text)
         warning: {
           DEFAULT: 'var(--c-warning, #B45309)',
           hover: 'var(--c-warning-hover, #92400E)',
           bg: 'var(--c-warning-bg, #FCF3E6)',
           'dark-bg': 'var(--c-warning-dark-bg, rgba(180,83,9,0.15))',
         },
-        // ── Data / categorical (richer ladder, harmonized with forest + red)
         data: {
           blue: 'var(--c-data-blue, #3E6DB5)',
           'blue-deep': 'var(--c-data-blue-deep, #2A5183)',
@@ -108,70 +131,104 @@ module.exports = {
           stone: 'var(--c-data-stone, #6E6A5E)',
         },
         border: {
-          DEFAULT: '#e5e7eb',
-          dark: '#27272a',
+          DEFAULT: 'var(--line)',
+          dark: 'var(--line)',
         },
+      },
+      borderColor: {
+        DEFAULT: 'var(--line)',
+      },
+      // §1.3: radii derived from R_TILE = 22px. Only these are allowed.
+      borderRadius: {
+        tile: '22px',    // R_TILE
+        hero: '32px',    // R_HERO  = R_TILE + 10
+        shell: '26px',   // R_SHELL = R_TILE + 4 (nav panel, quick-add sheet)
+        inner: '18px',   // R_INNER = R_TILE - 4
+        icon: '16px',    // R_ICON  = R_TILE - 6
+        input: '14px',   // R_INPUT = R_TILE - 8
+        bar: '12px',     // kept-per-month bars (spec 4.1)
+        swatch: '3px',   // legend swatch (spec 3.4)
+        pill: '999px',   // R_PILL
+      },
+      spacing: {
+        gap: '16px',            // GAP
+        tile: '26px',           // TILE_PAD = GAP + 10
+        'tile-dense': '24px',   // GAP + 8
+      },
+      maxWidth: {
+        content: '1240px',
       },
       boxShadow: {
-        xs: '0 1px 2px 0 rgb(0 0 0 / 0.03)',
-        sm: '0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
-        md: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03)',
-        lg: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)',
-        xl: '0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.03)',
-        // Semantic elevation aliases (see .claude/design-system.md §3).
-        // tier0 = whisper (sticky headers); tier1 = resting card (border only,
-        // no shadow); tier2 = floating popover/modal/toast.
-        tier0: '0 1px 2px 0 rgb(0 0 0 / 0.03)',
-        tier1: 'none',
-        tier2: '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)',
+        tile: 'var(--tile-shadow)',
+        sheet: 'var(--sheet-shadow)',
+        pill: 'var(--pill-shadow)',
       },
-      borderRadius: {
-        // 2-radius convention (see .claude/design-system.md §3).
-        control: '6px',     // buttons, inputs, chips  (== md)
-        container: '10px',  // cards, panels
+      transitionDuration: {
+        fast: 'var(--d-fast)',
+        enter: 'var(--d-enter)',
+        tile: 'var(--d-tile)',
+        data: 'var(--d-data)',
       },
+      transitionTimingFunction: {
+        'out-b': 'var(--ease-out)',
+        spring: 'var(--ease-spring)',
+        std: 'var(--ease-std)',
+      },
+      // §1.5 entrance animations. Delay comes from --delay (set through the
+      // helpers in src/utils/motion.js). fill-mode backwards, so a hover
+      // transform is free once the entrance is done.
       animation: {
-        'fade-out': 'fadeOut 0.5s ease-in-out 1.5s forwards',
-        'in': 'animateIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        'scale-in': 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-in-left': 'slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-        'fade-in': 'fadeIn 0.2s ease-out',
-        'hero-in': 'heroIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
+        pop: 'pop var(--d-tile) var(--ease-spring) var(--delay, 0ms) backwards',
+        rise: 'rise var(--d-enter) var(--ease-out) var(--delay, 0ms) backwards',
+        'grow-x': 'grow-x var(--d-data) var(--ease-out) var(--delay, 0ms) backwards',
+        'grow-y': 'grow-y var(--d-data) var(--ease-spring) var(--delay, 0ms) backwards',
+        draw: 'draw var(--d-data) var(--ease-out) var(--delay, 0ms) backwards',
+        'row-new': 'row-new var(--d-row-new) var(--ease-out) var(--delay, 0ms) backwards',
+        'sheet-in': 'sheet-in var(--d-enter) var(--ease-spring) backwards',
+        'toast-in': 'toast-in var(--d-enter) var(--ease-spring) backwards',
+        'step-out': 'step-out var(--d-enter) var(--ease-out) forwards',
+        'fade-in': 'fade-in var(--d-fast) var(--ease-std) backwards',
       },
       keyframes: {
-        fadeOut: {
-          '0%': { opacity: '1' },
-          '100%': { opacity: '0' },
+        pop: {
+          from: { opacity: '0', transform: 'translateY(24px) scale(.97)' },
+          to: { opacity: '1', transform: 'none' },
         },
-        animateIn: {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+        rise: {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'none' },
         },
-        scaleIn: {
-          '0%': { opacity: '0', transform: 'scale(0.96)' },
-          '100%': { opacity: '1', transform: 'scale(1)' },
+        'grow-x': {
+          from: { transform: 'scaleX(0)' },
+          to: { transform: 'scaleX(1)' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(100%)' },
-          '100%': { transform: 'translateY(0)' },
+        'grow-y': {
+          from: { transform: 'scaleY(0)' },
+          to: { transform: 'scaleY(1)' },
         },
-        slideInRight: {
-          '0%': { transform: 'translateX(100%)', opacity: '0' },
-          '100%': { transform: 'translateX(0)', opacity: '1' },
+        draw: {
+          from: { strokeDashoffset: 'var(--len, 1)' },
         },
-        slideInLeft: {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(0)' },
+        'row-new': {
+          '0%': { opacity: '0', transform: 'translateX(-24px)', backgroundColor: 'var(--inner-2)' },
+          '45%': { opacity: '1', transform: 'none', backgroundColor: 'var(--inner-2)' },
+          '100%': { backgroundColor: 'transparent' },
         },
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+        'sheet-in': {
+          from: { opacity: '0', transform: 'translateY(24px) scale(.96)' },
+          to: { opacity: '1', transform: 'none' },
         },
-        heroIn: {
-          '0%': { opacity: '0', transform: 'translateY(16px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+        'toast-in': {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'none' },
+        },
+        'step-out': {
+          from: { opacity: '1', transform: 'none' },
+          to: { opacity: '0', transform: 'translateX(-16px)' }, // -GAP
+        },
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
         },
       },
     },
