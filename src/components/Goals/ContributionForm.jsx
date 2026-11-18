@@ -46,24 +46,24 @@ export default function ContributionForm({ goal, onSave, onClose }) {
 
   return (
     <Modal onClose={onClose} drawer>
-      <h2 className="font-display text-title text-ink-primary dark:text-white mb-2">
+      <h2 className="font-display text-title text-fg mb-2">
         {t('goals.contributions.add')}
       </h2>
-      <p className="text-ink-muted dark:text-white mb-6">
+      <p className="text-fg mb-6">
         {goal.name}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Action toggle */}
-        <div className="flex rounded-md border border-surface-hairline dark:border-surface-dark-hairline overflow-hidden">
+        <div className="flex rounded-input border border-line overflow-hidden">
           <button
             type="button"
             onClick={() => { setAction('add'); setError(''); }}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-              action === 'add'
-                ? 'bg-brand-600 text-white'
-                : 'bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
-            }`}
+ action === 'add'
+ ? 'bg-brand-600 text-white'
+ : 'bg-tile text-fg hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+ }`}
           >
             {t('goals.contributions.add')}
           </button>
@@ -71,10 +71,10 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             type="button"
             onClick={() => { setAction('withdraw'); setError(''); }}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-              action === 'withdraw'
-                ? 'bg-expense text-white'
-                : 'bg-white dark:bg-surface-dark-card text-ink-muted dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
-            }`}
+ action === 'withdraw'
+ ? 'bg-expense text-white'
+ : 'bg-tile text-fg hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+ }`}
           >
             {t('goals.contributions.withdraw')}
           </button>
@@ -105,7 +105,7 @@ export default function ContributionForm({ goal, onSave, onClose }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-ink-muted dark:text-white mb-1">
+          <label className="block text-sm font-medium text-fg mb-1">
             {t('goals.contributions.note')}
           </label>
           <textarea
@@ -113,12 +113,12 @@ export default function ContributionForm({ goal, onSave, onClose }) {
             onChange={(e) => setNote(e.target.value)}
             placeholder={t('goals.contributions.notePlaceholder')}
             rows="3"
-            className="w-full px-3 py-2 border border-surface-hairline dark:border-surface-dark-hairline rounded-md focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white"
+            className="w-full px-3 py-2 border border-line rounded-input dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 bg-tile text-fg"
           />
         </div>
 
         {error && (
-          <div className="bg-expense-bg border border-expense/30 text-expense text-sm p-3 rounded-md flex items-center gap-2">
+          <div className="bg-expense-bg border border-expense/30 text-expense text-sm p-3 rounded-input flex items-center gap-2">
             <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
             </svg>

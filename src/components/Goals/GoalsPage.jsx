@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageHeader from '../UI/PageHeader';
-import StatStrip from '../UI/StatStrip';
+import Card from '../UI/Card';
+import { useCountUp } from '../../hooks/useCountUp';
+import { dataDelay, delayStyle } from '../../utils/motion';
 import SegmentedControl from '../UI/SegmentedControl';
-import { Plus, Target } from 'lucide-react';
+import { Target, ArrowRight } from 'lucide-react';
 import Button from '../UI/Button';
 import ConfirmDeleteModal from '../UI/ConfirmDeleteModal';
 import EmptyState from '../UI/EmptyState';
@@ -39,6 +41,7 @@ export default function GoalsPage() {
   const [deleting, setDeleting] = useState(false);
 
   const activeGoalCount = stats?.activeGoals ?? 0;
+  const savedShown = useCountUp(stats?.totalSaved ?? 0, { delay: dataDelay(0) });
   const canAdd = canCreateGoal(activeGoalCount);
 
   useEffect(() => {
@@ -189,17 +192,14 @@ export default function GoalsPage() {
   const overallPct = stats && stats.totalTarget > 0 ? Math.min(100, Math.round((stats.totalSaved / stats.totalTarget) * 100)) : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-gap">
       <PageHeader
         title={t('goals.title')}
         subtitle={t('goals.subtitle')}
         className="!mb-0"
         actions={
-          <Button onClick={() => setShowGoalForm(true)} disabled={!canAdd}>
-            <span className="inline-flex items-center gap-2">
-              <Plus className="w-4 h-4" strokeWidth={2} />
-              {t('goals.addGoal')}
-            </span>
+          <Button onClick={() => setShowGoalForm(true)} disabled={!canAdd} leading="plus" type="button">
+            {t('goals.addGoal')}
           </Button>
         }
       />
@@ -216,42 +216,51 @@ export default function GoalsPage() {
 
       {/* Free tier limit banner */}
       {!isPremium && !canAdd && (
-        <div className="p-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 rounded-container flex items-center justify-between gap-3">
-          <p className="text-sm text-ink-muted dark:text-white">
+        <Card padding="sm" className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-base font-semibold text-fg">
             {t('limits.goalLimitReached', { limit: goalLimit })}
           </p>
-          <Link to="/pricing" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline whitespace-nowrap">
+          <Link to="/pricing" className="group btn-motion btn-lift inline-flex items-center gap-2 min-h-11 px-5 rounded-pill bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold whitespace-nowrap">
             {t('upgrade.upgradeCta')}
+            <ArrowRight className="arrow-nudge w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
           </Link>
-        </div>
+        </Card>
       )}
 
+      {/* Summary (spec V3: the page's one hero tile). Same figures as before:
+          total saved of total target, overall progress, active / completed. */}
       {stats && stats.totalGoals > 0 && (
-        <StatStrip
-          items={[
-            {
-              label: t('goals.stats.totalSaved'),
-              value: fmt(stats.totalSaved),
-              tone: 'income',
-              hero: true,
-              note: t('goals.stats.ofTarget', { amount: fmt(stats.totalTarget) }),
-            },
-            {
-              label: t('goals.stats.progress'),
-              value: `${overallPct}%`,
-              children: (
-                <div className="mt-3 h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden" aria-hidden="true">
-                  <div className="h-full rounded-full bg-brand-500" style={{ width: `${overallPct}%` }} />
-                </div>
-              ),
-            },
-            { label: t('goals.stats.activeGoals'), value: stats.activeGoals },
-            { label: t('goals.stats.completedGoals'), value: stats.completedGoals },
-          ]}
-        />
+        <Card variant="hero" index={0} className="flex flex-col gap-gap">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-sm font-bold">{t('goals.stats.totalSaved')}</p>
+              <p className="mt-1 text-kpi font-extrabold tabular-nums [overflow-wrap:anywhere]">{fmt(savedShown)}</p>
+              <p className="mt-1 text-sm font-semibold tabular-nums">{t('goals.stats.ofTarget', { amount: fmt(stats.totalTarget) })}</p>
+            </div>
+            <div className="flex flex-wrap gap-2.5">
+              <div className="px-3.5 py-2.5 rounded-icon bg-hero-inset">
+                <p className="text-sm font-semibold">{t('goals.stats.activeGoals')}</p>
+                <p className="text-h3 font-extrabold tabular-nums">{stats.activeGoals}</p>
+              </div>
+              <div className="px-3.5 py-2.5 rounded-icon bg-hero-inset">
+                <p className="text-sm font-semibold">{t('goals.stats.completedGoals')}</p>
+                <p className="text-h3 font-extrabold tabular-nums">{stats.completedGoals}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="sr-only">{t('goals.stats.progress')}</span>
+            <div className="flex-1 h-3.5 rounded-pill bg-hero-inset overflow-hidden" aria-hidden="true">
+              <div className="h-full rounded-pill bg-white origin-left animate-grow-x bar-w" style={{ width: `${overallPct}%`, ...delayStyle(dataDelay(0)) }} />
+            </div>
+            <span className="text-h3 font-extrabold tabular-nums">{overallPct}%</span>
+          </div>
+        </Card>
       )}
 
       <SegmentedControl
+        track="tile"
+        ariaLabel={t('goals.title')}
         value={filter}
         onChange={setFilter}
         options={['all', 'active', 'completed'].map(f => ({ value: f, label: t(`goals.filters.${f}`) }))}
@@ -260,7 +269,8 @@ export default function GoalsPage() {
       {/* Goals Grid */}
       {goals.length === 0 ? (
         <EmptyState
-          icon={<Target className="w-5 h-5" strokeWidth={1.75} />}
+          icon={<Target className="w-[22px] h-[22px]" strokeWidth={2} />}
+          actionIcon="plus"
           title={t('goals.noGoals')}
           description={t('goals.noGoalsDesc')}
           action={() => setShowGoalForm(true)}
@@ -268,10 +278,11 @@ export default function GoalsPage() {
           limitText={!isPremium ? t('limits.freeLimit', { limit: goalLimit }) : null}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {goals.map(goal => (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gap">
+          {goals.map((goal, i) => (
             <GoalCard
               key={goal.id}
+              index={i + 1}
               goal={goal}
               onEdit={(g) => {
                 setEditingGoal(g);

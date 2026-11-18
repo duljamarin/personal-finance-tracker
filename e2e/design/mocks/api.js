@@ -41,7 +41,7 @@ export const createGoal = ok;
 export const updateGoal = ok;
 export const deleteGoal = ok;
 export const addContribution = ok;
-export const fetchGoalsStats = () => ok({ total: GOALS.length, completed: 1, active: 2 });
+export const fetchGoalsStats = () => ok({ totalGoals: GOALS.length, activeGoals: 2, completedGoals: 1, totalSaved: GOALS.reduce((s, g) => s + g.current_amount, 0), totalTarget: GOALS.reduce((s, g) => s + g.target_amount, 0) });
 
 export const fetchBudgets = (y, m) => ok(budgetsFor(y, m));
 export const createBudget = ok;
