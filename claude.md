@@ -44,7 +44,8 @@ src/
 │   ├── UI/             # Button, Card, Input, Modal, PasswordInput, CustomSelect,
 │   │                   # CategoryIconSvg, ConfirmDeleteModal, EmptyState, Icon,
 │   │                   # LoadingSpinner, Skeleton, PageHeader, StatStrip,
-│   │                   # MonthSwitcher, SegmentedControl, CategoryAvatar
+│   │                   # MonthSwitcher, SegmentedControl, CategoryAvatar,
+│   │                   # Chip, ProgressBar, ProgressRing, StackedBar
 │   ├── Landing/        # HeroPreview (static dashboard mock for the landing hero)
 │   └── Header, Footer, Sidebar, LandingPage, ThemeToggle, LanguageSwitcher,
 │       ErrorBoundary, CatchAllRedirect
@@ -203,62 +204,63 @@ VITE_PADDLE_ENVIRONMENT=sandbox|production
 Edge Function secrets: set via `supabase secrets set` (never in code):
 `SUPABASE_SERVICE_ROLE_KEY`, `PADDLE_API_KEY`, `PADDLE_WEBHOOK_SECRET`, `RESEND_API_KEY`
 
-## Design System
+## Design System ("Bento", 2026-11)
 
-Full reference: `.claude/design-system.md`
+Full reference: `.claude/design-system.md` (tokens, formulas, invariants). Reference
+mockups: `docs/redesign/bento-*.reference.html` (visual spec only, fake numbers).
+Rule: no raw hex, px radius, duration or easing in components; only the tokens below.
+
+### Tokens (CSS vars in `src/index.css`, mapped in `tailwind.config.cjs`)
+- Surfaces: `bg-page` (mint page), `bg-tile` (white tile), `bg-inner` / `bg-inner-2`
+  (panels/tracks inside tiles), `border-line`; text `text-fg`, brand text
+  `text-brand-text`; one green hero tile per screen `bg-hero` (+ `bg-hero-inset` chips).
+  All derived from BRAND `#0B5D3B`, INK `#0F1F17`, DARK_BASE `#0A0D0B` via `color-mix`.
+- Radii: `rounded-tile` 22, `rounded-hero` 32, `rounded-shell` 26, `rounded-inner` 18,
+  `rounded-icon` 16, `rounded-input` 14, `rounded-pill`. No `rounded-sm/md/lg/xl/2xl`.
+- Motion: `duration-fast/enter/tile/data`, `ease-out-b/spring/std`, animations
+  `pop/rise/grow-x/grow-y/draw/row-new`, delays via `--d`; helpers in
+  `src/utils/motion.js`; hooks `useCountUp`, `useRevealOnce`, `usePrefersReducedMotion`.
+  Entrance once per mount; reduced motion = no animation, final values immediately.
 
 ### Typography
-- **Three faces**: Hanken Grotesk (`font-display`) for headings/hero/section titles; Inter Tight (`font-sans`, default) for body/UI/controls; Geist Mono (`font-mono`) for IDs/code. Currency uses `font-sans` + `tabular-nums`, not mono.
-- No `tracking-display`/`tracking-tight-display` — use standard Tailwind tracking.
-- `.eyebrow` utility: `text-[12px] font-medium text-ink-muted` — no uppercase, no wide tracking.
-- **Numbers are the hero**: all currency/percent/count values use `tabular-nums`; focal numbers ≥600 weight, tight tracking. See `.claude/design-system.md` for the full type/metric scale.
+- **One face: Manrope** (self-hosted variable, `font-sans` = `font-display`). Mono only for codes.
+- Scale: caption 15 (`text-caption`), body 17 (`text-body`), h3 19, h1 clamp(28,3vw,36),
+  kpi clamp(40,4vw,52) weight 800 (one per screen). Landing: body 18, h3 22,
+  h2 clamp(30,3.2vw,40), h1 clamp(40,4.6vw,60).
+- **Nothing below 14px**: no `text-xs`, no `text-[10-13px]`, no `.eyebrow`.
+- Weights 600 meta / 700 labels, buttons / 800 numbers. `tabular-nums` on every number.
 
-### Brand Colors (forest green — repainted 2026-07)
-```
-brand-400  #2E9E6B   (dark-mode accent / --c-brand-accent)
-brand-500  #17804F   (active rails, focus signals, progress)
-brand-600  #0B5D3B   (primary button fill; base of the ramp)
-brand-700  #084C30   (button hover)
-```
-Primary buttons use `bg-brand-600 hover:bg-brand-700` and `rounded-md` (never `rounded-full`).
-Never the old teal `#168b78`/`#0f6b5e`/`#0b5449` — replaced globally.
-
-**De-pastelization rule**: solid brand/red fills are reserved for (a) primary
-actions + active/selected controls, (b) status badges that must pop (PRO, unread).
-Everything informational uses neutral `bg-surface-subtle` + colored text/icon, or a
-`border-l-2 border-l-brand-600` rail on a white card. Do NOT reintroduce `bg-brand-50`
-tint washes as large fills.
-
-**Input focus is neutral, not brand**: form controls focus to
-`ring-ink-primary/10 dark:ring-white/15` + `border-ink-muted/50 dark:border-white/40`
-— the border must NOT turn green on focus.
-
-### Expense / Negative Color
-Use `#DC2626` (hover/deep `#B91C1C`) everywhere for expense amounts, negative values,
-over-budget indicators. Never the old `#e8394d`, `#e05c6b`, or `#f08090`.
+### Color semantics
+- Buttons, chips, filters, toasts, badges are pills. Primary = BRAND fill, hover brand-700.
+- **Expense amounts are ink (`text-fg`), not red.** Red `#DC2626` only for over-budget,
+  errors, destructive actions. Income = `text-brand-text` with "+"; expense with "−" (U+2212).
+- Inputs: `rounded-input`, 2px `--line` border, **BRAND border on focus**.
+- Category colors (`colorFromName`) are for icons/bars only, never body text.
+- Progress fill: <85% BRAND, 85..100% WARNING `#B45309`, >100% EXPENSE.
 
 ### Dark Mode Text — Critical Rules
 All dark mode text is white. `src/index.css` forces this with `!important` outside `@layer` blocks.
-- Use `dark:text-white` for primary text
-- Use `dark:text-white` for secondary/muted text (opacity modifiers `text-white/70` for hierarchy if needed)
-- Placeholder text: `dark:placeholder:text-white/40` (less contrast than typed text — not gray)
+- Use `dark:text-white` for primary and secondary text
+- Placeholder text: `dark:placeholder:text-white/40`
 - **Never** `dark:text-gray-*`, `dark:text-zinc-*`, or `dark:text-ink-dark-*` (JIT cache unreliable)
-- Chart/SVG tick fills: JS-computed hex `dark ? '#FFFFFF' : '#6b7280'` — Tailwind classes don't apply to SVG
+- Chart/SVG fills: JS-computed hex (`dark ? '#FFFFFF' : INK`) — Tailwind classes don't apply to SVG
 
-### Over-budget Hierarchy
-Avoid unicolor red: keep percentage red (`#DC2626`), supporting text muted (`dark:text-white/60`), progress bar carries the color signal.
+### Forbidden ("AI look")
+Eyebrows above headings, uppercase tracked labels, gradient text, glows, colored
+shadows (except the tile hover lift), pulsing dots, emoji in chrome, accent words in
+headings, "01/02/03" numbering, three identical centered cards, fake stats.
 
 ## Notes for AI Assistants
 
 1. **API layer is modular** — check `src/utils/api/` (not a single api.js) before adding functions
-2. **Use existing UI primitives** — `Button, Card, Input, Modal, CustomSelect, CategoryIconSvg, PasswordInput`. Page layout: every authenticated page starts with `PageHeader`; summary figures go in `StatStrip` (one hairline-divided panel, not equal stat cards); view filters use `SegmentedControl`; month-scoped pages use `MonthSwitcher`; category markers use `CategoryAvatar`. Lists (transactions, budgets, recurring, categories) are divided rows in one card, with edit/delete revealed on hover. Pages must not add their own `max-w-* mx-auto px-* py-*` wrapper (AuthenticatedLayout already pads).
+2. **Use existing UI primitives** — `Button, Card, Input, Modal, CustomSelect, CategoryIconSvg, PasswordInput`. Page layout: every authenticated page starts with `PageHeader`; summary figures go in `StatStrip` (one hairline-divided panel, not equal stat cards); view filters use `SegmentedControl`; month-scoped pages use `MonthSwitcher`; category markers use `CategoryAvatar` (48px `rounded-icon` square, tinted). Every card-like surface is a `Card` tile; progress uses `ProgressBar` / `ProgressRing` / `StackedBar`; chips use `Chip`. Lists (transactions, budgets, recurring, categories) are rows inside one tile, edit/delete revealed on hover and always visible on touch. Pages must not add their own `max-w-* mx-auto px-* py-*` wrapper (AuthenticatedLayout already pads).
 3. **i18n both files** — every new string goes in `en/` AND `sq/` simultaneously
 4. **Database changes** — new migration in `supabase_migrations/YYYYMMDDHHMMSS_desc.sql` with RLS. For every new table, also add explicit `GRANT SELECT, INSERT, UPDATE, DELETE ON public.<table> TO authenticated;` (and `TO service_role;`, plus `TO anon;` only if anonymous/unauthenticated access is actually needed). Supabase no longer grants Data API access to new `public` tables by default — enforced on new projects since 2026-05-30 and on all existing projects from 2026-10-30. RLS policies remain the real access boundary; the grant only makes the table reachable via supabase-js/PostgREST/GraphQL at all. Without it, calls fail with error `42501`.
 5. **Subscription gating** — check `isPremium || isTrialing`, not just `isPremium`
 6. **Context management** — when context exceeds ~50%, delegate to subagents or start fresh conversation
 7. **Deployment** — frontend auto-deploys on push to `main`; migrations and Edge Functions need manual CLI deploy
 8. **mutationCount** — increments on every mutation (add/update/delete); it's a change signal, not a record count
-9. **Dark mode** — do not add `dark:text-gray-*` or `dark:text-ink-dark-*`; always `dark:text-white`. See Design System section above.
+9. **Dark mode** — do not add `dark:text-gray-*` or `dark:text-ink-dark-*`; always `dark:text-white`. Surfaces use the Bento vars, which already switch in `.dark`. See Design System section above.
 10. **Performance / Core Web Vitals** — target: Mobile ≥90, Desktop ≥99. Current baselines: Mobile 82→90+, Desktop 99 (SEO 100, Best Practices 100). Rules:
     - **Never add eager imports of heavy libs** (Recharts, PapaParse, Supabase) in components that render on the landing page. Always use `lazy()` + `Suspense`.
     - **Landing hero preview** (`src/components/Landing/HeroPreview.jsx`) is static HTML/CSS + lucide on purpose. Never import Recharts or fetch data in it; the H1 is the LCP element.

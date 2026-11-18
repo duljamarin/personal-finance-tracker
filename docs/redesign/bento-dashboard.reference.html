@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Direction B, Bento: dashboard with quick add</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.b{--white:#FFFFFF;--mint:#EEF6F1;--mint2:#DDEFE4;--ink:#0F1F17;--line:#DCE8E0;--brand:#0B5D3B;--brand2:#0E6E46;--warn:#A15C07;--exp:#B42318;--eo:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.32,.64,1);--es:cubic-bezier(.2,0,0,1);font-family:Manrope,system-ui,sans-serif;font-size:17px;line-height:1.55;color:var(--ink);background:var(--mint);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.h1{font-weight:800;font-size:clamp(28px,3vw,36px);line-height:1.1;letter-spacing:-0.02em;margin:0}
+.h3{font-size:19px;line-height:1.3;font-weight:700;margin:0}
+.sm{font-size:15px;line-height:1.5}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+a{color:inherit}a:hover{color:inherit}
+@keyframes b-pop{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes b-gx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes b-gy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes b-draw{from{stroke-dashoffset:var(--len)}}
+@keyframes b-sw1{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes b-sw2{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes b-new{0%{opacity:0;transform:translateX(-24px) scale(.97);background-color:var(--mint2)}45%{opacity:1;transform:none;background-color:var(--mint2)}100%{background-color:transparent}}
+.gx{transform-origin:left}
+.gy{transform-origin:bottom}
+.go .pop{animation:b-pop 600ms var(--spring) backwards;animation-delay:calc(var(--i,0) * 80ms + var(--b,0ms))}
+.go .gx{animation:b-gx 700ms var(--eo) both;animation-delay:calc(var(--i,0) * 80ms + var(--b,0ms))}
+.go .gy{animation:b-gy 640ms var(--spring) both;animation-delay:calc(var(--i,0) * 50ms + var(--b,0ms))}
+.go .draw{animation:b-draw 900ms var(--eo) both;animation-delay:var(--b,0ms)}
+.armed .stage:not(.go) .pop{opacity:0}
+.armed .stage:not(.go) .gx{transform:scaleX(0)}
+.armed .stage:not(.go) .gy{transform:scaleY(0)}
+.armed .stage:not(.go) .draw{stroke-dashoffset:var(--len)}
+.sw-a .sw{animation:b-sw1 380ms var(--eo) backwards;animation-delay:calc(var(--i,0) * 45ms + var(--swb,0ms))}
+.sw-b .sw{animation:b-sw2 380ms var(--eo) backwards;animation-delay:calc(var(--i,0) * 45ms + var(--swb,0ms))}
+.sw-a .new,.sw-b .new{animation:b-new 1700ms var(--eo) backwards}
+.tile{background:var(--white);border:1px solid var(--line);border-radius:22px;transition:transform 320ms var(--spring),box-shadow 320ms var(--es)}
+.tile:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(11,93,59,.35)}
+.rail-b{width:48px;height:48px;border:0;border-radius:16px;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background-color 180ms var(--es),transform 220ms var(--spring)}
+.rail-b:hover{background:var(--mint);transform:scale(1.06)}
+.chip{border:2px solid var(--line);background:var(--white);color:var(--ink);font:inherit;font-size:15px;font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer;transition:background-color 180ms var(--es),border-color 180ms var(--es),color 180ms var(--es),transform 220ms var(--spring)}
+.chip:hover{transform:translateY(-1px)}
+.chip-on{background:var(--brand);border-color:var(--brand);color:#FFFFFF}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;text-decoration:none;font:inherit;font-weight:700;border-radius:999px;cursor:pointer;transition:background-color 180ms var(--es),transform 220ms var(--spring)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+.btn-g{background:var(--brand);color:#FFFFFF}
+.btn-g:hover{background:var(--brand2);color:#FFFFFF}
+.plus{transition:transform 320ms var(--spring)}
+.btn:hover .plus{transform:rotate(90deg)}
+.sheet{transition:transform 420ms var(--spring),opacity 240ms var(--es)}
+.toast{transition:transform 420ms var(--spring),opacity 240ms var(--es)}
+.w-t{transition:width 560ms var(--eo)}
+.inp{width:100%;box-sizing:border-box;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-weight:700;color:var(--ink);background:var(--white);transition:border-color 180ms var(--es)}
+.inp:focus{outline:none;border-color:var(--brand)}
+.fpill{transition:transform 380ms var(--spring)}
+.fbtn{position:relative;z-index:1;width:96px;height:36px;border:0;background:transparent;font:inherit;font-size:15px;font-weight:700;color:var(--ink);border-radius:999px;cursor:pointer}
+.txr{display:flex;align-items:center;gap:14px;padding:12px;border-radius:16px;transition:background-color 180ms var(--es),transform 280ms var(--spring)}
+.txr:hover{background-color:var(--mint) !important;transform:translateX(4px)}
+.txi{width:48px;height:48px;flex:none;border-radius:16px;display:grid;place-items:center;transition:transform 280ms var(--spring)}
+.txr:hover .txi{transform:rotate(-6deg) scale(1.07)}
+.lnk{display:inline-flex;align-items:center;gap:6px;font-weight:700;text-decoration:none;color:var(--brand)}
+.lnk svg{transition:transform 220ms var(--spring)}
+.lnk:hover svg{transform:translateX(4px)}
+.replay{position:fixed;left:16px;bottom:16px;z-index:40;border:2px solid var(--ink);background:var(--white);color:var(--ink);font:inherit;font-size:14px;font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+@media (max-width:980px){.c-7,.c-5{grid-column:1 / -1 !important;grid-row:auto !important}}
+@media (prefers-reduced-motion:reduce){.b,.b *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="b {{ armedCls }}" style="min-height: 100vh; display: flex; flex-wrap: wrap; gap: 16px; padding: 16px; box-sizing: border-box">
+  <nav aria-label="App" style="flex: 0 0 72px; align-self: flex-start; background: var(--white); border: 1px solid var(--line); border-radius: 26px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px">
+    <span style="width: 48px; height: 48px; border-radius: 16px; background: var(--brand); display: grid; place-items: center; margin-bottom: 8px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></span>
+    <button class="rail-b" type="button" aria-label="Dashboard" style="background: var(--mint2); color: var(--brand)"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg></button>
+    <button class="rail-b" type="button" aria-label="Transactions"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"></path><path d="M20 7H4"></path><path d="m8 21-4-4 4-4"></path><path d="M4 17h16"></path></svg></button>
+    <button class="rail-b" type="button" aria-label="Budgets"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"></path><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path></svg></button>
+    <button class="rail-b" type="button" aria-label="Goals"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></button>
+    <button class="rail-b" type="button" aria-label="Recurring"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg></button>
+  </nav>
+
+  <main class="stage {{ go }}" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 6px 4px">
+      <h1 class="h1">November</h1>
+      <span class="sm" style="font-weight: 700; padding: 6px 12px; border-radius: 999px; background: var(--white); border: 1px solid var(--line)">Day 18 of 30</span>
+      <button class="btn btn-g" type="button" onClick="{{ openSheet }}" style="margin-left: auto; padding: 12px 22px; font-size: 16px"><svg class="plus" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>Add transaction</button>
+    </div>
+
+    <div class="g12">
+      <section class="tile pop c-7" style="--i: 0; grid-column: 1 / span 7; background: var(--brand); border-color: var(--brand); color: #FFFFFF; padding: 26px; display: flex; flex-direction: column; gap: 14px; overflow: hidden">
+        <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+          <div>
+            <div class="sm" style="font-weight: 700">Balance</div>
+            <div style="font-size: clamp(40px, 4vw, 52px); line-height: 1.05; font-weight: 800; letter-spacing: -0.025em; margin-top: 4px">{{ bal }}</div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap">
+            <div style="padding: 10px 14px; border-radius: 16px; background: rgba(255,255,255,.14)"><div class="sm" style="font-weight: 600">Income</div><div style="font-weight: 800; font-size: 19px">{{ inc }}</div></div>
+            <div style="padding: 10px 14px; border-radius: 16px; background: rgba(255,255,255,.14)"><div class="sm" style="font-weight: 600">Spending</div><div style="font-weight: 800; font-size: 19px">{{ sp }}</div></div>
+          </div>
+        </div>
+        <svg role="img" aria-label="Balance over eight months, rising" width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="none" style="display: block">
+          <path d="M0 104 L86 92 L171 96 L257 76 L343 70 L429 54 L514 38 L600 18 L600 120 L0 120 Z" fill="rgba(255,255,255,.12)" class="pop" style="--b: 700ms"></path>
+          <path class="draw" d="M0 104 L86 92 L171 96 L257 76 L343 70 L429 54 L514 38 L600 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" vector-effect="non-scaling-stroke" style="--len: 1; --b: 350ms; stroke-dashoffset: 0"></path>
+        </svg>
+        <div class="sm" style="display: flex; justify-content: space-between; font-weight: 700"><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span></div>
+      </section>
+
+      <section class="tile pop c-5" style="--i: 1; grid-column: 8 / span 5; padding: 26px; display: flex; gap: 22px; align-items: center; flex-wrap: wrap">
+        <div style="position: relative; width: 140px; height: 140px; flex: none">
+          <svg role="img" aria-label="Health score {{ score }}" width="140" height="140" viewBox="0 0 120 120" style="transform: rotate(-90deg)">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--mint2)" stroke-width="14"></circle>
+            <circle class="draw" cx="60" cy="60" r="50" fill="none" stroke="var(--brand)" stroke-width="14" stroke-linecap="round" stroke-dasharray="314.16" style="--len: 314.16; --b: 400ms; stroke-dashoffset: 94.25"></circle>
+          </svg>
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-size: 38px; font-weight: 800; line-height: 1">{{ score }}</span><span class="sm" style="font-weight: 700; color: var(--brand)">+4</span></div>
+        </div>
+        <div style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 10px">
+          <h2 class="h3">Health score</h2>
+          <sc-for list="{{ parts }}" as="p" hint-placeholder-count="4">
+            <div class="sm" style="display: flex; justify-content: space-between; font-weight: 600"><span>{{ p.n }}</span><span style="font-weight: 800">{{ p.v }}/25</span></div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="tile pop c-7" style="--i: 2; grid-column: 1 / span 7; padding: 26px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 class="h3">Budgets</h2><span class="sm" style="font-weight: 700">{{ spRaw }} of €1,560</span></div>
+        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 16px">
+          <sc-for list="{{ budgets }}" as="g" hint-placeholder-count="4">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-weight: 700"><span>{{ g.n }}</span><span style="color: {{ g.tc }}">{{ g.label }}</span></div>
+              <div style="height: 14px; border-radius: 999px; background: var(--mint); margin-top: 8px; overflow: hidden"><div class="gx w-t" style="--i: {{ g.i }}; --b: 500ms; width: {{ g.w }}%; height: 100%; border-radius: 999px; background: {{ g.c }}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="tile pop c-5" style="--i: 3; grid-column: 8 / span 5; padding: 26px">
+        <h2 class="h3">Goals</h2>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+          <sc-for list="{{ goals }}" as="g" hint-placeholder-count="2">
+            <div style="background: var(--mint); border-radius: 18px; padding: 18px 14px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+              <div style="position: relative; width: 104px; height: 104px; flex: none">
+                <svg aria-hidden="true" width="104" height="104" viewBox="0 0 120 120" style="display: block; transform: rotate(-90deg)">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--white)" stroke-width="12"></circle>
+                  <circle class="draw" cx="60" cy="60" r="50" fill="none" stroke="var(--brand)" stroke-width="12" stroke-linecap="round" stroke-dasharray="314.16" style="--len: 314.16; --b: {{ g.b }}; stroke-dashoffset: {{ g.off }}"></circle>
+                </svg>
+                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center"><span style="font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; white-space: nowrap">{{ g.label }}</span></div>
+              </div>
+              <div style="font-weight: 800">{{ g.n }}</div>
+              <div class="sm" style="font-weight: 600">{{ g.amt }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="tile pop c-7" style="--i: 4; grid-column: 1 / span 7; grid-row: span 2; padding: 24px; display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+          <h2 class="h3">Activity</h2>
+          <div role="group" aria-label="Filter activity" style="position: relative; display: flex; padding: 4px; background: var(--mint); border-radius: 999px">
+            <div class="fpill" style="position: absolute; top: 4px; left: 4px; width: 96px; height: 36px; border-radius: 999px; background: var(--white); box-shadow: 0 2px 8px rgba(15,31,23,.12); transform: translateX({{ fX }}px)"></div>
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3"><button class="fbtn" type="button" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.l }}</button></sc-for>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <div style="background: var(--mint); border-radius: 18px; padding: 14px 18px">
+            <div class="sm" style="font-weight: 700">Money in, November</div>
+            <div style="font-size: clamp(24px, 2.4vw, 30px); font-weight: 800; letter-spacing: -0.02em; color: var(--brand)">+{{ inTot }}</div>
+          </div>
+          <div style="background: var(--mint); border-radius: 18px; padding: 14px 18px">
+            <div class="sm" style="font-weight: 700">Money out, November</div>
+            <div style="font-size: clamp(24px, 2.4vw, 30px); font-weight: 800; letter-spacing: -0.02em">−{{ outTot }}</div>
+          </div>
+        </div>
+
+        <div>
+          <div role="img" aria-label="Spending split by category" style="display: flex; gap: 3px; height: 18px; border-radius: 999px; overflow: hidden">
+            <sc-for list="{{ stack }}" as="s" hint-placeholder-count="5"><div class="gx w-t" style="--i: {{ s.i }}; --b: 650ms; width: {{ s.w }}%; height: 100%; background: {{ s.c }}"></div></sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px">
+            <sc-for list="{{ stack }}" as="s" hint-placeholder-count="5"><span class="sm" style="display: flex; align-items: center; gap: 7px; font-weight: 600"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{ s.c }}"></span>{{ s.n }} <span style="font-weight: 800">{{ s.amt }}</span></span></sc-for>
+          </div>
+        </div>
+
+        <div class="{{ swCls }}" style="--swb: {{ swb }}; display: flex; flex-direction: column; gap: 4px">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+            <div>
+              <div class="sw sm" style="--i: {{ g.i }}; display: flex; justify-content: space-between; padding: 10px 12px 4px; font-weight: 800"><span>{{ g.d }}</span><span style="color: {{ g.tc }}">{{ g.tot }}</span></div>
+              <sc-for list="{{ g.items }}" as="t" hint-placeholder-count="2">
+                <div class="txr sw {{ t.cls }}" style="--i: {{ t.i }}; background-color: {{ t.bg }}">
+                  <span class="txi" style="background: {{ t.tint }}; color: {{ t.col }}">
+                    <sc-if value="{{ t.isFood }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg></sc-if>
+                    <sc-if value="{{ t.isTransport }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg></sc-if>
+                    <sc-if value="{{ t.isShop }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg></sc-if>
+                    <sc-if value="{{ t.isFun }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"></path><path d="m6.2 5.3 3.1 3.9"></path><path d="m12.4 3.4 3.1 4"></path><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path></svg></sc-if>
+                    <sc-if value="{{ t.isHousing }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></sc-if>
+                    <sc-if value="{{ t.isSalary }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg></sc-if>
+                  </span>
+                  <div style="flex: 1; min-width: 0">
+                    <div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline">
+                      <span style="font-weight: 800">{{ t.n }}</span>
+                      <span style="font-weight: 800; font-size: 19px; letter-spacing: -0.01em; white-space: nowrap; color: {{ t.ac }}">{{ t.a }}</span>
+                    </div>
+                    <div class="sm" style="display: flex; align-items: center; gap: 10px; font-weight: 600; margin-top: 2px; flex-wrap: wrap">
+                      <span>{{ t.meta }}</span>
+                      <sc-if value="{{ t.hasBar }}" hint-placeholder-val="{{ true }}"><span style="flex: 1 1 80px; max-width: 140px; height: 6px; border-radius: 999px; background: var(--mint2); overflow: hidden"><span class="w-t" style="display: block; width: {{ t.bw }}%; height: 100%; border-radius: 999px; background: {{ t.col }}"></span></span></sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <a class="lnk" href="#transactions" style="margin-top: auto; padding: 4px 12px">View all {{ count }} transactions<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+      </section>
+
+      <section class="tile pop c-5" style="--i: 5; grid-column: 8 / span 5; padding: 26px; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 class="h3">Kept per month</h2><span class="sm" style="font-weight: 700; color: var(--brand)">63% in Nov</span></div>
+        <div style="flex: 1; min-height: 150px; margin-top: 16px; display: flex; align-items: flex-end; gap: 10px">
+          <sc-for list="{{ kept }}" as="k" hint-placeholder-count="6">
+            <div style="flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px">
+              <div class="gy" style="--i: {{ k.i }}; --b: 600ms; width: 100%; height: {{ k.h }}%; border-radius: 12px; background: {{ k.c }}"></div>
+              <span class="sm" style="font-weight: 700">{{ k.m }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="tile pop c-5" style="--i: 6; grid-column: 8 / span 5; padding: 26px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 class="h3">Coming up</h2><span class="sm" style="font-weight: 700">recurring</span></div>
+        <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px">
+          <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+            <div class="txr" style="padding: 8px">
+              <span style="width: 56px; height: 56px; flex: none; border-radius: 16px; background: var(--mint); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1"><span style="font-size: 20px; font-weight: 800">{{ u.day }}</span><span style="font-size: 14px; font-weight: 700">{{ u.mon }}</span></span>
+              <div style="flex: 1; min-width: 0"><div style="font-weight: 800">{{ u.n }}</div><div class="sm" style="font-weight: 600">{{ u.when }}</div></div>
+              <span style="font-weight: 800; white-space: nowrap; color: {{ u.c }}">{{ u.a }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="sheet" role="dialog" aria-label="Add transaction" aria-hidden="{{ sheetHidden }}" style="position: fixed; right: 24px; bottom: 24px; z-index: 50; width: min(400px, calc(100vw - 48px)); background: var(--white); border: 1px solid var(--line); border-radius: 26px; padding: 22px; box-sizing: border-box; box-shadow: 0 30px 60px -30px rgba(15,31,23,.45); transform: {{ sheetT }}; opacity: {{ sheetO }}; pointer-events: {{ sheetPE }}">
+    <div style="display: flex; justify-content: space-between; align-items: center"><h2 class="h3">Add transaction</h2><button class="rail-b" type="button" aria-label="Close" onClick="{{ closeSheet }}" style="width: 40px; height: 40px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+    <label class="sm" for="b-amt" style="display: block; margin-top: 14px; font-weight: 700">Amount</label>
+    <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 40px; font-weight: 800"><span>−€</span><input id="b-amt" class="inp" inputmode="decimal" value="{{ amt }}" onInput="{{ setAmt }}" style="font-size: 36px; padding: 6px 12px"></div>
+    <label class="sm" for="b-desc" style="display: block; margin-top: 14px; font-weight: 700">Description</label>
+    <input id="b-desc" class="inp" value="{{ desc }}" onInput="{{ setDesc }}" style="margin-top: 6px">
+    <div class="sm" style="margin-top: 14px; font-weight: 700">Category</div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="4"><button class="{{ c.cls }}" type="button" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.n }}</button></sc-for>
+    </div>
+    <button class="btn btn-g" type="button" onClick="{{ save }}" style="margin-top: 20px; width: 100%; padding: 15px; font-size: 17px">Save</button>
+  </div>
+
+  <div class="toast" role="status" style="position: fixed; left: 50%; bottom: 28px; z-index: 60; background: var(--ink); color: #FFFFFF; font-weight: 700; padding: 12px 20px; border-radius: 999px; display: flex; gap: 10px; align-items: center; transform: translateX(-50%) {{ toastT }}; opacity: {{ toastO }}">
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7FD4A8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastMsg }}
+  </div>
+  <button class="replay" type="button" onClick="{{ replay }}">Replay motion</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.CAT = {
+      food: { n: 'Food and dining', c: '#B7791F', lim: 600, base: 412.3 },
+      transport: { n: 'Transport', c: '#3E6DB5', lim: 160, base: 96 },
+      shop: { n: 'Shopping', c: '#7D5BA6', lim: 600, base: 107.2 },
+      fun: { n: 'Entertainment', c: '#C64B65', lim: 200, base: 137.1 },
+      housing: { n: 'Housing and rent', c: '#0B5D3B', base: 650 },
+      salary: { n: 'Salary', c: '#0B5D3B' }
+    };
+    this.chipKeys = ['food', 'transport', 'shop', 'fun'];
+    this.baseTx = [
+      { d: 'Today', n: 'Supermarket', cat: 'food', v: -64.2 },
+      { d: 'Yesterday', n: 'Fuel', cat: 'transport', v: -48 },
+      { d: 'Yesterday', n: 'Lunch with the team', cat: 'food', v: -22.4 },
+      { d: 'Sun, 15 Nov', n: 'Cinema', cat: 'fun', v: -18.5 },
+      { d: 'Sun, 15 Nov', n: 'Bookstore', cat: 'shop', v: -27.9 },
+      { d: 'Sun, 1 Nov', n: 'Monthly salary', cat: 'salary', v: 3800 },
+      { d: 'Sun, 1 Nov', n: 'Rent', cat: 'housing', v: -650 }
+    ];
+    this.state = { armed: false, go: true, t: 1, open: false, amt: '3.40', desc: 'Coffee', cat: 0, added: [], toast: '', toastOn: false, from: null, ft: 1, filter: 0, sw: 'sw-a', swb: '450ms' };
+  }
+  componentDidMount() {
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (!this.reduced) this.start();
+  }
+  componentWillUnmount() { this.dead = true; clearTimeout(this.tt); }
+  run(key, dur, delay) {
+    const startAt = performance.now() + (delay || 0);
+    const id = (this['id' + key] = (this['id' + key] || 0) + 1);
+    this.setState({ [key]: 0 });
+    const step = (now) => {
+      if (this.dead || id !== this['id' + key]) return;
+      const t = Math.min(1, Math.max(0, (now - startAt) / dur));
+      this.setState({ [key]: t });
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  start() {
+    this.setState({ armed: true, go: false, swb: '450ms', sw: this.state.sw === 'sw-a' ? 'sw-b' : 'sw-a' });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (this.dead) return;
+      this.setState({ go: true });
+      this.run('t', 900, 350);
+    }));
+  }
+  spent() { return this.state.added.reduce((s, a) => s + a.v, 0); }
+  used(key) { return (this.CAT[key].base || 0) + this.state.added.filter((a) => a.cat === key).reduce((s, a) => s + a.v, 0); }
+  save() {
+    const v = parseFloat(String(this.state.amt).replace(',', '.'));
+    if (!(v > 0)) return;
+    const key = this.chipKeys[this.state.cat];
+    const prevSpent = this.spent();
+    const item = { n: this.state.desc || 'Expense', cat: key, v, k: Date.now() };
+    this.setState({ open: false, added: [item].concat(this.state.added), from: prevSpent, filter: this.state.filter === 2 ? 0 : this.state.filter, toast: 'Saved: ' + item.n + ' −€' + v.toFixed(2), toastOn: true });
+    if (!this.reduced) this.run('ft', 700, 300); else this.setState({ ft: 1 });
+    clearTimeout(this.tt);
+    this.tt = setTimeout(() => { if (!this.dead) this.setState({ toastOn: false }); }, 2600);
+  }
+  pickFilter(i) {
+    if (i === this.state.filter) return;
+    this.setState({ filter: i, swb: '0ms', sw: this.state.sw === 'sw-a' ? 'sw-b' : 'sw-a' });
+  }
+  renderVals() {
+    const eur = (n) => '€' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const e = 1 - Math.pow(1 - this.state.t, 3);
+    const total = this.spent();
+    const fe = 1 - Math.pow(1 - this.state.ft, 3);
+    const extra = this.state.from == null ? total : this.state.from + (total - this.state.from) * fe;
+    const C = this.CAT;
+    const open = this.state.open;
+    const f = this.state.filter;
+
+    const all = this.state.added.map((a, idx) => ({ d: 'Today', n: a.n, cat: a.cat, v: -a.v, fresh: idx === 0 })).concat(this.baseTx);
+    const shown = all.filter((t) => f === 0 || (f === 1 && t.v < 0) || (f === 2 && t.v > 0));
+    const order = [];
+    const byDay = {};
+    shown.forEach((t) => { if (!byDay[t.d]) { byDay[t.d] = []; order.push(t.d); } byDay[t.d].push(t); });
+    let k = 0;
+    const groups = order.map((d) => {
+      const gi = k++;
+      const sum = byDay[d].reduce((s, t) => s + t.v, 0);
+      const items = byDay[d].map((t) => {
+        const cat = C[t.cat];
+        const inc = t.v > 0;
+        const limited = !!cat.lim;
+        const pct = limited ? Math.round(this.used(t.cat) / cat.lim * 100) : 0;
+        return {
+          i: k++,
+          n: t.n,
+          a: (inc ? '+' : '−') + eur(Math.abs(t.v)),
+          ac: inc ? 'var(--brand)' : 'var(--ink)',
+          bg: inc ? 'var(--mint)' : 'transparent',
+          cls: t.fresh ? 'new' : '',
+          col: cat.c,
+          tint: 'color-mix(in srgb, ' + cat.c + ' 14%, white)',
+          meta: inc ? 'Salary, arrived on time' : limited ? cat.n + ' · ' + pct + '% of budget' : cat.n + ' · fixed monthly',
+          hasBar: limited,
+          bw: Math.min(100, pct),
+          isFood: t.cat === 'food', isTransport: t.cat === 'transport', isShop: t.cat === 'shop', isFun: t.cat === 'fun', isHousing: t.cat === 'housing', isSalary: t.cat === 'salary'
+        };
+      });
+      return { i: gi, d, items, tot: (sum > 0 ? '+' : '−') + eur(Math.abs(sum)), tc: sum > 0 ? 'var(--brand)' : 'var(--ink)' };
+    });
+
+    const outNow = 1402.6 + extra;
+    const stackKeys = ['housing', 'food', 'fun', 'shop', 'transport'];
+    const stackTotal = stackKeys.reduce((s, key) => s + this.used(key), 0);
+    const keptVals = [[1313, 'Jun'], [1520, 'Jul'], [1450, 'Aug'], [1714, 'Sep'], [2066, 'Oct'], [2397 - total, 'Nov']];
+    const budgetKeys = ['food', 'transport', 'shop', 'fun'];
+    const goalsRaw = [['Emergency fund', 72, '€4,320 of €6,000', '700ms'], ['Summer trip', 40, '€800 of €2,000', '820ms']];
+
+    return {
+      armedCls: this.state.armed ? 'armed' : '',
+      go: this.state.go ? 'go' : '',
+      bal: eur((12480.35 - extra) * e),
+      inc: eur(3800 * e),
+      sp: eur(outNow * e),
+      spRaw: eur(1402.6 - 650 + total),
+      score: Math.round(70 * e),
+      parts: [['Budgets kept', 17], ['Spending vs income', 19], ['Stability', 16], ['Positive months', 18]].map((p) => ({ n: p[0], v: p[1] })),
+      budgets: budgetKeys.map((key, i) => {
+        const v = this.used(key);
+        const pct = v / C[key].lim * 100;
+        return { n: C[key].n, i, w: Math.min(100, pct), label: '€' + Math.round(v) + ' / €' + C[key].lim, c: pct > 100 ? 'var(--exp)' : pct >= 85 ? 'var(--warn)' : 'var(--brand)', tc: pct > 100 ? 'var(--exp)' : 'var(--ink)' };
+      }),
+      goals: goalsRaw.map((g) => ({ n: g[0], label: Math.round(g[1] * e) + '%', amt: g[2], b: g[3], off: (314.16 * (1 - g[1] / 100)).toFixed(2) })),
+      fX: f * 96,
+      filters: ['All', 'Spending', 'Income'].map((l, i) => ({ l, on: i === f, pick: () => this.pickFilter(i) })),
+      inTot: eur(3800 * e),
+      outTot: eur(outNow * e),
+      stack: stackKeys.map((key, i) => ({ i, n: C[key].n, c: C[key].c, w: (this.used(key) / stackTotal * 100).toFixed(2), amt: '€' + Math.round(this.used(key)) })),
+      swCls: this.state.sw,
+      swb: this.state.swb,
+      groups,
+      count: 38 + this.state.added.length,
+      kept: keptVals.map((kv, i) => ({ m: kv[1], i, h: kv[0] / 2500 * 100, c: i === 5 ? 'var(--brand)' : 'var(--mint2)' })),
+      upcoming: [
+        { day: '22', mon: 'Nov', n: 'Phone plan', when: 'in 4 days', a: '−€15.00', c: 'var(--ink)' },
+        { day: '1', mon: 'Dec', n: 'Rent', when: 'in 13 days', a: '−€650.00', c: 'var(--ink)' },
+        { day: '1', mon: 'Dec', n: 'Monthly salary', when: 'in 13 days', a: '+€3,800.00', c: 'var(--brand)' }
+      ],
+      openSheet: () => this.setState({ open: true }),
+      closeSheet: () => this.setState({ open: false }),
+      sheetT: open ? 'none' : 'translateY(24px) scale(.96)',
+      sheetO: open ? 1 : 0,
+      sheetPE: open ? 'auto' : 'none',
+      sheetHidden: !open,
+      amt: this.state.amt,
+      desc: this.state.desc,
+      setAmt: (ev) => this.setState({ amt: ev.target.value }),
+      setDesc: (ev) => this.setState({ desc: ev.target.value }),
+      cats: this.chipKeys.map((key, i) => ({ n: C[key].n, on: i === this.state.cat, cls: 'chip' + (i === this.state.cat ? ' chip-on' : ''), pick: () => this.setState({ cat: i }) })),
+      save: () => this.save(),
+      toastMsg: this.state.toast,
+      toastT: this.state.toastOn ? 'translateY(0)' : 'translateY(16px)',
+      toastO: this.state.toastOn ? 1 : 0,
+      replay: () => { if (!this.reduced) this.start(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

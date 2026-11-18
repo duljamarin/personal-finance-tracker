@@ -1,345 +1,209 @@
-# Personal Finance Tracker — Design System
+# Personal Finance Tracker — Design System ("Bento")
 
-> **Status (2026-06-19):** Evolved during the Monarch/Copilot-style redesign. This
-> doc is now the canonical spec. It supersedes the earlier "single font, no display
-> font" version — the live app uses **Hanken Grotesk for display**, and that is the
-> intended direction. CLAUDE.md's Typography section is stale on this one point;
-> trust this doc.
+> **Status (2026-11-18):** Canonical spec for the Bento redesign. Supersedes the
+> 2026-06 Monarch/Copilot doc and the 2026-07 forest-green de-pastelization rules.
+> Reference mockups (visual/behavioural spec only, fake data, do not copy markup):
+> `docs/redesign/bento-dashboard.reference.html`, `docs/redesign/bento-landing.reference.html`.
 >
-> **Taste target:** warm consumer-finance, in the spirit of Monarch Money and Copilot
-> Money. Numbers are the heroes; teal is used with restraint; depth is soft and
-> layered; charts are bespoke; every screen has a clear focal hierarchy rather than a
-> uniform grid of equal-weight cards.
+> **Taste target:** tactile, rounded, mint + white. Every surface is a Tile on a
+> mint page; one green hero tile per screen; numbers are the heroes; motion is a
+> single entrance per mount, springy but calm.
+
+Rule of the doc: **every value used in a component is one of the tokens below or a
+formula over them.** If a value you need is not here, stop and ask; do not invent one.
 
 ---
 
-## 1. Typography
+## 1. Source of truth
 
-### Fonts (three faces — keep all three)
+### 1.1 Color inputs
 
-| Role | Face | Tailwind | Notes |
-|------|------|----------|-------|
-| **Display** | Hanken Grotesk | `font-display` | Headlines, hero, section headings, big section titles. |
-| **UI / body** | Inter Tight | `font-sans` (default) | All body, labels, controls, dense data. |
-| **Numeric / mono** | ui-monospace stack (`font-mono`) | `font-mono` | Recovery codes / raw code only. No custom mono font ships (Geist Mono was configured but never loaded). Currency in the UI uses `font-sans` + `tabular-nums`, NOT `font-mono`. |
+| Input | Value | Notes |
+|---|---|---|
+| `BRAND` | `#0B5D3B` | = `brand-600`. Brand ramp 50..950 in `tailwind.config.cjs` unchanged. |
+| `BRAND_HOVER` | `#084C30` | = `brand-700` |
+| `BRAND_TEXT_DARK` | `#2E9E6B` | = `brand-400`, brand-colored text/icons in dark mode |
+| `WHITE` | `#FFFFFF` | |
+| `INK` | `#0F1F17` | light-mode text |
+| `DARK_BASE` | `#0A0D0B` | dark page |
+| `EXPENSE` | `#DC2626` | `--c-expense`, unchanged |
+| `WARNING` | `#B45309` | `--c-warning`, unchanged |
+| Category colors | `CATEGORY_PALETTE` in `src/utils/chartColors.js` via `colorFromName()` (`UI/CategoryAvatar.jsx`) | no new palette |
 
-All three are already defined in `tailwind.config.cjs` and loaded via `src/fonts.css`. Do not remove any.
+### 1.2 Derived colors (CSS custom properties in `src/index.css`)
 
-### Type scale
+All derived with `color-mix(in srgb, …)`.
 
-Numbers are the visual anchor. The scale below has deliberate contrast between
-display, body, and the numeric hero — do not flatten it into one near-uniform size.
+| Token | Light | Dark | Tailwind |
+|---|---|---|---|
+| `--page` | BRAND 7% + WHITE | DARK_BASE | `bg-page` |
+| `--tile` | WHITE | BRAND 12% + DARK_BASE | `bg-tile` |
+| `--inner` | BRAND 7% + WHITE | BRAND 20% + DARK_BASE | `bg-inner` |
+| `--inner-2` | BRAND 14% + WHITE | BRAND 30% + DARK_BASE | `bg-inner-2` |
+| `--line` | BRAND 12% + WHITE | BRAND 26% + DARK_BASE | `border-line` |
+| `--text` | INK | WHITE | `text-fg` |
+| `--brand-text` | BRAND | BRAND_TEXT_DARK | `text-brand-text` |
+| `--hero-tile` | BRAND (text WHITE) | same | `bg-hero` |
+| `--hero-inset` | WHITE 14% + BRAND | same | `bg-hero-inset` |
+| `--tint(c)` | `color-mix(in srgb, c 14%, var(--tile))` | same formula | `tintOf(c)` in `src/utils/bento.js` |
 
-| Token | Use | Size / line-height | Weight | Tracking | Family |
-|-------|-----|--------------------|--------|----------|--------|
-| `display-hero` | Landing hero H1 | `clamp(3rem, 6vw, 4.25rem)` / 1.0 | 700 | `-0.02em` | display |
-| `display-1` | Landing section H2 | `text-4xl`→`text-6xl` / 1.05 | 700 | `-0.02em` | display |
-| `display-2` | In-app page title, large card title | `text-2xl`→`text-3xl` / 1.1 | 700 | `-0.01em` | display |
-| `heading` | Card/panel heading | `text-lg` (18px) / 1.3 | 600 | `-0.01em` | sans |
-| `body` | Default body | `text-sm`/`text-base` / 1.5 | 500 | normal | sans |
-| `caption` | Helper, meta | `text-xs` (12px) / 1.4 | 500 | normal | sans |
-| `eyebrow` | Section/stat label | `text-[12px]` (`.eyebrow`) | 500 | normal | sans |
-| **`metric-hero`** | **The dominant number on a screen** | `text-4xl`→`text-5xl` / 1.0 | 600 | `-0.02em` | sans + `tabular-nums` |
-| **`metric`** | **Supporting stat number** | `text-2xl`→`text-3xl` / 1.0 | 600 | `-0.01em` | sans + `tabular-nums` |
-| **`metric-sm`** | **Inline / table number** | `text-sm`/`text-base` | 600 | normal | sans + `tabular-nums` |
+Legacy names (`surface-page`, `surface-card`, `surface-hairline`, `surface-dark-*`,
+`ink-*`) are remapped onto these vars so old call sites inherit the new look. New code
+uses the Bento names.
 
-### Numeric rule (non-negotiable)
+### 1.3 Shape and spacing
 
-**Every currency value, percentage, count, or other figure uses tabular figures.**
-Apply `tabular-nums` (utility already in `index.css`). Numbers tracked slightly
-tight, never lighter than 600 weight when they are the focal element. Labels next
-to numbers are small, quiet, muted — they never compete with the number.
+| Input | Value |
+|---|---|
+| `R_TILE` | 22px |
+| `GAP` | 16px |
+| `TYPE_MIN` | 14px |
 
-### Eyebrow rule (corrected)
+| Derived | Formula | Value | Tailwind | Use |
+|---|---|---|---|---|
+| `R_HERO` | R_TILE + 10 | 32px | `rounded-hero` | landing hero block, large landing sections |
+| `R_SHELL` | R_TILE + 4 | 26px | `rounded-shell` | nav panel, quick-add sheet |
+| `R_INNER` | R_TILE − 4 | 18px | `rounded-inner` | panels inside tiles, goal cards, summary boxes, tooltips |
+| `R_ICON` | R_TILE − 6 | 16px | `rounded-icon` | 48px icon squares, rail items |
+| `R_INPUT` | R_TILE − 8 | 14px | `rounded-input` | inputs |
+| `R_PILL` | 999px | | `rounded-pill` (= `rounded-full`) | buttons, chips, filters, toasts, badges, progress tracks |
+| `TILE_PAD` | GAP + 10 | 26px | `p-tile` | default tile padding |
+| `TILE_PAD_DENSE` | GAP + 8 | 24px | `p-tile-dense` | dense tiles; never less |
+| Grid | 12 columns, gap GAP, max content width 1240px | | `grid-cols-12 gap-gap max-w-content` | |
 
-`.eyebrow` = `text-[12px] font-medium text-ink-muted`. **No uppercase, no wide
-letter-spacing.** The landing page currently has several `uppercase tracking-[0.12em]`
-eyebrows (e.g. `LandingPage.jsx` `Eyebrow`, `FeatureCard`, the dashboard pie tags) —
-these are an AI-tell and must be migrated to the `.eyebrow` style during Phase 1/4.
-Do not introduce new uppercase tracked labels.
+No other radius is allowed in `src/components/**` (no `rounded`, `rounded-sm/md/lg/xl/2xl`).
 
----
+### 1.4 Typography
 
-## 2. Color usage rules
+- **One face: Manrope** (self-hosted variable woff2, weights 500..800, latin +
+  latin-ext, `font-display: swap`, only latin preloaded). `font-sans` and
+  `font-display` both resolve to Manrope. `font-mono` stays the system mono stack
+  (recovery codes / ciphertext only).
+- `tabular-nums` on every number.
 
-Brand is **forest green** (base `#0B5D3B` at the `brand-600` slot), repainted from
-the old teal in 2026-07. Expense red is solid `#DC2626`. Warm paper light bg and
-layered dark surfaces are unchanged.
+| Token | Formula | Size | Tailwind |
+|---|---|---|---|
+| caption | TYPE_MIN + 1 | 15px | `text-caption` (also what `text-sm` resolves to) |
+| body (app) | TYPE_MIN + 3 | 17px | `text-body` (`text-base`) |
+| body (landing) | TYPE_MIN + 4 | 18px | `text-body-lg` |
+| h3 (app) | body + 2 | 19px | `text-h3` |
+| h3 (landing) | | 22px | `text-h3-lg` |
+| h1 (app) | clamp(28px, 3vw, 36px) | | `text-h1` |
+| kpi | clamp(40px, 4vw, 52px), weight 800 | | `text-kpi` (one per screen) |
+| landing h2 | clamp(30px, 3.2vw, 40px) | | `text-h2-lg` |
+| landing h1 | clamp(40px, 4.6vw, 60px) | | `text-h1-lg` |
 
-### When brand green is permitted
+Weights: 600 meta, 700 labels/titles/buttons, 800 numbers/h1/kpi. Nothing below 500.
+Letter-spacing: −0.02em h1/h2/kpi, −0.01em h3, normal elsewhere.
 
-Solid `brand-*` fills earn attention — NOT a default card accent. Use them only for:
-- Primary actions (buttons, primary CTA, the dashboard Add-Transaction card)
-- Active/selected states (nav active = solid `bg-brand-600 text-white`, selected toggle/tab)
-- Positive financial emphasis (income amounts, on-track budget, positive net)
-- Status badges that must pop (PRO, unread count, "recommended" plan)
+**Minimum size:** nothing below 14px. `text-xs`, `text-[10px]`..`text-[13px]` are
+forbidden in components. `.eyebrow` is gone.
 
-**De-pastelization rule:** informational surfaces use neutral `bg-surface-subtle`
-+ colored text/icon, or a white card with a `border-l-2 border-l-brand-600` rail —
-NOT `bg-brand-50` tint washes. **Focus rings on inputs are neutral**
-(`ring-ink-primary/10 dark:ring-white/15`, `border-ink-muted/50`), never brand green.
+### 1.5 Motion
 
-### Neutral ramp (surfaces & text)
+| Input | Value | Tailwind duration |
+|---|---|---|
+| `D_FAST` | 180ms | `duration-fast` |
+| `D_ENTER` | 380ms | `duration-enter` |
+| `D_TILE` | 600ms | `duration-tile` |
+| `D_DATA` | 700ms | `duration-data` |
+| `D_COUNT` | 900ms | (JS, `MOTION.count`) |
+| `STAGGER` | 80ms | |
+| `STAGGER_ROW` | 45ms | |
+| `MAX_STAGGERED` | 8 | |
+| `EASE_OUT` | cubic-bezier(.22,1,.36,1) | `ease-out-b` |
+| `EASE_SPRING` | cubic-bezier(.34,1.32,.64,1) | `ease-spring` |
+| `EASE_STD` | cubic-bezier(.2,0,0,1) | `ease-std` |
 
-```
-LIGHT                          DARK
-surface.page      #FAFAF7      surface.dark-page    #0A0A0B
-surface.card      #FFFFFF      surface.dark-card    #111113
-surface.hairline  #EDEDE8      surface.dark-hairline #1F1F22
-                               surface.dark-elevated #222226  (popover/modal)
-ink.primary       #111112      #FFFFFF (all dark text is white)
-ink.muted         #2F2F2C      #FFFFFF @ opacity (white/70, white/60)
-```
+Derived (in `src/utils/motion.js`): `tileDelay(i) = min(i, 8) * 80ms`;
+`rowDelay(i, base) = min(i, 8) * 45ms + base`; `dataDelay(i) = tileDelay(i) + 300ms`;
+toast lifetime = 2600ms.
 
-### Semantic income / expense
-
-| Meaning | Color | Token |
-|---------|-------|-------|
-| Income / positive / on-track | `#0B5D3B` | `brand-600` (light), `brand-400` dark |
-| Expense / negative / over-budget | `#DC2626` | `expense.DEFAULT` |
-| Neutral number (e.g. balance ≥0) | ink primary | `text-ink-primary dark:text-white` |
-
-Never `#e05c6b` / `#f08090`. Over-budget hierarchy: the key percentage red, supporting
-text muted (`white/60` dark), progress bar carries the color — don't paint everything red.
-
-### Dark mode text — critical rules (unchanged, still enforced)
-
-All dark text is forced white via `!important` rules in `index.css` outside `@layer`.
-- Use `dark:text-white` for primary AND secondary text (use `text-white/70`, `/60` for hierarchy).
-- **Never** `dark:text-gray-*`, `dark:text-zinc-*`, `dark:text-ink-dark-*` (JIT cache unreliable).
-- Chart/SVG tick fills: JS hex, `dark ? '#FFFFFF' : '#6b7280'` — Tailwind classes don't reach SVG.
-
----
-
-## 3. Elevation (3 tiers) + Radius (2 values)
-
-### 3-tier elevation scale
-
-Depth comes from **hairline border first, shadow second.** Tier is about role, not decoration.
-
-| Tier | Role | Light | Dark |
-|------|------|-------|------|
-| **0 — Page** | Page background | `bg-surface-page`, no border, no shadow | `bg-surface-dark-page` |
-| **1 — Card** | Cards, panels, list containers | `bg-white` + `border-surface-hairline`, **no shadow** | `bg-surface-dark-card` + `border-surface-dark-hairline` |
-| **2 — Popover/Modal** | Dropdowns, modals, the hero mockup, toasts | Tier-1 surface + `shadow-md`/`shadow-lg` + `border` | `bg-surface-dark-elevated` + `shadow-lg` + `border-surface-dark-hairline` |
-
-Rule: **cards do not get shadows.** A resting card is a tinted surface with a 1px
-hairline. Shadow is reserved for things that float above the page (Tier 2). This is
-the single biggest lever against the "every block is an equal floating card" tell.
-
-`elevated` Card variant exists but should be used sparingly — only for genuinely
-floating content, not for resting dashboard cards.
-
-### 2-radius convention
-
-Exactly two structural radii. Kill `rounded-2xl`-on-everything and `rounded-full`-on-everything.
-
-| Radius | Token | Applies to |
-|--------|-------|-----------|
-| **Container** `10px` | `rounded-[10px]` | Cards, panels, feature blocks, modals (`rounded-xl`≈12 acceptable for modals only) |
-| **Control** `6px` | `rounded-md` | Buttons, inputs, selects, chips, badges, icon buttons |
-
-Exceptions (data-driven, allowed): `rounded-full` only for true pills/avatars/status
-dots and progress-bar tracks; `rounded-none` for dense table rows. Migrate landing's
-`rounded-2xl` feature/pricing cards → `rounded-[10px]`.
-
-### Shadow tokens (unchanged — whisper-light, keep)
-
-`xs … xl` at 3–5% opacity. Use `shadow-md`/`shadow-lg` for Tier 2 only.
+Keyframes / animations (Tailwind): `animate-pop`, `animate-rise`, `animate-grow-x`,
+`animate-grow-y`, `animate-draw`, `animate-row-new`. All entrance animations use
+`animation-fill-mode: backwards`. Delays go through the `--d` custom property
+(`style={{ '--d': '160ms' }}`). An element that has a hover transform must not also
+carry an entrance animation (wrap it instead); `.tile` handles this by animating
+with `backwards` so the hover transform is free after the entrance.
 
 ---
 
-## 4. Spacing rhythm & density
+## 2. Invariants (each is checked in QA)
 
-Vary density on purpose. Airy primary surfaces; compact dense data.
+### Motion
+- **I1** Entrance animations run once per mount. Scroll reveals go through
+  `useRevealOnce()` (IntersectionObserver, threshold 0.18, unobserve after first hit).
+  No infinite animation except `LoadingSpinner` and `Skeleton`.
+- **I2** Entrances animate only `transform` and `opacity`. `width`/`height` transition
+  only on data bars when their value changes (D_DATA EASE_OUT).
+- **I3** `prefers-reduced-motion: reduce` → all animations/transitions off (one global
+  rule in `index.css`) and count-ups render the final value (checked in the hooks).
+- **I4** Count-ups use `useCountUp(value, { duration, delay })` (rAF, cubic ease-out).
+  A later value change tweens from the currently displayed value, not from 0.
+- **I5** Landing H1 is the LCP element: no opacity animation, visible on first paint.
+  `HeroPreview.jsx` stays static HTML/CSS + lucide; its tiles may `pop`.
+- **I6** No CLS: animations never change layout; Suspense fallbacks keep matching min-height.
+- **I7** No new dependencies.
 
-### Section rhythm (kill uniform `py-12` everywhere)
+### Visual
+- **V1** No text below 14px (see 1.4).
+- **V2** Every card-like surface is a `Card` (Tile). Only `R_*` radii.
+- **V3** Exactly one hero (green) tile per screen.
+- **V4** Expense amounts use `--text` (ink/white), never red. Red (EXPENSE) is only for
+  over-budget, errors, destructive actions. Income amounts use `--brand-text`.
+- **V5** Text contrast ≥ 4.5:1 in both themes. Category colors are for icons and bars,
+  never body text.
+- **V6** Forbidden: eyebrow labels above headings, uppercase tracked labels, gradient
+  text, glows, colored shadows other than the tile hover shadow, pulsing dots, emoji in
+  chrome, italic/colored accent words in headings, "01 / 02 / 03" numbering, three
+  identical centered cards, fake stats or testimonials, marketing superlatives.
+- **V7** Do not invent values outside this doc.
 
-| Context | Vertical rhythm |
-|---------|-----------------|
-| Landing hero | `pt-16 sm:pt-24` / `pb-20 sm:pb-28` |
-| Landing major section | `py-24 sm:py-32` |
-| Landing minor/band section | `py-12 sm:py-20` |
-| In-app page top region | header `mb-6`, summary→content `mt-6`/`mt-8` |
-| In-app section gap | `space-y-6` between distinct blocks |
+### Product and code
+- **P1** Nothing that exists on a page may disappear; layout changes move, never delete.
+- **P2** i18n in both `en` and `sq`; no em dashes in locale values; no hardcoded
+  user-facing English in JSX.
+- **P3** Restyle existing primitives; new components only where §3 names one.
+- **P4** All performance rules in `CLAUDE.md` stay.
+- **P5** Real `<button>`/`<a>`; translated `aria-label` on icon-only buttons;
+  focus-visible ring 3px BRAND, offset 3px; touch targets ≥ 44px; sliding indicators
+  keep `aria-pressed`/`aria-current` on the real control.
 
-Alternate emphasis: not every section is the same height or the same background.
-Use `bg-surface-page` ↔ `bg-white` alternation and border bands to create rhythm.
-
-### Density inside surfaces
-
-| Surface | Padding | Row height |
-|---------|---------|-----------|
-| Primary metric / hero card | `p-6`→`p-7` (airy) | — |
-| Standard card | `p-4 sm:p-5` (Card `md`) | — |
-| Dense list / transaction row | `px-3 py-2.5`, hairline divider | ~44px hit target |
-| Compact table | `py-2`, `text-sm`, `tabular-nums` | scannable, quiet separators |
-
-Transaction lists and tables should be **compact and scannable**, not airy. The
-dashboard's primary chart/balance should **breathe** and dominate.
-
----
-
-## 5. Iconography
-
-- **Single curated set: `lucide-react`**, already a dependency and used in Sidebar,
-  LandingPage, etc. One weight: **`strokeWidth={1.75}`** for nav/UI chrome,
-  `{2}`/`{2.5}` only for tiny inline affirmations (CheckCircle in trust rows).
-- Sizes: `w-4 h-4` (16, inline/controls), `w-5 h-5` (20, nav), `w-6 h-6` (24, rare emphasis).
-- **Kill the icon-in-a-pastel-rounded-square motif.** Do not wrap stat/heading icons
-  in a `w-7 h-7 rounded-md bg-brand-50` tile. Icons sit inline with the label, in a
-  muted ink color, OR are dropped entirely in favor of the number doing the work.
-  (Primary offender: `SummaryCards.jsx`.)
-- **Emoji are data, not chrome.** User-chosen category emoji (`categories.emoji`) stay
-  as data via `CategoryIconSvg`/`getCategoryIcon`. App chrome (nav, headings, stat
-  labels, empty states) uses lucide, never emoji.
-- The hand-rolled inline `<svg>` trend arrows in `SummaryCards` should migrate to
-  lucide (`TrendingUp`, `TrendingDown`, `Scale`) for consistency.
-
----
-
-## 6. Chart styling rules (Phase 3)
-
-The chart layer is already partly bespoke (custom tooltips, custom legend, rounded
-bars, curated donut palette, theme-aware ticks). Phase 3 **consolidates** these into
-shared primitives and removes the remaining defaults.
-
-- **Tooltip:** always a branded component — `bg-white dark:bg-surface-dark-card`,
-  `border-surface-hairline`, `rounded-lg shadow-md`, values in `tabular-nums`,
-  theme-aware. Never the default Recharts tooltip. (Extract the duplicated tooltips in
-  `CombinedMonthChart`/`CategoryPieChart`/reports into one `<ChartTooltip>`.)
-- **Gridlines:** horizontal-only, faint. Remove `strokeDasharray="3 3"` default dashes;
-  use a solid faint line `stroke={dark ? '#1F1F22' : '#EDEDE8'}` at low opacity, or
-  drop the grid. No vertical gridlines.
-- **Axes:** muted tabular figures, `fontSize: 12`, fill `dark ? '#FFFFFF' : '#6b7280'`,
-  `tickLine={false}` `axisLine={false}`. Drop the default legend — use the existing
-  inline custom legend or contextual inline labels.
-- **Bars:** rounded top caps `radius={[6,6,0,0]}`; income `#0B5D3B`, expense `#DC2626`.
-- **Gridlines:** horizontal-only (`vertical={false}`), solid faint stroke — never dashed.
-- **Area/line:** thin smooth lines; area fill = subtle brand gradient via
-  `<defs><linearGradient>` (brand-500 ~0.18 → transparent). No hard fills.
-- **Pie → donut:** keep the `innerRadius`/`outerRadius` donut; **center-label it with
-  the key total** (currently the total sits only in the side list — move/echo it to
-  the donut center). Palette = the existing `CHART_PALETTE` (brand + harmonious
-  neutrals), never Recharts defaults.
-- Every chart verified in dark mode.
+### Dark mode text (kept from the previous system)
+All dark text is white (`index.css` forces it outside `@layer`). Use `dark:text-white`;
+never `dark:text-gray-*`, `dark:text-zinc-*`, `dark:text-ink-dark-*`. Placeholders
+`dark:placeholder:text-white/40`. SVG/Recharts fills are JS-computed
+(`dark ? '#FFFFFF' : INK`), Tailwind classes do not reach SVG.
 
 ---
 
-## 7. Component specs
+## 3. Components
 
-### Button (`UI/Button.jsx` — keep, codify)
-- Radius `rounded-md`. Sizes `sm/md/lg` as-is. Focus ring `ring-brand-500/40`.
-- `primary` `bg-brand-600 hover:bg-brand-700`; `secondary` outline; `ghost` subtle;
-  `danger` outline `#DC2626`. Hit target ≥40px at `md` (`py-2` + text = ~40px; use `lg` where touch matters).
+| Component | File | Spec |
+|---|---|---|
+| Tile | `UI/Card.jsx` | `--tile`, 1px `--line`, `R_TILE`, `TILE_PAD`. Hover (pointer only): translateY(−3px) + `0 14px 30px -18px color-mix(BRAND 35%, transparent)`; transform D_ENTER EASE_SPRING, shadow D_FAST EASE_STD. `variant="hero"`: `--hero-tile`, white text. `variant="inner"`: `--inner`, `R_INNER`, no border, no lift. Entrance `pop` with `tileDelay(index)` via `index` prop. |
+| Button | `UI/Button.jsx` | `R_PILL`, weight 700. Primary BRAND → hover BRAND_HOVER + translateY(−2px), active scale(.97). Secondary `--tile` + 2px `--text` border, hover inverts. Leading "+" rotates 90deg on hover; trailing arrow moves 4px right. |
+| Chip | `UI/Chip.jsx` | `R_PILL`, 2px `--line` border; selected = BRAND fill + white text. |
+| SegmentedControl | `UI/SegmentedControl.jsx` | Track `--inner`, 4px padding, `R_PILL`; equal-width options; pill (white / dark `--inner-2`, `0 2px 8px rgba(15,31,23,.12)`) slides via translateX(index × 100%), D_ENTER EASE_SPRING. |
+| ProgressBar | `UI/ProgressBar.jsx` | Track `--inner`/`--inner-2`, `R_PILL`, heights 6/10/14. Fill <85% BRAND, 85..100% WARNING, >100% EXPENSE. Entrance `grow-x`; width transitions on change. |
+| ProgressRing | `UI/ProgressRing.jsx` | SVG rotated −90deg, round caps, track `--inner-2` (`--tile` on `--inner` backgrounds), `draw` entrance. Center label is ONE text node, nowrap, font-size = size × 0.23. |
+| StackedBar | `UI/StackedBar.jsx` | 18px, `R_PILL`, 3px gaps, segment = category color, `grow-x` with delay(i); legend: 10px swatch (radius 3px), name, amount weight 800. |
+| App shell | `Sidebar.jsx`, `Header.jsx`, `AuthenticatedLayout` | Page `--page`, padding GAP. Nav = floating tile (`R_SHELL`), top-aligned, not sticky. 48px rows with 48px icon square (`R_ICON`). Active: `--inner-2` + `--brand-text` icon. Hover: `--inner` + icon scale(1.06). ≥1280 icon+label (232px), 1024..1279 icon rail (72px, tooltip + aria-label), <1024 existing mobile nav restyled. |
+| Quick add sheet | `Transaction/QuickAddSheet.jsx` (wraps `TransactionForm`) | ≥640px floating bottom-right, width min(400px, 100vw − 48px), `R_SHELL`, shadow `0 30px 60px -30px rgba(15,31,23,.45)`, enter translateY(24px) scale(.96), D_ENTER EASE_SPRING. <640px bottom sheet, top radius `R_SHELL`. Amount 36px/800. Category chips for the 6 most used + "More" (CustomSelect). Focus trap, Esc closes, focus returns. Save → close, toast "Saved: {title} {amount}", new row `row-new`. |
+| Toast | `context/ToastContext.jsx` | Bottom-center, `R_PILL`, `--text` bg with `--tile` text (inverts in dark), check icon `color-mix(BRAND 45%, WHITE)`, enter translateY(16px) + fade, lifetime 2600ms, `role="status"`. |
+| ActivityFeed | `Dashboard/ActivityFeed.jsx` | See redesign brief §3.8: filter, money in/out boxes, StackedBar top 5 + Other, day groups, rows with 48px tinted icon square, budget meta + 6px bar, hover translateX(4px). |
 
-### Input / Select (`UI/Input.jsx`, `UI/CustomSelect.jsx` — keep)
-- `rounded-md`, hairline border, focus `ring-brand-500/20 border-brand-500`.
-- Error state via `error` prop only (red border + icon + message). Never pass border
-  classes via `className` (conflicts with internal state).
-- Prefer `CustomSelect` over native `<select>` where icons/rich options are needed.
-
-### Card (`UI/Card.jsx` — keep, enforce Tier rules)
-- Default = Tier 1 (hairline, **no shadow**). `elevated` = Tier 2, use sparingly.
-- Radius `rounded-[10px]`. Padding via `padding` prop.
-
-### Stat / Metric (NEW shared pattern — replaces `SummaryCards` motif)
-- Label: `.eyebrow`, quiet, above or beside the number — never an icon-tile.
-- Number: `metric` / `metric-hero` scale, `tabular-nums`, color by semantic tone
-  (income teal, expense red, neutral ink). One stat per screen may be promoted to
-  `metric-hero`; the rest recede.
-- Optional tiny delta indicator (lucide arrow + small %), muted, never an icon chip.
-- **No redundant subtitle** under every stat (drop the repeated "Base currency" line;
-  state it once for the group).
-
-### Table / list row
-- Compact: `py-2`–`py-2.5`, `text-sm`, numbers `tabular-nums` right-aligned.
-- Quiet separators: `border-b border-surface-hairline dark:border-surface-dark-hairline`,
-  not boxed cards per row. `rounded-none`. Hover: subtle `bg-ink-primary/[0.03]`.
-
-### Nav (`Sidebar.jsx` — already good)
-- lucide icons `strokeWidth={1.75}`, active = `bg-brand-50 dark:bg-brand-950/30` +
-  left accent bar `bg-brand-500`. Keep.
-
-### Modal / popover (Tier 2)
-- `rounded-xl`, Tier-2 surface, `shadow-lg`, hairline border, scale/fade-in animation.
-
-### Empty state (`UI/EmptyState.jsx`)
-- lucide icon (not emoji, not pastel tile), muted heading + caption, single CTA. Calm.
-
-### Badge / pill
-- `rounded-md` for status badges (PRO, plan labels); `rounded-full` only for true
-  pills/counts. Teal only when the badge signals premium/active; otherwise neutral.
+Charts (Recharts): bars radius `[8,8,0,0]`, income BRAND, other months `--inner-2`;
+only faint horizontal `--line` grid; ticks 14px; tooltips are `R_INNER` tiles with
+tabular numbers; donut center shows the total; `animationDuration = D_DATA`,
+`animationEasing="ease-out"`, `isAnimationActive={!reducedMotion}`; explicit
+`ResponsiveContainer` heights.
 
 ---
 
-## 8. AI-tell kill-list (track during redesign)
+## 4. Iconography
 
-| Tell | Where it currently lives | Fix phase |
-|------|--------------------------|-----------|
-| Uniform 3-up equal-weight stat grid | `Dashboard/SummaryCards.jsx` | 4 (Dashboard) |
-| Icon-in-rounded-square next to stats | `SummaryCards.jsx`, `LandingPage` SecondaryItem/PrivacyCard | 1 & 4 |
-| Uppercase tracked eyebrows | `LandingPage.jsx` Eyebrow/FeatureCard, Dashboard pie tags | 1 & 4 |
-| Equal-weight 2-up pie cards | `Dashboard.jsx` income/expense grid | 4 |
-| Default dashed gridlines | `CombinedMonthChart.jsx` CartesianGrid | 3 |
-| Duplicated chart tooltips | multiple chart files | 3 |
-| Donut total only in side list | `CategoryPieChart.jsx` | 3 |
-| `rounded-2xl` feature/pricing cards | `LandingPage.jsx` | 1 |
-| Redundant per-stat subtitle | `SummaryCards.jsx` "Base currency" ×3 | 4 |
-
-Already healthy (do not "fix"): asymmetric hero w/ real demo, editorial feature blocks
-with real tabular numbers, lucide nav, custom tooltips/legend, curated donut palette.
-
----
-
-## 9. Proposed `tailwind.config.cjs` token refinements (NOT YET APPLIED)
-
-These are additive and low-risk. Listed for review; apply only after approval.
-
-```diff
-  theme: {
-    extend: {
-+     // Formal light-theme elevation set mirroring the dark surfaces.
-+     // (Values = existing whisper shadows, just named by role.)
-+     boxShadow: {
-+       // keep xs..xl as-is; add semantic aliases:
-+       'tier1': 'none',                                   // resting card = border only
-+       'tier2': '0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03)', // = lg
-+     },
-+     borderRadius: {
-+       // formalize the 2-radius convention as named tokens
-+       'control': '6px',     // buttons, inputs, chips  (== md)
-+       'container': '10px',  // cards, panels           (== current rounded-[10px])
-+     },
-      fontFamily: { /* unchanged — keep display/sans/mono */ },
-      colors: { /* unchanged */ },
-    },
-  },
-```
-
-Plus, in `src/index.css`, formalize the numeric utility already present and add
-metric helpers (optional, for convenience — class usage can stay inline instead):
-
-```css
-/* already exists: .tabular-nums { font-variant-numeric: tabular-nums } */
-@layer components {
-  .metric        { @apply font-semibold tabular-nums tracking-tight leading-none; }
-  .metric-hero   { @apply text-4xl sm:text-5xl font-semibold tabular-nums tracking-tight leading-none; }
-}
-```
-
-**Deliberately NOT changing:** the brand ramp, surface tokens, ink tokens, expense
-colors, font families, easing, or the existing whisper shadows. The redesign is
-composition + hierarchy, not a palette/token swap.
-
----
-
-## 10. Working method (per the brief)
-
-1. Per phase: list files + changes, wait for go-ahead.
-2. Small commits, one screen/component group at a time.
-3. After each screen: describe before/after, remind to verify **both themes + EN/SQ**.
-4. No logic refactors while restyling. Keep diffs visual. Stop and ask if functionality is at risk.
-
-Phase order: **0 audit (this doc)** → 1 Landing/marketing → 2 Shell & primitives →
-3 Charts → 4 Screens (Dashboard → Transactions → Budgets → Goals → Net Worth → Settings/Onboarding).
+- `lucide-react` only, `strokeWidth={2}` in chrome.
+- Category markers: `CategoryAvatar` / `CategoryIconSvg` in a 48px `R_ICON` square
+  with `--tint(categoryColor)` background and the icon in the category color.
+- Emoji are data, never chrome.
