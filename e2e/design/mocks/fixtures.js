@@ -82,3 +82,17 @@ export const RECURRING = [
   { id: 'r3', title: 'Monthly salary', amount: 3800, type: 'income', frequency: 'monthly', interval_count: 1, is_active: true, start_date: '2026-01-01', next_run_at: iso(nextMonthFirst), category: cat('Salary'), category_id: cat('Salary').id },
   { id: 'r4', title: 'Gym', amount: 35, type: 'expense', frequency: 'monthly', interval_count: 1, is_active: false, start_date: '2026-02-05', next_run_at: iso(daysAgo(-9)), category: cat('Personal Care'), category_id: cat('Personal Care').id },
 ];
+
+// Premium subscription for the harness: the billing period ends one year from
+// today, so dates stay in the future whenever the harness runs. `cancelled`
+// schedules the cancellation at period end (Paddle's cancel-at-period-end).
+export function subscriptionFor(plan) {
+  if (plan === 'free') return { subscription_status: 'none' };
+  const periodEnd = new Date(NOW.getFullYear() + 1, NOW.getMonth(), 1).toISOString();
+  return {
+    subscription_status: 'active',
+    paddle_subscription_id: 'sub_harness',
+    period_end: periodEnd,
+    subscription_cancel_at: plan === 'cancelled' ? periodEnd : null,
+  };
+}
