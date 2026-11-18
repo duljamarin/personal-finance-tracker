@@ -38,6 +38,7 @@ const PAGES = {
   notifications: () => import('../../src/components/Notifications/NotificationsPage.jsx'),
   account: () => import('../../src/components/Auth/AccountPage.jsx'),
   onboarding: () => import('../../src/components/Onboarding/OnboardingWizard.jsx'),
+  pricing: () => import('../../src/components/Pricing/PricingPage.jsx'),
 };
 // Full-screen flows render without the app shell, as in App.jsx.
 const BARE = new Set(['onboarding']);
