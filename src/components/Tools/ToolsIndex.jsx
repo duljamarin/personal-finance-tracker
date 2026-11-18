@@ -23,7 +23,7 @@ function FlagAL() {
       aria-hidden="true"
       width="24"
       height="17"
-      className="w-6 h-[17px] rounded-[2px] shadow-xs flex-shrink-0"
+      className="w-6 h-[17px] rounded-swatch flex-shrink-0"
     />
   );
 }
@@ -89,15 +89,14 @@ export default function ToolsIndex() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="mb-10">
-        <p className="eyebrow mb-2">{t('toolsIndex.eyebrow')}</p>
-        <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
+      <section aria-label={t('toolsIndex.eyebrow')} className="mb-10">
+        <h1 className="text-h1-lg font-extrabold text-fg mb-3">
           {t('toolsIndex.title')}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
+        <p className="text-body text-fg leading-relaxed max-w-xl">
           {t('toolsIndex.intro')}
         </p>
-      </div>
+      </section>
 
       {/* ── Tool cards (mapped over TOOLS — grows automatically) ────────── */}
       <div className="grid grid-cols-1 gap-4">
@@ -105,30 +104,30 @@ export default function ToolsIndex() {
           <Link
             key={tool.path}
             to={toolPath(tool.path, i18n.language)}
-            className="group flex items-start gap-4 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-6 transition-colors hover:border-brand-400 dark:hover:border-brand-700 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15"
+            className="group flex items-start gap-4 bg-tile border border-line rounded-tile p-5 sm:p-6 transition-colors hover:border-brand-400 dark:hover:border-brand-70"
           >
             <FlagAL />
             <div className="min-w-0 flex-1">
-              <h2 className="font-display text-heading text-ink-primary dark:text-white mb-1">
+              <h2 className="font-display text-heading text-fg mb-1">
                 {t(tool.labelKey)}
               </h2>
-              <p className="text-body text-ink-muted dark:text-white leading-relaxed">
+              <p className="text-body text-fg leading-relaxed">
                 {t(tool.descKey)}
               </p>
             </div>
-            <ArrowRight className="w-5 h-5 mt-1 text-ink-muted dark:text-white/50 transition-transform group-hover:translate-x-1 flex-shrink-0" />
+            <ArrowRight className="w-5 h-5 mt-1 text-fg/50 transition-transform group-hover:translate-x-1 flex-shrink-0" />
           </Link>
         ))}
       </div>
 
       {/* ── CTA to the app ─────────────────────────────────────────────── */}
-      <div className="mt-12 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white mb-4 max-w-xl">
+      <div className="mt-12 pt-8 border-t border-line">
+        <p className="text-body text-fg mb-4 max-w-xl">
           {t('toolsIndex.ctaText')}
         </p>
         <Link
           to={localizedPath('/register', i18n.language)}
-          className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
+          className="group btn-motion btn-lift inline-flex items-center justify-center min-h-11 px-6 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-pill"
         >
           {t('toolsIndex.ctaButton')}
         </Link>

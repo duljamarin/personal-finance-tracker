@@ -41,7 +41,7 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
   const score = data?.score ?? null;
 
   const getScoreColor = (value) => {
-    if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-600 dark:text-brand-400', label: 'text-brand-600 dark:text-brand-400' };
+    if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-text', label: 'text-brand-text' };
     if (value >= 60) return { stroke: 'text-data-blue', text: 'text-data-blue-deep', label: 'text-data-blue-deep' };
     if (value >= 40) return { stroke: 'text-warning', text: 'text-warning', label: 'text-warning' };
     return { stroke: 'text-expense', text: 'text-expense', label: 'text-expense' };

@@ -4,7 +4,7 @@ import { localizedPath } from '../lib/tools';
 
 function BrandMark() {
   return (
-    <span className="inline-flex items-center justify-center w-8 h-8 bg-brand-600 rounded-md shadow-sm flex-shrink-0">
+    <span className="inline-flex items-center justify-center w-8 h-8 bg-brand-600 rounded-input flex-shrink-0">
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M4 17 L10 11 L14 14 L20 6" />
         <path d="M15 6 L20 6 L20 11" />
@@ -18,7 +18,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
+    <footer className="tile rounded-hero mt-gap">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
 
         {/* Top row */}
@@ -28,33 +28,33 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <Link to="/" className="inline-flex items-center gap-2.5 mb-4 group" aria-label={t('app.name')}>
               <BrandMark />
-              <span className="font-display text-sm font-bold text-ink-primary dark:text-white tracking-tight">
+              <span className="font-display text-sm font-bold text-fg tracking-[-0.01em]">
                 {t('app.name')}
               </span>
             </Link>
-            <p className="text-xs text-ink-muted dark:text-white leading-relaxed max-w-[200px]">
+            <p className="text-sm text-fg leading-relaxed max-w-[200px]">
               {t('footer.builtBy')}
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <p className="font-display text-[13px] font-semibold text-ink-primary dark:text-white mb-4">
+            <p className="font-display text-sm font-semibold text-fg mb-4">
               {t('footer.product')}
             </p>
             <ul className="space-y-3">
               <li>
-                <Link to={localizedPath('/pricing', i18n.language)} className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to={localizedPath('/pricing', i18n.language)} className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.pricing')}
                 </Link>
               </li>
               <li>
-                <Link to={localizedPath('/register', i18n.language)} className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to={localizedPath('/register', i18n.language)} className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.register')}
                 </Link>
               </li>
               <li>
-                <Link to={localizedPath('/login', i18n.language)} className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to={localizedPath('/login', i18n.language)} className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.login')}
                 </Link>
               </li>
@@ -63,17 +63,17 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <p className="font-display text-[13px] font-semibold text-ink-primary dark:text-white mb-4">
+            <p className="font-display text-sm font-semibold text-fg mb-4">
               {t('footer.legal')}
             </p>
             <ul className="space-y-3">
               <li>
-                <Link to="/terms" className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to="/terms" className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.terms')}
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <Link to="/privacy" className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                   {t('footer.privacy')}
                 </Link>
               </li>
@@ -82,14 +82,14 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="font-display text-[13px] font-semibold text-ink-primary dark:text-white mb-4">
+            <p className="font-display text-sm font-semibold text-fg mb-4">
               {t('footer.contact')}
             </p>
             <ul className="space-y-3">
               <li>
                 <a
                   href={`mailto:${t('footer.contactEmail')}`}
-                  className="text-sm text-ink-primary dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors break-all"
+                  className="text-sm text-fg hover:text-brand-600 dark:hover:text-brand-400 transition-colors break-all"
                 >
                   {t('footer.contactEmail')}
                 </a>
@@ -99,12 +99,12 @@ export default function Footer() {
         </div>
 
         {/* Bottom row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-surface-hairline dark:border-surface-dark-hairline">
-          <p className="text-xs text-ink-muted dark:text-white order-2 sm:order-1">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-line">
+          <p className="text-sm text-fg order-2 sm:order-1">
             &copy; {year} {t('app.name')}. {t('footer.rights')}
           </p>
           <div className="flex items-center gap-1 order-1 sm:order-2">
-            <span className="text-xs text-ink-muted dark:text-white">personal-finances.app</span>
+            <span className="text-sm text-fg">personal-finances.app</span>
           </div>
         </div>
       </div>

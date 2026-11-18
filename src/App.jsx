@@ -219,9 +219,15 @@ export function AuthenticatedLayout({ children }) {
 }
 
 /* Public layout without sidebar */
+// Marketing routes sit on --tile (white in light) so their mint --inner blocks
+// read, like the approved landing mockup; dark keeps the dark base.
+const MARKETING_PATHS = new Set(['/', '/sq', '/pricing', '/sq/pricing']);
+
 function PublicLayout({ children }) {
+  const { pathname } = useLocation();
+  const marketing = MARKETING_PATHS.has(pathname);
   return (
-    <div className="min-h-screen bg-page font-sans">
+    <div className={`min-h-screen ${marketing ? 'bg-tile dark:bg-page' : 'bg-page'} font-sans`}>
       <Header />
       <div className="max-w-content mx-auto px-gap sm:px-6 lg:px-10 pb-6 flex flex-col">
         <main className="flex-1 min-h-[calc(100vh-4rem)]">

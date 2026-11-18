@@ -1,3 +1,4 @@
+import { delayStyle, tileDelay } from '../../utils/motion';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
@@ -179,35 +180,33 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="max-w-content mx-auto py-8">
       {/* Header */}
-      <div className="text-center mb-10">
-        <h1 className="font-display font-bold tracking-tight text-3xl sm:text-4xl text-ink-primary dark:text-white mb-3">
+      <div className="mb-10 grid lg:grid-cols-12 gap-gap items-end">
+        <h1 className="lg:col-span-6 text-h1-lg font-extrabold text-fg">
           {t('pricing.title')}
         </h1>
-        <p className="text-lg text-ink-muted dark:text-white max-w-xl mx-auto">
+        <p className="lg:col-start-8 lg:col-span-5 text-body-lg text-fg">
           {t('pricing.subtitle')}
         </p>
       </div>
 
       {/* Active subscription notice */}
       {isPremium && subscription?.subscription_status !== 'none' && (
-        <div className={`mb-8 p-4 rounded-container text-center ${
-          subscription?.subscription_cancel_at
-            ? 'bg-warning-bg dark:bg-warning/15 border border-warning/40'
-            : 'bg-white dark:bg-surface-dark-card border border-brand-600 dark:border-brand-400/60'
+        <div className={`mb-8 tile p-tile-dense text-center ${
+          subscription?.subscription_cancel_at ? '!border-warning border-2' : ''
         }`}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
+            <span className={`inline-flex items-center h-[26px] px-2.5 rounded-pill text-min font-extrabold ${
               subscription?.subscription_cancel_at
-                ? 'bg-warning/20 text-warning dark:bg-warning/25'
-                : 'bg-brand-600 text-white dark:bg-brand-600 dark:text-white'
+                ? 'bg-inner text-warning'
+                : 'bg-brand-600 text-white'
             }`}>
               {t('subscription.proBadge')}
             </span>
             <span className={subscription?.subscription_cancel_at
-              ? 'text-warning font-medium'
-              : 'text-brand-700 dark:text-white font-medium'
+              ? 'text-warning font-bold'
+              : 'text-brand-text font-bold'
             }>
               {subscription?.subscription_cancel_at && subscription?.period_end
                 ? t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() })
@@ -220,8 +219,8 @@ export default function PricingPage() {
             <button
               onClick={handleManageSubscription}
               className={subscription?.subscription_cancel_at
-                ? 'text-sm text-warning underline hover:no-underline'
-                : 'text-sm text-brand-600 dark:text-brand-400 underline hover:no-underline'
+                ? 'btn-motion mt-2 inline-flex items-center min-h-11 px-4 rounded-pill text-sm font-bold text-warning hover:bg-inner'
+                : 'btn-motion mt-2 inline-flex items-center min-h-11 px-4 rounded-pill text-sm font-bold text-brand-text hover:bg-inner'
               }
             >
               {t('pricing.managePlan')}
@@ -233,32 +232,32 @@ export default function PricingPage() {
       {/* Savings callout banner */}
       {!isPremium && (
         // Plain line, not a tinted pill with an icon (ui-quality-principles #2).
-        <p className="-mt-6 mb-8 text-center text-sm font-medium text-ink-muted dark:text-white">
+        <p className="-mt-6 mb-8 text-sm font-semibold text-fg">
           {t('pricing.savingsCallout')}
         </p>
       )}
 
       {/* Plan Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 items-stretch pt-4">
+      <div className="tile-inner rounded-hero p-[clamp(16px,4vw,48px)] grid grid-cols-1 md:grid-cols-2 gap-gap mb-10 items-stretch">
 
         {/* ── FREE ── */}
-        <div className="flex flex-col rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
+        <div className="tile tile-lift flex flex-col animate-pop" style={delayStyle(tileDelay(0))}>
           {/* header */}
           <div className="px-6 pt-6 pb-4">
-            <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-white mb-2">
+            <h2 className="text-h3-lg font-bold text-fg mb-2">
               {t('pricing.free')}
-            </h3>
+            </h2>
             <div>
-              <span className="font-semibold tracking-tight tabular-nums text-4xl text-ink-primary dark:text-white">€0</span>
-              <span className="text-ink-muted dark:text-white ml-1">{t('pricing.forever')}</span>
+              <span className="text-h1 font-extrabold tabular-nums text-fg">€0</span>
+              <span className="text-fg font-semibold ml-1">{t('pricing.forever')}</span>
             </div>
           </div>
           {/* features */}
           <div className="px-6 py-4 flex-1">
             <ul className="space-y-3">
               {freeFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-muted dark:text-white">
-                  <svg className="w-5 h-5 text-ink-muted dark:text-white flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={i} className="flex items-start gap-2.5 text-body font-semibold text-fg">
+                  <svg className="w-5 h-5 text-brand-text flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -278,35 +277,35 @@ export default function PricingPage() {
               </Button>
             )}
             {!isYearlyPlan && !hasHadTrial && (
-              <p className="text-xs text-center mt-2 invisible" aria-hidden="true">placeholder</p>
+              <p className="text-sm text-center mt-2 invisible" aria-hidden="true">placeholder</p>
             )}
           </div>
         </div>
 
         {/* ── PREMIUM ── */}
-        <div className="flex flex-col rounded-[10px] border-2 border-brand-600 dark:border-brand-400/60 bg-white dark:bg-surface-dark-card relative">
+        <div className="tile tile-hero tile-lift flex flex-col relative animate-pop" style={delayStyle(tileDelay(1))}>
           {/* header */}
           <div className="px-6 pt-6 pb-4">
             <div className="flex items-center justify-between gap-3 mb-2">
-              <h3 className="font-display font-semibold tracking-tight text-xl text-ink-primary dark:text-white">
+              <h2 className="text-h3-lg font-bold">
                 {t('pricing.premium')}
-              </h3>
-              <span className="bg-brand-600 text-white text-xs font-medium px-2 py-0.5 rounded-md">
+              </h2>
+              <span className="inline-flex items-center h-[30px] px-3 rounded-pill bg-hero-inset text-sm font-bold">
                 {t('pricing.bestValue')}
               </span>
             </div>
             <div className="mb-1">
-              <span className="font-semibold tracking-tight tabular-nums text-5xl text-ink-primary dark:text-white">
+              <span className="text-kpi font-extrabold tabular-nums">
                 {t('pricing.yearlyPrice')}
               </span>
-              <span className="text-ink-muted dark:text-white ml-1">{t('pricing.perYear')}</span>
+              <span className="font-semibold ml-1">{t('pricing.perYear')}</span>
             </div>
             <div className="mb-1">
-              <span className="text-base font-semibold text-brand-600 dark:text-brand-400">
+              <span className="text-base font-bold">
                 {t('pricing.yearlyPerMonth')}
               </span>
             </div>
-            <p className="text-sm text-brand-700 dark:text-brand-400 font-medium">
+            <p className="text-sm font-semibold">
               {t('pricing.saveYearly')}
               {!hasHadTrial && <span> · {t('pricing.freeTrial')}</span>}
             </p>
@@ -315,8 +314,8 @@ export default function PricingPage() {
           <div className="px-6 py-4 flex-1">
             <ul className="space-y-3">
               {premiumFeatures.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-primary dark:text-ink-dark-primary">
-                  <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <li key={i} className="flex items-start gap-2.5 text-body font-semibold">
+                  <svg className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--toast-check)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {feature}
@@ -334,16 +333,16 @@ export default function PricingPage() {
                 const isPaused  = status === 'paused';
                 const isCancelled = status === 'cancelled';
 
-                let textColor = 'text-brand-600 dark:text-white';
+                let textColor = 'text-brand-text';
                 let label = '';
                 let btnLabel = t('pricing.managePlan');
-                let btnVariant = 'success';
+                let btnVariant = 'inverse';
 
                 if (isCancelScheduled) {
                   textColor = 'text-warning';
                   label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
                   btnLabel = t('pricing.reactivate');
-                  btnVariant = 'primary';
+                  btnVariant = 'inverse';
                 } else if (isPastDue) {
                   textColor = 'text-expense';
                   label = t('subscription.pastDueNotice');
@@ -353,19 +352,19 @@ export default function PricingPage() {
                   textColor = 'text-warning';
                   label = t('subscription.paused');
                   btnLabel = t('pricing.resumePlan');
-                  btnVariant = 'primary';
+                  btnVariant = 'inverse';
                 } else if (isCancelled) {
                   textColor = 'text-warning';
                   label = t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() });
                   btnLabel = t('pricing.reactivate');
-                  btnVariant = 'primary';
+                  btnVariant = 'inverse';
                 }
 
                 const showStatusLabel = isCancelScheduled || isPastDue || isPaused || isCancelled;
                 return (
                   <>
                     {showStatusLabel && (
-                      <p className={`text-sm font-medium mb-3 ${textColor}`}>{label}</p>
+                      <p className={`inline-block rounded-pill bg-white px-3 py-1 text-sm font-bold mb-3 ${textColor}`}>{label}</p>
                     )}
                     <Button variant={btnVariant} className="w-full" onClick={handleManageSubscription}>
                       {btnLabel}
@@ -377,19 +376,19 @@ export default function PricingPage() {
           ) : !hasHadTrial ? (
             <>
               <Button
-                variant="success"
+                variant="inverse"
                 className="w-full mb-2"
                 onClick={handleStartTrial}
                 disabled={trialLoading}
               >
                 {trialLoading ? t('messages.loading') : t('pricing.startFreeTrial')}
               </Button>
-              <p className="text-xs text-center text-ink-muted dark:text-white">
+              <p className="text-sm font-semibold text-center">
                 {t('pricing.noCardRequired')} · {t('pricing.thenYearly')}
               </p>
             </>
           ) : (
-            <Button variant="success" className="w-full" onClick={handleSubscribe}>
+            <Button variant="inverse" className="w-full" onClick={handleSubscribe} trailing="arrow">
               {t('pricing.subscribe')}
             </Button>
           )}
@@ -399,21 +398,21 @@ export default function PricingPage() {
       </div>{/* end grid */}
 
       {/* Trust strip */}
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-ink-muted dark:text-white mb-8">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold text-fg mb-8">
         <span className="flex items-center gap-1">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-[18px] h-[18px] text-brand-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
           {t('pricing.trustSecure')}
         </span>
         <span className="flex items-center gap-1">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-[18px] h-[18px] text-brand-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
           {t('pricing.trustCancel')}
         </span>
         <span className="flex items-center gap-1">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-[18px] h-[18px] text-brand-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
           </svg>
           {t('pricing.trustPaddle')}
@@ -422,10 +421,10 @@ export default function PricingPage() {
 
       {/* Back to dashboard */}
       {accessToken && (
-        <div className="text-center">
+        <div>
           <Link
             to="/dashboard"
-            className="text-sm text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary underline"
+            className="group inline-flex items-center gap-1.5 min-h-11 text-sm font-bold text-brand-text"
           >
             {t('nav.dashboard')}
           </Link>

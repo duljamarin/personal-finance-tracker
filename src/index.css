@@ -113,6 +113,14 @@
     background-color: var(--hero-tile);
     border-color: var(--hero-tile);
     color: var(--white);
+    /* Re-scope the surface tokens inside the green tile so token-styled
+       descendants (text-fg, text-brand-text, bg-inner, border-line) read on
+       green without per-element overrides. */
+    --text: var(--white);
+    --brand-text: var(--white);
+    --line: color-mix(in srgb, var(--white) 30%, var(--brand));
+    --inner: var(--hero-inset);
+    --inner-2: color-mix(in srgb, var(--white) 24%, var(--brand));
   }
   .tile-inner {
     background-color: var(--inner);

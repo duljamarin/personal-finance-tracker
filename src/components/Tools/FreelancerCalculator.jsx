@@ -1,9 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { useCountUp } from '../../hooks/useCountUp';
+import { delayStyle, tileDelay } from '../../utils/motion';
 import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
-import { TOOLS, toolPath, localizedPath } from '../../lib/tools';
+import { TOOLS, TOOLS_INDEX_PATH, toolPath, localizedPath } from '../../lib/tools';
 import {
   determineTreatment,
   zeroRegimeMonthly,
@@ -50,7 +53,7 @@ function parseAmount(raw) {
 function AmountField({ id, label, hint, value, onChange, currency }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-label font-medium text-ink-primary dark:text-white mb-2">
+      <label htmlFor={id} className="block text-label font-medium text-fg mb-2">
         {label}
       </label>
       <div className="relative">
@@ -61,13 +64,13 @@ function AmountField({ id, label, hint, value, onChange, currency }) {
           autoComplete="off"
           value={value ? fmt.format(value) : ''}
           onChange={(e) => onChange(parseAmount(e.target.value))}
-          className="w-full py-3.5 pl-4 pr-16 text-xl font-semibold tabular-nums tracking-tight bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white border border-surface-outline dark:border-surface-dark-outline rounded-md transition-colors duration-150 hover:border-ink-muted/40 dark:hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40"
+          className="w-full py-3.5 pl-4 pr-16 text-xl font-semibold tabular-nums tracking-[-0.01em] bg-tile text-fg border-2 border-line rounded-input transition-colors hover:border-inner-2 focus:border-brand-600 dark:focus:border-brand-400"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-body text-ink-muted dark:text-white/50 pointer-events-none">
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-body text-fg/50 pointer-events-none">
           {currency}
         </span>
       </div>
-      {hint && <p className="mt-1.5 text-xs text-ink-muted dark:text-white leading-relaxed">{hint}</p>}
+      {hint && <p className="mt-1.5 text-sm text-fg leading-relaxed">{hint}</p>}
     </div>
   );
 }
@@ -79,11 +82,11 @@ function YesNo({ question, value, onChange, t }) {
     { v: false, label: t('freelancerCalc.questions.no') },
   ];
   return (
-    <div className="py-3.5 border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0">
-      <p id={`q-${question.slice(0, 20)}`} className="text-body text-ink-primary dark:text-white mb-2.5 leading-relaxed">
+    <div className="py-3.5 border-b border-line last:border-0">
+      <p id={`q-${question.slice(0, 20)}`} className="text-body text-fg mb-2.5 leading-relaxed">
         {question}
       </p>
-      <div role="radiogroup" aria-label={question} className="inline-flex gap-1 p-1 rounded-control bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline">
+      <div role="radiogroup" aria-label={question} className="inline-flex gap-1 p-1 rounded-input bg-inner border border-line">
         {opts.map((o) => {
           const active = value === o.v;
           return (
@@ -100,11 +103,11 @@ function YesNo({ question, value, onChange, t }) {
                   onChange(!value);
                 }
               }}
-              className={`px-5 py-1.5 text-label rounded-control transition-colors focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
-                active
-                  ? 'bg-brand-600 text-white font-semibold'
-                  : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-white'
-              }`}
+              className={`px-5 py-1.5 text-label rounded-input transition-colors ${
+ active
+ ? 'bg-brand-600 text-white font-semibold'
+ : 'text-fg hover:text-ink-primary dark:hover:text-white'
+ }`}
             >
               {o.label}
             </button>
@@ -118,15 +121,15 @@ function YesNo({ question, value, onChange, t }) {
 function Row({ label, value, sign, emphasis = false }) {
   return (
     <div className={`flex items-baseline justify-between gap-4 py-2.5 ${
-      emphasis ? 'border-t border-surface-hairline dark:border-surface-dark-hairline pt-3.5 mt-1' : ''
-    }`}>
-      <span className={`text-body ${emphasis ? 'font-semibold text-ink-primary dark:text-white' : 'text-ink-muted dark:text-white'}`}>
+ emphasis ? 'border-t border-line pt-3.5 mt-1' : ''
+ }`}>
+      <span className={`text-body ${emphasis ? 'font-semibold text-fg' : 'text-fg'}`}>
         {label}
       </span>
       <span className={`tabular-nums whitespace-nowrap ${
-        emphasis ? 'text-lg font-semibold text-ink-primary dark:text-white tracking-tight' : 'text-body text-ink-primary dark:text-white'
-      }`}>
-        {sign === '-' && <span className="text-expense mr-0.5">−</span>}
+ emphasis ? 'text-h3 font-extrabold text-fg' : 'text-body text-fg'
+ }`}>
+        {sign === '-' && <span className="mr-0.5">−</span>}
         {money(value)}
       </span>
     </div>
@@ -215,6 +218,8 @@ export default function FreelancerCalculator() {
     () => zeroRegimeMonthly(income, admin, year),
     [income, admin, year]
   );
+  // Count-up on recalculation (spec 4.6).
+  const zeroNetShown = useCountUp(zero?.net ?? 0);
   const contrib = useMemo(() => monthlyContributions(year), [year]);
   const vat = useMemo(() => vatFlag(effectiveAnnual, year), [effectiveAnnual, year]);
 
@@ -237,17 +242,20 @@ export default function FreelancerCalculator() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
       <div className="mb-10">
-        <p className="eyebrow mb-2">{t('freelancerCalc.eyebrow')}</p>
-        <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
+        <Link to={toolPath(TOOLS_INDEX_PATH, i18n.language)} className="group btn-motion inline-flex items-center gap-1.5 min-h-11 px-3.5 -ml-3.5 mb-2 rounded-pill text-sm font-bold text-brand-text hover:bg-inner">
+          <ArrowLeft className="w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
+          {t('freelancerCalc.eyebrow')}
+        </Link>
+        <h1 className="text-h1-lg font-extrabold text-fg mb-3">
           {t('freelancerCalc.title', { year: config.YEAR })}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
+        <p className="text-body text-fg leading-relaxed max-w-xl">
           {t('freelancerCalc.intro', { year: config.YEAR, until: config.ZERO_REGIME_UNTIL })}
         </p>
       </div>
 
       {/* ── Inputs ─────────────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
+      <div className="tile p-tile-dense sm:p-tile animate-pop">
         <div className="flex justify-end mb-5">
           {AVAILABLE_YEARS.length > 1 ? (
             <div className="w-full sm:w-28">
@@ -259,7 +267,7 @@ export default function FreelancerCalculator() {
               />
             </div>
           ) : (
-            <span className="text-label text-ink-muted dark:text-white tabular-nums">
+            <span className="text-label text-fg tabular-nums">
               {t('freelancerCalc.taxYearWithValue', { year: config.LABEL })}
             </span>
           )}
@@ -295,8 +303,8 @@ export default function FreelancerCalculator() {
         </div>
 
         {/* ── Eligibility questions ────────────────────────────────────── */}
-        <div className="mt-7 pt-6 border-t border-surface-hairline dark:border-surface-dark-hairline">
-          <h2 className="text-label font-semibold text-ink-primary dark:text-white mb-1">
+        <div className="mt-7 pt-6 border-t border-line">
+          <h2 className="text-label font-semibold text-fg mb-1">
             {t('freelancerCalc.questions.title')}
           </h2>
           <YesNo
@@ -327,16 +335,16 @@ export default function FreelancerCalculator() {
 
       {/* ── Result: one branch per legal status ─────────────────────────── */}
       {treatment.status === 'ZERO_REGIME' && (
-        <div className="mt-6 bg-white dark:bg-surface-dark-card border-l-2 border-l-brand-600 dark:border-l-brand-400 border-t border-r border-b border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
+        <div className="mt-gap tile tile-hero p-tile-dense sm:p-tile animate-pop" style={delayStyle(tileDelay(1))} aria-live="polite">
           <div className="flex items-center gap-3 mb-1">
-            <p className="text-label text-ink-muted dark:text-white">{t('freelancerCalc.zero.headline')}</p>
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-control bg-brand-600 text-white">
+            <p className="text-label text-fg">{t('freelancerCalc.zero.headline')}</p>
+            <span className="inline-flex items-center h-[26px] px-2.5 rounded-pill bg-hero-inset text-min font-extrabold">
               {t('freelancerCalc.zero.badge')}
             </span>
           </div>
-          <p className="text-[2.5rem] sm:text-[3rem] leading-none font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
-            {money(zero.net)}
-            <span className="text-xl font-medium text-ink-muted dark:text-white ml-2">{currency}</span>
+          <p className="text-kpi font-extrabold tabular-nums">
+            {money(zeroNetShown)}
+            <span className="text-h3 font-bold ml-2">{currency}</span>
           </p>
 
           <div className="mt-6">
@@ -361,12 +369,12 @@ export default function FreelancerCalculator() {
             <Row label={t('freelancerCalc.zero.rows.net')} value={zero.net} emphasis />
           </div>
 
-          <p className="mt-4 text-label text-ink-muted dark:text-white">
+          <p className="mt-4 text-label text-fg">
             {t('freelancerCalc.zero.effectiveRate')}{' '}
-            <span className="tabular-nums font-medium text-ink-primary dark:text-white">{pct(effectiveRate)}</span>
+            <span className="tabular-nums font-medium text-fg">{pct(effectiveRate)}</span>
           </p>
 
-          <p className="mt-4 text-label text-ink-muted dark:text-white leading-relaxed">
+          <p className="mt-4 text-label text-fg leading-relaxed">
             {t('freelancerCalc.zero.positive', {
               until: config.ZERO_REGIME_UNTIL,
               contrib: money(contrib.total),
@@ -376,23 +384,23 @@ export default function FreelancerCalculator() {
       )}
 
       {treatment.status === 'RECLASSIFIED' && (
-        <div className="mt-6 bg-white dark:bg-surface-dark-card border-l-2 border-l-warning border-t border-r border-b border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
-          <h2 className="font-display text-heading text-ink-primary dark:text-white mb-3">
+        <div className="mt-gap tile !border-2 !border-warning p-tile-dense sm:p-tile">
+          <h2 className="font-display text-heading text-fg mb-3">
             {t('freelancerCalc.reclassified.title')}
           </h2>
-          <p className="text-body text-ink-muted dark:text-white leading-relaxed mb-5">
+          <p className="text-body text-fg leading-relaxed mb-5">
             {t('freelancerCalc.reclassified.explain')}
           </p>
 
           {/* Indicative only — computed by the salary engine, not a take-home figure. */}
-          <div className="p-4 rounded-container bg-surface-subtle dark:bg-surface-dark-subtle mb-5">
-            <p className="text-label text-ink-muted dark:text-white mb-1">
+          <div className="p-4 rounded-tile bg-inner mb-5">
+            <p className="text-label text-fg mb-1">
               {t('freelancerCalc.reclassified.estimate', { income: money(income) })}
             </p>
-            <p className="text-2xl font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
-              {money(reclassifiedTax)} <span className="text-base font-medium text-ink-muted dark:text-white">{currency}</span>
+            <p className="text-h1 font-extrabold tabular-nums tracking-[-0.01em] text-fg">
+              {money(reclassifiedTax)} <span className="text-base font-medium text-fg">{currency}</span>
             </p>
-            <p className="mt-2 text-xs text-ink-muted dark:text-white leading-relaxed">
+            <p className="mt-2 text-sm text-fg leading-relaxed">
               {t('freelancerCalc.reclassified.estimateNote')}
             </p>
           </div>
@@ -400,26 +408,26 @@ export default function FreelancerCalculator() {
           {salaryToolHref && (
             <Link
               to={salaryToolHref}
-              className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
+              className="group btn-motion btn-lift inline-flex items-center justify-center min-h-11 px-6 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-pill"
             >
               {t('freelancerCalc.reclassified.cta')}
             </Link>
           )}
-          <p className="mt-4 text-label text-ink-muted dark:text-white leading-relaxed">
+          <p className="mt-4 text-label text-fg leading-relaxed">
             {t('freelancerCalc.reclassified.accountant')}
           </p>
         </div>
       )}
 
       {treatment.status === 'OVER_TURNOVER' && (
-        <div className="mt-6 bg-white dark:bg-surface-dark-card border-l-2 border-l-expense border-t border-r border-b border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
-          <h2 className="font-display text-heading text-ink-primary dark:text-white mb-3">
+        <div className="mt-gap tile !border-2 !border-expense p-tile-dense sm:p-tile">
+          <h2 className="font-display text-heading text-fg mb-3">
             {t('freelancerCalc.overTurnover.title', { limit: money(config.PROFIT_TAX_FREE_TURNOVER) })}
           </h2>
-          <p className="text-body text-ink-muted dark:text-white leading-relaxed mb-3">
+          <p className="text-body text-fg leading-relaxed mb-3">
             {t('freelancerCalc.overTurnover.explain')}
           </p>
-          <p className="text-label text-ink-muted dark:text-white leading-relaxed">
+          <p className="text-label text-fg leading-relaxed">
             {t('freelancerCalc.overTurnover.accountant')}
           </p>
         </div>
@@ -427,22 +435,22 @@ export default function FreelancerCalculator() {
 
       {/* VAT is informational in every branch — never subtracted from take-home. */}
       {vat.mustRegister && (
-        <div className="mt-5 p-4 rounded-container border border-surface-hairline dark:border-surface-dark-hairline bg-surface-subtle dark:bg-surface-dark-subtle">
-          <p className="text-label font-semibold text-ink-primary dark:text-white mb-1">
+        <div className="mt-5 p-4 rounded-tile border border-line bg-inner">
+          <p className="text-label font-semibold text-fg mb-1">
             {t('freelancerCalc.vat.title')}
           </p>
-          <p className="text-label text-ink-muted dark:text-white leading-relaxed">
+          <p className="text-label text-fg leading-relaxed">
             {t('freelancerCalc.vat.desc', { threshold: money(vat.threshold) })}
           </p>
         </div>
       )}
 
       {/* ── Worked example — every value from the engine ─────────────────── */}
-      <section className="mt-12 pt-10 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-display text-heading text-ink-primary dark:text-white mb-4">
+      <section className="mt-12 pt-10 border-t border-line">
+        <h2 className="font-display text-heading text-fg mb-4">
           {t('freelancerCalc.example.title', { income: money(example.income) })}
         </h2>
-        <div className="space-y-3 text-body text-ink-muted dark:text-white leading-relaxed">
+        <div className="space-y-3 text-body text-fg leading-relaxed">
           <p>
             {t('freelancerCalc.example.p1', {
               ceiling: money(config.PROFIT_TAX_FREE_TURNOVER),
@@ -466,18 +474,18 @@ export default function FreelancerCalculator() {
           </p>
         </div>
 
-        <p className="mt-6 text-label text-ink-muted dark:text-white leading-relaxed">
+        <p className="mt-6 text-label text-fg leading-relaxed">
           {t('freelancerCalc.disclaimer', { year: config.YEAR })}
         </p>
       </section>
 
-      <div className="mt-10 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white mb-4">
+      <div className="mt-10 pt-8 border-t border-line">
+        <p className="text-body text-fg mb-4">
           {t('freelancerCalc.ctaText')}
         </p>
         <Link
           to={localizedPath('/register', i18n.language)}
-          className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
+          className="group btn-motion btn-lift inline-flex items-center justify-center min-h-11 px-6 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-pill"
         >
           {t('freelancerCalc.ctaButton')}
         </Link>

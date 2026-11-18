@@ -84,7 +84,7 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
   if (TOOLS.length === 1) {
     return (
       <Link to={hrefFor(TOOLS[0].path)} className={`${className} inline-flex items-center gap-2`} onClick={onNavigate}>
-        <FlagAL className="w-5 h-[14px] rounded-[2px] flex-shrink-0 shadow-xs" />
+        <FlagAL className="w-5 h-[14px] rounded-swatch flex-shrink-0 " />
         {t(TOOLS[0].labelKey)}
       </Link>
     );
@@ -132,7 +132,7 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
           aria-label={t('nav.tools.toggle')}
           onClick={() => setOpen((o) => !o)}
           onKeyDown={onButtonKeyDown}
-          className="inline-flex items-center p-1 -m-1 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-white rounded focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15"
+          className="inline-flex items-center p-1 -m-1 text-fg hover:text-ink-primary dark:hover:text-white rounded-inpu"
         >
           <svg className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -146,8 +146,8 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
           aria-label={t('nav.tools.label')}
           className={
             isInline
-              ? 'mt-0.5 mb-1 ml-3 pl-3 flex flex-col border-l border-surface-hairline dark:border-surface-dark-hairline'
-              : 'absolute right-0 mt-1 min-w-[220px] py-1 bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container shadow-tier2 z-50 animate-scale-in'
+              ? 'mt-0.5 mb-1 ml-3 pl-3 flex flex-col border-l border-line'
+              : 'absolute right-0 mt-1 min-w-[220px] py-1 bg-tile border border-line rounded-tile shadow-sheet z-50 animate-sheet-in'
           }
         >
           {TOOLS.map((tool, i) => (
@@ -158,13 +158,13 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
               ref={(el) => { itemRefs.current[i] = el; }}
               onKeyDown={(e) => onItemKeyDown(e, i)}
               onClick={() => { setOpen(false); onNavigate?.(); }}
-              className={`flex items-center gap-2 py-2.5 text-sm text-ink-primary dark:text-white transition-colors ${
-                isInline
-                  ? 'px-3 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10'
-                  : 'px-4 hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated'
-              }`}
+              className={`flex items-center gap-2 py-2.5 text-sm text-fg transition-colors ${
+ isInline
+ ? 'px-3 rounded-input hover:bg-inner'
+ : 'px-4 hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated'
+ }`}
             >
-              <FlagAL className="w-5 h-[14px] rounded-[2px] flex-shrink-0 shadow-xs" />
+              <FlagAL className="w-5 h-[14px] rounded-swatch flex-shrink-0 " />
               {t(tool.labelKey)}
             </Link>
           ))}
@@ -176,11 +176,11 @@ export default function ToolsNav({ className = '', onNavigate, variant = 'dropdo
             ref={(el) => { itemRefs.current[TOOLS.length] = el; }}
             onKeyDown={(e) => onItemKeyDown(e, TOOLS.length)}
             onClick={() => { setOpen(false); onNavigate?.(); }}
-            className={`flex items-center gap-2 py-2.5 text-sm font-medium text-brand-600 dark:text-brand-400 transition-colors ${
-              isInline
-                ? 'px-3 mt-0.5 rounded-md hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10'
-                : 'px-4 mt-1 border-t border-surface-hairline dark:border-surface-dark-hairline pt-2.5 hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated'
-            }`}
+            className={`flex items-center gap-2 py-2.5 text-sm font-medium text-brand-text transition-colors ${
+ isInline
+ ? 'px-3 mt-0.5 rounded-input hover:bg-inner'
+ : 'px-4 mt-1 border-t border-line pt-2.5 hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated'
+ }`}
           >
             {t('nav.tools.allTools')}
           </Link>

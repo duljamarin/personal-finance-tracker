@@ -326,7 +326,9 @@
     "termsOfService": "Kushtet e Shërbimit",
     "andThe": "dhe",
     "privacyPolicy": "Politikën e Privatësisë",
-    "termsError": "Duhet të pranoni Kushtet e Shërbimit dhe Politikën e Privatësisë."
+    "termsError": "Duhet të pranoni Kushtet e Shërbimit dhe Politikën e Privatësisë.",
+    "emailConfirmationFailedTitle": "Konfirmimi i email-it dështoi",
+    "emailConfirmationFailedDescription": "Lidhja e konfirmimit është e pavlefshme ose ka skaduar."
   },
   "account": {
     "title": "Cilësimet e Llogarisë",

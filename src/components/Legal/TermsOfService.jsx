@@ -4,17 +4,17 @@ import { Link } from 'react-router-dom';
 export default function TermsOfService() {
   const { t } = useTranslation();
 
-  const h2 = 'font-semibold tracking-tight text-2xl text-ink-primary dark:text-white mt-8 mb-4';
-  const p = 'text-ink-primary dark:text-white mb-4';
-  const list = 'list-disc list-inside text-ink-primary dark:text-white mb-4 ml-4 space-y-1';
+  const h2 = 'text-h3-lg font-bold text-fg mt-8 mb-3';
+  const p = 'text-body text-fg mb-4';
+  const list = 'list-disc list-inside text-body text-fg mb-4 ml-4 space-y-1';
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="bg-white dark:bg-surface-dark-card rounded-container p-8 border border-surface-hairline dark:border-surface-dark-hairline">
-        <h1 className="font-semibold tracking-tight text-3xl text-ink-primary dark:text-white mb-2">
+    <div className="max-w-[720px] mx-auto py-8">
+      <div className="tile p-tile-dense sm:p-tile animate-pop">
+        <h1 className="text-h1 font-extrabold text-fg mb-2">
           {t('legal.terms.title')}
         </h1>
-        <p className="text-sm text-ink-muted dark:text-white mb-8">
+        <p className="text-sm font-semibold text-fg mb-8">
           {t('legal.lastUpdated')}: {new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
 
@@ -64,10 +64,10 @@ export default function TermsOfService() {
           <p className={p}>{t('legal.terms.section10.content')}</p>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-surface-hairline dark:border-surface-dark-hairline">
+        <div className="mt-8 pt-6 border-t border-line">
           <Link
             to="/"
-            className="text-brand-600 dark:text-brand-400 hover:underline"
+            className="text-brand-text hover:underline"
           >
             ← {t('legal.backToHome')}
           </Link>

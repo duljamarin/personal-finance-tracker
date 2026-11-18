@@ -12,6 +12,8 @@ const VARIANTS = {
   secondary: 'bg-tile text-fg border-2 border-fg hover:bg-fg hover:text-tile',
   danger: 'bg-tile text-danger border-2 border-danger hover:bg-danger hover:text-white',
   ghost: 'bg-transparent text-fg border-2 border-transparent hover:bg-inner',
+  // On the green hero tile: white pill with brand text (a green primary would vanish).
+  inverse: 'bg-white text-brand-700 border-2 border-white',
 };
 
 const SIZES = {

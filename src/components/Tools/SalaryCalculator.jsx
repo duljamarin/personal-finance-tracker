@@ -1,9 +1,12 @@
 import { useState, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { useCountUp } from '../../hooks/useCountUp';
+import { delayStyle, tileDelay } from '../../utils/motion';
 import { useTranslation } from 'react-i18next';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import CustomSelect from '../UI/CustomSelect.jsx';
-import { toolPath, localizedPath } from '../../lib/tools';
+import { TOOLS_INDEX_PATH, toolPath, localizedPath } from '../../lib/tools';
 import {
   fromGross,
   grossFromNet,
@@ -69,7 +72,7 @@ function ModeToggle({ mode, onChange, t }) {
       role="radiogroup"
       aria-label={t('salaryCalc.modeLabel')}
       onKeyDown={onKeyDown}
-      className="grid grid-cols-3 sm:inline-flex w-full sm:w-auto p-1 gap-1 rounded-control bg-surface-subtle dark:bg-surface-dark-subtle border border-surface-hairline dark:border-surface-dark-hairline"
+      className="grid grid-cols-3 sm:inline-flex w-full sm:w-auto p-1 gap-1 rounded-input bg-inner border border-line"
     >
       {MODE_IDS.map((id) => {
         const active = id === mode;
@@ -82,11 +85,11 @@ function ModeToggle({ mode, onChange, t }) {
             aria-checked={active}
             tabIndex={active ? 0 : -1}
             onClick={() => onChange(id)}
-            className={`min-w-0 px-1.5 sm:px-4 py-2 text-[11px] sm:text-label rounded-control transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
-              active
-                ? 'bg-brand-600 text-white font-semibold'
-                : 'text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-white'
-            }`}
+            className={`min-w-0 px-1.5 sm:px-4 py-2 text-min sm:text-label rounded-input transition-colors whitespace-nowrap ${
+ active
+ ? 'bg-brand-600 text-white font-semibold'
+ : 'text-fg hover:text-ink-primary dark:hover:text-white'
+ }`}
           >
             {t(`salaryCalc.modes.${id}`)}
           </button>
@@ -101,28 +104,14 @@ function Row({ label, value, sign, emphasis = false, muted = false }) {
   return (
     <div
       className={`flex items-baseline justify-between gap-4 py-2.5 ${
-        emphasis ? 'border-t border-surface-hairline dark:border-surface-dark-hairline pt-3.5 mt-1' : ''
+        emphasis ? 'border-t border-white/30 pt-3.5 mt-1' : ''
       }`}
     >
-      <span
-        className={`text-body ${
-          emphasis
-            ? 'font-semibold text-ink-primary dark:text-white'
-            : muted
-              ? 'text-ink-muted dark:text-white'
-              : 'text-ink-muted dark:text-white'
-        }`}
-      >
+      <span className={`text-body ${emphasis ? 'font-extrabold' : muted ? 'font-medium' : 'font-semibold'}`}>
         {label}
       </span>
-      <span
-        className={`tabular-nums whitespace-nowrap ${
-          emphasis
-            ? 'text-lg font-semibold text-ink-primary dark:text-white tracking-tight'
-            : 'text-body text-ink-primary dark:text-white'
-        }`}
-      >
-        {sign === '-' && <span className="text-expense mr-0.5">−</span>}
+      <span className={`tabular-nums whitespace-nowrap ${emphasis ? 'text-h3 font-extrabold' : 'text-body font-bold'}`}>
+        {sign === '-' && <span className="mr-0.5">−</span>}
         {money(value)}
       </span>
     </div>
@@ -132,21 +121,22 @@ function Row({ label, value, sign, emphasis = false, muted = false }) {
 /** Thin stacked bar: gross split into net / tax / contributions. No chart lib. */
 function SplitBar({ b, t }) {
   const parts = [
-    { w: b.net / b.gross, cls: 'bg-brand-600 dark:bg-brand-400', label: t('salaryCalc.legend.net') },
-    { w: b.incomeTax / b.gross, cls: 'bg-expense', label: t('salaryCalc.legend.tax') },
-    { w: b.employeeContribTotal / b.gross, cls: 'bg-data-stone', label: t('salaryCalc.legend.contrib') },
+    // On the hero tile: net white, tax from the palette, contributions on the inset.
+    { w: b.net / b.gross, cls: 'bg-white', label: t('salaryCalc.legend.net') },
+    { w: b.incomeTax / b.gross, cls: 'bg-data-sand', label: t('salaryCalc.legend.tax') },
+    { w: b.employeeContribTotal / b.gross, cls: 'bg-hero-inset', label: t('salaryCalc.legend.contrib') },
   ];
   return (
     <div className="mt-6">
-      <div className="flex h-2 rounded-full overflow-hidden bg-surface-subtle dark:bg-surface-dark-subtle">
+      <div className="flex gap-[3px] h-[18px] rounded-pill overflow-hidden">
         {parts.map((p) => (
           <div key={p.label} style={{ width: `${p.w * 100}%` }} className={p.cls} />
         ))}
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5">
         {parts.map((p) => (
-          <span key={p.label} className="inline-flex items-center gap-1.5 text-xs text-ink-muted dark:text-white">
-            <span className={`w-2 h-2 rounded-full ${p.cls}`} />
+          <span key={p.label} className="inline-flex items-center gap-1.5 text-sm font-semibold">
+            <span className={`w-2.5 h-2.5 rounded-swatch ${p.cls}`} aria-hidden="true" />
             {p.label}
           </span>
         ))}
@@ -168,11 +158,11 @@ function SalaryTable({ year, onPick, t }) {
   );
 
   return (
-    <section className="mt-12 pt-10 border-t border-surface-hairline dark:border-surface-dark-hairline">
-      <h2 className="font-display text-heading text-ink-primary dark:text-white mb-2">
+    <section className="mt-12 pt-10 border-t border-line">
+      <h2 className="font-display text-heading text-fg mb-2">
         {t('salaryCalc.table.title')}
       </h2>
-      <p className="text-body text-ink-muted dark:text-white mb-5">
+      <p className="text-body text-fg mb-5">
         {t('salaryCalc.table.desc', { year })}
       </p>
 
@@ -180,20 +170,20 @@ function SalaryTable({ year, onPick, t }) {
       <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
         <table className="w-full min-w-[520px] border-collapse">
           <thead>
-            <tr className="border-b border-surface-hairline dark:border-surface-dark-hairline">
-              <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-ink-muted dark:text-white">
+            <tr className="border-b border-line">
+              <th scope="col" className="text-left py-2.5 pr-3 text-label font-medium text-fg">
                 {t('salaryCalc.table.gross')}
               </th>
-              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">
+              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-fg">
                 {t('salaryCalc.table.tax')}
               </th>
-              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-ink-muted dark:text-white">
+              <th scope="col" className="text-right py-2.5 px-3 text-label font-medium text-fg">
                 {t('salaryCalc.table.contrib')}
               </th>
-              <th scope="col" className="text-right py-2.5 px-3 text-label font-semibold text-ink-primary dark:text-white">
+              <th scope="col" className="text-right py-2.5 px-3 text-label font-semibold text-fg">
                 {t('salaryCalc.table.net')}
               </th>
-              <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-ink-muted dark:text-white">
+              <th scope="col" className="text-right py-2.5 pl-3 text-label font-medium text-fg">
                 {t('salaryCalc.table.employerCost')}
               </th>
             </tr>
@@ -212,21 +202,21 @@ function SalaryTable({ year, onPick, t }) {
                     onPick(r.gross);
                   }
                 }}
-                className="border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0 cursor-pointer transition-colors hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle focus:outline-none focus:bg-surface-subtle dark:focus:bg-surface-dark-subtle"
+                className="border-b border-line last:border-0 cursor-pointer transition-colors hover:bg-inner focus:bg-surface-subtle dark:focus:bg-surface-dark-subtle"
               >
-                <td className="py-2.5 pr-3 text-body tabular-nums font-medium text-ink-primary dark:text-white">
+                <td className="py-2.5 pr-3 text-body tabular-nums font-medium text-fg">
                   {money(r.gross)}
                 </td>
-                <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
+                <td className="py-2.5 px-3 text-body tabular-nums text-right text-fg">
                   {money(r.incomeTax)}
                 </td>
-                <td className="py-2.5 px-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
+                <td className="py-2.5 px-3 text-body tabular-nums text-right text-fg">
                   {money(r.employeeContribTotal)}
                 </td>
-                <td className="py-2.5 px-3 text-body tabular-nums text-right font-semibold text-ink-primary dark:text-white">
+                <td className="py-2.5 px-3 text-body tabular-nums text-right font-semibold text-fg">
                   {money(r.net)}
                 </td>
-                <td className="py-2.5 pl-3 text-body tabular-nums text-right text-ink-muted dark:text-white">
+                <td className="py-2.5 pl-3 text-body tabular-nums text-right text-fg">
                   {money(r.employerCost)}
                 </td>
               </tr>
@@ -246,20 +236,20 @@ function WhenToUse({ t }) {
     { key: 'knowCost', mode: 'costToGross' },
   ];
   return (
-    <section className="mt-12 pt-10 border-t border-surface-hairline dark:border-surface-dark-hairline">
-      <h2 className="font-display text-heading text-ink-primary dark:text-white mb-5">
+    <section className="mt-12 pt-10 border-t border-line">
+      <h2 className="font-display text-heading text-fg mb-5">
         {t('salaryCalc.whenToUse.title')}
       </h2>
       <div className="grid gap-6 sm:grid-cols-3">
         {cases.map(({ key, mode }) => (
-          <div key={key} className="border-l-2 border-l-brand-600 dark:border-l-brand-400 pl-4">
-            <h3 className="text-body font-semibold text-ink-primary dark:text-white mb-1">
+          <div key={key} className="tile-inner p-gap">
+            <h3 className="text-body font-semibold text-fg mb-1">
               {t(`salaryCalc.whenToUse.${key}Title`)}
             </h3>
-            <p className="text-label text-ink-muted dark:text-white leading-relaxed mb-2">
+            <p className="text-label text-fg leading-relaxed mb-2">
               {t(`salaryCalc.whenToUse.${key}Desc`)}
             </p>
-            <span className="inline-block text-xs font-medium tabular-nums text-brand-600 dark:text-brand-400">
+            <span className="inline-block text-sm font-medium tabular-nums text-brand-text">
               {t(`salaryCalc.modes.${mode}`)}
             </span>
           </div>
@@ -343,6 +333,9 @@ export default function SalaryCalculator() {
     ? mode === 'grossToNet' ? breakdown.net : breakdown.gross
     : 0;
 
+  // Count-up on recalculation (spec 4.6), tweening from the shown value.
+  const headlineShown = useCountUp(headline);
+
   const effectiveRate = breakdown && breakdown.gross > 0
     ? (breakdown.incomeTax + breakdown.employeeContribTotal) / breakdown.gross
     : 0;
@@ -363,20 +356,23 @@ export default function SalaryCalculator() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+    <div className="max-w-3xl mx-auto py-10 sm:py-16">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="mb-10">
-        <p className="eyebrow mb-2">{t('salaryCalc.eyebrow')}</p>
-        <h1 className="font-display text-title sm:text-display text-ink-primary dark:text-white mb-3">
+        <Link to={toolPath(TOOLS_INDEX_PATH, i18n.language)} className="group btn-motion inline-flex items-center gap-1.5 min-h-11 px-3.5 -ml-3.5 mb-2 rounded-pill text-sm font-bold text-brand-text hover:bg-inner">
+          <ArrowLeft className="w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
+          {t('salaryCalc.eyebrow')}
+        </Link>
+        <h1 className="text-h1-lg font-extrabold text-fg mb-3">
           {t('salaryCalc.title', { year: config.YEAR })}
         </h1>
-        <p className="text-body text-ink-muted dark:text-white leading-relaxed max-w-xl">
+        <p className="text-body text-fg leading-relaxed max-w-xl">
           {t('salaryCalc.intro', { year: config.YEAR })}
         </p>
       </div>
 
       {/* ── Controls ───────────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
+      <div className="tile p-tile-dense sm:p-tile animate-pop">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
           <ModeToggle mode={mode} onChange={setMode} t={t} />
           {/* Static text at one year, a real dropdown at two or more. */}
@@ -390,14 +386,14 @@ export default function SalaryCalculator() {
               />
             </div>
           ) : (
-            <span className="text-label text-ink-muted dark:text-white tabular-nums">
+            <span className="text-label text-fg tabular-nums">
               {t('salaryCalc.taxYearWithValue', { year: config.LABEL })}
             </span>
           )}
         </div>
 
         {/* Amount input with a currency suffix affix */}
-        <label htmlFor="salary-amount" className="block text-label font-medium text-ink-primary dark:text-white mb-2">
+        <label htmlFor="salary-amount" className="block text-label font-medium text-fg mb-2">
           {t(`salaryCalc.amountLabel.${mode}`)}
         </label>
         <div className="relative">
@@ -408,9 +404,9 @@ export default function SalaryCalculator() {
             autoComplete="off"
             value={amount ? fmt.format(amount) : ''}
             onChange={(e) => setAmount(parseAmount(e.target.value))}
-            className="w-full py-4 pl-4 pr-16 text-2xl font-semibold tabular-nums tracking-tight bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white border border-surface-outline dark:border-surface-dark-outline rounded-md transition-colors duration-150 hover:border-ink-muted/40 dark:hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40"
+            className="w-full py-3 pl-4 pr-16 text-[36px] leading-tight font-extrabold tabular-nums tracking-[-0.02em] bg-tile text-fg border-2 border-line rounded-input btn-motion hover:border-inner-2 focus:border-brand-600 dark:focus:border-brand-400"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-body text-ink-muted dark:text-white/50 pointer-events-none">
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-body font-bold text-fg pointer-events-none">
             {currency}
           </span>
         </div>
@@ -435,10 +431,10 @@ export default function SalaryCalculator() {
                 type="button"
                 onClick={() => setAmount(p)}
                 aria-pressed={selected}
-                className={`px-3 py-1.5 text-label rounded-control border tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 ${
+                className={`btn-motion chip-lift min-h-11 px-4 text-sm font-bold rounded-pill border-2 tabular-nums ${
                   selected
-                    ? 'border-brand-600 text-brand-600 dark:text-brand-400 dark:border-brand-400 font-semibold'
-                    : 'border-surface-outline dark:border-surface-dark-outline text-ink-muted dark:text-white hover:border-ink-muted/40 dark:hover:border-white/20'
+                    ? 'bg-brand-600 border-brand-600 text-white'
+                    : 'bg-tile border-line text-fg hover:border-inner-2'
                 }`}
               >
                 {money(p / 1000)}K
@@ -450,17 +446,17 @@ export default function SalaryCalculator() {
 
       {/* ── Result ─────────────────────────────────────────────────────── */}
       {breakdown && (
-        <div className="mt-6 bg-white dark:bg-surface-dark-card border-l-2 border-l-brand-600 dark:border-l-brand-400 border-t border-r border-b border-surface-hairline dark:border-surface-dark-hairline rounded-container p-5 sm:p-7">
-          <p className="text-label text-ink-muted dark:text-white mb-1">
+        <div className="mt-gap tile tile-hero p-tile-dense sm:p-tile animate-pop" style={delayStyle(tileDelay(1))} aria-live="polite">
+          <p className="text-sm font-bold mb-1">
             {t(`salaryCalc.headlineLabel.${mode}`)}
           </p>
-          <p className="text-[2.5rem] sm:text-[3rem] leading-none font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">
-            {money(headline)}
-            <span className="text-xl font-medium text-ink-muted dark:text-white ml-2">{currency}</span>
+          <p className="text-kpi font-extrabold tabular-nums">
+            {money(headlineShown)}
+            <span className="text-h3 font-bold ml-2">{currency}</span>
           </p>
 
           {belowMinimum && (
-            <p className="mt-4 text-label text-warning dark:text-warning leading-relaxed">
+            <p className="mt-4 inline-block rounded-inner bg-white px-3 py-2 text-sm font-bold text-warning">
               {t('salaryCalc.belowMinimum', { amount: money(config.CONTRIB.BASE_MIN) })}
             </p>
           )}
@@ -494,9 +490,9 @@ export default function SalaryCalculator() {
             )}
           </div>
 
-          <p className="mt-4 text-label text-ink-muted dark:text-white">
+          <p className="mt-4 text-sm font-semibold">
             {t('salaryCalc.effectiveRate')}{' '}
-            <span className="tabular-nums font-medium text-ink-primary dark:text-white">{pct(effectiveRate)}</span>
+            <span className="tabular-nums font-extrabold">{pct(effectiveRate)}</span>
           </p>
 
           <SplitBar b={breakdown} t={t} />
@@ -510,11 +506,11 @@ export default function SalaryCalculator() {
       <SalaryTable year={year} onPick={pickFromTable} t={t} />
 
       {/* ── Worked example — every value from the engine ────────────────── */}
-      <section className="mt-12 pt-10 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <h2 className="font-display text-heading text-ink-primary dark:text-white mb-4">
+      <section className="mt-12 pt-10 border-t border-line">
+        <h2 className="font-display text-heading text-fg mb-4">
           {t('salaryCalc.example.title', { gross: money(example.gross) })}
         </h2>
-        <div className="space-y-3 text-body text-ink-muted dark:text-white leading-relaxed">
+        <div className="space-y-3 text-body text-fg leading-relaxed">
           <p>{t('salaryCalc.example.p1', { gross: money(example.gross), tax: money(example.incomeTax) })}</p>
           <p>
             {t('salaryCalc.example.p2', {
@@ -539,23 +535,23 @@ export default function SalaryCalculator() {
               employerCost: money(example.employerCost),
             })}
           </p>
-          <p className="text-label text-ink-muted dark:text-white pt-2">
+          <p className="text-label text-fg pt-2">
             {t('salaryCalc.example.capNote', { cap: money(config.CONTRIB.BASE_MAX) })}
           </p>
         </div>
 
-        <p className="mt-6 text-label text-ink-muted dark:text-white leading-relaxed">
+        <p className="mt-6 text-label text-fg leading-relaxed">
           {t('salaryCalc.disclaimer', { year: config.YEAR })}
         </p>
       </section>
 
-      <div className="mt-10 pt-8 border-t border-surface-hairline dark:border-surface-dark-hairline">
-        <p className="text-body text-ink-muted dark:text-white mb-4">
+      <div className="mt-10 pt-8 border-t border-line">
+        <p className="text-body text-fg mb-4">
           {t('salaryCalc.ctaText')}
         </p>
         <Link
           to={localizedPath('/register', i18n.language)}
-          className="inline-flex items-center justify-center px-5 py-2.5 text-label font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-md transition-colors"
+          className="group btn-motion btn-lift inline-flex items-center justify-center min-h-11 px-6 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-pill"
         >
           {t('salaryCalc.ctaButton')}
         </Link>

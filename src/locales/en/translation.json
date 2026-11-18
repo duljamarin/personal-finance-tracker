@@ -326,7 +326,9 @@
     "termsOfService": "Terms of Service",
     "andThe": "and the",
     "privacyPolicy": "Privacy Policy",
-    "termsError": "You must agree to the Terms of Service and Privacy Policy."
+    "termsError": "You must agree to the Terms of Service and Privacy Policy.",
+    "emailConfirmationFailedTitle": "Email confirmation failed",
+    "emailConfirmationFailedDescription": "The confirmation link is invalid or has expired."
   },
   "account": {
     "title": "Account Settings",

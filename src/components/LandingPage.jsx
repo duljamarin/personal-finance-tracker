@@ -1,276 +1,21 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
+import { useRevealOnce } from '../hooks/useRevealOnce';
 import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import HeroPreview from './Landing/HeroPreview';
+import ProgressRing from './UI/ProgressRing';
+import ProgressBar from './UI/ProgressBar';
+import { MINUS } from '../utils/bento';
+import { delayStyle, revealClass, tileDelay } from '../utils/motion';
 import {
   TrendingUp, Target, Activity, RefreshCw,
   Globe, Bell, Tag, FileText,
-  ArrowRight, CheckCircle2, Lock, ShieldCheck, CloudOff,
-  Download, CreditCard, ChevronDown, ChevronUp,
-  Database, Eye,
+  ArrowRight, Check, Lock, ShieldCheck, CloudOff,
+  Download, CreditCard, ChevronDown,
+  Database, Eye, UserPlus, ListPlus,
 } from 'lucide-react';
-
-
-// ── Scroll-reveal hook ──────────────────────────────────────────────────────
-function useReveal(threshold = 0.12) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) { setVisible(true); return; }
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setVisible(true); obs.disconnect(); }
-    }, { threshold });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, visible];
-}
-
-// ── Bar chart mini-render (replaces FlagshipCard) ───────────────────────────
-const MONTHS_SHORT = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-const INCOME_BARS  = [3200,3200,3400,3200,3600,3200,3500,3200,3400,3200,3600,3800];
-const EXPENSE_BARS = [1600,1900,1500,2100,1700,1400,1800,1500,1650,1300,1750,1400];
-const BAR_MAX = 4000;
-
-// One bar per month, sized by that month's income. A month is "heavy" when
-// expenses eat a large share of income (>=52%): those bars render in the app's
-// expense-red to flag high-spend months at a glance; lighter months stay
-// brand-teal. Single bars (not stacked) keep every column inside the fixed
-// height, so the red heavy-months are always visible.
-const HEAVY_SPEND_RATIO = 0.52;
-
-function MiniBarChart() {
-  return (
-    <div className="flex items-end gap-[3px] sm:gap-1 h-20 w-full">
-      {MONTHS_SHORT.map((m, i) => {
-        const heavy = EXPENSE_BARS[i] / INCOME_BARS[i] >= HEAVY_SPEND_RATIO;
-        return (
-          <div key={m} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-            <div
-              className={`w-full rounded-t-[2px] ${heavy ? 'bg-expense' : 'bg-brand-600'}`}
-              style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 100}%` }}
-            />
-            <span className="text-[8px] text-ink-muted dark:text-white hidden sm:block">{m}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Health score mini-render ─────────────────────────────────────────────────
-function MiniHealthScore() {
-  const { t } = useTranslation();
-  const score = 70;
-  const radius = 44;
-  const circ = 2 * Math.PI * radius;
-  const offset = circ - (score / 100) * circ;
-  return (
-    <div className="flex flex-col items-center justify-center gap-3 py-4">
-      <div className="relative w-28 h-28">
-        <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-          <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" strokeWidth="8" className="text-surface-hairline dark:text-surface-dark-hairline" />
-          <circle
-            cx="50" cy="50" r={radius} fill="none"
-            stroke="var(--c-brand-accent)" strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray={circ}
-            strokeDashoffset={offset}
-            style={{ transition: 'stroke-dashoffset 1s ease' }}
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-semibold text-ink-primary dark:text-white metric">{score}</span>
-          <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400">{t('landing.demo.scoreGood')}</span>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-2 w-full text-center text-[10px] text-ink-muted dark:text-white">
-        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">42%</div>{t('landing.demo.savings')}</div>
-        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">87%</div>{t('landing.demo.budget')}</div>
-        <div><div className="font-semibold text-sm text-ink-primary dark:text-white">3/4</div>{t('landing.demo.goals')}</div>
-      </div>
-    </div>
-  );
-}
-
-// ── Mini budget bars ─────────────────────────────────────────────────────────
-function MiniBudgets() {
-  const { t } = useTranslation();
-  const items = [
-    { key: 'food', spent: 210, limit: 300 },
-    { key: 'housing', spent: 850, limit: 900 },
-    { key: 'entertainment', spent: 47, limit: 50 },
-    { key: 'transport', spent: 28, limit: 80 },
-  ];
-  return (
-    <div className="space-y-3 py-2">
-      {items.map(({ key, spent, limit }) => {
-        const label = t(`landing.demo.budgetItems.${key}`);
-        const pct = Math.min((spent / limit) * 100, 100);
-        const over = spent > limit;
-        return (
-          <div key={key}>
-            <div className="flex justify-between text-[11px] mb-1">
-              <span className="font-medium text-ink-primary dark:text-white truncate">{label}</span>
-              <span className={over ? 'text-expense font-semibold' : 'text-ink-muted dark:text-white'}>
-                €{spent}<span className="opacity-50">/€{limit}</span>
-              </span>
-            </div>
-            <div className="h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all"
-                style={{ width: `${pct}%`, backgroundColor: over ? 'var(--c-expense)' : 'var(--c-brand-accent)' }}
-              />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Mini benchmarks card ──────────────────────────────────────────────────────
-// Mirrors what computeCategoryBenchmarks actually returns: this month's spend
-// per category measured against THAT USER's own trailing average, as a signed
-// deviation. Deliberately not a comparison against other people — the app holds
-// no population data and the page must not imply otherwise.
-const BENCHMARK_ROWS = [
-  { key: 'food',          now: 412, avg: 350 },
-  { key: 'transport',     now: 58,  avg: 90  },
-  { key: 'entertainment', now: 96,  avg: 70  },
-  { key: 'housing',       now: 850, avg: 850 },
-];
-
-function MiniBenchmarks() {
-  const { t } = useTranslation();
-  return (
-    <div className="space-y-3 py-2">
-      {BENCHMARK_ROWS.map(({ key, now, avg }) => {
-        const delta = now - avg;
-        const pct = avg === 0 ? 0 : Math.round((delta / avg) * 100);
-        const above = delta > 0;
-        // Bar is centred: the midpoint is the user's own average, so bar length
-        // encodes how far this month deviates, in either direction.
-        const width = Math.min(Math.abs(pct), 100) / 2;
-        return (
-          <div key={key}>
-            <div className="flex justify-between text-[11px] mb-1">
-              <span className="font-medium text-ink-primary dark:text-white truncate">
-                {t(`landing.demo.budgetItems.${key}`)}
-              </span>
-              <span className={`tabular-nums font-semibold ${above ? 'text-expense' : 'text-brand-600 dark:text-brand-400'}`}>
-                {pct === 0 ? '0%' : `${above ? '+' : ''}${pct}%`}
-              </span>
-            </div>
-            <div className="relative h-1.5 rounded-full bg-surface-hairline dark:bg-surface-dark-hairline overflow-hidden">
-              {/* centre line marks the user's own average */}
-              <div className="absolute inset-y-0 left-1/2 w-px bg-ink-muted/40 dark:bg-white/30" />
-              <div
-                className="absolute inset-y-0 rounded-full"
-                style={{
-                  width: `${width}%`,
-                  [above ? 'left' : 'right']: '50%',
-                  backgroundColor: above ? 'var(--c-expense)' : 'var(--c-brand-accent)',
-                }}
-              />
-            </div>
-          </div>
-        );
-      })}
-      <p className="pt-1 text-[10px] text-ink-muted dark:text-white">
-        {t('landing.demo.vsLastMonth')}
-      </p>
-    </div>
-  );
-}
-
-// ── Feature card shell (hero features) ───────────────────────────────────────
-function FeatureCard({ eyebrow, title, desc, preview, className = '', flip = false }) {
-  const [ref, visible] = useReveal(0.1);
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} grid lg:grid-cols-2 gap-0 rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden ${className}`}
-    >
-      <div className={`min-w-0 p-8 sm:p-10 flex flex-col justify-center ${flip ? 'lg:order-2' : ''}`}>
-        <p className="text-[13px] font-medium text-ink-muted dark:text-white mb-3">{eyebrow}</p>
-        <h3 className="font-display text-2xl sm:text-3xl font-bold text-ink-primary dark:text-white leading-tight mb-4">{title}</h3>
-        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">{desc}</p>
-      </div>
-      <div className={`min-w-0 border-t lg:border-t-0 ${flip ? 'lg:order-1 lg:border-r' : 'lg:border-l'} border-surface-hairline dark:border-surface-dark-hairline bg-surface-page dark:bg-surface-dark-page p-8 flex flex-col justify-center`}>
-        {preview}
-      </div>
-    </div>
-  );
-}
-
-// ── Compact secondary feature item ───────────────────────────────────────────
-function SecondaryItem({ icon: Icon, text }) {
-  return (
-    <li className="flex items-start gap-3 py-3 border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0">
-      <Icon className="flex-shrink-0 w-4 h-4 mt-0.5 text-ink-muted dark:text-white/60" strokeWidth={1.75} />
-      <span className="text-sm text-ink-primary dark:text-white leading-relaxed">{text}</span>
-    </li>
-  );
-}
-
-// ── Privacy card ──────────────────────────────────────────────────────────────
-function PrivacyCard({ icon: Icon, title, desc }) {
-  return (
-    <div className="flex gap-3.5">
-      <Icon className="flex-shrink-0 w-5 h-5 mt-0.5 text-ink-muted dark:text-white/60" strokeWidth={1.6} />
-      <div>
-        {/* h3, not h4: the enclosing section heading is an h2, so h4 would
-            skip a level. Visual size is set by the classes, not the tag. */}
-        <h3 className="font-semibold text-sm text-ink-primary dark:text-white mb-1">{title}</h3>
-        <p className="text-sm text-ink-muted dark:text-white leading-relaxed">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
-// ── FAQ item ──────────────────────────────────────────────────────────────────
-function FaqItem({ q, a }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-surface-hairline dark:border-surface-dark-hairline last:border-0">
-      <button
-        className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-        onClick={() => setOpen(o => !o)}
-        aria-expanded={open}
-      >
-        <span className="font-medium text-base text-ink-primary dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{q}</span>
-        {open
-          ? <ChevronUp className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2} />
-          : <ChevronDown className="w-4 h-4 text-ink-muted dark:text-white flex-shrink-0" strokeWidth={2} />
-        }
-      </button>
-      {open && (
-        <p className="pb-5 text-base font-normal text-ink-muted dark:text-white leading-relaxed">{a}</p>
-      )}
-    </div>
-  );
-}
-
-function Eyebrow({ children }) {
-  return (
-    <p className="text-sm font-semibold text-brand-700 dark:text-brand-300 mb-4">{children}</p>
-  );
-}
-
-// ── Section heading ───────────────────────────────────────────────────────────
-function SectionHeading({ children, className = '' }) {
-  return (
-    <h2 className={`font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-bold text-ink-primary dark:text-white leading-[1.03] tracking-[-0.03em] ${className}`}>
-      {children}
-    </h2>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Single source for the FAQ: the rendered accordion and the FAQPage JSON-LD
@@ -326,195 +71,274 @@ export default function LandingPage() {
     jsonLd,
   });
 
-  // ── Hero ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      {/* Asymmetric: the promise on the left, the product itself on the right.
-          (No edge bleed: PublicLayout's max-w-7xl container would clip it.)
-          The preview is static HTML (Landing/HeroPreview), so the H1 stays the
-          LCP element. */}
-      <section className="relative overflow-hidden bg-surface-page dark:bg-surface-dark-page">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 lg:pt-24 pb-20 sm:pb-24 grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 lg:gap-14 items-center">
-          {/* Copy — no scroll-reveal on hero: LCP element must be visible immediately */}
-          <div className="min-w-0">
-            <h1
-              className="animate-hero-in font-display text-[2.85rem] sm:text-6xl lg:text-[4.25rem] font-bold text-ink-primary dark:text-white leading-[0.98] tracking-[-0.035em] mb-6"
-              style={{ animationDelay: '40ms' }}
-            >
-              {t('landing.hero.titleLine1')}{' '}
-              <span className="text-brand-600 dark:text-brand-accent">{t('landing.hero.titleAccent')}</span>
+      {/* One mint block (R_HERO): the promise on the left (5 cols), the
+          product on the right (7 cols). The H1 is the LCP element: no
+          entrance animation, visible on first paint (I5). The preview is
+          static HTML (Landing/HeroPreview); its tiles pop in. */}
+      <section className="max-w-content mx-auto">
+        <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)] grid lg:grid-cols-12 gap-[clamp(28px,4vw,48px)] lg:gap-gap items-center">
+          <div className="lg:col-span-5 min-w-0">
+            <h1 className="text-h1-lg font-extrabold text-fg">
+              {t('landing.hero.titleLine1')} {t('landing.hero.titleAccent')}
             </h1>
 
-            <p
-              className="animate-hero-in text-lg font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-lg"
-              style={{ animationDelay: '140ms' }}
-            >
+            <p className="mt-[22px] text-body-lg text-fg animate-rise" style={delayStyle(140)}>
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="animate-hero-in flex flex-col sm:flex-row sm:items-center gap-3 mb-10" style={{ animationDelay: '240ms' }}>
+            <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 animate-rise" style={delayStyle(280)}>
               <Link
                 to={localizedPath('/register', i18n.language)}
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
+                className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-brand-600 bg-brand-600 hover:bg-brand-700 hover:border-brand-700 text-white font-bold rounded-pill text-body-lg"
               >
                 {t('landing.hero.getStarted')}
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
+                <ArrowRight className="arrow-nudge w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
               </Link>
-              {/* Outlined: only the fill marks the primary action. */}
               <Link
                 to={localizedPath('/login', i18n.language)}
-                className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 text-base font-medium rounded-md border border-surface-outline dark:border-white/25 text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-white/5 hover:border-ink-muted/50 dark:hover:border-white/40 transition-colors"
+                className="btn-motion btn-lift inline-flex items-center justify-center min-h-[52px] px-7 rounded-pill border-2 border-fg bg-tile text-fg hover:bg-fg hover:text-tile font-bold text-body-lg"
               >
                 {t('landing.hero.signIn')}
               </Link>
             </div>
 
-            {/* Editorial metadata bar: three ruled cells under a hairline, not
-                a row of check-icon pills. Stacks on narrow screens. */}
-            <ul
-              className="animate-hero-in grid sm:grid-cols-3 gap-y-2 border-t border-surface-outline dark:border-white/25 pt-4 font-display text-[13px] font-medium leading-snug text-ink-muted dark:text-white list-none m-0 p-0 max-w-lg"
-              style={{ animationDelay: '340ms' }}
-            >
-              {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label, i) => (
-                <li
-                  key={label}
-                  className={i === 0 ? 'sm:pr-4' : 'sm:px-4 sm:border-l border-surface-outline dark:border-white/25'}
-                >
+            <ul className="mt-7 flex flex-col gap-2 list-none m-0 p-0 animate-rise" style={delayStyle(420)}>
+              {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
+                <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-fg">
+                  <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
                   {label}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div
-            className="animate-hero-in min-w-0"
-            style={{ animationDelay: '300ms' }}
-          >
+          <div className="lg:col-span-7 min-w-0">
             <HeroPreview />
           </div>
         </div>
       </section>
 
-      {/* ── HERO FEATURES ────────────────────────────────────────────────────── */}
+      {/* Order is value > proof > how > trust > price > founder > FAQ >
+          tools > final CTA. */}
       <HeroFeaturesSection t={t} />
-
-      {/* ── SECONDARY FEATURES ───────────────────────────────────────────────── */}
       <SecondaryFeaturesSection t={t} />
-
-      {/* ── HOW IT WORKS ─────────────────────────────────────────────────────── */}
       <HowItWorksSection t={t} />
-
-      {/* ── TRUST / PRIVACY ──────────────────────────────────────────────────── */}
-      {/* Both trust sections sit together: encryption proof first, then the
-          wider data-handling promises. Order is value > proof > how > trust >
-          price > founder > FAQ > tools > final CTA. */}
       <DataPrivacySection t={t} />
-
       <PrivacySection t={t} />
-
-      {/* ── PRICING PREVIEW ──────────────────────────────────────────────────── */}
       <PricingPreviewSection t={t} />
-
-      {/* ── FOUNDER NOTE ─────────────────────────────────────────────────────── */}
       <FounderSection t={t} />
-
-      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <FaqSection t={t} />
-
-      {/* ── FREE TOOLS ───────────────────────────────────────────────────────── */}
       <ToolsSection t={t} />
-
-      {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
       <FinalCtaSection t={t} lang={i18n.language} />
 
     </div>
   );
 }
 
-// ── Section components ────────────────────────────────────────────────────────
+// ── Scroll reveal for a section: hidden until it enters, then rise/pop once ──
+function useSectionReveal() {
+  const [ref, revealed] = useRevealOnce();
+  // rise for text, pop for tiles, stagger by index (spec 4.6)
+  const rise = (i = 0) => ({ className: revealClass(revealed, 'animate-rise'), style: revealed ? delayStyle(i * 70) : undefined });
+  const pop = (i = 0) => ({ className: revealClass(revealed, 'animate-pop'), style: revealed ? delayStyle(tileDelay(i)) : undefined });
+  return { ref, rise, pop };
+}
+
+// ── Mini renders inside feature tiles (sample data, like the hero preview) ──
+const MONTHS_SHORT = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+const INCOME_BARS  = [3200,3200,3400,3200,3600,3200,3500,3200,3400,3200,3600,3800];
+const EXPENSE_BARS = [1600,1900,1500,2100,1700,1400,1800,1500,1650,1300,1750,1400];
+const BAR_MAX = 4000;
+// A month is "heavy" when expenses eat a large share of income (>=52%). Heavy
+// months use the palette's sand, not red (V4: red is for over-budget/errors).
+const HEAVY_SPEND_RATIO = 0.52;
+const HEAVY_COLOR = 'var(--c-data-sand)';
+
+function MiniBarChart() {
+  return (
+    <div className="flex items-end gap-[3px] sm:gap-1 h-24 w-full">
+      {MONTHS_SHORT.map((m, i) => {
+        const heavy = EXPENSE_BARS[i] / INCOME_BARS[i] >= HEAVY_SPEND_RATIO;
+        return (
+          <div key={`${m}-${i}`} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <div
+              className="w-full rounded-t-swatch"
+              style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 100}%`, backgroundColor: heavy ? HEAVY_COLOR : 'var(--brand-text)' }}
+            />
+            <span className="text-min font-bold text-fg hidden lg:block">{m}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MiniHealthScore() {
+  const { t } = useTranslation();
+  const score = 70;
+  return (
+    <div className="flex flex-col items-center gap-gap">
+      <ProgressRing
+        value={score / 100}
+        size={120}
+        animate={false}
+        label={String(score)}
+        labelClassName="text-fg"
+        sublabel={<span className="text-sm font-bold text-brand-text">{t('landing.demo.scoreGood')}</span>}
+      />
+      <div className="grid grid-cols-3 gap-2 w-full text-center">
+        {[['42%', 'landing.demo.savings'], ['87%', 'landing.demo.budget'], ['3/4', 'landing.demo.goals']].map(([v, k]) => (
+          <div key={k} className="tile-inner px-2 py-2.5">
+            <div className="font-extrabold text-fg tabular-nums">{v}</div>
+            <div className="text-sm font-semibold text-fg">{t(k)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MiniBudgets() {
+  const { t } = useTranslation();
+  const items = [
+    { key: 'food', spent: 210, limit: 300 },
+    { key: 'housing', spent: 850, limit: 900 },
+    { key: 'entertainment', spent: 47, limit: 50 },
+    { key: 'transport', spent: 28, limit: 80 },
+  ];
+  return (
+    <div className="flex flex-col gap-3.5">
+      {items.map(({ key, spent, limit }) => {
+        const over = spent > limit;
+        return (
+          <div key={key}>
+            <div className="flex justify-between gap-2 text-sm font-bold text-fg">
+              <span className="truncate">{t(`landing.demo.budgetItems.${key}`)}</span>
+              <span className={`tabular-nums ${over ? 'text-expense' : ''}`}>€{spent} / €{limit}</span>
+            </div>
+            <ProgressBar ratio={spent / limit} height={10} animate={false} className="mt-1.5" />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Mirrors computeCategoryBenchmarks: this month vs the user's OWN trailing
+// average, as a signed deviation (no population data; the page must not
+// imply otherwise).
+const BENCHMARK_ROWS = [
+  { key: 'food',          now: 412, avg: 350 },
+  { key: 'transport',     now: 58,  avg: 90  },
+  { key: 'entertainment', now: 96,  avg: 70  },
+  { key: 'housing',       now: 850, avg: 850 },
+];
+
+function MiniBenchmarks() {
+  const { t } = useTranslation();
+  return (
+    <div>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3">
+        {BENCHMARK_ROWS.map(({ key, now, avg }) => {
+          const pct = avg === 0 ? 0 : Math.round(((now - avg) / avg) * 100);
+          const above = pct > 0;
+          return (
+            <div key={key} className="tile-inner p-gap min-w-0">
+              <p className="text-sm font-bold text-fg truncate">{t(`landing.demo.budgetItems.${key}`)}</p>
+              <p className={`mt-1 text-h1 font-extrabold tabular-nums ${above ? 'text-warning' : pct < 0 ? 'text-brand-text' : 'text-fg'}`}>
+                {pct === 0 ? '0%' : `${above ? '+' : MINUS}${Math.abs(pct)}%`}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-sm font-semibold text-fg">{t('landing.demo.vsLastMonth')}</p>
+    </div>
+  );
+}
+
+function SectionHead({ children, rise, className = '' }) {
+  const r = rise(0);
+  return (
+    <h2 className={`text-h2-lg font-extrabold text-fg ${r.className} ${className}`} style={r.style}>
+      {children}
+    </h2>
+  );
+}
+
+// ── Sections ─────────────────────────────────────────────────────────────────
 
 function HeroFeaturesSection({ t }) {
   // returnObjects can yield the key string before the i18n bundle resolves
   // (first language switch). Coerce to an object so nested access never throws.
   const raw = t('landing.heroFeatures', { returnObjects: true });
   const feats = (raw && typeof raw === 'object') ? raw : {};
-  return (
-    <section className="py-24 sm:py-32">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-16">
-          <Eyebrow>{t('landing.features.eyebrow')}</Eyebrow>
-          <SectionHeading className="max-w-2xl">
-            {t('landing.features.heading')}
-          </SectionHeading>
+  const { ref, rise, pop } = useSectionReveal();
+  const FeatureTile = ({ k, preview, i, className = '' }) => {
+    const p = pop(i);
+    return (
+      <article className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col gap-[18px] min-w-0 ${p.className} ${className}`} style={p.style}>
+        <div>
+          <h3 className="text-h3-lg font-bold text-fg">{feats[k]?.title}</h3>
+          <p className="mt-2.5 text-body text-fg">{feats[k]?.desc}</p>
+          <span className="mt-3 inline-flex items-center h-[30px] px-3 rounded-pill bg-inner text-sm font-bold text-fg">{feats[k]?.eyebrow}</span>
         </div>
-
-        <div className="space-y-5">
-          {/* Strongest proof first: the score is the differentiator, so it is
-              the first thing after the hero. */}
-          <FeatureCard
-            eyebrow={feats.healthscore?.eyebrow}
-            title={feats.healthscore?.title}
-            desc={feats.healthscore?.desc}
-            preview={<MiniHealthScore />}
-          />
-
-          <FeatureCard
-            eyebrow={feats.benchmarks?.eyebrow}
-            title={feats.benchmarks?.title}
-            desc={feats.benchmarks?.desc}
-            flip
-            preview={<MiniBenchmarks />}
-          />
-
-          <FeatureCard
-            eyebrow={feats.budgets?.eyebrow}
-            title={feats.budgets?.title}
-            desc={feats.budgets?.desc}
-            preview={<MiniBudgets />}
-          />
-
-          <FeatureCard
-            eyebrow={feats.tracking?.eyebrow}
-            title={feats.tracking?.title}
-            desc={feats.tracking?.desc}
-            flip
-            preview={
-              <div>
-                <div className="flex justify-between items-center mb-4 text-xs font-medium text-ink-muted dark:text-white">
-                  <span>{t('landing.demo.yearToDate')}</span>
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-600 inline-block" />{t('landing.demo.onTrack')}</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block bg-expense" />{t('landing.demo.highSpend')}</span>
-                  </div>
+        <div className="mt-auto">{preview}</div>
+      </article>
+    );
+  };
+  return (
+    <section ref={ref} aria-label={t('landing.features.eyebrow')} className="max-w-content mx-auto pt-[clamp(80px,9vw,120px)] pb-[clamp(64px,8vw,96px)]">
+      <div className="grid lg:grid-cols-12 gap-gap items-end">
+        <SectionHead rise={rise} className="lg:col-span-6">{t('landing.features.heading')}</SectionHead>
+      </div>
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-gap">
+        {/* Strongest proof first: the score is the differentiator. */}
+        <FeatureTile k="healthscore" i={0} preview={<MiniHealthScore />} className="lg:col-span-4 lg:row-span-2" />
+        <FeatureTile k="benchmarks" i={1} preview={<MiniBenchmarks />} className="lg:col-span-8" />
+        <FeatureTile k="budgets" i={2} preview={<MiniBudgets />} className="lg:col-span-4" />
+        <FeatureTile
+          k="tracking"
+          i={3}
+          className="lg:col-span-4"
+          preview={(
+            <div>
+              <div className="flex flex-wrap justify-between items-center gap-2 mb-3 text-sm font-semibold text-fg">
+                <span>{t('landing.demo.yearToDate')}</span>
+                <span className="flex items-center gap-3">
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: 'var(--brand-text)' }} />{t('landing.demo.onTrack')}</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: HEAVY_COLOR }} />{t('landing.demo.highSpend')}</span>
+                </span>
+              </div>
+              <MiniBarChart />
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                <div className="tile-inner px-3 py-2.5 min-w-0">
+                  <p className="text-sm font-bold text-fg">{t('landing.demo.income')}</p>
+                  <p className="font-extrabold text-brand-text tabular-nums">€{(INCOME_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
                 </div>
-                <MiniBarChart />
-                <div className="flex flex-wrap gap-x-5 gap-y-3 mt-5 pt-4 border-t border-surface-hairline dark:border-surface-dark-hairline">
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-medium text-ink-muted dark:text-white mb-0.5">{t('landing.demo.income')}</p>
-                    <p className="text-xl font-bold text-brand-600 dark:text-brand-400 tabular-nums">€{(INCOME_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-medium text-ink-muted dark:text-white mb-0.5">{t('landing.demo.expenses')}</p>
-                    <p className="text-xl font-bold tabular-nums text-expense">€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-medium text-ink-muted dark:text-white mb-0.5">{t('landing.demo.saved')}</p>
-                    <p className="text-xl font-bold text-ink-primary dark:text-white tabular-nums">+€{((INCOME_BARS.reduce((s,v)=>s+v,0) - EXPENSE_BARS.reduce((s,v)=>s+v,0))/1000).toFixed(1)}k</p>
-                  </div>
+                <div className="tile-inner px-3 py-2.5 min-w-0">
+                  <p className="text-sm font-bold text-fg">{t('landing.demo.expenses')}</p>
+                  <p className="font-extrabold tabular-nums text-fg">€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
+                </div>
+                <div className="tile-inner px-3 py-2.5 min-w-0">
+                  <p className="text-sm font-bold text-fg">{t('landing.demo.saved')}</p>
+                  <p className="font-extrabold text-fg tabular-nums">+€{((INCOME_BARS.reduce((s,v)=>s+v,0) - EXPENSE_BARS.reduce((s,v)=>s+v,0))/1000).toFixed(1)}k</p>
                 </div>
               </div>
-            }
-          />
-        </div>
+            </div>
+          )}
+        />
       </div>
     </section>
   );
 }
 
 function SecondaryFeaturesSection({ t }) {
-  const [ref, visible] = useReveal(0.1);
+  const { ref, rise, pop } = useSectionReveal();
   // Keys here must match landing.secondaryFeatures.items in both locales.
   const items = [
     { icon: RefreshCw,  key: 'recurring' },
@@ -528,22 +352,19 @@ function SecondaryFeaturesSection({ t }) {
     { icon: Activity,   key: 'currency' },
     { icon: Lock,       key: 'encryption' },
   ];
+  const p = pop(0);
   return (
-    <section className="py-16 sm:py-20 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
-      <div
-        ref={ref}
-        className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <div className="mb-10">
-          <Eyebrow>{t('landing.secondaryFeatures.title')}</Eyebrow>
-        </div>
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 list-none m-0 p-0">
-          {items.map(({ icon, key }) => (
-            <SecondaryItem
-              key={key}
-              icon={icon}
-              text={t(`landing.secondaryFeatures.items.${key}`)}
-            />
+    <section ref={ref} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <div className={`tile p-tile-dense sm:p-tile ${p.className}`} style={p.style}>
+        <SectionHead rise={rise} className="mb-6">{t('landing.secondaryFeatures.title')}</SectionHead>
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-gap gap-y-1 list-none m-0 p-0">
+          {items.map(({ icon: Icon, key }) => (
+            <li key={key} className="activity-row flex items-center gap-[14px] p-2.5 rounded-icon">
+              <span className="activity-icon w-12 h-12 shrink-0 rounded-icon bg-inner text-brand-text flex items-center justify-center" aria-hidden="true">
+                <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
+              </span>
+              <span className="text-body font-semibold text-fg">{t(`landing.secondaryFeatures.items.${key}`)}</span>
+            </li>
           ))}
         </ul>
       </div>
@@ -552,238 +373,27 @@ function SecondaryFeaturesSection({ t }) {
 }
 
 function HowItWorksSection({ t }) {
-  const [ref, visible] = useReveal(0.1);
+  const { ref, rise, pop } = useSectionReveal();
+  // Icons, not "1 2 3" numbering (V6); order still reads left to right.
   const steps = [
-    { num: 1, key: 'step1' },
-    { num: 2, key: 'step2' },
-    { num: 3, key: 'step3' },
+    { Icon: UserPlus, key: 'step1' },
+    { Icon: ListPlus, key: 'step2' },
+    { Icon: Activity, key: 'step3' },
   ];
   return (
-    <section className="py-24 sm:py-32 bg-surface-page dark:bg-surface-dark-page">
-      <div
-        ref={ref}
-        className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <div className="mb-16">
-          <Eyebrow>{t('landing.howItWorks.title')}</Eyebrow>
-          <SectionHeading>{t('landing.howItWorks.subtitle')}</SectionHeading>
-        </div>
-        <div className="grid md:grid-cols-3 gap-10">
-          {steps.map(({ num, key }) => (
-            <div key={key} className="pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
-              <h3 className="font-display text-xl font-bold text-ink-primary dark:text-white mb-2">
-                <span className="text-brand-600 dark:text-brand-400 tabular-nums mr-2">{num}.</span>
-                {t(`landing.howItWorks.${key}.title`)}
-              </h3>
-              <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">
-                {t(`landing.howItWorks.${key}.desc`)}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PrivacySection({ t }) {
-  const [ref, visible] = useReveal(0.1);
-  const privacyItems = [
-    { icon: Database,    key: 'ownership' },
-    { icon: Lock,        key: 'encryption' },
-    { icon: Eye,         key: 'noSell' },
-    { icon: CloudOff,    key: 'noAdvice' },
-    { icon: ShieldCheck, key: 'analytics' },
-    { icon: CreditCard,  key: 'payments' },
-  ];
-  return (
-    <section className="py-24 sm:py-32 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
-      <div
-        ref={ref}
-        className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-start">
-          <div className="lg:sticky lg:top-24">
-            <Eyebrow>{t('landing.privacy.eyebrow')}</Eyebrow>
-            <SectionHeading className="mb-5">{t('landing.privacy.title')}</SectionHeading>
-            <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">
-              {t('landing.privacy.desc')}
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-8">
-            {privacyItems.map(({ icon, key }) => (
-              <PrivacyCard
-                key={key}
-                icon={icon}
-                title={t(`landing.privacy.items.${key}.title`)}
-                desc={t(`landing.privacy.items.${key}.desc`)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PricingPreviewSection({ t }) {
-  const [ref, visible] = useReveal(0.1);
-  const freeItems = ['tx','budgets','goals','categories','reports','networth','healthscore'];
-  const premiumItems = ['unlimited','cashflow','healthscore','benchmarks','splits','notifications'];
-  return (
-    <section className="py-24 sm:py-32 bg-surface-page dark:bg-surface-dark-page">
-      <div
-        ref={ref}
-        className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <div className="text-center mb-14">
-          <SectionHeading>{t('landing.pricingPreview.title')}</SectionHeading>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-5 mb-8">
-          {/* Free */}
-          <div className="rounded-[10px] border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card p-8">
-            <div className="mb-6 pb-6 border-b border-surface-hairline dark:border-surface-dark-hairline">
-              <h3 className="font-display text-lg font-semibold text-ink-primary dark:text-white">{t('landing.pricingPreview.free.label')}</h3>
-              <p className="mt-3 text-4xl font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white leading-none">{t('pricing.free')}</p>
-            </div>
-            <ul className="space-y-3">
-              {freeItems.map(key => (
-                <li key={key} className="flex items-center gap-2.5 text-sm text-ink-primary dark:text-white">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2} />
-                  {t(`landing.pricingPreview.free.items.${key}`)}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {/* Premium */}
-          <div className="rounded-[10px] border border-brand-600 dark:border-brand-400/60 bg-white dark:bg-surface-dark-card p-8 relative overflow-hidden">
-            <div className="mb-6 pb-6 border-b border-surface-hairline dark:border-surface-dark-hairline">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="font-display text-lg font-semibold text-ink-primary dark:text-white">{t('landing.pricingPreview.premium.label')}</h3>
-                <span className="px-2 py-0.5 rounded-md bg-brand-600 text-white text-[11px] font-medium">{t('pricing.freeTrial')}</span>
-              </div>
-              <p className="mt-3 leading-none">
-                <span className="text-4xl font-semibold tabular-nums tracking-tight text-ink-primary dark:text-white">{t('pricing.yearlyPrice')}</span>
-                <span className="ml-1 text-sm text-ink-muted dark:text-white">{t('pricing.perYear')}</span>
-              </p>
-              <p className="mt-2 text-sm text-ink-muted dark:text-white">{t('pricing.yearlyPerMonth')}</p>
-            </div>
-            <ul className="space-y-3">
-              {premiumItems.map(key => (
-                <li key={key} className="flex items-center gap-2.5 text-sm text-ink-primary dark:text-white">
-                  <CheckCircle2 className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0" strokeWidth={2} />
-                  {t(`landing.pricingPreview.premium.items.${key}`)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="text-center">
-          <Link
-            to="/pricing"
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-sm"
-          >
-            {t('landing.pricingPreview.cta')}
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
-          </Link>
-          <p className="mt-3 text-sm text-ink-muted dark:text-white">{t('landing.pricingPreview.trial')}</p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FounderSection({ t }) {
-  const [ref, visible] = useReveal(0.15);
-  return (
-    <section className="py-20 sm:py-24 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
-      <div
-        ref={ref}
-        className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <Eyebrow>{t('landing.founder.eyebrow')}</Eyebrow>
-        <blockquote className="relative font-display text-2xl sm:text-3xl font-medium text-ink-primary dark:text-white leading-[1.35] mb-8 pl-10 sm:pl-12">
-          <span className="absolute left-0 top-[-6px] text-brand-600 dark:text-brand-accent text-6xl leading-none font-serif select-none" aria-hidden="true">&ldquo;</span>
-          {t('landing.founder.quote')}
-          <span className="inline-block ml-1 text-brand-600 dark:text-brand-accent text-5xl leading-none font-serif select-none align-bottom translate-y-2" aria-hidden="true">&rdquo;</span>
-        </blockquote>
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0">
-            M
-          </div>
-          <div>
-            <p className="font-semibold text-sm text-ink-primary dark:text-white">{t('landing.founder.name')}</p>
-            <p className="text-sm text-ink-muted dark:text-white">{t('landing.founder.role')}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FaqSection({ t }) {
-  const [ref, visible] = useReveal(0.1);
-  return (
-    <section className="py-24 sm:py-32 bg-surface-page dark:bg-surface-dark-page">
-      <div
-        ref={ref}
-        className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <div className="mb-12">
-          <Eyebrow>{t('landing.faq.eyebrow')}</Eyebrow>
-          <SectionHeading>{t('landing.faq.title')}</SectionHeading>
-        </div>
-        <div>
-          {FAQ_KEYS.map(key => (
-            <FaqItem
-              key={key}
-              q={t(`landing.faq.items.${key}.q`)}
-              a={t(`landing.faq.items.${key}.a`)}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Data-privacy section.
- *
- * The claims here are load-bearing and must stay true to the implementation:
- * amounts really are encrypted client-side (see utils/crypto/fieldMap.js,
- * ENCRYPT_AMOUNTS) with a key held only by the user. If that ever changes,
- * this copy has to change with it.
- */
-function DataPrivacySection({ t }) {
-  const [ref, visible] = useReveal(0.1);
-  const points = ['device', 'noone', 'yours'];
-  const icons = { device: Lock, noone: Eye, yours: Download };
-
-  return (
-    <section className="py-20 sm:py-24 bg-surface-page dark:bg-surface-dark-page">
-      <div
-        ref={ref}
-        className={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <Eyebrow>{t('landing.dataPrivacy.eyebrow')}</Eyebrow>
-        <SectionHeading className="mb-5 max-w-2xl">{t('landing.dataPrivacy.title')}</SectionHeading>
-        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed mb-12 max-w-xl">
-          {t('landing.dataPrivacy.desc')}
-        </p>
-
-        <div className="grid gap-8 sm:grid-cols-3">
-          {points.map((key) => {
-            const Icon = icons[key];
+    <section ref={ref} aria-label={t('landing.howItWorks.title')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)]">
+        <SectionHead rise={rise} className="mb-10 max-w-2xl">{t('landing.howItWorks.subtitle')}</SectionHead>
+        <div className="grid md:grid-cols-3 gap-gap">
+          {steps.map(({ Icon, key }, i) => {
+            const p = pop(i + 1);
             return (
-              <div key={key} className="pt-5 border-t border-surface-hairline dark:border-surface-dark-hairline">
-                <Icon className="w-5 h-5 text-brand-600 dark:text-brand-400 mb-3" strokeWidth={1.8} />
-                <h3 className="font-medium text-base text-ink-primary dark:text-white mb-1.5">
-                  {t(`landing.dataPrivacy.points.${key}.title`)}
-                </h3>
-                <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed">
-                  {t(`landing.dataPrivacy.points.${key}.desc`)}
-                </p>
+              <div key={key} className={`tile tile-lift p-tile-dense ${p.className}`} style={p.style}>
+                <span className="w-12 h-12 rounded-icon bg-inner text-brand-text flex items-center justify-center mb-4" aria-hidden="true">
+                  <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
+                </span>
+                <h3 className="text-h3-lg font-bold text-fg mb-2">{t(`landing.howItWorks.${key}.title`)}</h3>
+                <p className="text-body text-fg">{t(`landing.howItWorks.${key}.desc`)}</p>
               </div>
             );
           })}
@@ -793,43 +403,235 @@ function DataPrivacySection({ t }) {
   );
 }
 
+/**
+ * Data-privacy section. The claims are load-bearing and must stay true to the
+ * implementation: amounts really are encrypted client-side (see
+ * utils/crypto/fieldMap.js, ENCRYPT_AMOUNTS) with a key held only by the
+ * user. If that ever changes, this copy has to change with it.
+ */
+function DataPrivacySection({ t }) {
+  const { ref, rise, pop } = useSectionReveal();
+  const points = ['device', 'noone', 'yours'];
+  const icons = { device: Lock, noone: Eye, yours: Download };
+  const r = rise(1);
+  return (
+    <section ref={ref} aria-label={t('landing.dataPrivacy.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <div className="grid lg:grid-cols-12 gap-gap items-end mb-12">
+        <SectionHead rise={rise} className="lg:col-span-6">{t('landing.dataPrivacy.title')}</SectionHead>
+        <p className={`lg:col-start-8 lg:col-span-5 text-body-lg text-fg ${r.className}`} style={r.style}>
+          {t('landing.dataPrivacy.desc')}
+        </p>
+      </div>
+      <div className="grid gap-gap sm:grid-cols-3">
+        {points.map((key, i) => {
+          const Icon = icons[key];
+          const p = pop(i);
+          // The first point (encrypted on your device) is the section's hero tile.
+          const hero = i === 0;
+          return (
+            <div key={key} className={`tile tile-lift ${hero ? 'tile-hero' : ''} p-tile-dense sm:p-tile ${p.className}`} style={p.style}>
+              <span className={`w-12 h-12 rounded-icon flex items-center justify-center mb-4 ${hero ? 'bg-hero-inset' : 'bg-inner text-brand-text'}`} aria-hidden="true">
+                <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
+              </span>
+              <h3 className={`text-h3-lg font-bold mb-2 ${hero ? '' : 'text-fg'}`}>{t(`landing.dataPrivacy.points.${key}.title`)}</h3>
+              <p className={`text-body ${hero ? '' : 'text-fg'}`}>{t(`landing.dataPrivacy.points.${key}.desc`)}</p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function PrivacySection({ t }) {
+  const { ref, rise, pop } = useSectionReveal();
+  const privacyItems = [
+    { icon: Database,    key: 'ownership' },
+    { icon: Lock,        key: 'encryption' },
+    { icon: Eye,         key: 'noSell' },
+    { icon: CloudOff,    key: 'noAdvice' },
+    { icon: ShieldCheck, key: 'analytics' },
+    { icon: CreditCard,  key: 'payments' },
+  ];
+  const r = rise(1);
+  return (
+    <section ref={ref} aria-label={t('landing.privacy.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <div className="grid lg:grid-cols-12 gap-gap items-end mb-12">
+        <SectionHead rise={rise} className="lg:col-span-6">{t('landing.privacy.title')}</SectionHead>
+        <p className={`lg:col-start-8 lg:col-span-5 text-body-lg text-fg ${r.className}`} style={r.style}>{t('landing.privacy.desc')}</p>
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-gap">
+        {privacyItems.map(({ icon: Icon, key }, i) => {
+          const p = pop(i);
+          return (
+            <div key={key} className={`tile tile-lift p-tile-dense flex gap-[14px] ${p.className}`} style={p.style}>
+              <span className="w-12 h-12 shrink-0 rounded-icon bg-inner text-brand-text flex items-center justify-center" aria-hidden="true">
+                <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-h3 font-bold text-fg mb-1">{t(`landing.privacy.items.${key}.title`)}</h3>
+                <p className="text-body text-fg">{t(`landing.privacy.items.${key}.desc`)}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function PricingPreviewSection({ t }) {
+  const { ref, rise, pop } = useSectionReveal();
+  const freeItems = ['tx','budgets','goals','categories','reports','networth','healthscore'];
+  const premiumItems = ['unlimited','cashflow','healthscore','benchmarks','splits','notifications'];
+  const free = pop(0);
+  const prem = pop(1);
+  const r = rise(2);
+  return (
+    <section ref={ref} id="pricing-preview" className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
+      <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)]">
+        <SectionHead rise={rise}>{t('landing.pricingPreview.title')}</SectionHead>
+        <div className="mt-9 grid lg:grid-cols-2 gap-gap">
+          {/* Free */}
+          <div className={`tile tile-lift p-tile-dense sm:p-tile ${free.className}`} style={free.style}>
+            <div className="flex items-baseline justify-between gap-3">
+              <h3 className="text-h3-lg font-bold text-fg">{t('landing.pricingPreview.free.label')}</h3>
+              <p className="text-h1 font-extrabold tabular-nums text-fg">{t('pricing.free')}</p>
+            </div>
+            <ul className="mt-5 flex flex-col gap-2.5">
+              {freeItems.map(key => (
+                <li key={key} className="flex items-center gap-2.5 text-body font-semibold text-fg">
+                  <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
+                  {t(`landing.pricingPreview.free.items.${key}`)}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Premium: the hero tile */}
+          <div className={`tile tile-hero tile-lift p-tile-dense sm:p-tile ${prem.className}`} style={prem.style}>
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <h3 className="text-h3-lg font-bold flex items-center gap-2.5">
+                {t('landing.pricingPreview.premium.label')}
+                <span className="inline-flex items-center h-[30px] px-3 rounded-pill bg-hero-inset text-sm font-bold">{t('pricing.freeTrial')}</span>
+              </h3>
+              <p>
+                <span className="text-h1 font-extrabold tabular-nums">{t('pricing.yearlyPrice')}</span>
+                <span className="ml-1 font-semibold">{t('pricing.perYear')}</span>
+              </p>
+            </div>
+            <p className="mt-1 text-sm font-semibold">{t('pricing.yearlyPerMonth')}</p>
+            <ul className="mt-5 flex flex-col gap-2.5">
+              {premiumItems.map(key => (
+                <li key={key} className="flex items-center gap-2.5 text-body font-semibold">
+                  <Check className="w-[18px] h-[18px] shrink-0" strokeWidth={2.6} style={{ color: 'var(--toast-check)' }} aria-hidden="true" />
+                  {t(`landing.pricingPreview.premium.items.${key}`)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-3 ${r.className}`} style={r.style}>
+          <Link
+            to="/pricing"
+            className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-pill text-body-lg"
+          >
+            {t('landing.pricingPreview.cta')}
+            <ArrowRight className="arrow-nudge w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
+          </Link>
+          <p className="text-sm font-semibold text-fg">{t('landing.pricingPreview.trial')}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FounderSection({ t }) {
+  const { ref, pop } = useSectionReveal();
+  const p = pop(0);
+  return (
+    <section ref={ref} aria-label={t('landing.founder.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <figure className={`tile p-[clamp(28px,5vw,56px)] max-w-3xl ${p.className}`} style={p.style}>
+        <blockquote className="text-h3-lg font-bold text-fg">
+          &ldquo;{t('landing.founder.quote')}&rdquo;
+        </blockquote>
+        <figcaption className="mt-8 flex items-center gap-4">
+          <span className="w-12 h-12 rounded-icon bg-brand-600 flex items-center justify-center text-white font-extrabold text-body-lg shrink-0" aria-hidden="true">M</span>
+          <span>
+            <span className="block font-bold text-fg">{t('landing.founder.name')}</span>
+            <span className="block text-sm font-semibold text-fg">{t('landing.founder.role')}</span>
+          </span>
+        </figcaption>
+      </figure>
+    </section>
+  );
+}
+
+function FaqItem({ q, a }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-line last:border-0">
+      <button
+        type="button"
+        className="w-full min-h-11 flex items-center justify-between gap-4 py-5 text-left group"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+      >
+        <span className="font-bold text-body-lg text-fg">{q}</span>
+        <span className="w-11 h-11 shrink-0 rounded-pill bg-inner flex items-center justify-center text-fg btn-motion group-hover:bg-inner-2" aria-hidden="true">
+          <ChevronDown className={`plus-spin w-5 h-5 ${open ? 'rotate-180' : ''}`} strokeWidth={2.4} />
+        </span>
+      </button>
+      {open && (
+        <p className="pb-5 text-body-lg text-fg animate-rise">{a}</p>
+      )}
+    </div>
+  );
+}
+
+function FaqSection({ t }) {
+  const { ref, rise, pop } = useSectionReveal();
+  const p = pop(0);
+  return (
+    <section ref={ref} aria-label={t('landing.faq.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <div className="grid lg:grid-cols-12 gap-gap items-start">
+        <SectionHead rise={rise} className="lg:col-span-4">{t('landing.faq.title')}</SectionHead>
+        <div className={`tile px-tile-dense sm:px-tile py-2 lg:col-span-8 ${p.className}`} style={p.style}>
+          {FAQ_KEYS.map(key => (
+            <FaqItem key={key} q={t(`landing.faq.items.${key}.q`)} a={t(`landing.faq.items.${key}.a`)} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ToolsSection({ t }) {
   const { i18n } = useTranslation();
-  const [ref, visible] = useReveal(0.1);
+  const { ref, rise, pop } = useSectionReveal();
+  const p = pop(0);
   return (
-    <section className="py-20 sm:py-24 border-y border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card">
-      <div
-        ref={ref}
-        className={`max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-      >
-        <Eyebrow>{t('landing.tools.eyebrow')}</Eyebrow>
-        <SectionHeading className="mb-5">{t('landing.tools.title')}</SectionHeading>
-        <p className="text-base font-normal text-ink-muted dark:text-white leading-relaxed mb-8 max-w-xl mx-auto">
-          {t('landing.tools.desc')}
-        </p>
+    <section ref={ref} aria-label={t('landing.tools.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+      <div className={`tile p-[clamp(28px,5vw,56px)] ${p.className}`} style={p.style}>
+        <div className="grid lg:grid-cols-12 gap-gap items-end">
+          <SectionHead rise={rise} className="lg:col-span-6">{t('landing.tools.title')}</SectionHead>
+          <p className="lg:col-start-8 lg:col-span-5 text-body-lg text-fg">{t('landing.tools.desc')}</p>
+        </div>
         {/* Maps over TOOLS so a new tool appears here with no edit to this file.
-            The first tool is the primary action (brand fill); the rest stay
-            secondary/outlined so the pair reads as a hierarchy rather than two
-            buttons competing for the same attention.
-
-            Buttons size to their own labels and center as a group, sharing the
-            vertical axis of the heading above. Not an equal-column grid: the
-            Albanian labels differ enough in length that equal columns wrap the
-            longest onto two lines while its neighbours stay on one, which makes
-            the row read as uneven. */}
-        <div className="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-3">
+            First tool is the primary pill; the rest are secondary. Buttons
+            size to their labels (Albanian labels vary a lot in length). */}
+        <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
           {TOOLS.map((tool, i) => (
             <Link
               key={tool.path}
               to={toolPath(tool.path, i18n.language)}
-              className={`group inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap px-5 py-3 text-base font-medium rounded-md transition-colors ${
+              className={`group btn-motion btn-lift inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap min-h-[52px] px-6 text-body font-bold rounded-pill border-2 ${
                 i === 0
-                  ? 'bg-brand-600 hover:bg-brand-700 text-white'
-                  : 'border border-surface-outline dark:border-surface-dark-outline text-ink-primary dark:text-white hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40'
+                  ? 'bg-brand-600 hover:bg-brand-700 border-brand-600 hover:border-brand-700 text-white'
+                  : 'bg-tile border-fg text-fg hover:bg-fg hover:text-tile'
               }`}
             >
               {t(tool.labelKey)}
-              <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
+              <ArrowRight className="arrow-nudge w-[18px] h-[18px] shrink-0" strokeWidth={2.4} aria-hidden="true" />
             </Link>
           ))}
         </div>
@@ -839,35 +641,30 @@ function ToolsSection({ t }) {
 }
 
 function FinalCtaSection({ t, lang }) {
-  const [ref, visible] = useReveal(0.1);
+  const { ref, rise } = useSectionReveal();
+  const r1 = rise(1);
+  const r2 = rise(2);
   return (
-    <section className="relative overflow-hidden bg-white dark:bg-surface-dark-card py-28 sm:py-36">
-      <div
-        ref={ref}
-        className={`relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-      >
-        <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-ink-primary dark:text-white leading-[1.0] tracking-[-0.02em] mb-5">
-          {t('landing.finalCta.title')}
-        </h2>
-        <p className="text-lg text-ink-muted dark:text-white leading-relaxed max-w-lg mx-auto mb-10">
-          {t('landing.finalCta.desc')}
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+    <section ref={ref} className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
+      <div className="tile-inner rounded-hero p-[clamp(28px,6vw,80px)]">
+        <SectionHead rise={rise} className="max-w-2xl">{t('landing.finalCta.title')}</SectionHead>
+        <p className={`mt-5 text-body-lg text-fg max-w-xl ${r1.className}`} style={r1.style}>{t('landing.finalCta.desc')}</p>
+        <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-3 ${r2.className}`} style={r2.style}>
           <Link
             to={localizedPath('/register', lang)}
-            className="group w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-transparent bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-base"
+            className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-brand-600 bg-brand-600 hover:bg-brand-700 hover:border-brand-700 text-white font-bold rounded-pill text-body-lg"
           >
             {t('landing.finalCta.button')}
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
+            <ArrowRight className="arrow-nudge w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
           </Link>
           <Link
             to={localizedPath('/pricing', lang)}
-            className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-1.5 px-8 py-3.5 rounded-md border border-surface-outline dark:border-white/20 text-ink-primary dark:text-white hover:border-ink-muted/50 dark:hover:border-white/50 font-medium text-base transition-colors"
+            className="btn-motion btn-lift inline-flex items-center justify-center min-h-[52px] px-7 rounded-pill border-2 border-fg bg-tile text-fg hover:bg-fg hover:text-tile font-bold text-body-lg"
           >
             {t('landing.finalCta.secondary')}
           </Link>
         </div>
-        <p className="text-sm text-ink-muted dark:text-white">{t('landing.finalCta.trustLine')}</p>
+        <p className={`mt-6 text-sm font-semibold text-fg ${r2.className}`} style={r2.style}>{t('landing.finalCta.trustLine')}</p>
       </div>
     </section>
   );
