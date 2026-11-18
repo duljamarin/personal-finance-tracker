@@ -11,14 +11,15 @@ export default memo(function CategoryCard({ cat, onEdit, onDelete, editLabel, de
   const displayName = translateCategoryName(cat.name);
 
   return (
-    <div className="activity-row group flex items-center gap-[14px] p-3 rounded-icon min-w-0">
+    <div className="activity-row group flex flex-wrap items-center gap-x-[14px] gap-y-1 p-3 rounded-icon min-w-0">
       <CategoryAvatar category={cat} />
-      <div className="flex-1 min-w-0">
+      {/* min width before the amount + actions wrap to a second line (narrow phones) */}
+      <div className="flex-1 basis-[140px] min-w-0">
         <p className="min-w-0 [overflow-wrap:anywhere] font-extrabold text-fg">{displayName}</p>
         {meta && <p className="mt-0.5 text-sm font-semibold text-fg tabular-nums">{meta}</p>}
       </div>
       {amount && (
-        <div className="shrink-0 text-right">
+        <div className="ml-auto shrink-0 text-right">
           <p className="text-h3 font-extrabold tabular-nums text-fg">{amount}</p>
           {amountLabel && <p className="mt-0.5 text-sm font-semibold text-fg">{amountLabel}</p>}
         </div>

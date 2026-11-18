@@ -85,7 +85,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
       {/* mt-auto pins the figures + action to the tile bottom so tiles in a
           row align whether or not they have a description. */}
       <div className="mt-auto">
-        <dl className="mt-gap grid grid-cols-2 gap-3 text-sm">
+        <dl className="mt-gap grid grid-cols-2 gap-3 text-sm [overflow-wrap:anywhere]">
           <div className="tile-inner px-3.5 py-2.5 min-w-0">
             <dt className="text-sm font-bold text-fg first-letter:uppercase">{t('goals.card.remaining')}</dt>
             <dd className="mt-0.5 font-extrabold tabular-nums text-fg [overflow-wrap:anywhere]">

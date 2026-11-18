@@ -7,35 +7,34 @@ export function cn(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Common card styling classes. Resting cards are tier-1 (hairline border, no
-// shadow); `hover` lifts the border, not a shadow — see design-system §3.
+// Bento tile classes (design-system §3.1).
 export const cardClasses = {
-  base: "bg-white dark:bg-surface-dark-tertiary rounded-container p-5 sm:p-6",
-  hover: "hover:border-ink-muted/40 dark:hover:border-ink-dark-muted/40 transition-colors duration-200",
-  border: "border border-surface-hairline dark:border-surface-dark-hairline",
+  base: "tile p-tile-dense sm:p-tile",
+  hover: "tile-lift",
+  border: "",
 };
 
-// Common input styling classes
+// Bento input classes (design-system §4.4): R_INPUT, 2px --line, BRAND focus.
 export const inputClasses = {
-  base: "border py-2 px-2 sm:p-3 text-xs sm:text-base rounded-md sm:w-full bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white focus:outline-none focus:ring-2 transition",
-  focus: "focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40",
-  error: "border-expense focus:ring-expense",
-  normal: "border-surface-outline dark:border-surface-dark-outline",
+  base: "min-h-11 border-2 py-2.5 px-3.5 text-base font-bold rounded-input w-full bg-tile text-fg btn-motion",
+  focus: "focus:border-brand-600 dark:focus:border-brand-400",
+  error: "border-expense",
+  normal: "border-line hover:border-inner-2",
 };
 
 // Button variant classes
 export const buttonClasses = {
   primary: "bg-brand-600 hover:bg-brand-700 text-white",
-  secondary: "bg-surface-secondary dark:bg-surface-dark-elevated text-ink-primary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-tertiary",
+  secondary: "bg-inner text-fg hover:bg-inner-2",
   danger: "bg-danger hover:bg-danger-hover text-white",
   warning: "bg-warning hover:bg-warning-hover text-white",
-  ghost: "bg-surface-secondary dark:bg-surface-dark-elevated text-ink-primary dark:text-white hover:bg-surface-hairline dark:hover:bg-surface-dark-tertiary",
+  ghost: "bg-inner text-fg hover:bg-inner-2",
 };
 
 // Badge/tag classes for transaction types
 export const badgeClasses = {
-  income: "bg-surface-subtle text-brand-600 font-semibold dark:bg-surface-dark-subtle dark:text-brand-400",
-  expense: "bg-surface-subtle text-expense font-semibold dark:bg-surface-dark-subtle dark:text-expense",
+  income: "bg-inner text-brand-text font-bold",
+  expense: "bg-inner text-fg font-bold",
   recurring: "bg-data-violet/10 text-data-violet dark:bg-data-violet/20 dark:text-data-violet dark:border dark:border-data-violet/40",
   scheduled: "bg-data-blue/10 text-data-blue dark:bg-data-blue/20 dark:text-data-blue dark:border dark:border-data-blue/40",
 };
@@ -63,7 +62,7 @@ export function getInputClassName(hasError) {
 export function getValueColorClass(value, threshold = 0, options = {}) {
   const {
     positive = 'text-brand-600 dark:text-brand-400',
-    negative = 'text-expense dark:text-expense',
+    negative = 'text-fg',
     neutral = 'text-ink-primary dark:text-white'
   } = options;
   

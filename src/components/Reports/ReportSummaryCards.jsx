@@ -112,7 +112,7 @@ export default function ReportSummaryCards({ transactions, prevTransactions, sta
     // The page's one hero tile (spec 4.4: summary cards as a tile row).
     <div className={`tile tile-hero tile-lift p-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 ${typeof index === 'number' ? 'animate-pop' : ''}`}>
       {cards.map((card) => (
-        <div key={card.label} className="rounded-inner bg-hero-inset px-[18px] py-[14px] min-w-0">
+        <div key={card.label} className="rounded-inner bg-hero-inset px-[18px] py-[14px] min-w-0 [overflow-wrap:anywhere]">
           <p className="text-sm font-bold mb-1">{card.label}</p>
           <p className="min-w-0 [overflow-wrap:anywhere] font-extrabold tabular-nums text-h3">
             {formatValue(card.value, card.format)}
