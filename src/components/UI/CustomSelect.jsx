@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react';
  *  - error: boolean (applies error border)
  *  - className: extra classes for the trigger button
  *  - ariaLabel: accessibility label
+ *  - defaultOpen: open the list on mount (quick-add "More" category picker)
  */
 export default function CustomSelect({
   value,
@@ -25,8 +26,9 @@ export default function CustomSelect({
   error = false,
   className = '',
   ariaLabel,
+  defaultOpen = false,
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const containerRef = useRef(null);
 
   // Close on outside click
@@ -51,10 +53,10 @@ export default function CustomSelect({
   const selected = options.find(o => String(o.value) === String(value));
 
   const baseTrigger =
-    'w-full px-3.5 py-3 text-base rounded-md border bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40 transition flex items-center justify-between gap-2';
+    'w-full min-h-11 px-3.5 py-3 text-base font-bold rounded-input border-2 bg-tile text-fg focus:border-brand-600 dark:focus:border-brand-400 btn-motion flex items-center justify-between gap-2';
   const borderClass = error
     ? 'border-expense'
-    : 'border-surface-outline dark:border-surface-dark-outline';
+    : 'border-line hover:border-inner-2';
   const disabledClass = disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer';
 
   return (
@@ -77,12 +79,12 @@ export default function CustomSelect({
           ) : (
             <>
               {placeholderLeading}
-              <span className="truncate text-ink-muted dark:text-white">{placeholder}</span>
+              <span className="truncate font-medium text-fg">{placeholder}</span>
             </>
           )}
         </span>
         <svg
-          className={`w-4 h-4 flex-shrink-0 text-ink-muted dark:text-white transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 flex-shrink-0 text-fg plus-spin ${open ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -96,10 +98,10 @@ export default function CustomSelect({
         <ul
           role="listbox"
           style={{ WebkitOverflowScrolling: 'touch' }}
-          className="absolute z-50 mt-1 min-w-full max-h-64 overflow-y-auto overscroll-contain rounded-md border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card shadow-lg py-1 scrollbar-thin"
+          className="absolute z-50 mt-1 min-w-full max-h-64 overflow-y-auto overscroll-contain rounded-inner border border-line bg-tile shadow-sheet p-1.5 scrollbar-thin animate-fade-in"
         >
           {options.length === 0 ? (
-            <li className="px-3 py-2 text-sm text-ink-muted dark:text-white">
+            <li className="px-3 py-2.5 text-sm font-semibold text-fg">
               {placeholder}
             </li>
           ) : (
@@ -116,20 +118,20 @@ export default function CustomSelect({
                     onChange(opt.value);
                     setOpen(false);
                   }}
-                  className={`flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                  className={`flex items-center gap-2 min-h-11 px-3 py-2 rounded-input text-sm font-bold btn-motion ${
                     opt.disabled
                       ? 'opacity-50 cursor-not-allowed'
-                      : 'cursor-pointer hover:bg-surface-subtle dark:hover:bg-surface-dark-subtle'
+                      : 'cursor-pointer hover:bg-inner'
                   } ${
                     isSelected
-                      ? 'bg-surface-subtle dark:bg-surface-dark-subtle text-ink-primary dark:text-white font-semibold'
-                      : 'text-ink-primary dark:text-white'
+                      ? 'bg-inner-2 text-fg'
+                      : 'text-fg'
                   }`}
                 >
                   {opt.leading}
                   <span className="truncate flex-1">{opt.label}</span>
                   {isSelected && (
-                    <svg className="w-4 h-4 flex-shrink-0 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-4 h-4 flex-shrink-0 text-brand-text" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}

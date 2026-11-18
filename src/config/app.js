@@ -1,7 +1,8 @@
 // Application-wide configuration constants
+import { TOAST_LIFETIME } from '../utils/motion';
 export const APP_CONFIG = {
   // Toast notifications
-  TOAST_DURATION: 3000,
+  TOAST_DURATION: TOAST_LIFETIME, // D_COUNT * 2 + 800ms (utils/motion)
 
   // Greeting display duration
   GREETING_DURATION: 3500,

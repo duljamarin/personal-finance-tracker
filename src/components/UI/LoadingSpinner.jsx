@@ -8,10 +8,10 @@ export default function LoadingSpinner({ size = 'md', text, className = '' }) {
   return (
     <div className={`flex flex-col items-center justify-center ${className}`}>
       <div
-        className={`${sizes[size]} border-surface-hairline dark:border-surface-dark-hairline border-t-brand-600 dark:border-t-brand-500 rounded-full animate-spin`}
+        className={`${sizes[size]} border-inner-2 border-t-brand-600 dark:border-t-brand-400 rounded-full animate-spin`}
       />
       {text && (
-        <p className="mt-3 text-sm text-ink-muted dark:text-white">
+        <p className="mt-3 text-sm font-semibold text-fg">
           {text}
         </p>
       )}

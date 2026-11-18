@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AlertCircle, AlertTriangle, Check, Info, X } from 'lucide-react';
 import { APP_CONFIG } from '../config/app';
 
 const ToastContext = createContext(null);
@@ -15,10 +17,10 @@ export function ToastProvider({ children }) {
   }, []);
 
   const addToast = useCallback((message, type = 'success') => {
-    const id = Date.now();
+    const id = Date.now() + Math.random();
     setToasts(prev => [...prev, { id, message, type }]);
-    
-    // Auto-remove after configured duration
+
+    // Auto-remove after the toast lifetime (D_COUNT * 2 + 800ms, see config/app.js)
     timerRefs.current[id] = setTimeout(() => {
       setToasts(prev => prev.filter(toast => toast.id !== id));
       delete timerRefs.current[id];
@@ -37,7 +39,7 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+      <div className="fixed bottom-7 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center gap-2 pointer-events-none w-[calc(100vw-32px)] sm:w-auto">
         {toasts.map(toast => (
           <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
         ))}
@@ -54,60 +56,34 @@ export function useToast() {
   return context;
 }
 
+// Toast (design-system §3.7): bottom-center pill, --text background with
+// --tile text (inverts in dark), check icon in color-mix(BRAND 45%, WHITE).
+const ICONS = { success: Check, error: AlertCircle, info: Info, warning: AlertTriangle };
+const ICON_COLOR = {
+  success: 'var(--toast-check)',
+  info: 'var(--toast-check)',
+  error: 'var(--c-expense)',
+  warning: 'var(--c-warning)',
+};
+
 function Toast({ message, type, onClose }) {
-  const borderColors = {
-    success: 'border-l-success',
-    error: 'border-l-expense',
-    info: 'border-l-brand-500',
-    warning: 'border-l-warning'
-  };
-
-  const iconColors = {
-    success: 'text-success',
-    error: 'text-expense',
-    info: 'text-brand-500',
-    warning: 'text-warning'
-  };
-
-  const icons = {
-    success: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-      </svg>
-    ),
-    error: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    ),
-    info: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    warning: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-    )
-  };
-
+  const { t } = useTranslation();
+  const Icon = ICONS[type] || Check;
   return (
-    <div 
-      className={`bg-white dark:bg-surface-dark-elevated border border-surface-hairline dark:border-surface-dark-hairline border-l-4 ${borderColors[type]} px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[280px] max-w-md pointer-events-auto animate-slide-in-right`}
-      onClick={onClose}
+    <div
+      role="status"
+      className="pointer-events-auto animate-toast-in flex items-center gap-2.5 max-w-full sm:max-w-md pl-5 pr-1.5 py-1.5 rounded-pill font-bold text-sm"
+      style={{ backgroundColor: 'var(--toast-bg)', color: 'var(--toast-fg)' }}
     >
-      <div className={`flex-shrink-0 ${iconColors[type]}`}>
-        {icons[type]}
-      </div>
-      <p className="text-sm font-medium text-ink-primary dark:text-white flex-1">{message}</p>
+      <Icon className="w-[18px] h-[18px] shrink-0" strokeWidth={3} style={{ color: ICON_COLOR[type] || ICON_COLOR.success }} aria-hidden="true" />
+      <p className="flex-1 min-w-0 py-1.5">{message}</p>
       <button
+        type="button"
         onClick={onClose}
-        className="flex-shrink-0 text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary rounded p-1 transition-colors"
+        aria-label={t('forms.close')}
+        className="shrink-0 w-11 h-11 flex items-center justify-center rounded-pill opacity-80 hover:opacity-100"
       >
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <X className="w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
       </button>
     </div>
   );

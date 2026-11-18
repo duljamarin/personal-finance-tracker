@@ -1,7 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { X } from 'lucide-react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
-export default function Modal({ children, onClose, className = '', drawer = false }) {
-  const isMobileDrawer = drawer;
+/**
+ * Floating panel (design-system §3). Focus is trapped while open, Esc closes,
+ * focus returns to the trigger.
+ *
+ * variant / drawer:
+ *   centered (default)  tile panel in the middle, R_SHELL
+ *   drawer              bottom sheet below md, centered from md up
+ *   sheet               quick-add sheet: bottom-right from 640px
+ *                       (width min(400px, 100vw - 48px)), bottom sheet below
+ */
+export default function Modal({ children, onClose, className = '', drawer = false, variant, ariaLabel, initialFocusRef }) {
+  const { t } = useTranslation();
+  const panelRef = useRef(null);
+  const kind = variant || (drawer ? 'drawer' : 'centered');
+  useFocusTrap(panelRef, { initialFocusRef });
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -11,43 +27,47 @@ export default function Modal({ children, onClose, className = '', drawer = fals
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
+  const overlay = {
+    centered: 'items-end sm:items-center justify-center px-4 sm:px-0',
+    drawer: 'items-end md:items-center justify-center md:px-0',
+    sheet: 'items-end justify-center sm:justify-end sm:p-6',
+  }[kind];
+
+  const panel = {
+    centered: 'rounded-shell max-w-lg max-h-[90vh] mb-4 sm:mb-0',
+    drawer: 'rounded-t-shell md:rounded-shell md:max-w-lg max-h-[85vh] md:max-h-[90vh]',
+    sheet: 'rounded-t-shell sm:rounded-shell sm:w-[min(400px,calc(100vw-48px))] max-h-[90vh]',
+  }[kind];
+
+  const pad = kind === 'sheet' ? 'p-tile-dense' : kind === 'drawer' ? 'p-tile-dense md:p-tile' : 'p-tile-dense sm:p-tile';
+
   return (
     // !mt-0: modals are often rendered inside a `space-y-*` page, whose sibling
     // margin would otherwise push this fixed overlay down and leave an undimmed
     // strip across the top of the viewport.
     <div
-      className="fixed inset-0 z-50 !mt-0 flex items-end sm:items-center justify-center px-4 sm:px-0 bg-black/50 backdrop-blur-[2px] animate-fade-in"
+      className={`fixed inset-0 z-50 !mt-0 flex ${overlay} ${kind === 'sheet' ? 'bg-black/20' : 'bg-black/50'} animate-fade-in`}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className={`
-          bg-white dark:bg-surface-dark-card shadow-tier2 relative w-full border border-surface-hairline dark:border-surface-dark-hairline
-          ${isMobileDrawer
-            ? 'md:rounded-container md:max-w-lg rounded-t-xl sm:rounded-container mb-0 sm:mb-0 md:relative max-h-[85vh] md:max-h-[90vh] overflow-y-auto scrollbar-thin animate-slide-up md:animate-scale-in'
-            : 'rounded-container max-w-lg max-h-[90vh] overflow-y-auto scrollbar-thin animate-scale-in'
-          }
-          ${className}
-        `}
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={ariaLabel}
+        className={`bg-tile border border-line text-fg shadow-sheet relative w-full overflow-y-auto scrollbar-thin animate-sheet-in ${panel} ${className}`}
       >
-        {isMobileDrawer && (
-          <div className="md:hidden sticky top-0 bg-white dark:bg-surface-dark-card pt-3 pb-2 flex justify-center rounded-t-xl z-10">
-            <div className="w-10 h-1 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full" />
-          </div>
-        )}
-
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-ink-muted hover:text-ink-primary dark:text-white dark:hover:text-ink-dark-primary focus:outline-none z-10 w-8 h-8 flex items-center justify-center hover:bg-ink-primary/5 dark:hover:bg-ink-dark-primary/10 rounded-md transition-colors"
-          aria-label="Close"
+          className="btn-motion absolute top-3 right-3 z-10 w-11 h-11 flex items-center justify-center rounded-pill text-fg hover:bg-inner"
+          aria-label={t('forms.close')}
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
         </button>
 
-        <div className={isMobileDrawer ? 'p-4 sm:p-6 md:p-8' : 'p-6 sm:p-8'}>
+        <div className={pad}>
           {children}
         </div>
       </div>

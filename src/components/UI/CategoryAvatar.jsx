@@ -1,6 +1,7 @@
 import { CategoryIconSvg } from './CategoryIconSvg';
 import { getCategoryIcon } from '../../utils/categoryTranslation';
 import { CATEGORY_PALETTE } from '../../utils/chartColors';
+import { tintOf } from '../../utils/bento';
 
 // Stable per-name color — mirrors the CategoryCard hash-to-color function.
 export function colorFromName(name) {
@@ -11,23 +12,28 @@ export function colorFromName(name) {
 }
 
 /**
- * Round category marker: neutral fill + category-colored glyph (de-pastelized).
- * User-created categories have no stock icon, so they show their initial.
+ * Category marker (design-system §3.8): icon square (R_ICON) with
+ * --tint(categoryColor) background and the icon in the category color.
+ * User-created categories without a stock icon show their initial.
  * `fallbackName` names the color/initial when there is no category object.
+ * size: lg = 48px (rows, default in Bento lists), md = 40px, sm = 32px.
  */
-export default function CategoryAvatar({ category, fallbackName = '', size = 'md' }) {
+const DIMS = { lg: 'w-12 h-12', md: 'w-10 h-10', sm: 'w-8 h-8' };
+const ICON = { lg: 'w-[22px] h-[22px]', md: 'w-5 h-5', sm: 'w-4 h-4' };
+
+export default function CategoryAvatar({ category, fallbackName = '', size = 'md', className = '' }) {
   const name = category?.name || fallbackName || '?';
   const iconKey = category ? getCategoryIcon(category) : 'Shopping';
-  const dims = size === 'sm' ? 'w-8 h-8' : 'w-9 h-9';
+  const color = colorFromName(name);
   return (
     <span
-      className={`${dims} rounded-full flex items-center justify-center shrink-0 bg-surface-subtle dark:bg-surface-dark-subtle`}
-      style={{ color: colorFromName(name) }}
+      className={`${DIMS[size] || DIMS.md} ${size === 'sm' ? 'rounded-input' : 'rounded-icon'} flex items-center justify-center shrink-0 ${className}`}
+      style={{ color, backgroundColor: tintOf(color) }}
       aria-hidden="true"
     >
       {iconKey
-        ? <CategoryIconSvg iconKey={iconKey} className="w-4 h-4" />
-        : <span className="text-sm font-semibold">{name.trim().charAt(0).toUpperCase()}</span>}
+        ? <CategoryIconSvg iconKey={iconKey} className={ICON[size] || ICON.md} />
+        : <span className="text-base font-extrabold">{name.trim().charAt(0).toUpperCase()}</span>}
     </span>
   );
 }

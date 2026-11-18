@@ -4,9 +4,9 @@ import Button from './Button';
  * Warm, branded empty state.
  * Props:
  * - illustration (optional): custom SVG/JSX that replaces the default icon tile.
- * - icon: SVG node rendered inside the brand-tinted circle when no illustration.
+ * - icon: SVG node rendered inside a 48px --inner icon square when no illustration.
  * - title, description: content
- * - action, actionLabel: primary emerald CTA
+ * - action, actionLabel: primary pill CTA (actionIcon="plus" for a leading +)
  * - secondaryAction, secondaryLabel: ghost secondary link-button
  * - limitText: small note shown above the CTA
  */
@@ -20,33 +20,34 @@ export default function EmptyState({
   secondaryAction,
   secondaryLabel,
   limitText,
+  actionIcon,
   className = '',
 }) {
   return (
     <div
-      className={`relative bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline rounded-[10px] overflow-hidden ${className}`}
+      className={`tile relative overflow-hidden ${className}`}
     >
       <div className="relative text-center px-6 py-14 sm:py-16">
         {illustration ? (
           <div className="flex justify-center mb-5">{illustration}</div>
         ) : (
-          <div className="inline-flex items-center justify-center w-11 h-11 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle text-ink-muted dark:text-white/70 mb-5">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-icon bg-inner text-brand-text mb-5">
             {icon}
           </div>
         )}
 
-        <h3 className="text-heading text-ink-primary dark:text-white mb-1.5">
+        <h3 className="text-h3 font-bold text-fg mb-1.5">
           {title}
         </h3>
 
         {description && (
-          <p className="text-sm sm:text-base text-ink-muted dark:text-white max-w-sm mx-auto leading-relaxed">
+          <p className="text-base text-fg max-w-sm mx-auto">
             {description}
           </p>
         )}
 
         {limitText && (
-          <p className="mt-4 text-xs text-ink-muted dark:text-white">
+          <p className="mt-4 text-sm font-semibold text-fg">
             {limitText}
           </p>
         )}
@@ -54,7 +55,7 @@ export default function EmptyState({
         {(action || secondaryAction) && (
           <div className="mt-7 flex items-center justify-center gap-3 flex-wrap">
             {action && (
-              <Button onClick={action}>
+              <Button onClick={action} leading={actionIcon}>
                 {actionLabel}
               </Button>
             )}
@@ -62,7 +63,7 @@ export default function EmptyState({
               <button
                 type="button"
                 onClick={secondaryAction}
-                className="text-sm font-medium text-ink-muted dark:text-white hover:text-ink-primary dark:hover:text-ink-dark-primary transition-colors"
+                className="btn-motion min-h-11 px-4 rounded-pill text-sm font-bold text-fg hover:bg-inner"
               >
                 {secondaryLabel}
               </button>

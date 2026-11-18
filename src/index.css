@@ -122,6 +122,24 @@
   }
 }
 
+/* Buttons and chips (§3.2): colors D_FAST EASE_STD, transform spring.
+   Lift and press only on pointer devices and never while disabled. */
+.btn-motion {
+  transition: background-color var(--d-fast) var(--ease-std), color var(--d-fast) var(--ease-std),
+    border-color var(--d-fast) var(--ease-std), transform var(--d-fast) var(--ease-spring);
+}
+@media (hover: hover) {
+  .btn-lift:not(:disabled):hover { transform: translateY(-2px); }
+  .chip-lift:not(:disabled):hover { transform: translateY(-1px); }
+}
+.btn-lift:not(:disabled):active { transform: scale(.97); }
+
+/* Inputs (§4.4): the 2px BRAND border is the focus signal, no outline ring. */
+input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
+
+/* Progress ring arc: value changes ease the dash offset (I2: data only). */
+.ring-arc { transition: stroke-dashoffset var(--d-data) var(--ease-out); }
+
 /* Sliding pill / indicator easing (SegmentedControl, filters) */
 .slide-pill {
   transition: transform var(--d-enter) var(--ease-spring), width var(--d-enter) var(--ease-spring);

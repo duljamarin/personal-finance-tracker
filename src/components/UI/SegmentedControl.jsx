@@ -1,15 +1,32 @@
 /**
- * Neutral segmented control: white "thumb" on a subtle track. Used for
- * view filters (all / active / completed, time ranges). Solid brand fills stay
- * reserved for primary actions.
+ * Segmented filter with a sliding pill (design-system §3.3).
+ * Track --inner, 4px padding, R_PILL; equal-width options; the pill slides
+ * under the active option via translateX(index * 100%), D_ENTER EASE_SPRING.
+ * The active state lives on the real <button> (aria-pressed).
  *
  * options: [{ value, label }]
  */
-export default function SegmentedControl({ options, value, onChange, size = 'md', ariaLabel }) {
-  const pad = size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm';
+export default function SegmentedControl({ options, value, onChange, size = 'md', ariaLabel, className = '' }) {
+  const count = options.length || 1;
+  const index = Math.max(0, options.findIndex((o) => o.value === value));
+  const text = size === 'sm' ? 'px-3 text-sm' : 'px-4 text-sm';
   return (
-    <div role="group" aria-label={ariaLabel} className="inline-flex p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
-      {options.map(opt => {
+    <div
+      role="group"
+      aria-label={ariaLabel}
+      className={`relative inline-grid p-1 rounded-pill bg-inner ${className}`}
+      style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
+    >
+      <span
+        aria-hidden="true"
+        className="slide-pill absolute top-1 bottom-1 left-1 rounded-pill shadow-pill"
+        style={{
+          width: `calc((100% - 8px) / ${count})`,
+          transform: `translateX(${index * 100}%)`,
+          backgroundColor: 'var(--seg-pill)',
+        }}
+      />
+      {options.map((opt) => {
         const active = opt.value === value;
         return (
           <button
@@ -17,11 +34,7 @@ export default function SegmentedControl({ options, value, onChange, size = 'md'
             type="button"
             onClick={() => onChange(opt.value)}
             aria-pressed={active}
-            className={`${pad} font-medium rounded-[5px] transition-colors ${
-              active
-                ? 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white shadow-xs'
-                : 'text-ink-muted dark:text-white hover:text-ink-primary'
-            }`}
+            className={`relative z-[1] min-h-11 ${text} font-bold whitespace-nowrap rounded-pill text-fg`}
           >
             {opt.label}
           </button>

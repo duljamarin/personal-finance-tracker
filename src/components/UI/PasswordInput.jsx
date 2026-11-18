@@ -8,21 +8,20 @@ export default function PasswordInput({ value, onChange, className, placeholder,
   const visible = show !== undefined ? show : internalShow;
   const toggle = onToggle || (() => setInternalShow(v => !v));
 
+  // Same Bento input as UI/Input: R_INPUT, 2px --line, BRAND border on focus.
   const borderState = error
-    ? 'border-expense focus:border-expense focus:ring-expense/20'
-    : 'border-surface-hairline dark:border-surface-dark-hairline hover:border-ink-muted/40 dark:hover:border-white/20';
+    ? 'border-expense focus:border-expense'
+    : 'border-line hover:border-inner-2 focus:border-brand-600 dark:focus:border-brand-400';
 
   const defaultClass =
-    `w-full py-3 ${leadingIcon ? 'pl-11' : 'pl-3.5'} pr-10 text-base bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ` +
-    'placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
-    `border ${borderState} ` +
-    'rounded-md transition-colors duration-150 focus:outline-none ' +
-    'focus:ring-2 focus:ring-ink-primary/10 dark:focus:ring-white/15 focus:border-ink-muted/50 dark:focus:border-white/40';
+    `w-full min-h-11 py-3 ${leadingIcon ? 'pl-11' : 'pl-3.5'} pr-12 text-base font-bold bg-tile text-fg ` +
+    'placeholder:font-medium placeholder:text-ink-muted/40 dark:placeholder:text-white/40 ' +
+    `border-2 ${borderState} btn-motion rounded-input`;
 
   return (
     <div className="relative">
       {leadingIcon && (
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted dark:text-white/50 flex items-center pointer-events-none">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg flex items-center pointer-events-none">
           {leadingIcon}
         </span>
       )}
@@ -38,7 +37,7 @@ export default function PasswordInput({ value, onChange, className, placeholder,
         type="button"
         tabIndex={-1}
         onClick={toggle}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted dark:text-white/50 hover:text-ink-primary dark:hover:text-white transition-colors"
+        className="absolute right-0.5 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-pill text-fg"
         aria-label={visible ? t('auth.hidePassword') : t('auth.showPassword')}
       >
         {visible ? (

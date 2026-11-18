@@ -30,7 +30,7 @@ export default function CurrencyFlag({ code, className = '' }) {
       width="16"
       height="12"
       decoding="async"
-      className={`shrink-0 rounded-[2px] ring-1 ring-black/15 ${className}`}
+      className={`shrink-0 rounded-swatch ring-1 ring-black/15 ${className}`}
     />
   );
 }

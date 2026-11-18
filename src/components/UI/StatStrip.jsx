@@ -1,40 +1,44 @@
+import { delayStyle, tileDelay } from '../../utils/motion';
+
 /**
- * A row of figures inside one bordered panel, divided by hairlines — the
- * statement-header pattern, replacing grids of equal floating stat cards.
+ * Summary figures (design-system §3): one tile holding --inner summary
+ * boxes, like the Activity "Money in / Money out" boxes.
  *
- * items: [{ label, value, tone?: 'income'|'expense'|'neutral', note?, hero?, children? }]
- * The first item flagged `hero` gets the larger metric size; the rest recede.
+ * items: [{ label, value, tone?: 'income'|'expense'|'neutral'|'over', note?, hero?, children? }]
+ * Tone (V4): income = --brand-text, expense = --text (ink), over = EXPENSE.
+ * index: tile entrance position.
  */
 const TONE = {
-  income: 'text-brand-600 dark:text-brand-400',
-  expense: 'text-expense',
-  neutral: 'text-ink-primary dark:text-white',
+  income: 'text-brand-text',
+  expense: 'text-fg',
+  neutral: 'text-fg',
+  over: 'text-expense',
 };
 
 const COLS = {
+  1: '',
   2: 'sm:grid-cols-2',
   3: 'sm:grid-cols-3',
   4: 'sm:grid-cols-2 lg:grid-cols-4',
   5: 'sm:grid-cols-2 lg:grid-cols-5',
 };
 
-export default function StatStrip({ items, className = '' }) {
+export default function StatStrip({ items, className = '', index }) {
   const list = items.filter(Boolean);
+  const animated = typeof index === 'number';
   return (
-    // gap-px over a hairline-colored grid draws the dividers at every breakpoint.
-    <section className={`grid grid-cols-1 ${COLS[list.length] || 'sm:grid-cols-2 lg:grid-cols-4'} gap-px bg-surface-hairline dark:bg-surface-dark-hairline border border-surface-hairline dark:border-surface-dark-hairline rounded-container overflow-hidden ${className}`}>
+    <section
+      className={`tile tile-lift p-3 grid grid-cols-1 ${COLS[list.length] || 'sm:grid-cols-2 lg:grid-cols-4'} gap-3 ${animated ? 'animate-pop' : ''} ${className}`}
+      style={animated ? delayStyle(tileDelay(index)) : undefined}
+    >
       {list.map((item, i) => (
-        <div key={i} className="bg-white dark:bg-surface-dark-card p-4 sm:p-5 min-w-0">
-          <p className="eyebrow">{item.label}</p>
-          <p
-            className={`mt-2 [overflow-wrap:anywhere] font-semibold tabular-nums tracking-tight leading-none ${
-              item.hero ? 'text-3xl sm:text-4xl' : 'text-2xl'
-            } ${TONE[item.tone || 'neutral']}`}
-          >
+        <div key={i} className="tile-inner px-[18px] py-[14px] min-w-0">
+          <p className="text-sm font-bold text-fg">{item.label}</p>
+          <p className={`mt-1 [overflow-wrap:anywhere] text-h1 font-extrabold tabular-nums ${TONE[item.tone || 'neutral']}`}>
             {item.value}
           </p>
           {item.children}
-          {item.note && <p className="mt-2 text-xs text-ink-muted dark:text-white">{item.note}</p>}
+          {item.note && <p className="mt-1 text-sm font-semibold text-fg">{item.note}</p>}
         </div>
       ))}
     </section>
