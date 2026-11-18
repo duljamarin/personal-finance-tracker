@@ -201,7 +201,7 @@ function EncryptionGate() {
   );
 }
 
-function AuthenticatedLayout({ children }) {
+export function AuthenticatedLayout({ children }) {
   return (
     // Bento shell (design-system 3.5): --page background, GAP padding, floating nav tile.
     <div className="flex min-h-screen bg-page font-sans lg:gap-gap lg:p-gap">

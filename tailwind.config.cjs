@@ -188,7 +188,7 @@ module.exports = {
         'sheet-in': 'sheet-in var(--d-enter) var(--ease-spring) backwards',
         'toast-in': 'toast-in var(--d-enter) var(--ease-spring) backwards',
         'step-out': 'step-out var(--d-enter) var(--ease-out) forwards',
-        'fade-in': 'fade-in var(--d-fast) var(--ease-std) backwards',
+        'fade-in': 'fade-in var(--d-enter) var(--ease-std) var(--delay, 0ms) backwards',
       },
       keyframes: {
         pop: {

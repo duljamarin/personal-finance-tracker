@@ -26,7 +26,7 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, scopeNote,
 
   // Reserve layout space while loading to prevent CLS
   if (subLoading) {
-    return <div className="h-[52px] rounded-lg bg-surface-hairline dark:bg-surface-dark-hairline animate-pulse" />;
+    return <div className="h-[52px] rounded-icon bg-inner-2 " />;
   }
 
   if (isPremium || isTrialing) return null;
@@ -41,33 +41,33 @@ export default function FreePlanUsageCounter({ used, limit, labelKey, scopeNote,
   const barColor = progressColor(pct);
 
   return (
-    <div className={`flex items-center gap-4 px-4 py-3 rounded-control border text-sm ${
-      isAtLimit
-        ? 'bg-expense-bg border-expense/30'
-        : isNearLimit
-        ? 'bg-warning-bg border-warning/30'
-        : 'bg-surface-page dark:bg-surface-dark-elevated border-surface-hairline dark:border-surface-dark-hairline'
-    }`}>
+    <div className={`flex items-center gap-4 px-4 py-3 rounded-input border text-sm ${
+ isAtLimit
+ ? 'bg-expense-bg border-expense/30'
+ : isNearLimit
+ ? 'bg-warning-bg border-warning/30'
+ : 'bg-surface-page dark:bg-surface-dark-elevated border-line'
+ }`}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1.5 gap-2">
-          <span className="text-xs font-medium text-ink-primary dark:text-white truncate">
+          <span className="text-sm font-medium text-fg truncate">
             {t(labelKey)}:{' '}
             <span className="tabular-nums font-semibold">{used}</span>
             <span className="tabular-nums"> / {limit}</span>
-            {scopeNote && <span className="font-normal"> {scopeNote}</span>}
+            {scopeNote && <span className="font-medium"> {scopeNote}</span>}
           </span>
           {(isAtLimit || isNearLimit) && (
             <Link
               to="/pricing"
-              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 whitespace-nowrap flex-shrink-0 transition-colors"
+              className="text-sm font-semibold text-brand-text hover:text-brand-700 dark:hover:text-brand-300 whitespace-nowrap flex-shrink-0 transition-colors"
             >
               {t('upgrade.upgradeCta')} →
             </Link>
           )}
         </div>
-        <div className="h-1.5 bg-surface-hairline dark:bg-surface-dark-hairline rounded-full overflow-hidden">
+        <div className="h-1.5 bg-inner-2 rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full transition-all duration-300"
+            className="h-full rounded-full btn-motion "
             style={{ width: `${pct * 100}%`, backgroundColor: barColor }}
           />
         </div>

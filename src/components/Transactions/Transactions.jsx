@@ -39,9 +39,13 @@ function groupByDate(rows) {
  * variant="recent" — the dashboard's recent-activity card. Same component on
  *   purpose: it owns the add/edit drawer, the `openAddTransaction` listener and
  *   recurring processing, all of which the dashboard relies on.
+ * variant="host"   — no list at all: only the add/edit sheet, the listeners
+ *   and recurring processing. The Bento dashboard mounts this and renders its
+ *   own Activity feed, whose rows open the edit sheet via `openEditTransaction`.
  */
 export default function Transactions({ variant = 'full', limit = 6 }) {
-  const isRecent = variant === 'recent';
+  const isRecent = variant === 'recent' || variant === 'host';
+  const isHost = variant === 'host';
   const {
     transactions: items,
     categories,
@@ -227,6 +231,16 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     window.addEventListener('openAddTransaction', handleOpenAdd);
     return () => window.removeEventListener('openAddTransaction', handleOpenAdd);
   }, [handleAdd]);
+
+  // Rows rendered outside this component (dashboard Activity feed) ask for the
+  // edit sheet with the transaction in event.detail.
+  const handleEditRef = useRef(null);
+  handleEditRef.current = handleEdit;
+  useEffect(() => {
+    function handleOpenEdit(e) { if (e.detail) handleEditRef.current(e.detail); }
+    window.addEventListener('openEditTransaction', handleOpenEdit);
+    return () => window.removeEventListener('openEditTransaction', handleOpenEdit);
+  }, []);
 
   const selectClass =
     'px-3 py-2 text-sm bg-white dark:bg-surface-dark-card text-ink-primary dark:text-white ' +
@@ -455,6 +469,8 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
       )}
     </>
   );
+
+  if (isHost) return modals;
 
   // ── Dashboard: recent activity card ────────────────────────────────────
   if (isRecent) {

@@ -70,6 +70,12 @@ export function formatMonthName(date, language) {
   return date.toLocaleDateString('en-US', { month: 'long' });
 }
 
+/** Short month name, e.g. "Oct" / "tet". */
+export function formatMonthShort(date, language) {
+  if (isSq(language)) return SQ_MONTHS_SHORT[date.getMonth()];
+  return date.toLocaleDateString('en-US', { month: 'short' });
+}
+
 /** Compact day label for list headers, e.g. "Wed, Sep 30" / "Mër, 30 sht". */
 export function formatShortDay(date, language, { withYear = false } = {}) {
   if (isSq(language)) {

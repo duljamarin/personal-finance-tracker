@@ -6,8 +6,8 @@ const FOCUSABLE = [
 ].join(',');
 
 /**
- * Trap Tab focus inside `ref` while mounted (P5 / §3.6). Focuses the first
- * focusable element (or `initialFocusRef`) on open and returns focus to the
+ * Trap Tab focus inside `ref` while mounted (P5 / §3.6). Focuses
+ * `initialFocusRef`, else the first form field, else the first focusable, on open and returns focus to the
  * element that had it before (the trigger) on close.
  */
 export function useFocusTrap(ref, { active = true, initialFocusRef } = {}) {
@@ -20,7 +20,10 @@ export function useFocusTrap(ref, { active = true, initialFocusRef } = {}) {
     const focusables = () => Array.from(node.querySelectorAll(FOCUSABLE))
       .filter((el) => el.offsetParent !== null || el === document.activeElement);
 
-    const first = initialFocusRef?.current || focusables()[0];
+    // Prefer the first form field (the quick-add amount) over the close button.
+    const firstField = Array.from(node.querySelectorAll('input:not([type="hidden"]):not([disabled]), textarea, select'))
+      .find((el) => el.offsetParent !== null);
+    const first = initialFocusRef?.current || firstField || focusables()[0];
     if (first && typeof first.focus === 'function' && !node.contains(document.activeElement)) {
       first.focus({ preventScroll: true });
     }

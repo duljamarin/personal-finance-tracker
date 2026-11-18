@@ -236,7 +236,7 @@ Rule: no raw hex, px radius, duration or easing in components; only the tokens b
   errors, destructive actions. Income = `text-brand-text` with "+"; expense with "−" (U+2212).
 - Inputs: `rounded-input`, 2px `--line` border, **BRAND border on focus**.
 - Category colors (`colorFromName`) are for icons/bars only, never body text.
-- Progress fill: <85% BRAND, 85..100% WARNING `#B45309`, >100% EXPENSE.
+- Progress fill: existing budget thresholds (`progressColor`): <70% BRAND, 70..99% WARNING `#B45309`, >=100% EXPENSE (kept by decision 2026-11-18; the spec's 85% was not adopted).
 
 ### Dark Mode Text — Critical Rules
 All dark mode text is white. `src/index.css` forces this with `!important` outside `@layer` blocks.

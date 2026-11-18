@@ -27,6 +27,7 @@
   --brand-text: var(--brand);
   --hero-tile: var(--brand);
   --hero-inset: color-mix(in srgb, var(--white) 14%, var(--brand));
+  --hero-area: rgba(255, 255, 255, .12);   /* balance chart fill on the hero tile */
   --tile-shadow: 0 14px 30px -18px color-mix(in srgb, var(--brand) 35%, transparent);
   --sheet-shadow: 0 30px 60px -30px rgba(15, 31, 23, .45);
   --pill-shadow: 0 2px 8px rgba(15, 31, 23, .12);

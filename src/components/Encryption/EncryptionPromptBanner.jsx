@@ -37,25 +37,25 @@ export default function EncryptionPromptBanner() {
   }
 
   return (
-    <div className="mb-6 rounded-container bg-white dark:bg-surface-dark-card border border-surface-hairline dark:border-surface-dark-hairline border-l-2 border-l-brand-600 dark:border-l-brand-400 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+    <div className="mb-6 rounded-tile bg-tile border border-line border-l-2 border-l-brand-600 dark:border-l-brand-400 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
       {/* Header row: icon + text, with the dismiss X pinned top-right on mobile */}
       <div className="flex items-start gap-3 sm:gap-4 sm:flex-1 min-w-0">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 bg-brand-600 rounded-md flex items-center justify-center">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 bg-brand-600 rounded-input flex items-center justify-center">
           <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold tracking-tight text-sm text-ink-primary dark:text-white mb-0.5">
+          <h3 className="font-semibold tracking-[-0.01em] text-sm text-fg mb-0.5">
             {t('encryption.promptTitle')}
           </h3>
-          <p className="text-sm text-ink-muted dark:text-white">
+          <p className="text-sm text-fg">
             {t('encryption.promptDesc')}
           </p>
         </div>
         <button
           onClick={handleDismiss}
-          className="sm:hidden flex-shrink-0 -mr-1 -mt-1 p-1 rounded-md text-ink-muted dark:text-white hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
+          className="sm:hidden flex-shrink-0 -mr-1 -mt-1 p-1 rounded-input text-fg hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
           aria-label={t('common.cancel')}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,13 +68,13 @@ export default function EncryptionPromptBanner() {
       <div className="flex items-center gap-2 sm:flex-shrink-0">
         <Link
           to="/account"
-          className="flex-1 sm:flex-none text-center bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+          className="flex-1 sm:flex-none text-center bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-input text-sm font-medium transition-colors"
         >
           {t('encryption.promptCta')}
         </Link>
         <button
           onClick={handleDismiss}
-          className="hidden sm:inline-flex flex-shrink-0 p-1 rounded-md text-ink-muted dark:text-white hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
+          className="hidden sm:inline-flex flex-shrink-0 p-1 rounded-input text-fg hover:bg-white/60 dark:hover:bg-surface-dark-card/60 transition-colors"
           aria-label={t('common.cancel')}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

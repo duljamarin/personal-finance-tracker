@@ -1,12 +1,15 @@
 import { useState, useMemo, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import CombinedMonthChart from '../Transactions/CombinedMonthChart';
+import Card from '../UI/Card';
+import SegmentedControl from '../UI/SegmentedControl';
 
 const RANGES = ['3m', '6m', '12m', 'all'];
 
-export default function ChartWithTimeRange({ transactions }) {
+export default function ChartWithTimeRange({ transactions, index, className = '' }) {
   const { t } = useTranslation();
   const [range, setRange] = useState('6m');
+  // INP: range switching is a transition (CLAUDE.md performance rules).
   const [isPending, startTransition] = useTransition();
 
   const filtered = useMemo(() => {
@@ -18,31 +21,22 @@ export default function ChartWithTimeRange({ transactions }) {
   }, [transactions, range]);
 
   return (
-    <div className="bg-white dark:bg-surface-dark-card rounded-container p-4 sm:p-5 border border-surface-hairline dark:border-surface-dark-hairline">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h2 className="text-heading text-ink-primary dark:text-white">
+    <Card index={index} className={className}>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-gap">
+        <h2 className="text-h3 font-bold text-fg">
           {t('chart.cashFlow')}
         </h2>
-        <div className="inline-flex p-0.5 rounded-md bg-surface-subtle dark:bg-surface-dark-subtle">
-          {RANGES.map(r => (
-            <button
-              key={r}
-              onClick={() => startTransition(() => setRange(r))}
-              aria-pressed={range === r}
-              className={`px-2.5 py-1 text-xs rounded-[5px] font-medium tabular-nums transition-colors ${
-                range === r
-                  ? 'bg-white dark:bg-surface-dark-elevated text-ink-primary dark:text-white shadow-xs'
-                  : 'text-ink-muted dark:text-white hover:text-ink-primary'
-              }`}
-            >
-              {t(`dashboard.range.${r}`)}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          size="sm"
+          ariaLabel={t('chart.cashFlow')}
+          value={range}
+          onChange={(r) => startTransition(() => setRange(r))}
+          options={RANGES.map((r) => ({ value: r, label: t(`dashboard.range.${r}`) }))}
+        />
       </div>
-      <div className={isPending ? 'opacity-60 transition-opacity' : ''}>
+      <div className={isPending ? 'opacity-60 btn-motion' : ''}>
         <CombinedMonthChart transactions={filtered} />
       </div>
-    </div>
+    </Card>
   );
 }

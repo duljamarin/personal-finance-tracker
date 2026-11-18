@@ -233,7 +233,7 @@ export default function Sidebar() {
             <Link
               to="/pricing"
               onClick={closeMobile}
-              className="flex items-center justify-center gap-2 min-h-11 px-4 rounded-pill border-2 border-line text-sm font-bold text-fg btn-motion hover:bg-inner"
+              className="flex items-center gap-2 min-h-11 px-3 py-1.5 rounded-icon border-2 border-line text-sm font-bold text-fg text-left leading-tight btn-motion hover:bg-inner"
             >
               <CreditCard className="w-[18px] h-[18px] text-brand-text" strokeWidth={2} aria-hidden="true" />
               {t('pricing.managePlan')}

@@ -1,46 +1,46 @@
 import { useTranslation } from 'react-i18next';
-import { Plus } from 'lucide-react';
+import { ArrowLeftRight, BarChart3, Target } from 'lucide-react';
+import Card from '../UI/Card';
+import Button from '../UI/Button';
 
 // Calm empty state for a brand-new account: one message, one action, then the
-// three things the app does once there is data. No icon tile, no badge.
-export default function FirstRunGuide({ onAddTransaction }) {
+// three things the app does once there is data (icons, not numbering: V6).
+export default function FirstRunGuide({ onAddTransaction, index }) {
   const { t } = useTranslation();
   const steps = [
-    { titleKey: 'dashboard.firstRun.step1Title', descKey: 'dashboard.firstRun.step1Desc' },
-    { titleKey: 'dashboard.firstRun.step2Title', descKey: 'dashboard.firstRun.step2Desc' },
-    { titleKey: 'dashboard.firstRun.step3Title', descKey: 'dashboard.firstRun.step3Desc' },
+    { Icon: ArrowLeftRight, titleKey: 'dashboard.firstRun.step1Title', descKey: 'dashboard.firstRun.step1Desc' },
+    { Icon: BarChart3, titleKey: 'dashboard.firstRun.step2Title', descKey: 'dashboard.firstRun.step2Desc' },
+    { Icon: Target, titleKey: 'dashboard.firstRun.step3Title', descKey: 'dashboard.firstRun.step3Desc' },
   ];
 
   return (
-    <div className="animate-in rounded-container border border-surface-hairline dark:border-surface-dark-hairline bg-white dark:bg-surface-dark-card overflow-hidden">
-      <div className="px-6 sm:px-8 py-8 sm:py-10 max-w-xl">
-        <h2 className="font-display text-title text-ink-primary dark:text-white mb-2">
+    <Card index={index} className="flex flex-col gap-tile">
+      <div className="max-w-xl">
+        <h2 className="text-h1 font-extrabold text-fg mb-2">
           {t('dashboard.firstRun.title')}
         </h2>
-        <p className="text-base text-ink-muted dark:text-white leading-relaxed mb-6">
+        <p className="text-base text-fg mb-6">
           {t('dashboard.firstRun.subtitle')}
         </p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-          <button
-            onClick={onAddTransaction}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md transition-colors text-sm"
-          >
-            <Plus className="w-4 h-4" strokeWidth={2} />
+          <Button onClick={onAddTransaction} leading="plus" type="button">
             {t('dashboard.firstRun.cta')}
-          </button>
-          <p className="text-sm text-ink-muted dark:text-white">{t('dashboard.firstRun.hint')}</p>
+          </Button>
+          <p className="text-sm font-semibold text-fg">{t('dashboard.firstRun.hint')}</p>
         </div>
       </div>
 
-      <ol className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-surface-hairline dark:bg-surface-dark-hairline border-t border-surface-hairline dark:border-surface-dark-hairline list-none m-0 p-0">
-        {steps.map(({ titleKey, descKey }, i) => (
-          <li key={titleKey} className="bg-surface-page dark:bg-surface-dark-page px-6 sm:px-8 py-5">
-            <p className="text-xs font-medium tabular-nums text-ink-muted dark:text-white mb-1.5">{i + 1}</p>
-            <p className="text-sm font-medium text-ink-primary dark:text-white mb-1">{t(titleKey)}</p>
-            <p className="text-sm text-ink-muted dark:text-white leading-relaxed">{t(descKey)}</p>
+      <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {steps.map(({ Icon, titleKey, descKey }) => (
+          <li key={titleKey} className="tile-inner p-gap flex flex-col gap-2">
+            <span className="w-12 h-12 rounded-icon bg-tile text-brand-text flex items-center justify-center" aria-hidden="true">
+              <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
+            </span>
+            <p className="font-extrabold text-fg">{t(titleKey)}</p>
+            <p className="text-sm font-semibold text-fg">{t(descKey)}</p>
           </li>
         ))}
-      </ol>
-    </div>
+      </ul>
+    </Card>
   );
 }

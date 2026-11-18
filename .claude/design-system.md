@@ -185,7 +185,7 @@ never `dark:text-gray-*`, `dark:text-zinc-*`, `dark:text-ink-dark-*`. Placeholde
 | Button | `UI/Button.jsx` | `R_PILL`, weight 700. Primary BRAND → hover BRAND_HOVER + translateY(−2px), active scale(.97). Secondary `--tile` + 2px `--text` border, hover inverts. Leading "+" rotates 90deg on hover; trailing arrow moves 4px right. |
 | Chip | `UI/Chip.jsx` | `R_PILL`, 2px `--line` border; selected = BRAND fill + white text. |
 | SegmentedControl | `UI/SegmentedControl.jsx` | Track `--inner`, 4px padding, `R_PILL`; equal-width options; pill (white / dark `--inner-2`, `0 2px 8px rgba(15,31,23,.12)`) slides via translateX(index × 100%), D_ENTER EASE_SPRING. |
-| ProgressBar | `UI/ProgressBar.jsx` | Track `--inner`/`--inner-2`, `R_PILL`, heights 6/10/14. Fill <85% BRAND, 85..100% WARNING, >100% EXPENSE. Entrance `grow-x`; width transitions on change. |
+| ProgressBar | `UI/ProgressBar.jsx` | Track `--inner`/`--inner-2`, `R_PILL`, heights 6/10/14. Fill via the existing `progressColor` thresholds: <70% BRAND, 70..99% WARNING, >=100% EXPENSE (decided 2026-11-18 to keep these over the brief's 85%). Entrance `grow-x`; width transitions on change. |
 | ProgressRing | `UI/ProgressRing.jsx` | SVG rotated −90deg, round caps, track `--inner-2` (`--tile` on `--inner` backgrounds), `draw` entrance. Center label is ONE text node, nowrap, font-size = size × 0.23. |
 | StackedBar | `UI/StackedBar.jsx` | 18px, `R_PILL`, 3px gaps, segment = category color, `grow-x` with delay(i); legend: 10px swatch (radius 3px), name, amount weight 800. |
 | App shell | `Sidebar.jsx`, `Header.jsx`, `AuthenticatedLayout` | Page `--page`, padding GAP. Nav = floating tile (`R_SHELL`), top-aligned, not sticky. 48px rows with 48px icon square (`R_ICON`). Active: `--inner-2` + `--brand-text` icon. Hover: `--inner` + icon scale(1.06). ≥1280 icon+label (232px), 1024..1279 icon rail (72px, tooltip + aria-label), <1024 existing mobile nav restyled. |
@@ -207,3 +207,12 @@ tabular numbers; donut center shows the total; `animationDuration = D_DATA`,
 - Category markers: `CategoryAvatar` / `CategoryIconSvg` in a 48px `R_ICON` square
   with `--tint(categoryColor)` background and the icon in the category color.
 - Emoji are data, never chrome.
+
+## 5. Decisions taken during the build
+
+- **Health score parts** (2026-11-18): the dashboard shows the four pillars as
+  weighted points `x/40, x/30, x/20, x/10` (they sum to the score), not the
+  brief's `x/25`. Weights mirror `computeHealthScore`.
+- **Progress thresholds** (2026-11-18): keep `progressColor` 70% / 100%.
+- **Design harness**: `e2e/design/` renders the real pages on fixtures;
+  `node e2e/design/shoot.mjs` writes screenshots to `docs/redesign/screenshots/`.
