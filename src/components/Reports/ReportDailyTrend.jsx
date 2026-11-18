@@ -9,7 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimation } from '../../utils/chartTheme';
+import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, useChartAnimation } from '../../utils/chartTheme';
+import ChartTooltip, { rowsFromPayload } from '../UI/ChartTooltip';
 import Card from '../UI/Card';
 import { toISODate } from '../../utils/date';
 import { INCOME_COLOR } from '../../utils/chartColors';
@@ -18,19 +19,8 @@ const EXPENSE_COLOR = 'var(--c-data-sand)';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 function CustomTooltip({ active, payload, label, fmt }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className={CHART_TOOLTIP_CLASS}>
-        <p className="font-semibold text-sm text-fg mb-1">{label}</p>
-        {payload.map((entry) => (
-          <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
-            {entry.name}: {fmt(Number(entry.value))}
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
+  if (!active || !payload || !payload.length) return null;
+  return <ChartTooltip label={label} rows={rowsFromPayload(payload, fmt)} />;
 }
 
 export default function ReportDailyTrend({ transactions, startDate, endDate }) {

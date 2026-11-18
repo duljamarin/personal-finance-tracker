@@ -45,7 +45,6 @@ export const CHART_PALETTE = [
   'var(--c-income)',       // forest green (primary)
   'var(--c-data-blue)',    // indigo-blue
   'var(--c-data-sand)',    // warm amber-sand
-  'var(--c-data-violet)',  // purple
   'var(--c-data-rose)',    // rose
   'var(--c-data-sage)',    // teal-sage
   'var(--c-data-gold)',    // golden amber
@@ -69,5 +68,13 @@ export const CATEGORY_PALETTE = [
   '#7E7A70',               // warm grey (no semantic token — categorical filler)
   '#57B98A',               // light forest green
   'var(--c-data-stone)',   // #6E6A5E
-  'var(--c-data-violet)',  // #7D5BA6
+  'var(--c-data-sage)',    // #2F8F83 (was violet; no purple in the UI)
 ];
+
+/**
+ * Goals saved with the retired violet swatch (#7D5BA6) render as steel blue:
+ * the UI uses no purple. Other colors pass through unchanged.
+ */
+export function displayGoalColor(color) {
+  return typeof color === 'string' && color.toLowerCase() === '#7d5ba6' ? '#2A5183' : color;
+}

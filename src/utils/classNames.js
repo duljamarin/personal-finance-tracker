@@ -35,8 +35,8 @@ export const buttonClasses = {
 export const badgeClasses = {
   income: "bg-inner text-brand-text font-bold",
   expense: "bg-inner text-fg font-bold",
-  recurring: "bg-data-violet/10 text-data-violet dark:bg-data-violet/20 dark:text-data-violet dark:border dark:border-data-violet/40",
-  scheduled: "bg-data-blue/10 text-data-blue dark:bg-data-blue/20 dark:text-data-blue dark:border dark:border-data-blue/40",
+  recurring: "bg-inner text-fg font-bold",
+  scheduled: "bg-inner text-fg font-bold",
 };
 
 /**

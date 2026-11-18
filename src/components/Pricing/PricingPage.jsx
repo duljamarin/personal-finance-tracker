@@ -10,6 +10,7 @@ import { trackEvent } from '../../lib/analytics';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
+import { Crown } from 'lucide-react';
 
 const YEARLY_PRICE_ID = import.meta.env.VITE_PADDLE_YEARLY_PRICE_ID;
 
@@ -191,43 +192,48 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* Active subscription notice */}
-      {isPremium && subscription?.subscription_status !== 'none' && (
-        <div className={`mb-8 tile p-tile-dense text-center ${
-          subscription?.subscription_cancel_at ? '!border-warning border-2' : ''
-        }`}>
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className={`inline-flex items-center h-[26px] px-2.5 rounded-pill text-min font-extrabold ${
-              subscription?.subscription_cancel_at
-                ? 'bg-inner text-warning'
-                : 'bg-brand-600 text-white'
-            }`}>
-              {t('subscription.proBadge')}
+      {/* Active subscription notice: one tile, status as a pill, action on the right. */}
+      {isPremium && subscription?.subscription_status !== 'none' && (() => {
+        const cancelling = Boolean(subscription?.subscription_cancel_at);
+        const periodEnd = subscription?.period_end
+          ? new Date(subscription.period_end).toLocaleDateString(i18n.language)
+          : null;
+        const detail = cancelling
+          ? (periodEnd ? t('subscription.accessEndsOn', { date: periodEnd }) : null)
+          : isTrialing
+          ? trialTimeLabel
+          : (periodEnd ? t('subscription.renewsOn', { date: periodEnd }) : null);
+        return (
+          <div className="mb-8 tile p-tile-dense flex flex-wrap items-center gap-x-4 gap-y-3 animate-pop">
+            <span className="w-12 h-12 shrink-0 rounded-icon bg-brand-600 text-white flex items-center justify-center" aria-hidden="true">
+              <Crown className="w-[22px] h-[22px]" strokeWidth={2} />
             </span>
-            <span className={subscription?.subscription_cancel_at
-              ? 'text-warning font-bold'
-              : 'text-brand-text font-bold'
-            }>
-              {subscription?.subscription_cancel_at && subscription?.period_end
-                ? t('subscription.cancelledAccessUntil', { date: new Date(subscription.period_end).toLocaleDateString() })
-                : isTrialing
-                ? trialTimeLabel
-                : t('subscription.active')}
-            </span>
+            <div className="min-w-0 flex-1 basis-[200px]">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-h3 font-extrabold text-fg">{t('pricing.premium')}</p>
+                <span className={`inline-flex items-center h-[26px] px-2.5 rounded-pill text-min font-extrabold ${
+                  cancelling ? 'bg-warning text-white' : 'bg-inner text-brand-text'
+                }`}>
+                  {cancelling
+                    ? t('subscription.cancelled')
+                    : isTrialing ? t('subscription.onTrial') : t('subscription.active')}
+                </span>
+              </div>
+              {detail && <p className="text-sm font-semibold text-fg tabular-nums mt-0.5">{detail}</p>}
+            </div>
+            {subscription?.paddle_subscription_id && (
+              <Button
+                variant={cancelling ? 'primary' : 'secondary'}
+                size="md"
+                onClick={handleManageSubscription}
+                className="shrink-0"
+              >
+                {t('pricing.managePlan')}
+              </Button>
+            )}
           </div>
-          {subscription?.paddle_subscription_id && (
-            <button
-              onClick={handleManageSubscription}
-              className={subscription?.subscription_cancel_at
-                ? 'btn-motion mt-2 inline-flex items-center min-h-11 px-4 rounded-pill text-sm font-bold text-warning hover:bg-inner'
-                : 'btn-motion mt-2 inline-flex items-center min-h-11 px-4 rounded-pill text-sm font-bold text-brand-text hover:bg-inner'
-              }
-            >
-              {t('pricing.managePlan')}
-            </button>
-          )}
-        </div>
-      )}
+        );
+      })()}
 
       {/* Savings callout banner */}
       {!isPremium && (

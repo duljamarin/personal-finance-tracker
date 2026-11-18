@@ -124,7 +124,6 @@ module.exports = {
         data: {
           blue: 'var(--c-data-blue, #3E6DB5)',
           'blue-deep': 'var(--c-data-blue-deep, #2A5183)',
-          violet: 'var(--c-data-violet, #7D5BA6)',
           sand: 'var(--c-data-sand, #BE8A45)',
           gold: 'var(--c-data-gold, #D9A628)',
           rose: 'var(--c-data-rose, #C64B65)',

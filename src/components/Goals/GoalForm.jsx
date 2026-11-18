@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Modal from '../UI/Modal';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
+import { displayGoalColor } from '../../utils/chartColors';
 
 const GOAL_TYPE_ICONS = {
   savings: (
@@ -52,7 +53,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
         targetDate: goal.target_date || '',
         goalType: goal.goal_type || 'savings',
         priority: goal.priority || 2,
-        color: goal.color || '#0B5D3B'
+        color: displayGoalColor(goal.color) || '#0B5D3B'
       });
     }
   }, [goal]);
@@ -95,7 +96,7 @@ export default function GoalForm({ goal, onSave, onClose }) {
   const colors = [
     // Forest brand + the data.* ladder from tailwind.config.cjs, so goal
     // colors sit in the same family as the charts.
-    '#0B5D3B', '#2F8F83', '#3E6DB5', '#7D5BA6',
+    '#0B5D3B', '#2F8F83', '#3E6DB5', '#2A5183',
     '#C64B65', '#BE8A45', '#D9A628', '#DC2626'
   ];
 

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimation } from '../../utils/chartTheme';
+import { AXIS_PROPS, CHART_GRID, useChartAnimation } from '../../utils/chartTheme';
+import ChartTooltip, { rowsFromPayload } from '../UI/ChartTooltip';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import { INCOME_COLOR } from '../../utils/chartColors';
 // V4: spending / liability series use the category palette, never red.
@@ -9,22 +10,14 @@ const EXPENSE_COLOR = 'var(--c-data-sand)';
 
 const ASSETS_COLOR = INCOME_COLOR;
 const LIABILITIES_COLOR = 'var(--c-data-blue)';
-const NETWORTH_COLOR = 'var(--c-data-violet)';
+// The total reads as the strongest line: ink in light, white in dark.
+const NETWORTH_COLOR = 'var(--text)';
 
-function CustomTooltip({ active, payload, label, fmt }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className={CHART_TOOLTIP_CLASS}>
-        <p className="font-semibold text-sm text-fg mb-1">{label}</p>
-        {payload.map((entry) => (
-          <p key={entry.dataKey} className="text-sm tabular-nums" style={{ color: entry.color }}>
-            {entry.name}: {fmt(Number(entry.value))}
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
+function CustomTooltip({ active, payload, label, fmt, totalKey }) {
+  if (!active || !payload || !payload.length) return null;
+  // Net worth is the sum of the other rows, so it closes the list.
+  const rows = rowsFromPayload(payload, fmt, totalKey).sort((a, b) => Number(a.total) - Number(b.total));
+  return <ChartTooltip label={label} rows={rows} />;
 }
 
 /**
@@ -165,7 +158,7 @@ export default function NetWorthChart({ data, transactions = [] }) {
           }}
           width={60}
         />
-        <Tooltip content={<CustomTooltip fmt={fmt} />} />
+        <Tooltip cursor={{ stroke: 'var(--line)', strokeWidth: 2 }} content={<CustomTooltip fmt={fmt} totalKey={t('networth.netWorth')} />} />
         <Legend wrapperStyle={{ fontSize: 14, fontWeight: 600 }} formatter={(value) => <span className="text-fg">{value}</span>} />
         {hasAssetData && (
           <Line

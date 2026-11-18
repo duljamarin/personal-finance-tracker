@@ -1206,7 +1206,9 @@
     "pillarSavingsDesc": "Gjurmon sa muaj nga 7 të fundit keni kursyer para. Qëndrueshmëria ka më shumë rëndësi se shuma.",
     "pillarWeight": "{{weight}}% e rezultatit tuaj",
     "howItWorksSummary": "Rezultati juaj total ndërthur këto katër shtylla së bashku, të peshuar sipas rëndësisë. Rifreskohet automatikisht që të shihni gjithmonë pasqyrën më të fundit.",
-    "descriptionForMonth": "Kontrolli i mirëqenies suaj financiare për {{month}}"
+    "descriptionForMonth": "Kontrolli i mirëqenies suaj financiare për {{month}}",
+    "detailsTitle": "Rezultati i Shëndetit Financiar: çfarë do të thotë për ju",
+    "scoreOutOf": "{{score}}/100, {{label}}"
   },
   "goals": {
     "tag": "objektiv",

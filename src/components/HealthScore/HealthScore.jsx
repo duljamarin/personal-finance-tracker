@@ -41,10 +41,10 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
   const score = data?.score ?? null;
 
   const getScoreColor = (value) => {
-    if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-text', label: 'text-brand-text' };
-    if (value >= 60) return { stroke: 'text-data-blue', text: 'text-data-blue-deep', label: 'text-data-blue-deep' };
-    if (value >= 40) return { stroke: 'text-warning', text: 'text-warning', label: 'text-warning' };
-    return { stroke: 'text-expense', text: 'text-expense', label: 'text-expense' };
+    if (value >= 80) return { stroke: 'text-brand-500 dark:text-brand-400', text: 'text-brand-text', label: 'text-brand-text', dot: 'bg-brand-500 dark:bg-brand-400' };
+    if (value >= 60) return { stroke: 'text-data-blue', text: 'text-data-blue-deep', label: 'text-data-blue-deep', dot: 'bg-data-blue' };
+    if (value >= 40) return { stroke: 'text-warning', text: 'text-warning', label: 'text-warning', dot: 'bg-warning' };
+    return { stroke: 'text-expense', text: 'text-expense', label: 'text-expense', dot: 'bg-expense' };
   };
 
   const getScoreLabel = (value) => {
@@ -83,7 +83,7 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
       </svg>
     );
     if (type === 'budget') return (
-      <svg className={`${cls} text-data-violet`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <svg className={`${cls} text-data-sand`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
       </svg>
     );
@@ -173,7 +173,7 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
   }
 
   /* ── Score bar helper ── */
-  const barColors = ['bg-data-violet', 'bg-data-blue', 'bg-warning', 'bg-brand-600 dark:bg-brand-400'];
+  const barColors = ['bg-data-sage', 'bg-data-blue', 'bg-warning', 'bg-brand-600 dark:bg-brand-400'];
   const scoreValues = [
     { label: t('healthScore.budgetAdherence'), value: score.budgetAdherenceScore, color: barColors[0] },
     { label: t('healthScore.incomeRatio'),      value: score.incomeExpenseRatioScore, color: barColors[1] },
@@ -187,10 +187,10 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
       <div>
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
-          <div>
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 mb-6">
+          <div className="min-w-0">
             <h2 className="text-h3 font-bold text-fg">
-              {variant === 'details' ? t('healthScore.insights') : t('healthScore.title')}
+              {variant === 'details' ? t('healthScore.detailsTitle') : t('healthScore.title')}
             </h2>
             {/* Name the month the score is for. The headline figures (income,
                 expenses, ratio) are current-month only, so an undated score
@@ -201,6 +201,12 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
                 : t('healthScore.description')}
             </p>
           </div>
+          {variant === 'details' && (
+            <span className="inline-flex items-center h-9 px-3.5 rounded-pill bg-inner text-sm font-extrabold tabular-nums text-fg shrink-0">
+              <span className={`w-2.5 h-2.5 rounded-pill mr-2 ${scoreColors.dot}`} aria-hidden="true" />
+              {t('healthScore.scoreOutOf', { score: Math.round(score.totalScore), label: getScoreLabel(score.totalScore) })}
+            </span>
+          )}
         </div>
 
         {/* Score + bars (the dashboard's Health tile shows these instead) */}
@@ -284,7 +290,7 @@ export default function HealthScore({ onReloadTrigger, compact = false, variant 
           {showExplainer && (
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { rail: 'border-l-data-violet', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
+                { rail: 'border-l-data-sage', label: t('healthScore.budgetAdherence'), weight: 40, desc: t('healthScore.pillarBudgetDesc') },
                 { rail: 'border-l-data-blue',   label: t('healthScore.incomeRatio'),      weight: 30, desc: t('healthScore.pillarRatioDesc') },
                 { rail: 'border-l-warning',     label: t('healthScore.consistency'),      weight: 20, desc: t('healthScore.pillarStabilityDesc') },
                 { rail: 'border-l-brand-600',   label: t('healthScore.savings'),          weight: 10, desc: t('healthScore.pillarSavingsDesc') },

@@ -1206,7 +1206,9 @@
     "pillarSavingsDesc": "Tracks how many of the past 7 months you saved money. Consistency matters more than the amount.",
     "pillarWeight": "{{weight}}% of your score",
     "howItWorksSummary": "Your total score blends these four pillars together, weighted by importance. It refreshes automatically so you always see the latest picture.",
-    "descriptionForMonth": "Your money wellness check for {{month}}"
+    "descriptionForMonth": "Your money wellness check for {{month}}",
+    "detailsTitle": "Financial Health Score: what it means for you",
+    "scoreOutOf": "{{score}}/100, {{label}}"
   },
   "goals": {
     "tag": "goal",

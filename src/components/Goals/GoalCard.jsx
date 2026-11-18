@@ -6,6 +6,7 @@ import Card from '../UI/Card';
 import Button from '../UI/Button';
 import ProgressRing from '../UI/ProgressRing';
 import { dataDelay } from '../../utils/motion';
+import { displayGoalColor } from '../../utils/chartColors';
 
 const PRIORITY_KEY = { 1: 'high', 2: 'medium', 3: 'low' };
 
@@ -29,7 +30,8 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
   const monthsLeft = daysLeft !== null && daysLeft > 0 ? Math.max(1, daysLeft / 30.44) : null;
   const perMonth = !goal.is_completed && remaining > 0 && monthsLeft ? remaining / monthsLeft : null;
 
-  const ringColor = goal.is_completed ? 'var(--brand-text)' : (goal.color || 'var(--brand-text)');
+  const goalColor = displayGoalColor(goal.color);
+  const ringColor = goal.is_completed ? 'var(--brand-text)' : (goalColor || 'var(--brand-text)');
   const priorityKey = PRIORITY_KEY[goal.priority];
   const iconBtn = 'btn-motion inline-flex items-center justify-center w-11 h-11 rounded-pill text-fg hover:bg-inner';
 
@@ -43,7 +45,7 @@ export default memo(function GoalCard({ goal, onEdit, onAddContribution, onDelet
             </span>
           )}
           {/* Goal color as data: a small swatch next to the priority chip. */}
-          {goal.color && <span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: goal.color }} aria-hidden="true" />}
+          {goalColor && <span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: goalColor }} aria-hidden="true" />}
         </div>
         <div className="flex shrink-0 -mr-2 -mt-2 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 btn-motion [@media(hover:none)]:opacity-100">
           <button type="button" onClick={() => onEdit(goal)} className={iconBtn} title={t('goals.editGoal')} aria-label={t('goals.editGoal')}>
