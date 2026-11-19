@@ -247,11 +247,6 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     return () => window.removeEventListener('openEditTransaction', handleOpenEdit);
   }, []);
 
-  // Native selects in the Bento input style (R_INPUT, 2px --line, BRAND focus).
-  const selectClass =
-    'min-h-11 pl-3.5 py-2 text-sm font-bold bg-tile text-fg border-2 border-line hover:border-inner-2 ' +
-    'focus:border-brand-600 dark:focus:border-brand-400 rounded-input btn-motion';
-
   const dayLabel = useDayLabel();
   const fresh = useFreshIds(items, false);
   const filterKey = [yearFilter, categoryFilter, typeFilter, recurringFilter, searchQuery.trim()].join('|');
@@ -565,18 +560,33 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
               />
             </div>
 
-            <select value={yearFilter} onChange={e => setYearFilter(e.target.value)} className={selectClass} aria-label={t('transactions.allYears')}>
-              {years.map(y => (
-                <option key={y} value={y}>{y === 'All' ? t('transactions.allYears') : y}</option>
-              ))}
-            </select>
+            <div className="w-[170px]">
+              <CustomSelect
+                value={yearFilter}
+                onChange={val => setYearFilter(val)}
+                ariaLabel={t('transactions.allYears')}
+                className="!py-2 !text-sm"
+                options={years.map(y => ({
+                  value: y,
+                  label: y === 'All' ? t('transactions.allYears') : y,
+                }))}
+              />
+            </div>
 
             {isPremium && (
-              <select value={recurringFilter} onChange={e => setRecurringFilter(e.target.value)} className={selectClass} aria-label={t('recurring.filterAll')}>
-                <option value="all">{t('recurring.filterAll')}</option>
-                <option value="regular">{t('recurring.filterRegular')}</option>
-                <option value="recurring">{t('recurring.filterRecurring')}</option>
-              </select>
+              <div className="w-[200px]">
+                <CustomSelect
+                  value={recurringFilter}
+                  onChange={val => setRecurringFilter(val)}
+                  ariaLabel={t('recurring.filterAll')}
+                  className="!py-2 !text-sm"
+                  options={[
+                    { value: 'all', label: t('recurring.filterAll') },
+                    { value: 'regular', label: t('recurring.filterRegular') },
+                    { value: 'recurring', label: t('recurring.filterRecurring') },
+                  ]}
+                />
+              </div>
             )}
 
             {hasActiveFilters && (

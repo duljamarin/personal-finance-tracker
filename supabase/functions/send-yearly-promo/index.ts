@@ -4,7 +4,7 @@ import { Resend } from 'npm:resend@3';
 /**
  * YEARLY SUBSCRIPTION PROMO EMAIL (idempotent, resumable)
  *
- * Sends a promo email offering the yearly plan at €30 to confirmed users.
+ * Sends a promo email offering the yearly plan at €80 to confirmed users.
  *
  * Resend's free tier allows roughly 100 emails per day, so each call sends at
  * most `limit` users (default 90). Every successful send is recorded in the
@@ -74,12 +74,12 @@ function buildPromoEmail(language: 'en' | 'sq', username: string | null): EmailC
 
   const copy = {
     en: {
-      subject: `🔒 Your finances, fully encrypted. Get the full plan for just €30/year`,
+      subject: `🔒 Your finances, fully encrypted. Get the full plan for €80/year`,
       previewText: 'End to end encrypted finances, every premium feature, one simple price.',
       preheader: 'End to end encryption. Full access. One price. No surprises.',
       greeting: `Hi ${name},`,
       hook: 'Your money data, encrypted end to end.',
-      intro: `You\'re already using <strong>Personal Finance Tracker</strong> to manage your money, and we want to help you get even more out of it. You can unlock <strong>everything</strong> for just <strong>€30 per year</strong>.`,
+      intro: `You\'re already using <strong>Personal Finance Tracker</strong> to manage your money, and we want to help you get even more out of it. You can unlock <strong>everything</strong> for just <strong>€80 per year</strong>.`,
       // Security spotlight (hero)
       securityBadge: 'End to end encryption',
       securityTitle: 'Only you can read your financial data',
@@ -90,9 +90,9 @@ function buildPromoEmail(language: 'en' | 'sq', username: string | null): EmailC
         'Private by design, powered by strong encryption',
       ],
       offerLabel: 'Best value',
-      offerPrice: '€30',
+      offerPrice: '€80',
       offerPer: '/ year',
-      offerNote: 'That\'s just €2.50 per month, less than a coffee.',
+      offerNote: 'That\'s just €6.67 per month, about two coffees.',
       whatYouGet: 'Everything included:',
       features: [
         { icon: '🔒', title: 'End to end encryption', desc: 'Your financial data is encrypted on your device. Only you can read it.' },
@@ -105,10 +105,10 @@ function buildPromoEmail(language: 'en' | 'sq', username: string | null): EmailC
         { icon: '❤️', title: 'Financial Health Score', desc: 'Monthly score with personalized insights.' },
         { icon: '🔔', title: 'Smart Notifications', desc: 'Budget alerts, goal milestones, and more.' },
       ],
-      ctaText: 'Get the Yearly Plan for €30',
+      ctaText: 'Get the Yearly Plan for €80',
       ctaSubtext: 'Secure checkout',
       closingTitle: 'One simple price',
-      closingBody: 'Everything you see here is included in a single plan: <strong>€30 per year, for everyone</strong>. No tiers, no hidden add ons, no price that jumps after the first year. Take full control of your finances with total privacy.',
+      closingBody: 'Everything you see here is included in a single plan: <strong>€80 per year, for everyone</strong>. No tiers, no hidden add ons, no price that jumps after the first year. Take full control of your finances with total privacy.',
       signoff: 'The Personal Finance Tracker team',
       footerCopyright: '© 2026 Personal Finance Tracker. All rights reserved.',
       footerTerms: 'Terms of Use',
@@ -116,12 +116,12 @@ function buildPromoEmail(language: 'en' | 'sq', username: string | null): EmailC
       footerUnsubscribe: 'You received this because you have an account with Personal Finance Tracker.',
     },
     sq: {
-      subject: `🔒 Financat tuaja, plotësisht të enkriptuara. Merrni planin e plotë për vetëm €30/vit`,
+      subject: `🔒 Financat tuaja, plotësisht të enkriptuara. Merrni planin e plotë për €80/vit`,
       previewText: 'Financa të enkriptuara skaj më skaj, çdo funksion premium, një çmim i thjeshtë.',
       preheader: 'Enkriptim skaj më skaj. Akses i plotë. Një çmim. Pa surpriza.',
       greeting: `Përshëndetje ${name},`,
       hook: 'Të dhënat tuaja financiare, të enkriptuara skaj më skaj.',
-      intro: `Ju tashmë po përdorni <strong>Personal Finance Tracker</strong> për të menaxhuar financat tuaja, dhe ne duam t\'ju ndihmojmë të nxirrni edhe më shumë prej tij. Mund të zhbllokoni <strong>gjithçka</strong> për vetëm <strong>€30 në vit</strong>.`,
+      intro: `Ju tashmë po përdorni <strong>Personal Finance Tracker</strong> për të menaxhuar financat tuaja, dhe ne duam t\'ju ndihmojmë të nxirrni edhe më shumë prej tij. Mund të zhbllokoni <strong>gjithçka</strong> për vetëm <strong>€80 në vit</strong>.`,
       // Security spotlight (hero)
       securityBadge: 'Enkriptim skaj më skaj',
       securityTitle: 'Vetëm ju mund t\'i lexoni të dhënat tuaja financiare',
@@ -132,9 +132,9 @@ function buildPromoEmail(language: 'en' | 'sq', username: string | null): EmailC
         'Private nga vetë dizajni, mbështetur nga enkriptim i fortë',
       ],
       offerLabel: 'Vlera më e mirë',
-      offerPrice: '€30',
+      offerPrice: '€80',
       offerPer: '/ vit',
-      offerNote: 'Vetëm €2.50 në muaj, më pak se një kafe.',
+      offerNote: 'Vetëm €6.67 në muaj, rreth dy kafe.',
       whatYouGet: 'Gjithçka e përfshirë:',
       features: [
         { icon: '🔒', title: 'Enkriptim skaj më skaj', desc: 'Të dhënat tuaja financiare enkriptohen në pajisjen tuaj. Vetëm ju mund t\'i lexoni.' },
@@ -147,10 +147,10 @@ function buildPromoEmail(language: 'en' | 'sq', username: string | null): EmailC
         { icon: '❤️', title: 'Shëndeti Financiar', desc: 'Rezultat mujor me sugjerime të personalizuara.' },
         { icon: '🔔', title: 'Njoftimet Inteligjente', desc: 'Alarme buxheti, arritje qëllimesh dhe shumë të tjera.' },
       ],
-      ctaText: 'Merrni Planin Vjetor për €30',
+      ctaText: 'Merrni Planin Vjetor për €80',
       ctaSubtext: 'Pagesë e sigurt',
       closingTitle: 'Një çmim i thjeshtë',
-      closingBody: 'Gjithçka që shihni këtu përfshihet në një plan të vetëm: <strong>€30 në vit, për të gjithë</strong>. Pa nivele, pa shtesa të fshehura, pa çmim që rritet pas vitit të parë. Merrni kontrollin e plotë të financave tuaja me privatësi totale.',
+      closingBody: 'Gjithçka që shihni këtu përfshihet në një plan të vetëm: <strong>€80 në vit, për të gjithë</strong>. Pa nivele, pa shtesa të fshehura, pa çmim që rritet pas vitit të parë. Merrni kontrollin e plotë të financave tuaja me privatësi totale.',
       signoff: 'Ekipi i Personal Finance Tracker',
       footerCopyright: '© 2026 Personal Finance Tracker. Të gjitha të drejtat e rezervuara.',
       footerTerms: 'Kushtet e Përdorimit',
