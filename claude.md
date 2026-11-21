@@ -36,7 +36,7 @@ src/
 │   │                   # ReportIncomeBreakdown, ReportDailyTrend, ReportPeriodComparison,
 │   │                   # ReportTopTransactions
 │   ├── Budgets/        # BudgetsPage, BudgetForm, BudgetCard
-│   ├── Dashboard/      # Dashboard, SummaryCards, CashFlowForecast, ChartWithTimeRange,
+│   ├── Dashboard/      # Dashboard, SummaryCards, MonthForecastTile, ChartWithTimeRange,
 │   │                   # BudgetSummaryBar, FirstRunGuide
 │   ├── Onboarding/     # OnboardingWizard, ProgressBar, steps/
 │   ├── Subscription/   # PremiumFeatureLock, UpgradeBanner
