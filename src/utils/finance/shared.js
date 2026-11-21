@@ -42,6 +42,15 @@ export function stdDevPop(values) {
   return Math.sqrt(variance);
 }
 
+// Median: the middle value of the sorted list (the mean of the two middle
+// values for an even count). 0 for an empty list.
+export function median(values) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
 export function avg(values) {
   if (!values.length) return 0;
   return values.reduce((a, b) => a + b, 0) / values.length;

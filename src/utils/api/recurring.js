@@ -3,55 +3,14 @@ import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 import { checkRecurringNotifications } from '../finance/recurringAlerts';
 import { checkBudgetNotifications } from '../finance/budgetAlerts';
 import { getWriteCurrency } from './userSettings';
+import { calculateNextDate, occurrencesInRange } from '../finance/recurringSchedule';
+import { runAtOf, utcToday } from '../finance/calendar';
 
-// anchorDay: the day-of-month the schedule is really pinned to (normally the
-// day of start_date). Without it, monthly/yearly runs drift permanently
-// downward: a 31st schedule clamps to the 30th in September, and because the
-// next hop is computed from that clamped date the 31st is never recovered
-// (31 Jul → 31 Aug → 30 Sep → 30 Oct → … → 28 Feb → 28 forever). Passing the
-// anchor makes the clamp per-occurrence instead of cumulative, so short months
-// borrow the last day and longer months snap back to the anchor.
-export function calculateNextDate(currentDate, frequency, intervalCount, anchorDay = null) {
-  const date = new Date(currentDate);
-  const interval = intervalCount || 1;
-  const originalDay = date.getUTCDate();
-  // Fall back to the current day when no anchor is supplied, which keeps the
-  // old 3-argument behaviour for callers that have no start_date at hand.
-  const anchor = anchorDay || originalDay;
-
-  // Set to `day`, or the month's last day when the month is too short. Assumes
-  // `d` is already positioned on the 1st of the target month.
-  const clampToMonth = (d, day) => {
-    const daysInMonth = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
-    d.setUTCDate(Math.min(day, daysInMonth));
-  };
-
-  switch (frequency) {
-    case 'daily':
-      date.setUTCDate(date.getUTCDate() + interval);
-      break;
-    case 'weekly':
-      date.setUTCDate(date.getUTCDate() + interval * 7);
-      break;
-    case 'monthly': {
-      // Move to the 1st first so adding months can't roll into the next one.
-      date.setUTCDate(1);
-      date.setUTCMonth(date.getUTCMonth() + interval);
-      clampToMonth(date, anchor);
-      break;
-    }
-    case 'yearly': {
-      date.setUTCDate(1);
-      date.setUTCFullYear(date.getUTCFullYear() + interval);
-      clampToMonth(date, anchor);
-      break;
-    }
-    default:
-      date.setUTCDate(date.getUTCDate() + interval);
-  }
-
-  return date.toISOString();
-}
+// The schedule itself (next date, which occurrences fall in a range) lives in
+// utils/finance/recurringSchedule.js so the generator below and the month
+// forecast share one implementation. calculateNextDate is re-exported for the
+// existing callers that import it from the API layer.
+export { calculateNextDate } from '../finance/recurringSchedule';
 
 export async function fetchRecurringTransactions() {
   return withAuthOrEmpty(async (user) => {
@@ -288,35 +247,18 @@ async function runRecurringProcessing() {
 
     const generatedTransactions = [];
 
+    // Due = scheduled on or before today's UTC date (next_run_at is midnight
+    // UTC of the scheduled day). The schedule walk is shared with the month
+    // forecast (occurrencesInRange), including end_date / occurrences_limit.
+    const dueBy = utcToday();
+
     for (const recurring of decryptedRecurrings) {
-      let currentNextRun = recurring.next_run_at;
+      const { dates, next, exhausted } = occurrencesInRange(recurring, null, dueBy);
+      let nextRun = next;
       let instancesCreated = 0;
-      let loopAdvanced = false;
-      // Day the schedule is pinned to — keeps end-of-month runs from drifting
-      // down a day each time they pass through a short month.
-      const anchorDay = recurring.start_date
-        ? new Date(recurring.start_date).getUTCDate()
-        : null;
+      let failed = false;
 
-      while (new Date(currentNextRun) <= new Date()) {
-        const totalCreated = (recurring.occurrences_created || 0) + instancesCreated;
-        if (recurring.occurrences_limit && totalCreated >= recurring.occurrences_limit) {
-          await supabase
-            .from('recurring_transactions')
-            .update({ is_active: false })
-            .eq('id', recurring.id);
-          break;
-        }
-
-        const transactionDate = new Date(currentNextRun).toISOString().split('T')[0];
-        if (recurring.end_date && new Date(transactionDate) > new Date(recurring.end_date)) {
-          await supabase
-            .from('recurring_transactions')
-            .update({ is_active: false })
-            .eq('id', recurring.id);
-          break;
-        }
-
+      for (const transactionDate of dates) {
         // limit(1) rather than maybeSingle(): if an account already has
         // duplicates for this date, maybeSingle() errors on multiple rows and
         // the ignored error leaves `existing` undefined, which would add yet
@@ -327,62 +269,62 @@ async function runRecurringProcessing() {
           .eq('source_recurring_id', recurring.id)
           .eq('date', transactionDate)
           .limit(1);
+        if (existingRows && existingRows.length > 0) continue;
 
-        if (!existingRows || existingRows.length === 0) {
-          const baseAmount = Number(recurring.amount) * (Number(recurring.exchange_rate) || 1.0);
+        const baseAmount = Number(recurring.amount) * (Number(recurring.exchange_rate) || 1.0);
+        const insertRow = await encryptRow('transactions', {
+          title: recurring.title,
+          amount: recurring.amount,
+          date: transactionDate,
+          type: recurring.type,
+          category_id: recurring.category_id,
+          tags: recurring.tags || [],
+          currency_code: recurring.currency_code,
+          exchange_rate: recurring.exchange_rate,
+          base_amount: baseAmount,
+          user_id: user.id,
+          source_recurring_id: recurring.id,
+        });
 
-          const insertRow = await encryptRow('transactions', {
-            title: recurring.title,
-            amount: recurring.amount,
-            date: transactionDate,
-            type: recurring.type,
-            category_id: recurring.category_id,
-            tags: recurring.tags || [],
-            currency_code: recurring.currency_code,
-            exchange_rate: recurring.exchange_rate,
-            base_amount: baseAmount,
-            user_id: user.id,
-            source_recurring_id: recurring.id,
-          });
+        const { data: newTx, error: insertError } = await supabase
+          .from('transactions')
+          .insert([insertRow])
+          .select(`
+            *,
+            category:categories(id, name)
+          `)
+          .single();
 
-          const { data: newTx, error: insertError } = await supabase
-            .from('transactions')
-            .insert([insertRow])
-            .select(`
-              *,
-              category:categories(id, name)
-            `)
-            .single();
-
-          if (insertError) {
-            // Unique-violation: concurrent run already inserted this instance — advance and continue
-            if (insertError.code === '23505') {
-              currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count, anchorDay);
-              loopAdvanced = true;
-              continue;
-            }
-            console.error('Error creating recurring transaction instance:', insertError);
-            break;
-          }
-
-          generatedTransactions.push(newTx);
-          instancesCreated++;
+        if (insertError) {
+          // Unique-violation: a concurrent run already inserted this instance.
+          if (insertError.code === '23505') continue;
+          console.error('Error creating recurring transaction instance:', insertError);
+          // Stop here and retry this date on the next run.
+          nextRun = transactionDate;
+          failed = true;
+          break;
         }
 
-        currentNextRun = calculateNextDate(transactionDate, recurring.frequency, recurring.interval_count, anchorDay);
-        loopAdvanced = true;
+        generatedTransactions.push(newTx);
+        instancesCreated++;
       }
 
-      if (loopAdvanced) {
+      // The schedule ended (end_date passed / occurrences_limit reached).
+      if (exhausted && !failed) {
+        await supabase
+          .from('recurring_transactions')
+          .update({ is_active: false })
+          .eq('id', recurring.id);
+      }
+
+      if (dates.length > 0) {
         const updateData = {
-          next_run_at: currentNextRun,
+          next_run_at: runAtOf(nextRun),
           last_run_at: now,
         };
-
         if (instancesCreated > 0) {
           updateData.occurrences_created = (recurring.occurrences_created || 0) + instancesCreated;
         }
-
         await supabase
           .from('recurring_transactions')
           .update(updateData)
