@@ -51,6 +51,12 @@ export const GOALS = [
 
 export const LAST_TX = { key: 'market', category: 'food', amount: 64.20 };
 
+/**
+ * What the server stores for an amount: the app's real ciphertext shape
+ * (utils/crypto/cipher.js, 'enc:v1:<base64 iv>:<base64 ct>'), static here.
+ */
+export const CIPHERTEXT_EXAMPLE = 'enc:v1:q3Lr9XcWk2PfT0bA:Z8vYw1n4Rk0eJmQx7hUu5sLd2aG=';
+
 /** A goal is on track when current / target >= ON_TRACK_MIN. */
 export const ON_TRACK_MIN = 0.35;
 

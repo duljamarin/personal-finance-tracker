@@ -833,56 +833,6 @@
         "desc": "Paneli, rezultati dhe krahasimet mbushen menjëherë. Çdo muaj që shtoni e qartëson më mirë se çfarë është normale për ju."
       }
     },
-    "privacy": {
-      "eyebrow": "Të dhënat tuaja, rregullat tuaja",
-      "title": "Një aplikacion financash që mund ta besoni vërtet",
-      "desc": "Të dhënat financiare personale janë të ndjeshme. Ja saktësisht çfarë ndodh me tuajat dhe çfarë nuk ndodh.",
-      "items": {
-        "ownership": {
-          "title": "Ju i zotëroni të dhënat tuaja",
-          "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të dhënat zhduken përfundimisht, jo thjesht arkivohen."
-        },
-        "encryption": {
-          "title": "Enkriptuar para se të largohen nga pajisja juaj",
-          "desc": "Shumat, buxhetet, qëllimet, pasuria neto, titujt e transaksioneve, etiketat dhe shënimet enkriptohen në pajisjen tuaj me një çelës që e mbani vetëm ju. Serveri ruan tekst që nuk mund ta lexojë."
-        },
-        "noSell": {
-          "title": "Të dhënat tuaja nuk shiten kurrë",
-          "desc": "Nuk shiten, nuk tregtohen dhe nuk u jepen reklamuesve. Ekzistojnë vetëm për të fuqizuar panelin tuaj."
-        },
-        "noAdvice": {
-          "title": "Analiza, jo këshilla financiare",
-          "desc": "Rezultati dhe krahasimet thjesht ju përshkruajnë numrat tuaj. Për vendime me pasoja reale, flisni me një profesionist të kualifikuar."
-        },
-        "analytics": {
-          "title": "Vetëm analiza që respektojnë privatësinë",
-          "desc": "Numërime faqesh pa cookie dhe pa gjurmim ndërmjet faqeve. Asnjë piksel reklamues në aplikacion."
-        },
-        "payments": {
-          "title": "Detajet e kartës nuk mbërrijnë kurrë tek ne",
-          "desc": "Pagesat trajtohen nga Paddle. Numri i kartës shkon tek ata, kurrë tek ky aplikacion."
-        }
-      }
-    },
-    "dataPrivacy": {
-      "eyebrow": "Privatësia e të dhënave",
-      "title": "Askush nuk mund t'i lexojë numrat tuaj",
-      "desc": "Shumat, buxhetet, qëllimet dhe pasuria neto enkriptohen në pajisjen tuaj para se të largohen prej saj. Serveri ruan vetëm tekst të palexueshëm.",
-      "points": {
-        "device": {
-          "title": "Enkriptuar në pajisjen tuaj",
-          "desc": "Çelësi gjenerohet në pajisjen tuaj dhe nuk largohet kurrë prej saj. Serveri merr vetëm tekst të enkriptuar."
-        },
-        "noone": {
-          "title": "As ne nuk mund t'i shohim",
-          "desc": "Pa çelësin tuaj të dhënat janë të palexueshme, përfshirë për ne. Kjo nuk është premtim politikash, është matematikë."
-        },
-        "yours": {
-          "title": "Gjithmonë tuajat",
-          "desc": "Eksportoni gjithçka në CSV ose fshini të gjitha, kurdo. Pa pyetje, pa vonesa."
-        }
-      }
-    },
     "pricingPreview": {
       "title": "Falas për të filluar. Përmirësoni kur ta tejkaloni.",
       "free": {
@@ -1008,6 +958,31 @@
     },
     "sticky": {
       "value": "Falas, pa kartë"
+    },
+    "trust": {
+      "title": "Askush nuk mund t'i lexojë numrat tuaj",
+      "desc": "Shumat, buxhetet, qëllimet dhe pasuria neto enkriptohen në pajisjen tuaj para se të largohen prej saj. Serveri ruan vetëm tekst të palexueshëm.",
+      "youType": "Çfarë shkruani ju",
+      "serverStores": "Çfarë ruan serveri",
+      "rows": {
+        "device": {
+          "title": "Enkriptuar në pajisjen tuaj",
+          "desc": "Shumat, buxhetet, qëllimet, pasuria neto, titujt e transaksioneve, etiketat dhe shënimet enkriptohen me një çelës që e mbani vetëm ju. Serveri ruan tekst që nuk mund ta lexojë, dhe as ne nuk mund ta lexojmë."
+        },
+        "noSell": {
+          "title": "Të dhënat tuaja nuk shiten kurrë",
+          "desc": "Nuk shiten, nuk tregtohen dhe nuk u jepen reklamuesve. Ekzistojnë vetëm për të fuqizuar panelin tuaj."
+        },
+        "yours": {
+          "title": "Eksportoni ose fshini kurdo",
+          "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të dhënat zhduken përfundimisht, jo thjesht arkivohen."
+        },
+        "payments": {
+          "title": "Detajet e kartës nuk mbërrijnë kurrë tek ne",
+          "desc": "Pagesat trajtohen nga Paddle. Numri i kartës shkon tek ata, kurrë tek ky aplikacion."
+        }
+      },
+      "footnote": "Analiza, jo këshilla financiare. Vizitat numërohen pa cookie, pa gjurmim ndërmjet faqeve dhe pa piksela reklamues."
     }
   },
   "currency": {

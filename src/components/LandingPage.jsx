@@ -12,6 +12,7 @@ import {
   StepAccountSnippet, StepMoneySnippet, StepScoreSnippet,
 } from './Landing/FeatureMinis';
 import { delayStyle, revealClass, tileDelay, D_DATA } from '../utils/motion';
+import { money, SPENDING, CIPHERTEXT_EXAMPLE } from './Landing/demoData';
 import {
   TrendingUp, Target, Activity, RefreshCw,
   Globe, Bell, Tag, FileText,
@@ -124,8 +125,7 @@ export default function LandingPage() {
           tools > final CTA. */}
       <HeroFeaturesSection t={t} />
       <HowItWorksSection t={t} />
-      <DataPrivacySection t={t} />
-      <PrivacySection t={t} />
+      <TrustSection t={t} />
       <PricingPreviewSection t={t} />
       <FounderSection t={t} />
       <FaqSection t={t} />
@@ -146,10 +146,10 @@ function useSectionReveal() {
   return { ref, rise, pop, revealed };
 }
 
-function SectionHead({ children, rise, className = '' }) {
+function SectionHead({ children, rise, id, className = '' }) {
   const r = rise(0);
   return (
-    <h2 className={`text-h2-lg font-extrabold text-fg ${r.className} ${className}`} style={r.style}>
+    <h2 id={id} className={`text-h2-lg font-extrabold text-fg ${r.className} ${className}`} style={r.style}>
       {children}
     </h2>
   );
@@ -271,77 +271,58 @@ function HowItWorksSection({ t }) {
 }
 
 /**
- * Data-privacy section. The claims are load-bearing and must stay true to the
- * implementation: amounts really are encrypted client-side (see
- * utils/crypto/fieldMap.js, ENCRYPT_AMOUNTS) with a key held only by the
- * user. If that ever changes, this copy has to change with it.
+ * Trust: the two old privacy sections merged into one. The claims are
+ * load-bearing and must stay true to the implementation: amounts, titles,
+ * tags and notes really are encrypted client-side (utils/crypto/fieldMap.js,
+ * ENCRYPT_AMOUNTS) with a key only the user can unwrap. If that ever
+ * changes, this copy has to change with it.
  */
-function DataPrivacySection({ t }) {
-  const { ref, rise, pop } = useSectionReveal();
-  const points = ['device', 'noone', 'yours'];
-  const icons = { device: Lock, noone: Eye, yours: Download };
-  const r = rise(1);
-  return (
-    <section ref={ref} aria-label={t('landing.dataPrivacy.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
-      <div className="grid lg:grid-cols-12 gap-gap items-end mb-12">
-        <SectionHead rise={rise} className="lg:col-span-6">{t('landing.dataPrivacy.title')}</SectionHead>
-        <p className={`lg:col-start-8 lg:col-span-5 text-body-lg text-fg ${r.className}`} style={r.style}>
-          {t('landing.dataPrivacy.desc')}
-        </p>
-      </div>
-      <div className="grid gap-gap sm:grid-cols-3">
-        {points.map((key, i) => {
-          const Icon = icons[key];
-          const p = pop(i);
-          // The first point (encrypted on your device) is the section's hero tile.
-          const hero = i === 0;
-          return (
-            <div key={key} className={`tile tile-lift ${hero ? 'tile-hero' : ''} p-tile-dense sm:p-tile ${p.className}`} style={p.style}>
-              <span className={`w-12 h-12 rounded-icon flex items-center justify-center mb-4 ${hero ? 'bg-hero-inset' : 'bg-inner text-brand-text'}`} aria-hidden="true">
-                <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
-              </span>
-              <h3 className={`text-h3-lg font-bold mb-2 ${hero ? '' : 'text-fg'}`}>{t(`landing.dataPrivacy.points.${key}.title`)}</h3>
-              <p className={`text-body ${hero ? '' : 'text-fg'}`}>{t(`landing.dataPrivacy.points.${key}.desc`)}</p>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
+const TRUST_ROWS = [
+  { Icon: Lock,       key: 'device' },
+  { Icon: Eye,        key: 'noSell' },
+  { Icon: Download,   key: 'yours' },
+  { Icon: CreditCard, key: 'payments' },
+];
 
-function PrivacySection({ t }) {
+function TrustSection({ t }) {
   const { ref, rise, pop } = useSectionReveal();
-  const privacyItems = [
-    { icon: Database,    key: 'ownership' },
-    { icon: Lock,        key: 'encryption' },
-    { icon: Eye,         key: 'noSell' },
-    { icon: CloudOff,    key: 'noAdvice' },
-    { icon: ShieldCheck, key: 'analytics' },
-    { icon: CreditCard,  key: 'payments' },
-  ];
   const r = rise(1);
+  const p = pop(1);
+  const foot = rise(2);
   return (
-    <section ref={ref} aria-label={t('landing.privacy.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
-      <div className="grid lg:grid-cols-12 gap-gap items-end mb-12">
-        <SectionHead rise={rise} className="lg:col-span-6">{t('landing.privacy.title')}</SectionHead>
-        <p className={`lg:col-start-8 lg:col-span-5 text-body-lg text-fg ${r.className}`} style={r.style}>{t('landing.privacy.desc')}</p>
-      </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-gap">
-        {privacyItems.map(({ icon: Icon, key }, i) => {
-          const p = pop(i);
-          return (
-            <div key={key} className={`tile tile-lift p-tile-dense flex gap-[14px] ${p.className}`} style={p.style}>
-              <span className="w-12 h-12 shrink-0 rounded-icon bg-inner text-brand-text flex items-center justify-center" aria-hidden="true">
-                <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
-              </span>
+    <section ref={ref} aria-labelledby="trust-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
+      <div className="grid lg:grid-cols-12 gap-x-gap gap-y-8 items-start">
+        <div className="lg:col-span-5">
+          <SectionHead rise={rise} id="trust-title">{t('landing.trust.title')}</SectionHead>
+          <p className={`mt-5 text-body-lg text-fg ${r.className}`} style={r.style}>{t('landing.trust.desc')}</p>
+        </div>
+        <div className="lg:col-span-7 min-w-0">
+          <div className={`tile p-tile-dense sm:p-tile ${p.className}`} style={p.style}>
+            {/* What you type vs what the server stores (static example). */}
+            <div className="tile-inner p-gap grid sm:grid-cols-[auto_1fr] gap-x-8 gap-y-3">
+              <div>
+                <p className="text-sm font-semibold text-fg">{t('landing.trust.youType')}</p>
+                <p className="mt-1 text-h3 font-extrabold text-fg tabular-nums">{money(SPENDING, 2)}</p>
+              </div>
               <div className="min-w-0">
-                <h3 className="text-h3 font-bold text-fg mb-1">{t(`landing.privacy.items.${key}.title`)}</h3>
-                <p className="text-body text-fg">{t(`landing.privacy.items.${key}.desc`)}</p>
+                <p className="text-sm font-semibold text-fg">{t('landing.trust.serverStores')}</p>
+                <p className="mt-1.5 font-mono text-sm font-semibold text-fg [overflow-wrap:anywhere]">{CIPHERTEXT_EXAMPLE}</p>
               </div>
             </div>
-          );
-        })}
+            <ul className="mt-2 list-none m-0 p-0 divide-y divide-line">
+              {TRUST_ROWS.map(({ Icon, key }) => (
+                <li key={key} className="flex gap-3 py-4 last:pb-0">
+                  <Icon className="w-4 h-4 mt-[5px] shrink-0 text-brand-text" strokeWidth={2.4} aria-hidden="true" />
+                  <div className="min-w-0">
+                    <h3 className="text-body font-bold text-fg">{t(`landing.trust.rows.${key}.title`)}</h3>
+                    <p className="mt-0.5 text-body text-fg">{t(`landing.trust.rows.${key}.desc`)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className={`mt-4 text-sm font-semibold text-fg ${foot.className}`} style={foot.style}>{t('landing.trust.footnote')}</p>
+        </div>
       </div>
     </section>
   );

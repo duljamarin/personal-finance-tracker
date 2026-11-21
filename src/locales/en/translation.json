@@ -833,56 +833,6 @@
         "desc": "Your dashboard, score, and benchmarks fill in immediately. Each month you add sharpens what normal looks like for you."
       }
     },
-    "privacy": {
-      "eyebrow": "Your data, your rules",
-      "title": "A finance app you can actually trust",
-      "desc": "Personal finance data is sensitive. Here is exactly what happens to yours, and what does not.",
-      "items": {
-        "ownership": {
-          "title": "You own your data",
-          "desc": "Export everything as CSV any time. Delete your account and the data is gone, permanently, not archived."
-        },
-        "encryption": {
-          "title": "Encrypted before it leaves your device",
-          "desc": "Amounts, budgets, goals, net worth, transaction titles, tags, and notes are encrypted on your device with a key only you hold. The server stores text it cannot read."
-        },
-        "noSell": {
-          "title": "Your data is never sold",
-          "desc": "Not sold, not traded, not shared with advertisers. It exists to power your dashboard and nothing else."
-        },
-        "noAdvice": {
-          "title": "Analytics, not financial advice",
-          "desc": "The score and benchmarks describe your own numbers back to you. For decisions with real consequences, talk to a qualified professional."
-        },
-        "analytics": {
-          "title": "Privacy-friendly analytics only",
-          "desc": "Page counts with no cookies and no cross-site tracking. No advertising pixels anywhere in the app."
-        },
-        "payments": {
-          "title": "Card details never reach us",
-          "desc": "Payments are handled by Paddle. Your card number goes to them, never to this app."
-        }
-      }
-    },
-    "dataPrivacy": {
-      "eyebrow": "Data privacy",
-      "title": "Nobody can read your numbers",
-      "desc": "Amounts, budgets, goals and net worth are encrypted on your device before they ever leave it. The server only ever stores unreadable text.",
-      "points": {
-        "device": {
-          "title": "Encrypted on your device",
-          "desc": "The key is generated on your device and never leaves it. All the server receives is ciphertext."
-        },
-        "noone": {
-          "title": "Not even we can see them",
-          "desc": "Without your key the data is unreadable, including to us. That is not a policy promise, it is maths."
-        },
-        "yours": {
-          "title": "Always yours",
-          "desc": "Export everything to CSV or delete all of it, any time. No questions, no delays."
-        }
-      }
-    },
     "pricingPreview": {
       "title": "Free to start. Upgrade when you outgrow it.",
       "free": {
@@ -1008,6 +958,31 @@
     },
     "sticky": {
       "value": "Free, no card"
+    },
+    "trust": {
+      "title": "Nobody can read your numbers",
+      "desc": "Amounts, budgets, goals and net worth are encrypted on your device before they ever leave it. The server only ever stores unreadable text.",
+      "youType": "What you type",
+      "serverStores": "What the server stores",
+      "rows": {
+        "device": {
+          "title": "Encrypted on your device",
+          "desc": "Amounts, budgets, goals, net worth, transaction titles, tags, and notes are encrypted with a key only you hold. The server stores text it cannot read, and neither can we."
+        },
+        "noSell": {
+          "title": "Your data is never sold",
+          "desc": "Not sold, not traded, not shared with advertisers. It exists to power your dashboard and nothing else."
+        },
+        "yours": {
+          "title": "Export or delete anytime",
+          "desc": "Export everything as CSV any time. Delete your account and the data is gone, permanently, not archived."
+        },
+        "payments": {
+          "title": "Card details never reach us",
+          "desc": "Payments are handled by Paddle. Your card number goes to them, never to this app."
+        }
+      },
+      "footnote": "Analytics, not financial advice. Visits are counted with no cookies, no cross-site tracking and no ad pixels."
     }
   },
   "currency": {
