@@ -88,20 +88,6 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
   const [splitsByTx, setSplitsByTx] = useState({});
   const searchInputRef = useRef(null);
 
-  // Process recurring transactions on component mount
-  const processRecurring = useCallback(async () => {
-    try {
-      const result = await processRecurringTransactions();
-      if (result.generated > 0) {
-        addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
-        if (onReload) onReload();
-        refreshSubscription();
-      }
-    } catch (error) {
-      console.error('Error processing recurring transactions:', error);
-    }
-  }, [addToast, t, onReload, refreshSubscription]);
-
   useEffect(() => {
     fetchRecurringTransactions().then(data => {
       setActiveRecurringCount(data.filter(r => r.is_active).length);
@@ -132,9 +118,8 @@ export default function Transactions({ variant = 'full', limit = 6 }) {
     return () => { cancelled = true; };
   }, [splitParentKey]);
 
-  useEffect(() => {
-    processRecurring();
-  }, [processRecurring]);
+  // Due recurring entries are posted app-wide by TransactionContext (on load
+  // and when the tab returns), so this page no longer runs its own pass.
 
   const filtered = useMemo(() => {
     let result = items;

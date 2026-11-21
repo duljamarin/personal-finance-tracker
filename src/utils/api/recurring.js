@@ -1,6 +1,7 @@
 import { withAuth, withAuthOrEmpty, getSupabase } from './_auth';
 import { encryptRow, decryptRow, decryptRows } from '../crypto/rowCodec';
 import { checkRecurringNotifications } from '../finance/recurringAlerts';
+import { checkBudgetNotifications } from '../finance/budgetAlerts';
 import { getWriteCurrency } from './userSettings';
 
 // anchorDay: the day-of-month the schedule is really pinned to (normally the
@@ -238,7 +239,27 @@ export async function resumeRecurringTransaction(id) {
   return updateRecurringTransaction(id, { isActive: true });
 }
 
-export async function processRecurringTransactions() {
+/**
+ * Post every due instance of the user's active recurring transactions,
+ * catching up all missed periods. Runs client-side (amounts are E2E
+ * encrypted, so the server cannot create them): TransactionContext calls it
+ * once the key is ready on app load and when the tab comes back, and the
+ * recurring/transaction forms call it after a save.
+ *
+ * One run at a time per tab: a second caller while a run is in flight gets
+ * the same promise instead of starting another pass. Across tabs the unique
+ * index on (source_recurring_id, date) still rejects duplicates (23505 below).
+ */
+let processingRun = null;
+
+export function processRecurringTransactions() {
+  if (!processingRun) {
+    processingRun = runRecurringProcessing().finally(() => { processingRun = null; });
+  }
+  return processingRun;
+}
+
+async function runRecurringProcessing() {
   return withAuthOrEmpty(async (user) => {
     const supabase = await getSupabase();
     const now = new Date().toISOString();
@@ -372,6 +393,11 @@ export async function processRecurringTransactions() {
     // Fire recurring due notification check after processing (non-blocking).
     // Ported client-side — amounts are E2E-encrypted.
     checkRecurringNotifications(user.id).catch(() => {});
+    // New expenses change budget spend: re-evaluate budget alerts, the same
+    // side effect a manual addTransaction has.
+    if (generatedTransactions.some((tx) => tx?.type === 'expense')) {
+      checkBudgetNotifications(user.id).catch((e) => console.error('budget notification check failed:', e));
+    }
 
     // Note: the insert above copies recurring.title/tags verbatim (may be
     // ciphertext) — correct, since it's re-encrypted under the same DEK.

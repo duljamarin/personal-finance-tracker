@@ -4,16 +4,20 @@ import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
 import { useSubscription } from './SubscriptionContext';
 import { useCrypto } from './CryptoContext';
-import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories } from '../utils/api';
+import { fetchTransactions, addTransaction as apiAddTransaction, updateTransaction as apiUpdateTransaction, deleteTransaction as apiDeleteTransaction, fetchCategories, processRecurringTransactions } from '../utils/api';
 
 const TransactionContext = createContext();
+
+// A tab left open re-checks for due recurring entries when it becomes visible
+// again, at most this often.
+const RECURRING_RECHECK_MS = 30 * 60 * 1000;
 
 export function TransactionProvider({ children }) {
   const { user, loading: authLoading } = useAuth();
   const { addToast } = useToast();
   const { t } = useTranslation();
   const { refreshSubscription } = useSubscription();
-  const { unlockEpoch = 0, migrationEpoch = 0 } = useCrypto();
+  const { unlockEpoch = 0, migrationEpoch = 0, status: cryptoStatus } = useCrypto();
 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +92,51 @@ export function TransactionProvider({ children }) {
     reloadCategories();
     setMutationCount((c) => c + 1);
   }, [cryptoEpoch, user?.id, reloadTransactions, reloadCategories]);
+
+  // ── Recurring entries post themselves ────────────────────────────────────
+  // Due instances are created client-side (amounts are encrypted, the server
+  // cannot), so this runs as soon as the app can write: once per signed-in
+  // session when the key is ready ('unlocked', or 'off' without encryption),
+  // and again when the tab comes back after RECURRING_RECHECK_MS. Every page
+  // (dashboard included) then sees rent and salary without visiting
+  // Transactions first. Never while 'loading' or 'locked': encryptRow refuses
+  // to write without the key.
+  const cryptoReady = cryptoStatus === 'unlocked' || cryptoStatus === 'off';
+  const recurringRunRef = useRef({ userId: null, at: 0 });
+  const runRecurring = useCallback(async () => {
+    recurringRunRef.current.at = Date.now();
+    try {
+      const result = await processRecurringTransactions();
+      if (result?.generated > 0) {
+        addToast(t('recurring.generatedToast', { count: result.generated }), 'success');
+        await reloadTransactions();
+        setMutationCount((c) => c + 1);
+      }
+    } catch (e) {
+      console.error('Error processing recurring transactions:', e);
+    }
+  }, [addToast, t, reloadTransactions]);
+  const runRecurringRef = useRef(runRecurring);
+  useEffect(() => { runRecurringRef.current = runRecurring; }, [runRecurring]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user?.id) { recurringRunRef.current = { userId: null, at: 0 }; return; }
+    if (!cryptoReady || recurringRunRef.current.userId === user.id) return;
+    recurringRunRef.current.userId = user.id;
+    runRecurringRef.current();
+  }, [authLoading, user?.id, cryptoReady]);
+
+  useEffect(() => {
+    if (!user?.id || !cryptoReady) return undefined;
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (Date.now() - recurringRunRef.current.at < RECURRING_RECHECK_MS) return;
+      runRecurringRef.current();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [user?.id, cryptoReady]);
 
   // options.successMessage lets the caller word the toast (quick-add sheet:
   // "Saved: {title} {amount}"). Resolves true on success, false on failure.
