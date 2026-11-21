@@ -41,7 +41,10 @@ function ForecastBar({ spent, limit, projected, label, delay }) {
 }
 
 // One budget as a tile (BudgetsPage renders them on the grid).
-export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutureMonth, onEdit, onDelete, index }) {
+// projection: this category's row from the month forecast engine
+// (utils/finance/forecast/forecastEngine.js, via useMonthForecast) for the
+// current month, null otherwise. The card shows it; it computes nothing.
+export default memo(function BudgetCard({ budget, spent, projection, isFutureMonth, onEdit, onDelete, index }) {
   const { t } = useTranslation();
   const { format: fmt } = useDisplayCurrency();
 
@@ -52,17 +55,13 @@ export default memo(function BudgetCard({ budget, spent, isCurrentMonth, isFutur
   const remaining = budgetAmount - spentAmount;
   const isOverBudget = spentAmount > budgetAmount;
 
-  // Forecast calculation for the current month
-  const getForecast = () => {
-    if (!isCurrentMonth) return null;
-    const today = new Date();
-    const daysElapsed = Math.max(1, today.getDate());
-    const daysInMonth = new Date(budget.year, budget.month, 0).getDate();
-    const projected = (spentAmount / daysElapsed) * daysInMonth;
-    return { projected, willExceed: projected > budgetAmount, exceedBy: projected - budgetAmount };
-  };
-
-  const forecast = getForecast();
+  const forecast = projection
+    ? {
+        projected: projection.PROJECTED_EXPENSE,
+        willExceed: projection.PROJECTED_OVERSPEND > 0,
+        exceedBy: projection.PROJECTED_OVERSPEND,
+      }
+    : null;
   const name = translateCategoryName(budget.category?.name || '');
   const iconBtn = 'btn-motion inline-flex items-center justify-center w-11 h-11 rounded-pill text-fg hover:bg-inner';
 

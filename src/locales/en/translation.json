@@ -146,27 +146,6 @@
       "goalsOnTrack": "Goals on track"
     }
   },
-  "cashFlow": {
-    "title": "Cash Flow Forecast",
-    "subtitle": "Projected balance based on recurring transactions",
-    "currentBalance": "Current balance",
-    "balance": "Balance",
-    "projectedIn": {
-      "30": "Projected in 30 days",
-      "60": "Projected in 60 days",
-      "90": "Projected in 90 days"
-    },
-    "horizon": {
-      "30": "30D",
-      "60": "60D",
-      "90": "90D"
-    },
-    "noRecurring": "No active recurring transactions",
-    "noRecurringHint": "Add recurring income or expenses to see your cash flow forecast",
-    "premiumOnly": "Available on paid plan",
-    "trackedBalance": "Tracked net balance",
-    "trackedBalanceNote": "Based on all recorded transactions"
-  },
   "transactions": {
     "title": "Transactions",
     "addNew": "Add Transaction",
@@ -1932,6 +1911,59 @@
       "confirmAction": "Convert everything",
       "resume": "Resume conversion",
       "resumeDesc": "A currency change from {{from}} to {{to}} was interrupted. Finish it before making other changes, so your amounts stay consistent."
+    }
+  },
+  "forecast": {
+    "title": "End-of-month forecast",
+    "subtitle": "Day {{day}} of {{days}} in {{month}}",
+    "headline": "Projected net for {{month}}",
+    "range": "Likely between {{low}} and {{high}}",
+    "confidence": {
+      "low": "Low confidence",
+      "medium": "Medium confidence",
+      "high": "High confidence"
+    },
+    "earlyNote_one": "Early estimate: only {{count}} day of this month so far.",
+    "earlyNote_other": "Early estimate: only {{count}} days of this month so far.",
+    "indicative": "This forecast is indicative, not exact: it is based on what you have entered and your own history.",
+    "breakdownTitle": "What makes up this forecast",
+    "actual": {
+      "title": "Actual so far",
+      "values": "{{income}} income · {{expense}} expenses"
+    },
+    "scheduled": {
+      "title": "Still scheduled this month",
+      "none": "Nothing else is scheduled this month.",
+      "summary_one": "{{count}} item: {{amounts}}",
+      "summary_other": "{{count}} items: {{amounts}}",
+      "show": "Show the list",
+      "hide": "Hide the list",
+      "due": "due, not posted yet",
+      "income": "{{amount}} income",
+      "expense": "{{amount}} expenses"
+    },
+    "everyday": {
+      "title": "Estimated everyday spending",
+      "explain_one": "{{rate}} per day for {{days}} days, based on this month and your last month",
+      "explain_other": "{{rate}} per day for {{days}} days, based on this month and your last {{count}} months",
+      "explainNoHistory": "{{rate}} per day for {{days}} days, based on this month so far"
+    },
+    "categories": {
+      "title": "Budgets at month end",
+      "over": "{{amount}} over",
+      "within": "Within budget"
+    },
+    "uncategorized": "Uncategorized",
+    "locked": {
+      "cta": "See Premium",
+      "all": "The end-of-month forecast is part of Premium.",
+      "breakdown": "Premium shows what makes up the forecast: what already happened, what is scheduled and your everyday spending.",
+      "categories": "Premium shows where each budget will end the month."
+    },
+    "empty": {
+      "title": "No forecast yet",
+      "desc": "Add a transaction or a recurring item and your end-of-month forecast appears here.",
+      "recurring": "Set up recurring"
     }
   }
 }

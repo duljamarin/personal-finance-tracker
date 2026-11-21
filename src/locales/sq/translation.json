@@ -146,27 +146,6 @@
       "goalsOnTrack": "Qëllime në rrugë të mbarë"
     }
   },
-  "cashFlow": {
-    "title": "Parashikimi i Fluksit të Parasë",
-    "subtitle": "Bilanci i parashikuar bazuar në transaksionet periodike",
-    "currentBalance": "Bilanci aktual",
-    "balance": "Bilanci",
-    "projectedIn": {
-      "30": "Parashikuar në 30 ditë",
-      "60": "Parashikuar në 60 ditë",
-      "90": "Parashikuar në 90 ditë"
-    },
-    "horizon": {
-      "30": "30D",
-      "60": "60D",
-      "90": "90D"
-    },
-    "noRecurring": "Nuk ka transaksione periodike aktive",
-    "noRecurringHint": "Shtoni të ardhura ose shpenzime periodike për të parë parashikimin e fluksit të parasë",
-    "premiumOnly": "E disponueshme vetëm në planin me pagesë",
-    "trackedBalance": "Bilanci neto i gjurmuar",
-    "trackedBalanceNote": "Bazuar në të gjitha transaksionet e regjistruara"
-  },
   "transactions": {
     "title": "Transaksionet",
     "addNew": "Shto Transaksion",
@@ -1932,6 +1911,59 @@
       "confirmAction": "Konverto gjithcka",
       "resume": "Vazhdo konvertimin",
       "resumeDesc": "Nje ndryshim monedhe nga {{from}} ne {{to}} u nderpre. Perfundojeni para ndryshimeve te tjera, qe shumat tuaja te mbeten konsistente."
+    }
+  },
+  "forecast": {
+    "title": "Parashikimi i fundit të muajit",
+    "subtitle": "Dita {{day}} nga {{days}} këtë muaj",
+    "headline": "Neto e parashikuar për muajin {{month}}",
+    "range": "Ka gjasa të jetë midis {{low}} dhe {{high}}",
+    "confidence": {
+      "low": "Besueshmëri e ulët",
+      "medium": "Besueshmëri mesatare",
+      "high": "Besueshmëri e lartë"
+    },
+    "earlyNote_one": "Vlerësim i hershëm: ky muaj ka vetëm {{count}} ditë të dhëna.",
+    "earlyNote_other": "Vlerësim i hershëm: ky muaj ka vetëm {{count}} ditë të dhëna.",
+    "indicative": "Ky parashikim është orientues, jo i saktë: bazohet në atë që keni regjistruar dhe në historikun tuaj.",
+    "breakdownTitle": "Nga çfarë përbëhet ky parashikim",
+    "actual": {
+      "title": "Deri tani",
+      "values": "{{income}} të ardhura · {{expense}} shpenzime"
+    },
+    "scheduled": {
+      "title": "Ende të planifikuara këtë muaj",
+      "none": "Asgjë tjetër nuk është e planifikuar këtë muaj.",
+      "summary_one": "{{count}} veprim: {{amounts}}",
+      "summary_other": "{{count}} veprime: {{amounts}}",
+      "show": "Shfaq listën",
+      "hide": "Fshih listën",
+      "due": "në afat, ende pa u regjistruar",
+      "income": "{{amount}} të ardhura",
+      "expense": "{{amount}} shpenzime"
+    },
+    "everyday": {
+      "title": "Shpenzimet e përditshme të vlerësuara",
+      "explain_one": "{{rate}} në ditë për {{days}} ditë, bazuar në këtë muaj dhe në muajin e kaluar",
+      "explain_other": "{{rate}} në ditë për {{days}} ditë, bazuar në këtë muaj dhe në {{count}} muajt e fundit",
+      "explainNoHistory": "{{rate}} në ditë për {{days}} ditë, bazuar në këtë muaj deri tani"
+    },
+    "categories": {
+      "title": "Buxhetet në fund të muajit",
+      "over": "{{amount}} mbi buxhet",
+      "within": "Brenda buxhetit"
+    },
+    "uncategorized": "Pa kategori",
+    "locked": {
+      "cta": "Shihni Premium",
+      "all": "Parashikimi i fundit të muajit është pjesë e Premium.",
+      "breakdown": "Me Premium shihni nga çfarë përbëhet parashikimi: çfarë ka ndodhur, çfarë është e planifikuar dhe shpenzimet e përditshme.",
+      "categories": "Me Premium shihni ku do ta mbyllë muajin secili buxhet."
+    },
+    "empty": {
+      "title": "Ende pa parashikim",
+      "desc": "Shtoni një transaksion ose një transaksion të përsëritur dhe parashikimi i fundit të muajit shfaqet këtu.",
+      "recurring": "Shtoni të përsëritura"
     }
   }
 }

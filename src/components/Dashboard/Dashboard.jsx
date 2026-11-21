@@ -10,7 +10,7 @@ import { QUOTA_VISIBLE_AT } from '../../config/app';
 import HealthScore from '../HealthScore/HealthScore';
 import BudgetSummaryBar from './BudgetSummaryBar';
 import ChartWithTimeRange from './ChartWithTimeRange';
-import CashFlowForecast from './CashFlowForecast';
+import MonthForecastTile from './MonthForecastTile';
 import FirstRunGuide from './FirstRunGuide';
 import BalanceTile from './BalanceTile';
 import HealthTile from './HealthTile';
@@ -255,9 +255,9 @@ export default function Dashboard() {
                 <CategoryPieChart transactions={transactions} type="expense" layout="stacked" />
               </Suspense>
             </Card>
-            <div className={`${SPAN_7} min-w-0`}>
-              <CashFlowForecast />
-            </div>
+            {/* End-of-month forecast: always about the current month, so it
+                shows only while the current month is selected. */}
+            {isCurrentMonth && <MonthForecastTile className={`${SPAN_7} min-w-0`} />}
             <Card index={8} className={SPAN_5}>
               <div className="flex items-baseline justify-between gap-3 mb-gap">
                 <h2 className="text-h3 font-bold text-fg">{t('dashboard.incomeBySource')}</h2>

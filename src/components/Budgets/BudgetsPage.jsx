@@ -7,6 +7,7 @@ import BudgetCard from './BudgetCard';
 import BudgetForm from './BudgetForm';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
 import { fetchBudgets, createBudget, updateBudget, deleteBudget, fetchMonthlyExpensesByCategory, fetchCategories } from '../../utils/api';
+import { useMonthForecast } from '../../hooks/useMonthForecast';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import { useSubscription } from '../../context/SubscriptionContext';
@@ -46,6 +47,13 @@ export default function BudgetsPage() {
 
   // Derived values
   const isCurrentMonth = selectedYear === today.getFullYear() && selectedMonth === today.getMonth() + 1;
+  // Month-end projections come from the forecast engine (current month only).
+  // `budgets` is the reload signal: it is a new array after every save.
+  const { forecast: monthForecast } = useMonthForecast({ reloadKey: budgets });
+  const projectionByCategory = useMemo(
+    () => new Map((monthForecast?.CATEGORIES || []).map((c) => [c.categoryId, c])),
+    [monthForecast],
+  );
   const isFutureMonth = selectedYear > today.getFullYear() ||
     (selectedYear === today.getFullYear() && selectedMonth > today.getMonth() + 1);
 
@@ -203,9 +211,9 @@ export default function BudgetsPage() {
   const monthLabel = `${t(`chart.months.${MONTH_KEYS[selectedMonth - 1]}`)} ${selectedYear}`;
   const overallRatio = totalBudgeted > 0 ? totalSpent / totalBudgeted : 0;
   const canCreate = canCreateBudget(budgets.length);
-  // Month-end projection at the current pace (same formula as each budget's
-  // forecast line), only while the month is running.
-  const projectedTotal = isCurrentMonth ? (totalSpent / Math.max(1, today.getDate())) * daysInMonth : null;
+  // Month-end projection of the budgeted categories, from the forecast engine
+  // (same numbers as each budget's forecast line), only while the month runs.
+  const projectedTotal = isCurrentMonth && monthForecast ? monthForecast.BUDGETED_PROJECTED_EXPENSE : null;
 
   return (
     <div className="space-y-gap">
@@ -332,7 +340,7 @@ export default function BudgetsPage() {
                   index={i + 1}
                   budget={budget}
                   spent={expensesByCategory[budget.category_id] || 0}
-                  isCurrentMonth={isCurrentMonth}
+                  projection={isCurrentMonth ? projectionByCategory.get(budget.category_id) || null : null}
                   isFutureMonth={isFutureMonth}
                   onEdit={openBudgetEdit}
                   onDelete={handleDeleteBudget}
