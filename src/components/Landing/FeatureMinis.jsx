@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import ProgressRing from '../UI/ProgressRing';
+import CategoryAvatar from '../UI/CategoryAvatar';
 import { MINUS } from '../../utils/bento';
 import { progressColor } from '../../utils/chartColors';
 import { formatMonthShort } from '../../utils/date';
-import { FEATURES, money, moneyK } from './demoData';
+import { FEATURES, CURRENCY, LAST_TX, category, money, moneyK } from './demoData';
+
+const LAST_TX_ICON = category(LAST_TX.category).iconKey;
 
 /**
  * Small static renders inside the landing feature tiles. Every number comes
@@ -155,6 +158,54 @@ export function MiniYear() {
           <dd className="m-0 font-extrabold text-fg tabular-nums">+{moneyK(totals.kept)}</dd>
         </div>
       </dl>
+    </div>
+  );
+}
+
+/*
+ * How-it-works snippets: one small static UI piece per step, from the same
+ * dataset (decorative; the step copy carries the meaning).
+ */
+
+/** Step 1: currency and language picked at setup. */
+export function StepAccountSnippet() {
+  const chip = 'inline-flex items-center h-9 px-4 rounded-pill border-2 border-line text-sm font-bold text-fg tabular-nums';
+  return (
+    <div className="flex flex-wrap gap-2" aria-hidden="true">
+      <span className={chip}>{CURRENCY}</span>
+      <span className={chip}>EN / SQ</span>
+    </div>
+  );
+}
+
+/** Step 2: the last transaction and one recurring entry. */
+export function StepMoneySnippet() {
+  const { t } = useTranslation();
+  const rent = category('housing');
+  const rows = [
+    { iconKey: LAST_TX_ICON, label: t(`landing.preview.tx.${LAST_TX.key}`), amount: money(LAST_TX.amount, 2) },
+    { iconKey: rent.iconKey, label: `${t('landing.preview.tx.rent')} · ${t('recurring.monthly')}`, amount: money(rent.spent) },
+  ];
+  return (
+    <div className="tile-inner p-3 flex flex-col gap-2.5" aria-hidden="true">
+      {rows.map((r) => (
+        <div key={r.label} className="flex items-center gap-3 min-w-0">
+          <CategoryAvatar category={{ name: r.iconKey }} size="sm" />
+          <span className="flex-1 min-w-0 text-sm font-bold text-fg">{r.label}</span>
+          <span className="text-sm font-extrabold text-fg tabular-nums whitespace-nowrap">{MINUS}{r.amount}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Step 3: the score, the same HEALTH as everywhere else. */
+export function StepScoreSnippet() {
+  const { t } = useTranslation();
+  return (
+    <div className="flex items-center gap-4" aria-hidden="true">
+      <ProgressRing value={FEATURES.score.health / 100} size={64} stroke={14} animate={false} label={String(FEATURES.score.health)} labelClassName="text-fg" />
+      <p className="text-sm font-bold text-fg">{t('healthScore.title')}</p>
     </div>
   );
 }

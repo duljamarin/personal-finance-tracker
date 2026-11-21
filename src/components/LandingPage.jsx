@@ -7,8 +7,11 @@ import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import HeroPreview from './Landing/HeroPreview';
 import PrimaryCta, { SecondaryEntry } from './Landing/PrimaryCta';
 import StickyCta from './Landing/StickyCta';
-import { MiniHealthScore, MiniBenchmarks, MiniBudgetForecast, MiniYear } from './Landing/FeatureMinis';
-import { delayStyle, revealClass, tileDelay } from '../utils/motion';
+import {
+  MiniHealthScore, MiniBenchmarks, MiniBudgetForecast, MiniYear,
+  StepAccountSnippet, StepMoneySnippet, StepScoreSnippet,
+} from './Landing/FeatureMinis';
+import { delayStyle, revealClass, tileDelay, D_DATA } from '../utils/motion';
 import {
   TrendingUp, Target, Activity, RefreshCw,
   Globe, Bell, Tag, FileText,
@@ -140,7 +143,7 @@ function useSectionReveal() {
   // rise for text, pop for tiles, stagger by index (spec 4.6)
   const rise = (i = 0) => ({ className: revealClass(revealed, 'animate-rise'), style: revealed ? delayStyle(i * 70) : undefined });
   const pop = (i = 0) => ({ className: revealClass(revealed, 'animate-pop'), style: revealed ? delayStyle(tileDelay(i)) : undefined });
-  return { ref, rise, pop };
+  return { ref, rise, pop, revealed };
 }
 
 function SectionHead({ children, rise, className = '' }) {
@@ -221,32 +224,47 @@ function HeroFeaturesSection({ t }) {
   );
 }
 
+/**
+ * How it works: one tile, three steps on one line from lg (a column below),
+ * joined by a 2px --line track that fills once, step by step, when the
+ * section is revealed; the markers pop as the fill reaches them. Markers are
+ * plain dots: no icon squares, no numbers (R5).
+ */
+const STEPS = [
+  { key: 'step1', Snippet: StepAccountSnippet },
+  { key: 'step2', Snippet: StepMoneySnippet },
+  { key: 'step3', Snippet: StepScoreSnippet },
+];
+
 function HowItWorksSection({ t }) {
-  const { ref, rise, pop } = useSectionReveal();
-  // Icons, not "1 2 3" numbering (V6); order still reads left to right.
-  const steps = [
-    { Icon: UserPlus, key: 'step1' },
-    { Icon: ListPlus, key: 'step2' },
-    { Icon: Activity, key: 'step3' },
-  ];
+  const { ref, rise, revealed } = useSectionReveal();
+  const p = rise(1);
   return (
-    <section ref={ref} aria-label={t('landing.howItWorks.title')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
-      <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)]">
-        <SectionHead rise={rise} className="mb-10 max-w-2xl">{t('landing.howItWorks.subtitle')}</SectionHead>
-        <div className="grid md:grid-cols-3 gap-gap">
-          {steps.map(({ Icon, key }, i) => {
-            const p = pop(i + 1);
-            return (
-              <div key={key} className={`tile tile-lift p-tile-dense ${p.className}`} style={p.style}>
-                <span className="w-12 h-12 rounded-icon bg-inner text-brand-text flex items-center justify-center mb-4" aria-hidden="true">
-                  <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
+    <section ref={ref} aria-label={t('landing.howItWorks.title')} className={`max-w-content mx-auto ${SECTION_PB}`}>
+      <div className="tile p-tile-dense sm:p-[clamp(26px,4vw,48px)]">
+        <SectionHead rise={rise}>{t('landing.howItWorks.subtitle')}</SectionHead>
+        <ol className={`mt-8 lg:mt-10 grid lg:grid-cols-3 gap-8 lg:gap-gap list-none m-0 p-0 ${p.className}`} style={p.style}>
+          {STEPS.map(({ key, Snippet }, i) => (
+            <li key={key} className="relative min-w-0 pl-9 lg:pl-0 lg:pt-9 lg:pr-gap">
+              {i < STEPS.length - 1 && (
+                <span aria-hidden="true" className="absolute overflow-hidden bg-line left-[7px] top-6 -bottom-8 w-[2px] lg:left-6 lg:-right-2 lg:top-[7px] lg:bottom-auto lg:w-auto lg:h-[2px]">
+                  <span
+                    className={`block w-full h-full bg-brand-text origin-top lg:origin-left ${revealed ? 'animate-grow-y lg:animate-grow-x' : 'reveal-pending'}`}
+                    style={revealed ? delayStyle(i * D_DATA) : undefined}
+                  />
                 </span>
-                <h3 className="text-h3-lg font-bold text-fg mb-2">{t(`landing.howItWorks.${key}.title`)}</h3>
-                <p className="text-body text-fg">{t(`landing.howItWorks.${key}.desc`)}</p>
-              </div>
-            );
-          })}
-        </div>
+              )}
+              <span
+                aria-hidden="true"
+                className={`absolute left-0 top-1 lg:top-0 w-4 h-4 rounded-pill bg-brand-text ${revealClass(revealed, 'animate-pop')}`}
+                style={revealed ? delayStyle(i * D_DATA) : undefined}
+              />
+              <h3 className="text-h3-lg font-bold text-fg">{t(`landing.howItWorks.${key}.title`)}</h3>
+              <p className="mt-2 text-body text-fg">{t(`landing.howItWorks.${key}.desc`)}</p>
+              <div className="mt-4"><Snippet /></div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
