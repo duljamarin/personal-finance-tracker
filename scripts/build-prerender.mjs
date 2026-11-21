@@ -21,9 +21,12 @@ const ORIGIN = 'https://personal-finances.app';
 const FAQ_KEYS = ['free', 'albanian', 'howLong', 'encrypted', 'switch', 'advice', 'multidevice', 'cancel'];
 
 const LOCALES = {
-  en: { htmlLang: 'en', file: 'en.html', url: `${ORIGIN}/`,   ogLocale: 'en_US', altLocale: 'sq_AL', card: 'social-card-en.png' },
-  sq: { htmlLang: 'sq', file: 'sq.html', url: `${ORIGIN}/sq`, ogLocale: 'sq_AL', altLocale: 'en_US', card: 'social-card-sq.png' },
+  en: { htmlLang: 'en', file: 'en.html', url: `${ORIGIN}/`,   ogLocale: 'en_US', altLocale: 'sq_AL', card: 'social-card-dark.png' },
+  sq: { htmlLang: 'sq', file: 'sq.html', url: `${ORIGIN}/sq`, ogLocale: 'sq_AL', altLocale: 'en_US', card: 'social-card-dark-sq.png' },
 };
+
+// Social cards (dark, 2400x1260, one per language), as set in c200ffa.
+const CARD_SIZE = { width: 2400, height: 1260 };
 
 const load = (lang) =>
   JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'locales', lang, 'translation.json'), 'utf8'));
@@ -100,6 +103,8 @@ function buildHtml(lang) {
     <meta property="og:title" content="${esc(title)}" />
     <meta property="og:description" content="${esc(desc)}" />
     <meta property="og:image" content="${ORIGIN}/${cfg.card}" />
+    <meta property="og:image:width" content="${CARD_SIZE.width}" />
+    <meta property="og:image:height" content="${CARD_SIZE.height}" />
     <meta property="og:image:alt" content="${esc(h1)}" />
     <meta property="og:url" content="${cfg.url}" />
     <meta property="og:site_name" content="Personal Finance Tracker" />

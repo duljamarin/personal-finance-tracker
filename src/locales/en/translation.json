@@ -774,7 +774,7 @@
       "signIn": "Sign in",
       "trust1": "Free to start, no card",
       "trust2": "Amounts encrypted on your device",
-      "trust3": "Export or delete anytime"
+      "trust3": "Export transactions or delete anytime"
     },
     "features": {
       "heading": "Judged against your own history, not a generic average"
@@ -805,7 +805,7 @@
         "networth": "Net worth over time, assets and liabilities in one line",
         "reports": "Reports by income, expense, and category over any date range",
         "notifications": "Alerts when a budget runs over or a goal hits a milestone",
-        "csvImport": "CSV import to start from your existing records, CSV export to leave with them",
+        "csvImport": "CSV import to start from your existing records, CSV export of your transactions to leave with them",
         "categories": "Categories you name and pick icons for, not a fixed list",
         "albanian": "Full Albanian and English, plus free Albanian salary, freelancer, and loan calculators",
         "currency": "One currency, chosen at signup and changeable in settings",
@@ -894,7 +894,7 @@
         },
         "cancel": {
           "q": "Can I cancel a paid subscription?",
-          "a": "Yes, from your account settings. You keep full access until the end of the billing period, and your data stays exportable whether you pay or not."
+          "a": "Yes, from your account settings. You keep full access until the end of the billing period, and your transactions stay exportable as CSV whether you pay or not."
         }
       }
     },
@@ -908,7 +908,7 @@
       "title": "Know where you stand",
       "desc": "See where this month stands and whether you are improving, judged against your own history. Free to start, no card.",
       "secondary": "See pricing",
-      "trustLine": "Free to start · No credit card · Export or delete anytime"
+      "trustLine": "Free to start · No credit card · Export transactions or delete anytime"
     },
     "demo": {
       "onTrack": "Within your normal",
@@ -965,8 +965,8 @@
           "desc": "Not sold, not traded, not shared with advertisers. It exists to power your dashboard and nothing else."
         },
         "yours": {
-          "title": "Export or delete anytime",
-          "desc": "Export everything as CSV any time. Delete your account and the data is gone, permanently, not archived."
+          "title": "Export transactions or delete anytime",
+          "desc": "Export your transactions as CSV any time. Delete your account and the data is gone, permanently, not archived."
         },
         "payments": {
           "title": "Card details never reach us",

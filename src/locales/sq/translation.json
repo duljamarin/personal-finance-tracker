@@ -774,7 +774,7 @@
       "signIn": "Identifikohuni",
       "trust1": "Falas për të filluar, pa kartë",
       "trust2": "Shumat enkriptohen në pajisjen tuaj",
-      "trust3": "Eksportoni ose fshini kurdo"
+      "trust3": "Eksportoni transaksionet ose fshini kurdo"
     },
     "features": {
       "heading": "Krahasuar me historikun tuaj, jo me një mesatare të përgjithshme"
@@ -805,7 +805,7 @@
         "networth": "Pasuria neto në kohë, me aktivet dhe detyrimet në një pamje të vetme",
         "reports": "Raporte për të ardhurat, shpenzimet dhe kategoritë, për çdo interval datash",
         "notifications": "Njoftime kur një buxhet tejkalohet ose një qëllim arrin një pikë kyçe",
-        "csvImport": "Import CSV për të nisur nga të dhënat që keni, eksport CSV për t'i marrë me vete kurdo",
+        "csvImport": "Import CSV për të nisur nga të dhënat që keni, eksport CSV i transaksioneve për t'i marrë me vete kurdo",
         "categories": "Kategori që i emërtoni vetë dhe u zgjidhni ikonat, jo një listë e paracaktuar",
         "albanian": "Plotësisht në shqip dhe anglisht, plus llogaritës falas për pagën, të vetëpunësuarit dhe kredinë",
         "currency": "Një monedhë e vetme, e zgjedhur gjatë regjistrimit dhe e ndryshueshme në cilësime",
@@ -894,7 +894,7 @@
         },
         "cancel": {
           "q": "A mund ta anuloj një abonim me pagesë?",
-          "a": "Po, nga cilësimet e llogarisë. Mbani akses të plotë deri në fund të periudhës së faturimit dhe të dhënat mbeten të eksportueshme, paguani ose jo."
+          "a": "Po, nga cilësimet e llogarisë. Mbani akses të plotë deri në fund të periudhës së faturimit dhe transaksionet mbeten të eksportueshme si CSV, paguani ose jo."
         }
       }
     },
@@ -908,7 +908,7 @@
       "title": "Dini ku jeni",
       "desc": "Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar, pa kartë.",
       "secondary": "Shihni çmimet",
-      "trustLine": "Falas për të filluar · Pa kartë krediti · Eksportoni ose fshini kurdo"
+      "trustLine": "Falas për të filluar · Pa kartë krediti · Eksportoni transaksionet ose fshini kurdo"
     },
     "demo": {
       "onTrack": "Brenda normales tuaj",
@@ -965,8 +965,8 @@
           "desc": "Nuk shiten, nuk tregtohen dhe nuk u jepen reklamuesve. Ekzistojnë vetëm për të fuqizuar panelin tuaj."
         },
         "yours": {
-          "title": "Eksportoni ose fshini kurdo",
-          "desc": "Eksportoni gjithçka si CSV kurdo. Fshini llogarinë dhe të dhënat zhduken përfundimisht, jo thjesht arkivohen."
+          "title": "Eksportoni transaksionet ose fshini kurdo",
+          "desc": "Eksportoni transaksionet si CSV kurdo. Fshini llogarinë dhe të dhënat zhduken përfundimisht, jo thjesht arkivohen."
         },
         "payments": {
           "title": "Detajet e kartës nuk mbërrijnë kurrë tek ne",
