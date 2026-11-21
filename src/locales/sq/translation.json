@@ -983,6 +983,14 @@
         "food": "Ushqim dhe restorante",
         "housing": "Banesë dhe qira",
         "entertainment": "Argëtim",
+        "transport": "Transport",
+        "shopping": "Blerje"
+      },
+      "short": {
+        "housing": "Qira",
+        "food": "Ushqim",
+        "entertainment": "Argëtim",
+        "shopping": "Blerje",
         "transport": "Transport"
       }
     },
@@ -995,7 +1003,8 @@
         "rent": "Qiraja"
       },
       "keptIn": "+{{amount}} të kursyera në {{month}}",
-      "addedJustNow": "shtuar tani"
+      "addedJustNow": "shtuar tani",
+      "vsMonth": "{{delta}} krahasuar me muajin {{month}}"
     }
   },
   "currency": {

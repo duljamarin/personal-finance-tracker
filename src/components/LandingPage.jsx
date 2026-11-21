@@ -5,9 +5,7 @@ import { useMetaTags } from '../hooks/useMetaTags';
 import { useRevealOnce } from '../hooks/useRevealOnce';
 import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import HeroPreview from './Landing/HeroPreview';
-import ProgressRing from './UI/ProgressRing';
-import ProgressBar from './UI/ProgressBar';
-import { MINUS } from '../utils/bento';
+import { MiniHealthScore, MiniBenchmarks, MiniBudgetForecast, MiniYear } from './Landing/FeatureMinis';
 import { delayStyle, revealClass, tileDelay } from '../utils/motion';
 import {
   TrendingUp, Target, Activity, RefreshCw,
@@ -148,119 +146,6 @@ function useSectionReveal() {
   return { ref, rise, pop };
 }
 
-// ── Mini renders inside feature tiles (sample data, like the hero preview) ──
-const MONTHS_SHORT = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-const INCOME_BARS  = [3200,3200,3400,3200,3600,3200,3500,3200,3400,3200,3600,3800];
-const EXPENSE_BARS = [1600,1900,1500,2100,1700,1400,1800,1500,1650,1300,1750,1400];
-const BAR_MAX = 4000;
-// A month is "heavy" when expenses eat a large share of income (>=52%). Heavy
-// months use the palette's sand, not red (V4: red is for over-budget/errors).
-const HEAVY_SPEND_RATIO = 0.52;
-const HEAVY_COLOR = 'var(--c-data-sand)';
-
-function MiniBarChart() {
-  return (
-    <div className="flex items-end gap-[3px] sm:gap-1 h-24 w-full">
-      {MONTHS_SHORT.map((m, i) => {
-        const heavy = EXPENSE_BARS[i] / INCOME_BARS[i] >= HEAVY_SPEND_RATIO;
-        return (
-          <div key={`${m}-${i}`} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-            <div
-              className="w-full rounded-t-swatch"
-              style={{ height: `${(INCOME_BARS[i] / BAR_MAX) * 100}%`, backgroundColor: heavy ? HEAVY_COLOR : 'var(--brand-text)' }}
-            />
-            <span className="text-min font-bold text-fg hidden lg:block">{m}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function MiniHealthScore() {
-  const { t } = useTranslation();
-  const score = 70;
-  return (
-    <div className="flex flex-col items-center gap-gap">
-      <ProgressRing
-        value={score / 100}
-        size={120}
-        animate={false}
-        label={String(score)}
-        labelClassName="text-fg"
-        sublabel={<span className="text-sm font-bold text-brand-text">{t('landing.demo.scoreGood')}</span>}
-      />
-      <div className="grid grid-cols-3 gap-2 w-full text-center">
-        {[['42%', 'landing.demo.savings'], ['87%', 'landing.demo.budget'], ['3/4', 'landing.demo.goals']].map(([v, k]) => (
-          <div key={k} className="tile-inner px-2 py-2.5">
-            <div className="font-extrabold text-fg tabular-nums">{v}</div>
-            <div className="text-sm font-semibold text-fg">{t(k)}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MiniBudgets() {
-  const { t } = useTranslation();
-  const items = [
-    { key: 'food', spent: 210, limit: 300 },
-    { key: 'housing', spent: 850, limit: 900 },
-    { key: 'entertainment', spent: 47, limit: 50 },
-    { key: 'transport', spent: 28, limit: 80 },
-  ];
-  return (
-    <div className="flex flex-col gap-3.5">
-      {items.map(({ key, spent, limit }) => {
-        const over = spent > limit;
-        return (
-          <div key={key}>
-            <div className="flex justify-between gap-2 text-sm font-bold text-fg">
-              <span className="truncate">{t(`landing.demo.budgetItems.${key}`)}</span>
-              <span className={`tabular-nums ${over ? 'text-expense' : ''}`}>€{spent} / €{limit}</span>
-            </div>
-            <ProgressBar ratio={spent / limit} height={10} animate={false} className="mt-1.5" />
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// Mirrors computeCategoryBenchmarks: this month vs the user's OWN trailing
-// average, as a signed deviation (no population data; the page must not
-// imply otherwise).
-const BENCHMARK_ROWS = [
-  { key: 'food',          now: 412, avg: 350 },
-  { key: 'transport',     now: 58,  avg: 90  },
-  { key: 'entertainment', now: 96,  avg: 70  },
-  { key: 'housing',       now: 850, avg: 850 },
-];
-
-function MiniBenchmarks() {
-  const { t } = useTranslation();
-  return (
-    <div>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3">
-        {BENCHMARK_ROWS.map(({ key, now, avg }) => {
-          const pct = avg === 0 ? 0 : Math.round(((now - avg) / avg) * 100);
-          const above = pct > 0;
-          return (
-            <div key={key} className="tile-inner p-gap min-w-0">
-              <p className="text-sm font-bold text-fg truncate">{t(`landing.demo.budgetItems.${key}`)}</p>
-              <p className={`mt-1 text-h1 font-extrabold tabular-nums ${above ? 'text-warning' : pct < 0 ? 'text-brand-text' : 'text-fg'}`}>
-                {pct === 0 ? '0%' : `${above ? '+' : MINUS}${Math.abs(pct)}%`}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-      <p className="mt-3 text-sm font-semibold text-fg">{t('landing.demo.vsLastMonth')}</p>
-    </div>
-  );
-}
-
 function SectionHead({ children, rise, className = '' }) {
   const r = rise(0);
   return (
@@ -300,38 +185,8 @@ function HeroFeaturesSection({ t }) {
         {/* Strongest proof first: the score is the differentiator. */}
         <FeatureTile k="healthscore" i={0} preview={<MiniHealthScore />} className="lg:col-span-4 lg:row-span-2" />
         <FeatureTile k="benchmarks" i={1} preview={<MiniBenchmarks />} className="lg:col-span-8" />
-        <FeatureTile k="budgets" i={2} preview={<MiniBudgets />} className="lg:col-span-4" />
-        <FeatureTile
-          k="tracking"
-          i={3}
-          className="lg:col-span-4"
-          preview={(
-            <div>
-              <div className="flex flex-wrap justify-between items-center gap-2 mb-3 text-sm font-semibold text-fg">
-                <span>{t('landing.demo.yearToDate')}</span>
-                <span className="flex items-center gap-3">
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: 'var(--brand-text)' }} />{t('landing.demo.onTrack')}</span>
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: HEAVY_COLOR }} />{t('landing.demo.highSpend')}</span>
-                </span>
-              </div>
-              <MiniBarChart />
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <div className="tile-inner px-3 py-2.5 min-w-0">
-                  <p className="text-sm font-bold text-fg">{t('landing.demo.income')}</p>
-                  <p className="font-extrabold text-brand-text tabular-nums">€{(INCOME_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
-                </div>
-                <div className="tile-inner px-3 py-2.5 min-w-0">
-                  <p className="text-sm font-bold text-fg">{t('landing.demo.expenses')}</p>
-                  <p className="font-extrabold tabular-nums text-fg">€{(EXPENSE_BARS.reduce((s,v)=>s+v,0)/1000).toFixed(1)}k</p>
-                </div>
-                <div className="tile-inner px-3 py-2.5 min-w-0">
-                  <p className="text-sm font-bold text-fg">{t('landing.demo.saved')}</p>
-                  <p className="font-extrabold text-fg tabular-nums">+€{((INCOME_BARS.reduce((s,v)=>s+v,0) - EXPENSE_BARS.reduce((s,v)=>s+v,0))/1000).toFixed(1)}k</p>
-                </div>
-              </div>
-            </div>
-          )}
-        />
+        <FeatureTile k="budgets" i={2} preview={<MiniBudgetForecast />} className="lg:col-span-4" />
+        <FeatureTile k="tracking" i={3} preview={<MiniYear />} className="lg:col-span-4" />
       </div>
     </section>
   );

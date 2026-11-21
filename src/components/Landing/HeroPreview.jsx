@@ -1,54 +1,54 @@
 import { useTranslation } from 'react-i18next';
-import { CategoryIconSvg } from '../UI/CategoryIconSvg';
 import ProgressRing from '../UI/ProgressRing';
-import { translateCategoryName } from '../../utils/categoryTranslation';
+import ProgressBar from '../UI/ProgressBar';
+import CategoryAvatar from '../UI/CategoryAvatar';
 import { formatMonthName } from '../../utils/date';
-import { tintOf, linePath } from '../../utils/bento';
-import { delayStyle, tileDelay } from '../../utils/motion';
+import { linePath, MINUS } from '../../utils/bento';
+import { delayStyle, tileDelay, dataDelay } from '../../utils/motion';
+import { HERO, money, monthDate } from './demoData';
 
 /**
- * Static Bento rendition of the dashboard (spec 4.6) with the product's own
- * sample data: balance hero tile with a sparkline, health ring, one budget
- * and the last added transaction. Deliberately plain HTML/SVG: no Recharts,
- * no data fetch, nothing that can delay the LCP heading (I5). Also used as
- * the product preview next to the auth forms.
+ * Static Bento rendition of the dashboard with the landing demo dataset
+ * (Landing/demoData.js): balance hero tile with a sparkline, health ring with
+ * its change, the three fullest budgets and the last added transaction.
+ * Deliberately plain HTML/SVG: no Recharts, no data fetch, nothing that can
+ * delay the LCP heading (I5). Also used as the product preview next to the
+ * auth forms (lg and up only there).
+ *
+ * Below 640px the tiles become one horizontal scroll row (snap, next tile
+ * peeks) so the preview starts inside the first screen. Labels are short at
+ * the copy level; nothing here truncates (R6).
  *
  * Decorative (aria-hidden inside): the copy around it carries the meaning;
  * a screen reader gets one label instead of a tour of sample numbers.
  */
 
-// Sample data (the same figures the preview has always shown).
-const INCOME = 3800;
-const SPENDING = 1402.6;
-const BALANCE = 12480.35;
-// Six months of income/expense in thousands, oldest first; the sparkline is
-// their running balance ending at BALANCE.
-const MONTHS = [[3.2, 1.9], [3.4, 1.5], [3.2, 2.1], [3.6, 1.7], [3.4, 1.65], [3.8, 1.4]];
-const SPARK = MONTHS.reduce((acc, [inc, exp]) => [...acc, acc[acc.length - 1] + (inc - exp)], [0]);
-const HEALTH = 78;
-const BUDGET = { cat: 'Food & Dining', pct: 68 };
-const LAST_TX = { key: 'market', cat: 'Food & Dining', amount: '−€64.20', color: 'var(--c-data-sand)' };
-
-const eur = (n) => `€${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-// Tiles pop with tile delay(i) + 200ms (spec 4.6).
+// Tiles pop with tile delay(i) + 200ms.
 const pop = (i) => ({ className: 'animate-pop', style: delayStyle(tileDelay(i) + 200) });
+const signedDelta = (d) => `${d > 0 ? '+' : d < 0 ? MINUS : ''}${Math.abs(d)}`;
+
+// Mobile: one snap row; the row bleeds into the hero block's 28px padding so
+// tiles scroll edge to edge. From 640px: the 2-column grid.
+const ROW = 'flex items-start gap-gap overflow-x-auto snap-x snap-mandatory -mx-7 px-7 scroll-px-7 pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:mx-0 sm:px-0 sm:pb-0';
+const CELL = 'shrink-0 min-w-[82%] snap-start sm:min-w-0';
 
 export default function HeroPreview({ className = '' }) {
   const { t, i18n } = useTranslation();
-  const month = formatMonthName(new Date(), i18n.language);
-  const line = linePath(SPARK, 220, 80, 8);
+  const month = formatMonthName(monthDate(0), i18n.language);
+  const prevMonth = formatMonthName(monthDate(-1), i18n.language);
+  const line = linePath(HERO.spark, 220, 80, 8);
+  const p = [0, 1, 2, 3].map(pop);
 
   return (
     <div role="img" aria-label={t('landing.preview.label')} className={`select-none ${className}`}>
-      <div aria-hidden="true" className="grid grid-cols-2 gap-gap">
+      <div aria-hidden="true" className={ROW} data-hero-preview>
         {/* Balance: the one hero tile */}
-        <div {...pop(0)} className={`${pop(0).className} tile tile-hero col-span-2 p-tile-dense sm:p-tile flex flex-wrap items-end justify-between gap-5`}>
+        <div className={`${p[0].className} ${CELL} tile tile-hero sm:col-span-2 p-tile-dense sm:p-tile flex flex-wrap items-end justify-between gap-5`} style={p[0].style}>
           <div className="min-w-0">
             <p className="text-sm font-semibold">{t('dashboard.balanceAllTime')}</p>
-            <p className="mt-1.5 text-kpi font-extrabold tabular-nums">{eur(BALANCE)}</p>
+            <p className="mt-1.5 text-kpi font-extrabold tabular-nums">{money(HERO.balance, 2)}</p>
             <p className="mt-2.5 inline-flex px-3 py-1 rounded-pill bg-hero-inset text-sm font-bold tabular-nums">
-              {t('landing.preview.keptIn', { amount: eur(INCOME - SPENDING), month })}
+              {t('landing.preview.keptIn', { amount: money(HERO.kept, 2), month })}
             </p>
           </div>
           <svg width="220" height="80" viewBox="0 0 220 80" className="max-w-full">
@@ -56,34 +56,40 @@ export default function HeroPreview({ className = '' }) {
           </svg>
         </div>
 
-        {/* Health score */}
-        <div {...pop(1)} className={`${pop(1).className} tile p-tile-dense flex flex-wrap items-center gap-[18px] min-w-0`}>
-          <ProgressRing value={HEALTH / 100} size={92} animate={false} label={String(HEALTH)} labelClassName="text-fg" />
-          <p className="font-bold text-fg min-w-0">{t('healthScore.title')}</p>
+        {/* Health score, with its change beside the ring (no empty half) */}
+        <div className={`${p[1].className} ${CELL} tile p-tile-dense flex items-center gap-[18px]`} style={p[1].style}>
+          <ProgressRing value={HERO.health / 100} size={92} animate={false} label={String(HERO.health)} labelClassName="text-fg" />
+          <div className="min-w-0">
+            <p className="font-bold text-fg">{t('healthScore.title')}</p>
+            <p className="mt-1 text-sm font-bold text-brand-text tabular-nums">
+              {t('landing.preview.vsMonth', { delta: signedDelta(HERO.healthDelta), month: prevMonth })}
+            </p>
+          </div>
         </div>
 
-        {/* One budget */}
-        <div {...pop(2)} className={`${pop(2).className} tile p-tile-dense min-w-0`}>
-          <div className="flex justify-between gap-2 font-bold text-fg">
-            <span className="truncate">{translateCategoryName(BUDGET.cat)}</span>
-            <span className="tabular-nums">{BUDGET.pct}%</span>
-          </div>
-          <div className="h-3.5 mt-3.5 rounded-pill bg-inner-2 overflow-hidden">
-            <div className="h-full rounded-pill bg-brand-600 dark:bg-brand-400" style={{ width: `${BUDGET.pct}%` }} />
-          </div>
-          <p className="mt-2.5 text-sm font-semibold text-fg">{t('dashboard.budgetProgress')}</p>
+        {/* The three fullest budgets */}
+        <div className={`${p[2].className} ${CELL} tile p-tile-dense flex flex-col gap-3`} style={p[2].style}>
+          <p className="font-bold text-fg">{t('dashboard.budgetProgress')}</p>
+          {HERO.budgets.map((b, i) => (
+            <div key={b.key} data-budget={b.key}>
+              <div className="flex flex-wrap justify-between gap-x-2 text-sm font-bold text-fg">
+                <span>{t(`landing.demo.short.${b.key}`)}</span>
+                <span className="tabular-nums">{money(b.spent)} / {money(b.limit)}</span>
+              </div>
+              {/* Width is budgetPct, the same rounded figure everywhere (D2). */}
+              <ProgressBar ratio={b.pct / 100} height={6} delay={dataDelay(2) + 200 + i * 80} className="mt-1.5" />
+            </div>
+          ))}
         </div>
 
         {/* Last added transaction */}
-        <div {...pop(3)} className={`${pop(3).className} tile col-span-2 px-[22px] py-[18px] flex items-center gap-[14px] min-w-0`}>
-          <span className="w-11 h-11 rounded-input flex items-center justify-center shrink-0" style={{ color: LAST_TX.color, backgroundColor: tintOf(LAST_TX.color) }}>
-            <CategoryIconSvg iconKey={LAST_TX.cat} className="w-[22px] h-[22px]" />
-          </span>
+        <div className={`${p[3].className} ${CELL} tile sm:col-span-2 px-[22px] py-[18px] flex items-center gap-[14px]`} style={p[3].style}>
+          <CategoryAvatar category={{ name: HERO.lastTx.iconKey }} size="md" />
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-fg truncate">{t(`landing.preview.tx.${LAST_TX.key}`)}</p>
-            <p className="text-sm font-semibold text-fg truncate">{translateCategoryName(LAST_TX.cat)} · {t('landing.preview.addedJustNow')}</p>
+            <p className="font-bold text-fg">{t(`landing.preview.tx.${HERO.lastTx.key}`)}</p>
+            <p className="text-sm font-semibold text-fg">{t(`landing.demo.short.${HERO.lastTx.category}`)} · {t('landing.preview.addedJustNow')}</p>
           </div>
-          <p className="text-h3 font-extrabold tabular-nums text-fg">{LAST_TX.amount}</p>
+          <p className="text-h3 font-extrabold tabular-nums text-fg whitespace-nowrap">{MINUS}{money(HERO.lastTx.amount, 2)}</p>
         </div>
       </div>
     </div>

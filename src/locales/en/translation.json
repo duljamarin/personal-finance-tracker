@@ -983,6 +983,14 @@
         "food": "Food and dining",
         "housing": "Housing and rent",
         "entertainment": "Entertainment",
+        "transport": "Transport",
+        "shopping": "Shopping"
+      },
+      "short": {
+        "housing": "Rent",
+        "food": "Food",
+        "entertainment": "Fun",
+        "shopping": "Shopping",
         "transport": "Transport"
       }
     },
@@ -995,7 +1003,8 @@
         "rent": "Rent"
       },
       "keptIn": "+{{amount}} kept in {{month}}",
-      "addedJustNow": "added just now"
+      "addedJustNow": "added just now",
+      "vsMonth": "{{delta}} vs {{month}}"
     }
   },
   "currency": {
