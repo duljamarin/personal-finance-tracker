@@ -1005,6 +1005,9 @@
       "keptIn": "+{{amount}} kept in {{month}}",
       "addedJustNow": "added just now",
       "vsMonth": "{{delta}} vs {{month}}"
+    },
+    "sticky": {
+      "value": "Free, no card"
     }
   },
   "currency": {

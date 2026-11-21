@@ -29,8 +29,8 @@ const signedDelta = (d) => `${d > 0 ? '+' : d < 0 ? MINUS : ''}${Math.abs(d)}`;
 
 // Mobile: one snap row; the row bleeds into the hero block's 28px padding so
 // tiles scroll edge to edge. From 640px: the 2-column grid.
-const ROW = 'flex items-start gap-gap overflow-x-auto snap-x snap-mandatory -mx-7 px-7 scroll-px-7 pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:mx-0 sm:px-0 sm:pb-0';
-const CELL = 'shrink-0 min-w-[82%] snap-start sm:min-w-0';
+const ROW = 'flex items-start sm:items-stretch gap-gap overflow-x-auto snap-x snap-mandatory -mx-7 px-7 scroll-px-7 pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:mx-0 sm:px-0 sm:pb-0';
+const CELL = 'shrink-0 w-[82%] min-w-[82%] snap-start sm:w-auto sm:min-w-0';
 
 export default function HeroPreview({ className = '' }) {
   const { t, i18n } = useTranslation();
@@ -46,20 +46,22 @@ export default function HeroPreview({ className = '' }) {
         <div className={`${p[0].className} ${CELL} tile tile-hero sm:col-span-2 p-tile-dense sm:p-tile flex flex-wrap items-end justify-between gap-5`} style={p[0].style}>
           <div className="min-w-0">
             <p className="text-sm font-semibold">{t('dashboard.balanceAllTime')}</p>
-            <p className="mt-1.5 text-kpi font-extrabold tabular-nums">{money(HERO.balance, 2)}</p>
+            {/* h1 size on phones so the figure fits the 82% tile; the kpi from 640px. */}
+            <p className="mt-1.5 text-h1 sm:text-kpi font-extrabold tabular-nums">{money(HERO.balance, 2)}</p>
             <p className="mt-2.5 inline-flex px-3 py-1 rounded-pill bg-hero-inset text-sm font-bold tabular-nums">
-              {t('landing.preview.keptIn', { amount: money(HERO.kept, 2), month })}
+              {t('landing.preview.keptIn', { amount: money(HERO.kept), month })}
             </p>
           </div>
-          <svg width="220" height="80" viewBox="0 0 220 80" className="max-w-full">
-            <path d={line} fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: 'var(--white)' }} />
+          {/* Full tile width on phones (stroke stays 3px), 220x80 from 640px. */}
+          <svg viewBox="0 0 220 80" preserveAspectRatio="none" className="w-full h-14 sm:w-[220px] sm:h-20">
+            <path d={line} fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" style={{ stroke: 'var(--white)' }} />
           </svg>
         </div>
 
         {/* Health score, with its change beside the ring (no empty half) */}
         <div className={`${p[1].className} ${CELL} tile p-tile-dense flex items-center gap-[18px]`} style={p[1].style}>
           <ProgressRing value={HERO.health / 100} size={92} animate={false} label={String(HERO.health)} labelClassName="text-fg" />
-          <div className="min-w-0">
+          <div className="min-w-0 self-stretch flex flex-col justify-center">
             <p className="font-bold text-fg">{t('healthScore.title')}</p>
             <p className="mt-1 text-sm font-bold text-brand-text tabular-nums">
               {t('landing.preview.vsMonth', { delta: signedDelta(HERO.healthDelta), month: prevMonth })}
@@ -82,14 +84,17 @@ export default function HeroPreview({ className = '' }) {
           ))}
         </div>
 
-        {/* Last added transaction */}
+        {/* Last added transaction: amount shares the title row, so on a
+            phone it wraps under the title instead of squeezing it. */}
         <div className={`${p[3].className} ${CELL} tile sm:col-span-2 px-[22px] py-[18px] flex items-center gap-[14px]`} style={p[3].style}>
           <CategoryAvatar category={{ name: HERO.lastTx.iconKey }} size="md" />
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-fg">{t(`landing.preview.tx.${HERO.lastTx.key}`)}</p>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+              <p className="font-bold text-fg">{t(`landing.preview.tx.${HERO.lastTx.key}`)}</p>
+              <p className="text-h3 font-extrabold tabular-nums text-fg whitespace-nowrap">{MINUS}{money(HERO.lastTx.amount, 2)}</p>
+            </div>
             <p className="text-sm font-semibold text-fg">{t(`landing.demo.short.${HERO.lastTx.category}`)} · {t('landing.preview.addedJustNow')}</p>
           </div>
-          <p className="text-h3 font-extrabold tabular-nums text-fg whitespace-nowrap">{MINUS}{money(HERO.lastTx.amount, 2)}</p>
         </div>
       </div>
     </div>

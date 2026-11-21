@@ -1005,6 +1005,9 @@
       "keptIn": "+{{amount}} të kursyera në {{month}}",
       "addedJustNow": "shtuar tani",
       "vsMonth": "{{delta}} krahasuar me muajin {{month}}"
+    },
+    "sticky": {
+      "value": "Falas, pa kartë"
     }
   },
   "currency": {

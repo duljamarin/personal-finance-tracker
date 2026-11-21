@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useRevealOnce } from '../hooks/useRevealOnce';
 import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import HeroPreview from './Landing/HeroPreview';
+import PrimaryCta, { SecondaryEntry } from './Landing/PrimaryCta';
+import StickyCta from './Landing/StickyCta';
 import { MiniHealthScore, MiniBenchmarks, MiniBudgetForecast, MiniYear } from './Landing/FeatureMinis';
 import { delayStyle, revealClass, tileDelay } from '../utils/motion';
 import {
@@ -30,6 +32,10 @@ const LANDING_HREFLANGS = [
 export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const isSq = (i18n.language || '').toLowerCase().startsWith('sq');
+  // The sticky bar watches these two: it appears once the hero CTA is
+  // scrolled past and hides when the final CTA section arrives.
+  const heroCtaRef = useRef(null);
+  const finalRef = useRef(null);
 
   // FAQPage + SoftwareApplication, both generated from the same i18n keys the
   // page renders, so structured data cannot drift from visible content. No
@@ -70,16 +76,18 @@ export default function LandingPage() {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" data-landing>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       {/* One mint block (R_HERO): the promise on the left (5 cols), the
           product on the right (7 cols). The H1 is the LCP element: no
           entrance animation, visible on first paint (I5). The preview is
-          static HTML (Landing/HeroPreview); its tiles pop in. */}
+          static HTML (Landing/HeroPreview); its tiles pop in. Below 1024px
+          the trust checklist follows the preview, so the preview starts
+          inside the first phone screen. */}
       <section className="max-w-content mx-auto">
-        <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)] grid lg:grid-cols-12 gap-[clamp(28px,4vw,48px)] lg:gap-gap items-center">
-          <div className="lg:col-span-5 min-w-0">
+        <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)] grid lg:grid-cols-12 gap-x-gap gap-y-7 lg:gap-y-0">
+          <div className="lg:col-span-5 lg:self-end min-w-0">
             <h1 className="text-h1-lg font-extrabold text-fg">
               {t('landing.hero.titleLine1')} {t('landing.hero.titleAccent')}
             </h1>
@@ -88,35 +96,24 @@ export default function LandingPage() {
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 animate-rise" style={delayStyle(280)}>
-              <Link
-                to={localizedPath('/register', i18n.language)}
-                className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-brand-600 bg-brand-600 hover:bg-brand-700 hover:border-brand-700 text-white font-bold rounded-pill text-body-lg"
-              >
-                {t('landing.hero.getStarted')}
-                <ArrowRight className="arrow-nudge w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
-              </Link>
-              <Link
-                to={localizedPath('/login', i18n.language)}
-                className="btn-motion btn-lift inline-flex items-center justify-center min-h-[52px] px-7 rounded-pill border-2 border-fg bg-tile text-fg hover:bg-fg hover:text-tile font-bold text-body-lg"
-              >
-                {t('landing.hero.signIn')}
-              </Link>
+            <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-3 animate-rise" style={delayStyle(280)}>
+              <PrimaryCta location="hero" ref={heroCtaRef} />
+              <SecondaryEntry />
             </div>
-
-            <ul className="mt-7 flex flex-col gap-2 list-none m-0 p-0 animate-rise" style={delayStyle(420)}>
-              {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
-                <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-fg">
-                  <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
-                  {label}
-                </li>
-              ))}
-            </ul>
           </div>
 
-          <div className="lg:col-span-7 min-w-0">
+          <div className="lg:col-start-6 lg:col-span-7 lg:row-start-1 lg:row-span-2 lg:self-center min-w-0">
             <HeroPreview />
           </div>
+
+          <ul className="lg:col-start-1 lg:col-span-5 lg:row-start-2 lg:self-start lg:mt-7 flex flex-col gap-2 list-none m-0 p-0 animate-rise" style={delayStyle(420)}>
+            {[t('landing.hero.trust1'), t('landing.hero.trust2'), t('landing.hero.trust3')].map((label) => (
+              <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-fg">
+                <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -131,7 +128,8 @@ export default function LandingPage() {
       <FounderSection t={t} />
       <FaqSection t={t} />
       <ToolsSection t={t} />
-      <FinalCtaSection t={t} lang={i18n.language} />
+      <FinalCtaSection t={t} sectionRef={finalRef} />
+      <StickyCta heroCtaRef={heroCtaRef} finalRef={finalRef} />
 
     </div>
   );
@@ -336,24 +334,24 @@ function PrivacySection({ t }) {
 }
 
 function PricingPreviewSection({ t }) {
+  const { i18n } = useTranslation();
   const { ref, rise, pop } = useSectionReveal();
   const freeItems = ['tx','budgets','goals','categories','reports','networth','healthscore'];
   const premiumItems = ['unlimited','cashflow','healthscore','benchmarks','splits','notifications'];
   const free = pop(0);
   const prem = pop(1);
-  const r = rise(2);
   return (
     <section ref={ref} id="pricing-preview" className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
       <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)]">
         <SectionHead rise={rise}>{t('landing.pricingPreview.title')}</SectionHead>
         <div className="mt-9 grid lg:grid-cols-2 gap-gap">
-          {/* Free */}
-          <div className={`tile tile-lift p-tile-dense sm:p-tile ${free.className}`} style={free.style}>
+          {/* Free: carries the page's primary action */}
+          <div className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col ${free.className}`} style={free.style}>
             <div className="flex items-baseline justify-between gap-3">
               <h3 className="text-h3-lg font-bold text-fg">{t('landing.pricingPreview.free.label')}</h3>
               <p className="text-h1 font-extrabold tabular-nums text-fg">{t('pricing.free')}</p>
             </div>
-            <ul className="mt-5 flex flex-col gap-2.5">
+            <ul className="mt-5 mb-7 flex flex-col gap-2.5">
               {freeItems.map(key => (
                 <li key={key} className="flex items-center gap-2.5 text-body font-semibold text-fg">
                   <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
@@ -361,9 +359,10 @@ function PricingPreviewSection({ t }) {
                 </li>
               ))}
             </ul>
+            <PrimaryCta location="pricing" className="mt-auto self-stretch sm:self-start" />
           </div>
-          {/* Premium: the hero tile */}
-          <div className={`tile tile-hero tile-lift p-tile-dense sm:p-tile ${prem.className}`} style={prem.style}>
+          {/* Premium: the hero tile, with its own (white) plan button */}
+          <div className={`tile tile-hero tile-lift p-tile-dense sm:p-tile flex flex-col ${prem.className}`} style={prem.style}>
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <h3 className="text-h3-lg font-bold flex items-center gap-2.5">
                 {t('landing.pricingPreview.premium.label')}
@@ -375,7 +374,7 @@ function PricingPreviewSection({ t }) {
               </p>
             </div>
             <p className="mt-1 text-sm font-semibold">{t('pricing.yearlyPerMonth')}</p>
-            <ul className="mt-5 flex flex-col gap-2.5">
+            <ul className="mt-5 mb-7 flex flex-col gap-2.5">
               {premiumItems.map(key => (
                 <li key={key} className="flex items-center gap-2.5 text-body font-semibold">
                   <Check className="w-[18px] h-[18px] shrink-0" strokeWidth={2.6} style={{ color: 'var(--toast-check)' }} aria-hidden="true" />
@@ -383,17 +382,17 @@ function PricingPreviewSection({ t }) {
                 </li>
               ))}
             </ul>
+            <div className="mt-auto flex flex-col sm:flex-row sm:items-center gap-3">
+              <Link
+                to={localizedPath('/pricing', i18n.language)}
+                className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-white bg-white hover:bg-brand-50 hover:border-brand-50 text-brand-600 font-bold rounded-pill text-body-lg whitespace-nowrap"
+              >
+                {t('landing.pricingPreview.cta')}
+                <ArrowRight className="arrow-nudge w-[18px] h-[18px] shrink-0" strokeWidth={2.4} aria-hidden="true" />
+              </Link>
+              <p className="text-sm font-semibold">{t('landing.pricingPreview.trial')}</p>
+            </div>
           </div>
-        </div>
-        <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-3 ${r.className}`} style={r.style}>
-          <Link
-            to="/pricing"
-            className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-pill text-body-lg"
-          >
-            {t('landing.pricingPreview.cta')}
-            <ArrowRight className="arrow-nudge w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
-          </Link>
-          <p className="text-sm font-semibold text-fg">{t('landing.pricingPreview.trial')}</p>
         </div>
       </div>
     </section>
@@ -495,29 +494,19 @@ function ToolsSection({ t }) {
   );
 }
 
-function FinalCtaSection({ t, lang }) {
+function FinalCtaSection({ t, sectionRef }) {
   const { ref, rise } = useSectionReveal();
   const r1 = rise(1);
   const r2 = rise(2);
+  const setRefs = (node) => { ref.current = node; if (sectionRef) sectionRef.current = node; };
   return (
-    <section ref={ref} className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
+    <section ref={setRefs} className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
       <div className="tile-inner rounded-hero p-[clamp(28px,6vw,80px)]">
         <SectionHead rise={rise} className="max-w-2xl">{t('landing.finalCta.title')}</SectionHead>
         <p className={`mt-5 text-body-lg text-fg max-w-xl ${r1.className}`} style={r1.style}>{t('landing.finalCta.desc')}</p>
-        <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-3 ${r2.className}`} style={r2.style}>
-          <Link
-            to={localizedPath('/register', lang)}
-            className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-brand-600 bg-brand-600 hover:bg-brand-700 hover:border-brand-700 text-white font-bold rounded-pill text-body-lg"
-          >
-            {t('landing.finalCta.button')}
-            <ArrowRight className="arrow-nudge w-[18px] h-[18px]" strokeWidth={2.4} aria-hidden="true" />
-          </Link>
-          <Link
-            to={localizedPath('/pricing', lang)}
-            className="btn-motion btn-lift inline-flex items-center justify-center min-h-[52px] px-7 rounded-pill border-2 border-fg bg-tile text-fg hover:bg-fg hover:text-tile font-bold text-body-lg"
-          >
-            {t('landing.finalCta.secondary')}
-          </Link>
+        <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 ${r2.className}`} style={r2.style}>
+          <PrimaryCta location="final" />
+          <SecondaryEntry />
         </div>
         <p className={`mt-6 text-sm font-semibold text-fg ${r2.className}`} style={r2.style}>{t('landing.finalCta.trustLine')}</p>
       </div>
