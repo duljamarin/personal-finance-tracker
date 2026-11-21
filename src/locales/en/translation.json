@@ -908,7 +908,9 @@
     "tools": {
       "eyebrow": "Free tools",
       "title": "Free calculators for Albania",
-      "desc": "Built on Albanian rules: net and gross salary, what you keep as a freelancer, and loan repayments. No signup, no limits."
+      "desc": "Built on Albanian rules: net and gross salary, what you keep as a freelancer, and loan repayments. No signup, no limits.",
+      "ctaLine": "Track your salary and spending every month",
+      "fullCalc": "Open the full salary calculator"
     },
     "finalCta": {
       "title": "Know where you stand",

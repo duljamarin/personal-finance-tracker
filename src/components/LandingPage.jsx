@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
@@ -7,6 +7,12 @@ import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import HeroPreview from './Landing/HeroPreview';
 import PrimaryCta, { SecondaryEntry } from './Landing/PrimaryCta';
 import StickyCta from './Landing/StickyCta';
+
+// The salary teaser pulls in the tax engine: lazy, so it stays out of the
+// landing chunk. Its fallback reserves the measured rendered height
+// (below sm / sm..lg / lg) so the page does not shift when it lands.
+const SalaryTeaser = lazy(() => import('./Landing/SalaryTeaser'));
+const SALARY_TEASER_MIN_H = 'min-h-[591px] sm:min-h-[420px] lg:min-h-[460px] xl:min-h-[384px]';
 import {
   MiniHealthScore, MiniBenchmarks, MiniBudgetForecast, MiniYear,
   StepAccountSnippet, StepMoneySnippet, StepScoreSnippet,
@@ -454,35 +460,42 @@ function FaqSection({ t }) {
   );
 }
 
+/**
+ * Free tools for Albania: the three tool links on the left, and a compact
+ * gross-to-net calculator (Landing/SalaryTeaser, lazy) on the right. The
+ * fallback reserves the teaser's rendered height so nothing below shifts
+ * when it arrives (R7, CLS).
+ */
 function ToolsSection({ t }) {
   const { i18n } = useTranslation();
   const { ref, rise, pop } = useSectionReveal();
-  const p = pop(0);
+  const r = rise(1);
+  const links = rise(2);
+  const p = pop(1);
   return (
-    <section ref={ref} aria-label={t('landing.tools.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
-      <div className={`tile p-[clamp(28px,5vw,56px)] ${p.className}`} style={p.style}>
-        <div className="grid lg:grid-cols-12 gap-gap items-end">
-          <SectionHead rise={rise} className="lg:col-span-6">{t('landing.tools.title')}</SectionHead>
-          <p className="lg:col-start-8 lg:col-span-5 text-body-lg text-fg">{t('landing.tools.desc')}</p>
+    <section ref={ref} aria-labelledby="tools-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
+      <div className="grid lg:grid-cols-12 gap-x-gap gap-y-8 items-start">
+        <div className="lg:col-span-5">
+          <SectionHead rise={rise} id="tools-title">{t('landing.tools.title')}</SectionHead>
+          <p className={`mt-5 text-body-lg text-fg ${r.className}`} style={r.style}>{t('landing.tools.desc')}</p>
+          <ul className={`mt-5 list-none m-0 p-0 flex flex-col ${links.className}`} style={links.style}>
+            {TOOLS.map((tool) => (
+              <li key={tool.path}>
+                <Link
+                  to={toolPath(tool.path, i18n.language)}
+                  className="group inline-flex items-center gap-2 min-h-11 font-bold text-body-lg text-fg underline-offset-4 decoration-2 hover:underline focus-visible:underline"
+                >
+                  {t(tool.labelKey)}
+                  <ArrowRight className="arrow-nudge w-[18px] h-[18px] shrink-0 text-brand-text" strokeWidth={2.4} aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
-        {/* Maps over TOOLS so a new tool appears here with no edit to this file.
-            First tool is the primary pill; the rest are secondary. Buttons
-            size to their labels (Albanian labels vary a lot in length). */}
-        <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
-          {TOOLS.map((tool, i) => (
-            <Link
-              key={tool.path}
-              to={toolPath(tool.path, i18n.language)}
-              className={`group btn-motion btn-lift inline-flex w-full sm:w-auto items-center justify-center gap-2 whitespace-nowrap min-h-[52px] px-6 text-body font-bold rounded-pill border-2 ${
-                i === 0
-                  ? 'bg-brand-600 hover:bg-brand-700 border-brand-600 hover:border-brand-700 text-white'
-                  : 'bg-tile border-fg text-fg hover:bg-fg hover:text-tile'
-              }`}
-            >
-              {t(tool.labelKey)}
-              <ArrowRight className="arrow-nudge w-[18px] h-[18px] shrink-0" strokeWidth={2.4} aria-hidden="true" />
-            </Link>
-          ))}
+        <div className={`lg:col-span-7 min-w-0 ${p.className}`} style={p.style}>
+          <Suspense fallback={<div className={`tile ${SALARY_TEASER_MIN_H}`} aria-hidden="true" />}>
+            <SalaryTeaser />
+          </Suspense>
         </div>
       </div>
     </section>

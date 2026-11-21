@@ -908,7 +908,9 @@
     "tools": {
       "eyebrow": "Mjete falas",
       "title": "Llogaritës falas për Shqipërinë",
-      "desc": "Ndërtuar mbi rregullat shqiptare: paga neto dhe bruto, sa ju mbetet si i vetëpunësuar dhe këstet e kredisë. Pa regjistrim, pa kufij."
+      "desc": "Ndërtuar mbi rregullat shqiptare: paga neto dhe bruto, sa ju mbetet si i vetëpunësuar dhe këstet e kredisë. Pa regjistrim, pa kufij.",
+      "ctaLine": "Ndiqni pagën dhe shpenzimet tuaja çdo muaj",
+      "fullCalc": "Hapni llogaritësin e plotë të pagës"
     },
     "finalCta": {
       "title": "Dini ku jeni",
