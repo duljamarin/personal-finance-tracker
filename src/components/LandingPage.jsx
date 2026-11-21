@@ -120,7 +120,6 @@ export default function LandingPage() {
       {/* Order is value > proof > how > trust > price > founder > FAQ >
           tools > final CTA. */}
       <HeroFeaturesSection t={t} />
-      <SecondaryFeaturesSection t={t} />
       <HowItWorksSection t={t} />
       <DataPrivacySection t={t} />
       <PrivacySection t={t} />
@@ -155,71 +154,68 @@ function SectionHead({ children, rise, className = '' }) {
 
 // ── Sections ─────────────────────────────────────────────────────────────────
 
+// Section rhythm: one vertical gap between landing sections.
+const SECTION_PB = 'pb-[clamp(48px,6vw,80px)]';
+
+function FeatureTile({ feat, preview, pop, className = '' }) {
+  return (
+    <article className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col justify-between gap-[18px] min-w-0 ${pop.className} ${className}`} style={pop.style}>
+      <div>
+        <h3 className="text-h3-lg font-bold text-fg">{feat?.title}</h3>
+        <p className="mt-2.5 text-body text-fg">{feat?.desc}</p>
+        <span className="mt-3 inline-flex items-center h-[30px] px-3 rounded-pill bg-inner text-sm font-bold text-fg">{feat?.eyebrow}</span>
+      </div>
+      <div>{preview}</div>
+    </article>
+  );
+}
+
+// "Also included": six plain lines, a 16px icon each (no tinted squares, R5).
+// Keys must exist in landing.secondaryFeatures.items (both locales).
+const ALSO_INCLUDED = [
+  { Icon: RefreshCw,  key: 'recurring' },
+  { Icon: Target,     key: 'goals' },
+  { Icon: TrendingUp, key: 'networth' },
+  { Icon: FileText,   key: 'reports' },
+  { Icon: Download,   key: 'csvImport' },
+  { Icon: Globe,      key: 'albanian' },
+];
+
 function HeroFeaturesSection({ t }) {
   // returnObjects can yield the key string before the i18n bundle resolves
   // (first language switch). Coerce to an object so nested access never throws.
   const raw = t('landing.heroFeatures', { returnObjects: true });
   const feats = (raw && typeof raw === 'object') ? raw : {};
   const { ref, rise, pop } = useSectionReveal();
-  const FeatureTile = ({ k, preview, i, className = '' }) => {
-    const p = pop(i);
-    return (
-      <article className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col gap-[18px] min-w-0 ${p.className} ${className}`} style={p.style}>
-        <div>
-          <h3 className="text-h3-lg font-bold text-fg">{feats[k]?.title}</h3>
-          <p className="mt-2.5 text-body text-fg">{feats[k]?.desc}</p>
-          <span className="mt-3 inline-flex items-center h-[30px] px-3 rounded-pill bg-inner text-sm font-bold text-fg">{feats[k]?.eyebrow}</span>
-        </div>
-        <div className="mt-auto">{preview}</div>
-      </article>
-    );
-  };
+  const also = rise(2);
+  const cta = rise(3);
   return (
-    <section ref={ref} aria-label={t('landing.features.eyebrow')} className="max-w-content mx-auto pt-[clamp(80px,9vw,120px)] pb-[clamp(64px,8vw,96px)]">
-      <div className="grid lg:grid-cols-12 gap-gap items-end">
-        <SectionHead rise={rise} className="lg:col-span-6">{t('landing.features.heading')}</SectionHead>
+    <section ref={ref} aria-label={t('landing.features.eyebrow')} className={`max-w-content mx-auto pt-[clamp(64px,7vw,96px)] ${SECTION_PB}`}>
+      <SectionHead rise={rise} className="max-w-3xl">{t('landing.features.heading')}</SectionHead>
+      {/* Two rows on lg: score (5) + benchmarks (7), then forecast (7) +
+          12 months (5). Tiles stretch only to the taller tile of their own
+          row; text sits on top, the mini at the bottom. */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-gap">
+        <FeatureTile feat={feats.healthscore} pop={pop(0)} preview={<MiniHealthScore />} className="lg:col-span-5" />
+        <FeatureTile feat={feats.benchmarks} pop={pop(1)} preview={<MiniBenchmarks />} className="lg:col-span-7" />
+        <FeatureTile feat={feats.budgets} pop={pop(2)} preview={<MiniBudgetForecast />} className="lg:col-span-7" />
+        <FeatureTile feat={feats.tracking} pop={pop(3)} preview={<MiniYear />} className="lg:col-span-5" />
       </div>
-      <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-gap">
-        {/* Strongest proof first: the score is the differentiator. */}
-        <FeatureTile k="healthscore" i={0} preview={<MiniHealthScore />} className="lg:col-span-4 lg:row-span-2" />
-        <FeatureTile k="benchmarks" i={1} preview={<MiniBenchmarks />} className="lg:col-span-8" />
-        <FeatureTile k="budgets" i={2} preview={<MiniBudgetForecast />} className="lg:col-span-4" />
-        <FeatureTile k="tracking" i={3} preview={<MiniYear />} className="lg:col-span-4" />
-      </div>
-    </section>
-  );
-}
 
-function SecondaryFeaturesSection({ t }) {
-  const { ref, rise, pop } = useSectionReveal();
-  // Keys here must match landing.secondaryFeatures.items in both locales.
-  const items = [
-    { icon: RefreshCw,  key: 'recurring' },
-    { icon: Target,     key: 'goals' },
-    { icon: TrendingUp, key: 'networth' },
-    { icon: FileText,   key: 'reports' },
-    { icon: Bell,       key: 'notifications' },
-    { icon: Download,   key: 'csvImport' },
-    { icon: Tag,        key: 'categories' },
-    { icon: Globe,      key: 'albanian' },
-    { icon: Activity,   key: 'currency' },
-    { icon: Lock,       key: 'encryption' },
-  ];
-  const p = pop(0);
-  return (
-    <section ref={ref} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
-      <div className={`tile p-tile-dense sm:p-tile ${p.className}`} style={p.style}>
-        <SectionHead rise={rise} className="mb-6">{t('landing.secondaryFeatures.title')}</SectionHead>
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-gap gap-y-1 list-none m-0 p-0">
-          {items.map(({ icon: Icon, key }) => (
-            <li key={key} className="activity-row flex items-center gap-[14px] p-2.5 rounded-icon">
-              <span className="activity-icon w-12 h-12 shrink-0 rounded-icon bg-inner text-brand-text flex items-center justify-center" aria-hidden="true">
-                <Icon className="w-[22px] h-[22px]" strokeWidth={2} />
-              </span>
-              <span className="text-body font-semibold text-fg">{t(`landing.secondaryFeatures.items.${key}`)}</span>
+      <div className={`mt-8 ${also.className}`} style={also.style}>
+        <h3 className="text-h3-lg font-bold text-fg">{t('landing.secondaryFeatures.title')}</h3>
+        <ul className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 list-none m-0 p-0">
+          {ALSO_INCLUDED.map(({ Icon, key }) => (
+            <li key={key} className="flex items-start gap-2.5 text-body font-semibold text-fg">
+              <Icon className="w-4 h-4 mt-[5px] shrink-0 text-brand-text" strokeWidth={2.4} aria-hidden="true" />
+              <span>{t(`landing.secondaryFeatures.items.${key}`)}</span>
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className={`mt-10 flex justify-center ${cta.className}`} style={cta.style}>
+        <PrimaryCta location="features" className="w-full sm:w-auto" />
       </div>
     </section>
   );

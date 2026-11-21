@@ -33,16 +33,18 @@ export function MiniHealthScore() {
         animate={false}
         label={String(health)}
         labelClassName="text-fg"
-        sublabel={<span className="text-sm font-bold text-brand-text">{t('landing.demo.scoreGood')}</span>}
       />
-      <dl className="flex-1 min-w-0 flex flex-col gap-2 m-0">
-        {stats.map(([v, k]) => (
-          <div key={k} className="flex items-baseline gap-2.5">
-            <dt className="order-2 text-sm font-semibold text-fg">{t(k)}</dt>
-            <dd className="order-1 m-0 min-w-[3.5rem] text-h3 font-extrabold text-fg tabular-nums">{v}</dd>
-          </div>
-        ))}
-      </dl>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-brand-text">{t('landing.demo.scoreGood')}</p>
+        <dl className="mt-2 flex flex-col gap-2">
+          {stats.map(([v, k]) => (
+            <div key={k} className="flex items-baseline gap-2.5">
+              <dt className="order-2 text-sm font-semibold text-fg">{t(k)}</dt>
+              <dd className="order-1 m-0 min-w-[3.5rem] text-h3 font-extrabold text-fg tabular-nums">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   );
 }
@@ -95,8 +97,10 @@ export function MiniBudgetForecast() {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4" aria-hidden="true">
-      {FEATURES.forecast.map(({ key, spent, limit, projected, exceedBy, willExceed }) => (
-        <div key={key} data-budget={key}>
+      {/* The fourth row only shows on lg, where this tile shares a row with
+          the taller 12-month tile and would otherwise have an empty band. */}
+      {FEATURES.forecast.map(({ key, spent, limit, projected, exceedBy, willExceed }, i) => (
+        <div key={key} data-budget={key} className={i > 2 ? 'hidden lg:block' : undefined}>
           <div className="flex flex-wrap justify-between gap-x-3 text-sm font-bold text-fg">
             <span>{t(`landing.demo.budgetItems.${key}`)}</span>
             <span className="tabular-nums">{money(spent)} / {money(limit)}</span>
@@ -137,7 +141,7 @@ export function MiniYear() {
           </div>
         ))}
       </div>
-      <dl className="grid grid-cols-3 gap-2 mt-4 m-0">
+      <dl className="grid grid-cols-3 gap-2 mt-4">
         <div className="tile-inner px-3 py-2.5 min-w-0">
           <dt className="text-sm font-bold text-fg">{t('landing.demo.income')}</dt>
           <dd className="m-0 font-extrabold text-brand-text tabular-nums">{moneyK(totals.income)}</dd>

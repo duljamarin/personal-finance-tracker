@@ -134,7 +134,7 @@ export const HERO = {
 export const FEATURES = {
   score: { health: HEALTH, savingsRate: SAVINGS_RATE, budgetsKeptPct, goalsOnTrack },
   benchmarks: ['food', 'entertainment', 'shopping', 'transport'].map((k) => ({ ...category(k), pct: benchmarkPct(category(k)) })),
-  forecast: ['food', 'entertainment', 'shopping'].map((k) => {
+  forecast: ['food', 'entertainment', 'shopping', 'transport'].map((k) => {
     const c = category(k);
     const projected = forecast(c);
     return { ...c, pct: budgetPct(c), projected, exceedBy: projected - c.limit, willExceed: projected > c.limit };
