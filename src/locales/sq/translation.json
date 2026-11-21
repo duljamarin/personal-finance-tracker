@@ -777,7 +777,6 @@
       "trust3": "Eksportoni ose fshini kurdo"
     },
     "features": {
-      "eyebrow": "Çfarë merrni",
       "heading": "Krahasuar me historikun tuaj, jo me një mesatare të përgjithshme"
     },
     "heroFeatures": {
@@ -862,13 +861,11 @@
       "trial": "Premium nis me një provë falas, pa kartë për ta parë"
     },
     "founder": {
-      "eyebrow": "Nga ndërtuesi",
       "quote": "E ndërtova këtë sepse isha lodhur duke i menaxhuar paratë në tabela. Jo se tabelat janë të këqija, në fakt janë shumë të mira, por sepse doja diçka që thjesht të ma tregonte pamjen pa qenë nevoja ta pikturoja vetë fillimisht. Çdo funksion këtu ekziston sepse më duhej mua vetë.",
       "name": "Marin Dulja",
       "role": "Ndërtues dhe zhvillues i vetëm"
     },
     "faq": {
-      "eyebrow": "Pyetje",
       "title": "Përgjigje të ndershme",
       "items": {
         "free": {
@@ -906,7 +903,6 @@
       }
     },
     "tools": {
-      "eyebrow": "Mjete falas",
       "title": "Llogaritës falas për Shqipërinë",
       "desc": "Ndërtuar mbi rregullat shqiptare: paga neto dhe bruto, sa ju mbetet si i vetëpunësuar dhe këstet e kredisë. Pa regjistrim, pa kufij.",
       "ctaLine": "Ndiqni pagën dhe shpenzimet tuaja çdo muaj",
@@ -915,7 +911,6 @@
     "finalCta": {
       "title": "Dini ku jeni",
       "desc": "Shihni ku qëndron ky muaj dhe nëse po përmirësoheni, krahasuar me historikun tuaj. Falas për të filluar, pa kartë.",
-      "button": "Filloni falas",
       "secondary": "Shihni çmimet",
       "trustLine": "Falas për të filluar · Pa kartë krediti · Eksportoni ose fshini kurdo"
     },
@@ -933,7 +928,6 @@
       "vsLastMonth": "krahasuar me muajt tuaj të shkuar",
       "budgetItems": {
         "food": "Ushqim dhe restorante",
-        "housing": "Banesë dhe qira",
         "entertainment": "Argëtim",
         "transport": "Transport",
         "shopping": "Blerje"

@@ -777,7 +777,6 @@
       "trust3": "Export or delete anytime"
     },
     "features": {
-      "eyebrow": "What you get",
       "heading": "Judged against your own history, not a generic average"
     },
     "heroFeatures": {
@@ -862,13 +861,11 @@
       "trial": "Premium starts with a free trial, no card to look around"
     },
     "founder": {
-      "eyebrow": "From the builder",
       "quote": "I built this because I was tired of managing my money in spreadsheets. Not because spreadsheets are bad, they are actually great, but because I wanted something that would just show me the picture without me having to paint it first. Every feature in here exists because I needed it myself.",
       "name": "Marin Dulja",
       "role": "Builder and sole developer"
     },
     "faq": {
-      "eyebrow": "Questions",
       "title": "Honest answers",
       "items": {
         "free": {
@@ -906,7 +903,6 @@
       }
     },
     "tools": {
-      "eyebrow": "Free tools",
       "title": "Free calculators for Albania",
       "desc": "Built on Albanian rules: net and gross salary, what you keep as a freelancer, and loan repayments. No signup, no limits.",
       "ctaLine": "Track your salary and spending every month",
@@ -915,7 +911,6 @@
     "finalCta": {
       "title": "Know where you stand",
       "desc": "See where this month stands and whether you are improving, judged against your own history. Free to start, no card.",
-      "button": "Start free",
       "secondary": "See pricing",
       "trustLine": "Free to start · No credit card · Export or delete anytime"
     },
@@ -933,7 +928,6 @@
       "vsLastMonth": "compared with your own past months",
       "budgetItems": {
         "food": "Food and dining",
-        "housing": "Housing and rent",
         "entertainment": "Entertainment",
         "transport": "Transport",
         "shopping": "Shopping"

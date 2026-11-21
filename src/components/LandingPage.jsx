@@ -7,12 +7,6 @@ import { TOOLS, toolPath, localizedPath } from '../lib/tools';
 import HeroPreview from './Landing/HeroPreview';
 import PrimaryCta, { SecondaryEntry } from './Landing/PrimaryCta';
 import StickyCta from './Landing/StickyCta';
-
-// The salary teaser pulls in the tax engine: lazy, so it stays out of the
-// landing chunk. Its fallback reserves the measured rendered height
-// (below sm / sm..lg / lg) so the page does not shift when it lands.
-const SalaryTeaser = lazy(() => import('./Landing/SalaryTeaser'));
-const SALARY_TEASER_MIN_H = 'min-h-[591px] sm:min-h-[420px] lg:min-h-[460px] xl:min-h-[384px]';
 import {
   MiniHealthScore, MiniBenchmarks, MiniBudgetForecast, MiniYear,
   StepAccountSnippet, StepMoneySnippet, StepScoreSnippet,
@@ -20,12 +14,15 @@ import {
 import { delayStyle, revealClass, tileDelay, D_DATA } from '../utils/motion';
 import { money, SPENDING, CIPHERTEXT_EXAMPLE } from './Landing/demoData';
 import {
-  TrendingUp, Target, Activity, RefreshCw,
-  Globe, Bell, Tag, FileText,
-  ArrowRight, Check, Lock, ShieldCheck, CloudOff,
-  Download, CreditCard, ChevronDown,
-  Database, Eye, UserPlus, ListPlus,
+  TrendingUp, Target, RefreshCw, Globe, FileText,
+  ArrowRight, Check, Lock, Eye, Download, CreditCard, ChevronDown,
 } from 'lucide-react';
+
+// The salary teaser pulls in the tax engine: lazy, so it stays out of the
+// landing chunk. Its fallback reserves the measured rendered height
+// (below sm / sm / lg / xl) so the page does not shift when it lands.
+const SalaryTeaser = lazy(() => import('./Landing/SalaryTeaser'));
+const SALARY_TEASER_MIN_H = 'min-h-[591px] sm:min-h-[420px] lg:min-h-[460px] xl:min-h-[384px]';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Single source for the FAQ: the rendered accordion and the FAQPage JSON-LD
@@ -127,15 +124,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Order is value > proof > how > trust > price > founder > FAQ >
-          tools > final CTA. */}
+      {/* One job: turn a visitor into a signup. Order is value > how >
+          trust > free tools > price > questions > final CTA with the
+          founder. Every "Start free" is a tracked PrimaryCta. */}
       <HeroFeaturesSection t={t} />
       <HowItWorksSection t={t} />
       <TrustSection t={t} />
-      <PricingPreviewSection t={t} />
-      <FounderSection t={t} />
-      <FaqSection t={t} />
       <ToolsSection t={t} />
+      <PricingPreviewSection t={t} />
+      <FaqSection t={t} />
       <FinalCtaSection t={t} sectionRef={finalRef} />
       <StickyCta heroCtaRef={heroCtaRef} finalRef={finalRef} />
 
@@ -199,8 +196,8 @@ function HeroFeaturesSection({ t }) {
   const also = rise(2);
   const cta = rise(3);
   return (
-    <section ref={ref} aria-label={t('landing.features.eyebrow')} className={`max-w-content mx-auto pt-[clamp(64px,7vw,96px)] ${SECTION_PB}`}>
-      <SectionHead rise={rise} className="max-w-3xl">{t('landing.features.heading')}</SectionHead>
+    <section ref={ref} aria-labelledby="features-title" className={`max-w-content mx-auto pt-[clamp(64px,7vw,96px)] ${SECTION_PB}`}>
+      <SectionHead rise={rise} id="features-title" className="max-w-3xl">{t('landing.features.heading')}</SectionHead>
       {/* Two rows on lg: score (5) + benchmarks (7), then forecast (7) +
           12 months (5). Tiles stretch only to the taller tile of their own
           row; text sits on top, the mini at the bottom. */}
@@ -342,9 +339,9 @@ function PricingPreviewSection({ t }) {
   const free = pop(0);
   const prem = pop(1);
   return (
-    <section ref={ref} id="pricing-preview" className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
+    <section ref={ref} id="pricing-preview" aria-labelledby="pricing-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
       <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)]">
-        <SectionHead rise={rise}>{t('landing.pricingPreview.title')}</SectionHead>
+        <SectionHead rise={rise} id="pricing-title">{t('landing.pricingPreview.title')}</SectionHead>
         <div className="mt-9 grid lg:grid-cols-2 gap-gap">
           {/* Free: carries the page's primary action */}
           <div className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col ${free.className}`} style={free.style}>
@@ -400,27 +397,6 @@ function PricingPreviewSection({ t }) {
   );
 }
 
-function FounderSection({ t }) {
-  const { ref, pop } = useSectionReveal();
-  const p = pop(0);
-  return (
-    <section ref={ref} aria-label={t('landing.founder.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
-      <figure className={`tile p-[clamp(28px,5vw,56px)] max-w-3xl ${p.className}`} style={p.style}>
-        <blockquote className="text-h3-lg font-bold text-fg">
-          &ldquo;{t('landing.founder.quote')}&rdquo;
-        </blockquote>
-        <figcaption className="mt-8 flex items-center gap-4">
-          <span className="w-12 h-12 rounded-icon bg-brand-600 flex items-center justify-center text-white font-extrabold text-body-lg shrink-0" aria-hidden="true">M</span>
-          <span>
-            <span className="block font-bold text-fg">{t('landing.founder.name')}</span>
-            <span className="block text-sm font-semibold text-fg">{t('landing.founder.role')}</span>
-          </span>
-        </figcaption>
-      </figure>
-    </section>
-  );
-}
-
 function FaqItem({ q, a }) {
   const [open, setOpen] = useState(false);
   return (
@@ -447,9 +423,9 @@ function FaqSection({ t }) {
   const { ref, rise, pop } = useSectionReveal();
   const p = pop(0);
   return (
-    <section ref={ref} aria-label={t('landing.faq.eyebrow')} className="max-w-content mx-auto pb-[clamp(64px,8vw,96px)]">
+    <section ref={ref} aria-labelledby="faq-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
       <div className="grid lg:grid-cols-12 gap-gap items-start">
-        <SectionHead rise={rise} className="lg:col-span-4">{t('landing.faq.title')}</SectionHead>
+        <SectionHead rise={rise} id="faq-title" className="lg:col-span-4">{t('landing.faq.title')}</SectionHead>
         <div className={`tile px-tile-dense sm:px-tile py-2 lg:col-span-8 ${p.className}`} style={p.style}>
           {FAQ_KEYS.map(key => (
             <FaqItem key={key} q={t(`landing.faq.items.${key}.q`)} a={t(`landing.faq.items.${key}.a`)} />
@@ -502,21 +478,42 @@ function ToolsSection({ t }) {
   );
 }
 
+/**
+ * Final CTA and the founder in one mint block: the ask on the left (7 cols),
+ * the person behind the app on the right (5 cols), so neither side is a
+ * half-empty card (R3, R4).
+ */
 function FinalCtaSection({ t, sectionRef }) {
-  const { ref, rise } = useSectionReveal();
+  const { ref, rise, pop } = useSectionReveal();
   const r1 = rise(1);
   const r2 = rise(2);
+  const quote = pop(2);
+  const name = t('landing.founder.name');
   const setRefs = (node) => { ref.current = node; if (sectionRef) sectionRef.current = node; };
   return (
-    <section ref={setRefs} className="max-w-content mx-auto pb-[clamp(80px,9vw,120px)]">
-      <div className="tile-inner rounded-hero p-[clamp(28px,6vw,80px)]">
-        <SectionHead rise={rise} className="max-w-2xl">{t('landing.finalCta.title')}</SectionHead>
-        <p className={`mt-5 text-body-lg text-fg max-w-xl ${r1.className}`} style={r1.style}>{t('landing.finalCta.desc')}</p>
-        <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 ${r2.className}`} style={r2.style}>
-          <PrimaryCta location="final" />
-          <SecondaryEntry />
+    <section ref={setRefs} aria-labelledby="final-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
+      <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)] grid lg:grid-cols-12 gap-x-gap gap-y-8 items-center">
+        <div className="lg:col-span-7 min-w-0">
+          <SectionHead rise={rise} id="final-title">{t('landing.finalCta.title')}</SectionHead>
+          <p className={`mt-5 text-body-lg text-fg max-w-xl ${r1.className}`} style={r1.style}>{t('landing.finalCta.desc')}</p>
+          <div className={`mt-8 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 ${r2.className}`} style={r2.style}>
+            <PrimaryCta location="final" />
+            <SecondaryEntry />
+          </div>
+          <p className={`mt-5 text-sm font-semibold text-fg ${r2.className}`} style={r2.style}>{t('landing.finalCta.trustLine')}</p>
         </div>
-        <p className={`mt-6 text-sm font-semibold text-fg ${r2.className}`} style={r2.style}>{t('landing.finalCta.trustLine')}</p>
+        <figure className={`lg:col-span-5 min-w-0 tile p-tile-dense sm:p-tile m-0 ${quote.className}`} style={quote.style}>
+          <blockquote className="text-body-lg font-semibold text-fg">
+            &ldquo;{t('landing.founder.quote')}&rdquo;
+          </blockquote>
+          <figcaption className="mt-6 flex items-center gap-4">
+            <span className="w-12 h-12 rounded-icon bg-brand-600 flex items-center justify-center text-white font-extrabold text-body-lg shrink-0" aria-hidden="true">{name.charAt(0)}</span>
+            <span>
+              <span className="block font-bold text-fg">{name}</span>
+              <span className="block text-sm font-semibold text-fg">{t('landing.founder.role')}</span>
+            </span>
+          </figcaption>
+        </figure>
       </div>
     </section>
   );
