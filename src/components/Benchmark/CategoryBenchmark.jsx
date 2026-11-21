@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchCategoryBenchmarks } from '../../utils/api';
-import { deviationPct } from '../../utils/finance/benchmarks';
+import { deviationPct, deviationAmount } from '../../utils/finance/benchmarks';
 import { MINUS } from '../../utils/bento';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useSubscription } from '../../context/SubscriptionContext';
@@ -278,18 +278,27 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                           <span className="font-semibold tracking-[-0.01em] text-2xl text-fg">
                             {formatCurrency(Number(benchmark.current_month_spending))}
                           </span>
-                          {/* This month vs your own average, colored by the
-                              same status as the pill (a small move that is
-                              still within normal stays neutral). */}
-                          {deviation !== null && (
-                            <span className="flex items-baseline gap-1.5">
-                              <span className={`text-h3 font-extrabold tabular-nums ${DEVIATION_COLOR[benchmark.status] || 'text-fg'}`}>
-                                {deviation === 0 ? '0%' : `${deviation > 0 ? '+' : MINUS}${Math.abs(deviation)}%`}
-                              </span>
-                              <span className="text-sm font-semibold text-fg">{t('benchmark.vsNormal')}</span>
+                          {/* The difference in money, colored by the same
+                              status as the pill (a small move that is still
+                              within normal stays neutral). Nothing when it is
+                              the same as usual: "0%" told the user nothing. */}
+                          {deviation !== null && deviation !== 0 && (
+                            <span className={`text-h3 font-extrabold tabular-nums ${DEVIATION_COLOR[benchmark.status] || 'text-fg'}`}>
+                              {deviation > 0 ? '+' : MINUS}{formatCurrency(Math.abs(deviationAmount(benchmark)))}
                             </span>
                           )}
                         </div>
+                        {/* What that means, against the user's own usual month. */}
+                        {deviation !== null && (
+                          <p className="mt-1 text-sm font-semibold text-fg">
+                            {deviation === 0
+                              ? t('benchmark.compare.same', { avg: formatCurrency(Number(benchmark.avg_monthly_spending)) })
+                              : t(deviation > 0 ? 'benchmark.compare.above' : 'benchmark.compare.below', {
+                                  pct: `${Math.abs(deviation)}%`,
+                                  avg: formatCurrency(Number(benchmark.avg_monthly_spending)),
+                                })}
+                          </p>
+                        )}
                       </div>
 
                       {/* No baseline yet: showing a 0 - 0 "typical range" and a

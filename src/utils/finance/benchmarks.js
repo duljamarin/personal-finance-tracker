@@ -112,3 +112,10 @@ export function deviationPct(benchmark) {
   if (!benchmark?.months_with_data || avgSpend <= 0) return null;
   return Math.round(((Number(benchmark.current_month_spending) || 0) - avgSpend) / avgSpend * 100);
 }
+
+/** This month minus the user's own average for a category (money), null without a baseline. */
+export function deviationAmount(benchmark) {
+  const avgSpend = Number(benchmark?.avg_monthly_spending) || 0;
+  if (!benchmark?.months_with_data || avgSpend <= 0) return null;
+  return (Number(benchmark.current_month_spending) || 0) - avgSpend;
+}

@@ -218,7 +218,9 @@ tabular numbers; donut center shows the total; `animationDuration = D_DATA`,
   steady vs last month) and three plain figures for the month: saving rate,
   budgets kept, goals on track (`utils/finance/dashboardModel`).
 - **"Your normal"** (2026-11-21): benchmark cards show this month vs the
-  category average as a signed % ("+18% vs your normal"), colored by status;
+  category average in money ("+€63", colored by status) with a sentence
+  ("18% more than your usual €349 a month"; "Right at your usual €500 a
+  month" when equal, no figure);
   the cash-flow chart turns a month's expense bar WARNING when it is above
   `spendingNormal` (mean of up to 12 complete months + the benchmark band).
 - **Progress thresholds** (2026-11-18): keep `progressColor` 70% / 100%.

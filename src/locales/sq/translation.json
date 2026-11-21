@@ -1128,7 +1128,11 @@
     "buildingBaselineDesc": "Krahasimet kërkojnë të paktën një muaj të plotë historik. Importoni transaksione të vjetra nga banka për t'i marrë menjëherë, ose vazhdoni të regjistroni dhe shfaqen muajin tjetër.",
     "currentMonthOnly": "Vetëm muaji aktual",
     "noBaselineYet": "Kaq keni shpenzuar këtu këtë muaj. Kur të mbyllet një muaj i plotë, kjo kartë do t'ju tregojë nëse kjo shumë është e lartë apo e ulët për ju.",
-    "vsNormal": "kundrejt normales suaj"
+    "compare": {
+      "above": "{{pct}} më shumë se zakonisht ({{avg}} në muaj)",
+      "below": "{{pct}} më pak se zakonisht ({{avg}} në muaj)",
+      "same": "Njësoj si zakonisht ({{avg}} në muaj)"
+    }
   },
   "healthScore": {
     "title": "Rezultati i Shëndetit Financiar",
