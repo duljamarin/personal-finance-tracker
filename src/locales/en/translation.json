@@ -1415,7 +1415,8 @@
     "updatePayment": "Update Payment Method",
     "resumePlan": "Resume Subscription",
     "metaTitle": "Pricing",
-    "metaDescription": "One plan with everything included. Try Personal Finances free for 7 days, no card required."
+    "metaDescription": "One plan with everything included. Try Personal Finances free for 7 days, no card required.",
+    "manageUnavailable": "Subscription management can't be opened right now. Please try again later or write to support@personal-finances.app."
   },
   "subscription": {
     "active": "Active",

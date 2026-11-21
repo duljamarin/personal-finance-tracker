@@ -127,7 +127,14 @@ export default function PricingPage() {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
+        // Paddle refused (502 from the function): say so plainly instead
+        // of a generic error, with a way to reach us.
+        if (response.status === 502) {
+          console.error('Subscription management unavailable:', errorData.code || errorData.error);
+          addToast(t('pricing.manageUnavailable'), 'error');
+          return;
+        }
         throw new Error(errorData.error || 'Failed to get management URLs');
       }
 

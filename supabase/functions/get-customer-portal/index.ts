@@ -9,6 +9,27 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const PADDLE_API_KEY = Deno.env.get("PADDLE_API_KEY")!;
 const PADDLE_ENVIRONMENT = Deno.env.get("PADDLE_ENVIRONMENT") || "sandbox";
 
+/**
+ * Log what Paddle says about the API key in use: environment (live/sandbox)
+ * and its permissions. Calls the API root, which requires no permission. The
+ * response describes the credentials, it does not contain the key.
+ */
+async function logPaddleCredentials(paddleApiUrl: string) {
+  try {
+    const res = await fetch(`${paddleApiUrl}/`, {
+      headers: { "Authorization": `Bearer ${PADDLE_API_KEY}` },
+    });
+    const text = await res.text();
+    console.error(
+      `Paddle key check (${PADDLE_ENVIRONMENT} API):`,
+      res.status,
+      text.slice(0, 2000),
+    );
+  } catch (e) {
+    console.error("Paddle key check failed:", e);
+  }
+}
+
 serve(async (req: Request) => {
   // CORS headers
   const corsHeaders = {
@@ -101,10 +122,19 @@ serve(async (req: Request) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Paddle API error:", errorText);
+      console.error("Paddle API error:", response.status, errorText);
+      if (response.status === 403) {
+        // 403 "forbidden": the key is valid but not allowed to read this
+        // subscription. Either it is a sandbox key on the live API (or the
+        // reverse), or it lacks the "subscription.read" permission (keys
+        // created since May 2025 have per-action permissions). The API root
+        // needs no permission and reports which: log it.
+        await logPaddleCredentials(paddleApiUrl);
+      }
       return new Response(
         JSON.stringify({
           error: "Failed to fetch subscription details",
+          code: response.status === 403 ? "paddle_forbidden" : "paddle_error",
         }),
         {
           status: 502,

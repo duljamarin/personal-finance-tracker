@@ -1415,7 +1415,8 @@
     "updatePayment": "Përditëso Metodën e Pagesës",
     "resumePlan": "Rifillo Abonimin",
     "metaTitle": "Çmimet",
-    "metaDescription": "Një plan me gjithçka të përfshirë. Provoni Personal Finances falas për 7 ditë, pa kartë krediti."
+    "metaDescription": "Një plan me gjithçka të përfshirë. Provoni Personal Finances falas për 7 ditë, pa kartë krediti.",
+    "manageUnavailable": "Menaxhimi i abonimit nuk mund të hapet tani. Provoni sërish më vonë ose na shkruani te support@personal-finances.app."
   },
   "subscription": {
     "active": "Aktiv",
