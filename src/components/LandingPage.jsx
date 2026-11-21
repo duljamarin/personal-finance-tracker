@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, lazy, Suspense } from 'react';
+import { useState, useMemo, useRef, useEffect, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMetaTags } from '../hooks/useMetaTags';
@@ -93,7 +93,7 @@ export default function LandingPage() {
           the trust checklist follows the preview, so the preview starts
           inside the first phone screen. */}
       <section className="max-w-content mx-auto">
-        <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)] grid lg:grid-cols-12 gap-x-gap gap-y-7 lg:gap-y-0">
+        <div className="tile-inner rounded-hero p-[clamp(28px,4vw,56px)] grid lg:grid-cols-12 gap-x-gap gap-y-7 lg:gap-y-0">
           <div className="lg:col-span-5 lg:self-end min-w-0">
             <h1 className="text-h1-lg font-extrabold text-fg">
               {t('landing.hero.titleLine1')} {t('landing.hero.titleAccent')}
@@ -160,16 +160,35 @@ function SectionHead({ children, rise, id, className = '' }) {
 
 // ── Sections ─────────────────────────────────────────────────────────────────
 
-// Section rhythm: one vertical gap between landing sections.
-const SECTION_PB = 'pb-[clamp(48px,6vw,80px)]';
+// Section rhythm: one vertical gap between landing sections (3 x GAP).
+const SECTION_PB = 'pb-12';
+
+// Below 640px the four tiles are one snap row (86% wide, the next one
+// peeks), like the hero preview; from 640px a 2-column grid, from 1024px
+// the bento rows.
+const FEATURE_ROW = 'flex gap-gap overflow-x-auto snap-x snap-mandatory -mx-4 px-4 scroll-px-4 pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:mx-0 sm:px-0 sm:pb-0 lg:grid-cols-12';
+const FEATURE_CELL = 'shrink-0 w-[86%] snap-start sm:w-auto';
+
+/** True while the viewport is below 640px (the features row scrolls). */
+function useBelowSm() {
+  const query = '(max-width: 639px)';
+  const [below, setBelow] = useState(() => typeof window !== 'undefined' && window.matchMedia?.(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia?.(query);
+    if (!mq) return undefined;
+    const on = () => setBelow(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return below;
+}
 
 function FeatureTile({ feat, preview, pop, className = '' }) {
   return (
-    <article className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col justify-between gap-[18px] min-w-0 ${pop.className} ${className}`} style={pop.style}>
+    <article className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col justify-between gap-[18px] min-w-0 ${FEATURE_CELL} ${pop.className} ${className}`} style={pop.style}>
       <div>
         <h3 className="text-h3-lg font-bold text-fg">{feat?.title}</h3>
         <p className="mt-2.5 text-body text-fg">{feat?.desc}</p>
-        <span className="mt-3 inline-flex items-center h-[30px] px-3 rounded-pill bg-inner text-sm font-bold text-fg">{feat?.eyebrow}</span>
       </div>
       <div>{preview}</div>
     </article>
@@ -195,13 +214,20 @@ function HeroFeaturesSection({ t }) {
   const { ref, rise, pop } = useSectionReveal();
   const also = rise(2);
   const cta = rise(3);
+  // The row scrolls only on phones; only then is it a keyboard stop.
+  const scrolls = useBelowSm();
   return (
-    <section ref={ref} aria-labelledby="features-title" className={`max-w-content mx-auto pt-[clamp(64px,7vw,96px)] ${SECTION_PB}`}>
+    <section ref={ref} aria-labelledby="features-title" className={`max-w-content mx-auto pt-12 ${SECTION_PB}`}>
       <SectionHead rise={rise} id="features-title" className="max-w-3xl">{t('landing.features.heading')}</SectionHead>
       {/* Two rows on lg: score (5) + benchmarks (7), then forecast (7) +
           12 months (5). Tiles stretch only to the taller tile of their own
           row; text sits on top, the mini at the bottom. */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-gap">
+      <div
+        className={`mt-8 ${FEATURE_ROW}`}
+        role={scrolls ? 'region' : undefined}
+        aria-labelledby={scrolls ? 'features-title' : undefined}
+        tabIndex={scrolls ? 0 : undefined}
+      >
         <FeatureTile feat={feats.healthscore} pop={pop(0)} preview={<MiniHealthScore />} className="lg:col-span-5" />
         <FeatureTile feat={feats.benchmarks} pop={pop(1)} preview={<MiniBenchmarks />} className="lg:col-span-7" />
         <FeatureTile feat={feats.budgets} pop={pop(2)} preview={<MiniBudgetForecast />} className="lg:col-span-7" />
@@ -220,7 +246,7 @@ function HeroFeaturesSection({ t }) {
         </ul>
       </div>
 
-      <div className={`mt-10 flex justify-center ${cta.className}`} style={cta.style}>
+      <div className={`mt-8 flex justify-center ${cta.className}`} style={cta.style}>
         <PrimaryCta location="features" className="w-full sm:w-auto" />
       </div>
     </section>
@@ -244,9 +270,9 @@ function HowItWorksSection({ t }) {
   const p = rise(1);
   return (
     <section ref={ref} aria-label={t('landing.howItWorks.title')} className={`max-w-content mx-auto ${SECTION_PB}`}>
-      <div className="tile p-tile-dense sm:p-[clamp(26px,4vw,48px)]">
+      <div className="tile p-tile-dense sm:p-[clamp(26px,3vw,40px)]">
         <SectionHead rise={rise}>{t('landing.howItWorks.subtitle')}</SectionHead>
-        <ol className={`mt-8 lg:mt-10 grid lg:grid-cols-3 gap-8 lg:gap-gap list-none m-0 p-0 ${p.className}`} style={p.style}>
+        <ol className={`mt-8 grid lg:grid-cols-3 gap-8 lg:gap-gap list-none m-0 p-0 ${p.className}`} style={p.style}>
           {STEPS.map(({ key, Snippet }, i) => (
             <li key={key} className="relative min-w-0 pl-9 lg:pl-0 lg:pt-9 lg:pr-gap">
               {i < STEPS.length - 1 && (
@@ -294,7 +320,7 @@ function TrustSection({ t }) {
   const foot = rise(2);
   return (
     <section ref={ref} aria-labelledby="trust-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
-      <div className="grid lg:grid-cols-12 gap-x-gap gap-y-8 items-start">
+      <div className="grid lg:grid-cols-12 gap-x-gap gap-y-8 items-center">
         <div className="lg:col-span-5">
           <SectionHead rise={rise} id="trust-title">{t('landing.trust.title')}</SectionHead>
           <p className={`mt-5 text-body-lg text-fg ${r.className}`} style={r.style}>{t('landing.trust.desc')}</p>
@@ -312,9 +338,11 @@ function TrustSection({ t }) {
                 <p className="mt-1.5 font-mono text-sm font-semibold text-fg [overflow-wrap:anywhere]">{CIPHERTEXT_EXAMPLE}</p>
               </div>
             </div>
-            <ul className="mt-2 list-none m-0 p-0 divide-y divide-line">
-              {TRUST_ROWS.map(({ Icon, key }) => (
-                <li key={key} className="flex gap-3 py-4 last:pb-0">
+            {/* One column of rows below lg; a 2x2 grid on lg. Hairlines go
+                between rows only, never above the first row of a column. */}
+            <ul className="mt-2 list-none m-0 p-0 lg:grid lg:grid-cols-2 lg:gap-x-8">
+              {TRUST_ROWS.map(({ Icon, key }, i) => (
+                <li key={key} className={`flex gap-3 py-4 ${i > 0 ? 'border-t border-line' : ''} ${i === 1 ? 'lg:border-t-0' : ''} ${i >= TRUST_ROWS.length - 2 ? 'lg:pb-0' : ''} ${i === TRUST_ROWS.length - 1 ? 'pb-0' : ''}`}>
                   <Icon className="w-4 h-4 mt-[5px] shrink-0 text-brand-text" strokeWidth={2.4} aria-hidden="true" />
                   <div className="min-w-0">
                     <h3 className="text-body font-bold text-fg">{t(`landing.trust.rows.${key}.title`)}</h3>
@@ -340,56 +368,54 @@ function PricingPreviewSection({ t }) {
   const prem = pop(1);
   return (
     <section ref={ref} id="pricing-preview" aria-labelledby="pricing-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
-      <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)]">
-        <SectionHead rise={rise} id="pricing-title">{t('landing.pricingPreview.title')}</SectionHead>
-        <div className="mt-9 grid lg:grid-cols-2 gap-gap">
-          {/* Free: carries the page's primary action */}
-          <div className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col ${free.className}`} style={free.style}>
-            <div className="flex items-baseline justify-between gap-3">
-              <h3 className="text-h3-lg font-bold text-fg">{t('landing.pricingPreview.free.label')}</h3>
-              <p className="text-h1 font-extrabold tabular-nums text-fg">{t('pricing.free')}</p>
-            </div>
-            <ul className="mt-5 mb-7 flex flex-col gap-2.5">
-              {freeItems.map(key => (
-                <li key={key} className="flex items-center gap-2.5 text-body font-semibold text-fg">
-                  <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
-                  {t(`landing.pricingPreview.free.items.${key}`)}
-                </li>
-              ))}
-            </ul>
-            <PrimaryCta location="pricing" className="mt-auto self-stretch sm:self-start" />
+      <SectionHead rise={rise} id="pricing-title">{t('landing.pricingPreview.title')}</SectionHead>
+      <div className="mt-8 grid lg:grid-cols-2 gap-gap">
+        {/* Free: carries the page's primary action */}
+        <div className={`tile tile-lift p-tile-dense sm:p-tile flex flex-col ${free.className}`} style={free.style}>
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="text-h3-lg font-bold text-fg">{t('landing.pricingPreview.free.label')}</h3>
+            <p className="text-h1 font-extrabold tabular-nums text-fg">{t('pricing.free')}</p>
           </div>
-          {/* Premium: the hero tile, with its own (white) plan button */}
-          <div className={`tile tile-hero tile-lift p-tile-dense sm:p-tile flex flex-col ${prem.className}`} style={prem.style}>
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <h3 className="text-h3-lg font-bold flex items-center gap-2.5">
-                {t('landing.pricingPreview.premium.label')}
-                <span className="inline-flex items-center h-[30px] px-3 rounded-pill bg-hero-inset text-sm font-bold">{t('pricing.freeTrial')}</span>
-              </h3>
-              <p>
-                <span className="text-h1 font-extrabold tabular-nums">{t('pricing.yearlyPrice')}</span>
-                <span className="ml-1 font-semibold">{t('pricing.perYear')}</span>
-              </p>
-            </div>
-            <p className="mt-1 text-sm font-semibold">{t('pricing.yearlyPerMonth')}</p>
-            <ul className="mt-5 mb-7 flex flex-col gap-2.5">
-              {premiumItems.map(key => (
-                <li key={key} className="flex items-center gap-2.5 text-body font-semibold">
-                  <Check className="w-[18px] h-[18px] shrink-0" strokeWidth={2.6} style={{ color: 'var(--toast-check)' }} aria-hidden="true" />
-                  {t(`landing.pricingPreview.premium.items.${key}`)}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-auto flex flex-col sm:flex-row sm:items-center gap-3">
-              <Link
-                to={localizedPath('/pricing', i18n.language)}
-                className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-white bg-white hover:bg-brand-50 hover:border-brand-50 text-brand-600 font-bold rounded-pill text-body-lg whitespace-nowrap"
-              >
-                {t('landing.pricingPreview.cta')}
-                <ArrowRight className="arrow-nudge w-[18px] h-[18px] shrink-0" strokeWidth={2.4} aria-hidden="true" />
-              </Link>
-              <p className="text-sm font-semibold">{t('landing.pricingPreview.trial')}</p>
-            </div>
+          <ul className="mt-5 mb-7 flex flex-col gap-2">
+            {freeItems.map(key => (
+              <li key={key} className="flex items-center gap-2.5 text-body font-semibold text-fg">
+                <Check className="w-[18px] h-[18px] text-brand-text shrink-0" strokeWidth={2.6} aria-hidden="true" />
+                {t(`landing.pricingPreview.free.items.${key}`)}
+              </li>
+            ))}
+          </ul>
+          <PrimaryCta location="pricing" className="mt-auto self-stretch sm:self-start" />
+        </div>
+        {/* Premium: the hero tile, with its own (white) plan button */}
+        <div className={`tile tile-hero tile-lift p-tile-dense sm:p-tile flex flex-col ${prem.className}`} style={prem.style}>
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h3 className="text-h3-lg font-bold flex items-center gap-2.5">
+              {t('landing.pricingPreview.premium.label')}
+              <span className="inline-flex items-center h-[30px] px-3 rounded-pill bg-hero-inset text-sm font-bold">{t('pricing.freeTrial')}</span>
+            </h3>
+            <p>
+              <span className="text-h1 font-extrabold tabular-nums">{t('pricing.yearlyPrice')}</span>
+              <span className="ml-1 font-semibold">{t('pricing.perYear')}</span>
+            </p>
+          </div>
+          <p className="mt-1 text-sm font-semibold">{t('pricing.yearlyPerMonth')}</p>
+          <ul className="mt-5 mb-7 flex flex-col gap-2">
+            {premiumItems.map(key => (
+              <li key={key} className="flex items-center gap-2.5 text-body font-semibold">
+                <Check className="w-[18px] h-[18px] shrink-0" strokeWidth={2.6} style={{ color: 'var(--toast-check)' }} aria-hidden="true" />
+                {t(`landing.pricingPreview.premium.items.${key}`)}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-col sm:flex-row sm:items-center gap-3">
+            <Link
+              to={localizedPath('/pricing', i18n.language)}
+              className="group btn-motion btn-lift inline-flex items-center justify-center gap-2.5 min-h-[52px] px-7 border-2 border-white bg-white hover:bg-brand-50 hover:border-brand-50 text-brand-600 font-bold rounded-pill text-body-lg whitespace-nowrap"
+            >
+              {t('landing.pricingPreview.cta')}
+              <ArrowRight className="arrow-nudge w-[18px] h-[18px] shrink-0" strokeWidth={2.4} aria-hidden="true" />
+            </Link>
+            <p className="text-sm font-semibold">{t('landing.pricingPreview.trial')}</p>
           </div>
         </div>
       </div>
@@ -397,13 +423,13 @@ function PricingPreviewSection({ t }) {
   );
 }
 
-function FaqItem({ q, a }) {
+function FaqItem({ q, a, className = 'border-b border-line' }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-line last:border-0">
+    <div className={className}>
       <button
         type="button"
-        className="w-full min-h-11 flex items-center justify-between gap-4 py-5 text-left group"
+        className="w-full min-h-11 flex items-center justify-between gap-4 py-4 text-left group"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
       >
@@ -413,7 +439,7 @@ function FaqItem({ q, a }) {
         </span>
       </button>
       {open && (
-        <p className="pb-5 text-body-lg text-fg animate-rise">{a}</p>
+        <p className="pb-4 text-body-lg text-fg animate-rise">{a}</p>
       )}
     </div>
   );
@@ -424,13 +450,19 @@ function FaqSection({ t }) {
   const p = pop(0);
   return (
     <section ref={ref} aria-labelledby="faq-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
-      <div className="grid lg:grid-cols-12 gap-gap items-start">
-        <SectionHead rise={rise} id="faq-title" className="lg:col-span-4">{t('landing.faq.title')}</SectionHead>
-        <div className={`tile px-tile-dense sm:px-tile py-2 lg:col-span-8 ${p.className}`} style={p.style}>
-          {FAQ_KEYS.map(key => (
-            <FaqItem key={key} q={t(`landing.faq.items.${key}.q`)} a={t(`landing.faq.items.${key}.a`)} />
-          ))}
-        </div>
+      <SectionHead rise={rise} id="faq-title">{t('landing.faq.title')}</SectionHead>
+      {/* One list below lg; two columns of four on lg. Same order and keys
+          as the FAQPage JSON-LD. */}
+      <div className={`mt-8 tile px-tile-dense sm:px-tile py-2 lg:grid lg:grid-cols-2 lg:gap-x-10 items-start ${p.className}`} style={p.style}>
+        {[FAQ_KEYS.slice(0, 4), FAQ_KEYS.slice(4)].map((col, c) => (
+          <div key={c}>
+            {col.map((key, i) => {
+              const lastInCol = i === col.length - 1;
+              const border = !lastInCol ? 'border-b border-line' : c === 0 ? 'border-b border-line lg:border-b-0' : '';
+              return <FaqItem key={key} className={border} q={t(`landing.faq.items.${key}.q`)} a={t(`landing.faq.items.${key}.a`)} />;
+            })}
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -442,9 +474,24 @@ function FaqSection({ t }) {
  * fallback reserves the teaser's rendered height so nothing below shifts
  * when it arrives (R7, CLS).
  */
+/** True once the node is within ~one screen of the viewport (then stays true). */
+function useNearViewport(ref, margin = '800px 0px') {
+  const [near, setNear] = useState(() => typeof window === 'undefined' || typeof window.IntersectionObserver !== 'function');
+  useEffect(() => {
+    if (near || !ref.current) return undefined;
+    const io = new window.IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect(); } }, { rootMargin: margin });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [near, ref, margin]);
+  return near;
+}
+
 function ToolsSection({ t }) {
   const { i18n } = useTranslation();
   const { ref, rise, pop } = useSectionReveal();
+  // The teaser (and its tax engine) loads only as the section approaches, so
+  // it stays off the initial load; the fallback holds its height meanwhile.
+  const near = useNearViewport(ref);
   const r = rise(1);
   const links = rise(2);
   const p = pop(1);
@@ -469,9 +516,11 @@ function ToolsSection({ t }) {
           </ul>
         </div>
         <div className={`lg:col-span-7 min-w-0 ${p.className}`} style={p.style}>
-          <Suspense fallback={<div className={`tile ${SALARY_TEASER_MIN_H}`} aria-hidden="true" />}>
-            <SalaryTeaser />
-          </Suspense>
+          {near ? (
+            <Suspense fallback={<div className={`tile ${SALARY_TEASER_MIN_H}`} aria-hidden="true" />}>
+              <SalaryTeaser />
+            </Suspense>
+          ) : <div className={`tile ${SALARY_TEASER_MIN_H}`} aria-hidden="true" />}
         </div>
       </div>
     </section>
@@ -492,7 +541,7 @@ function FinalCtaSection({ t, sectionRef }) {
   const setRefs = (node) => { ref.current = node; if (sectionRef) sectionRef.current = node; };
   return (
     <section ref={setRefs} aria-labelledby="final-title" className={`max-w-content mx-auto ${SECTION_PB}`}>
-      <div className="tile-inner rounded-hero p-[clamp(28px,5vw,64px)] grid lg:grid-cols-12 gap-x-gap gap-y-8 items-center">
+      <div className="tile-inner rounded-hero p-[clamp(28px,4vw,56px)] grid lg:grid-cols-12 gap-x-gap gap-y-8 items-center">
         <div className="lg:col-span-7 min-w-0">
           <SectionHead rise={rise} id="final-title">{t('landing.finalCta.title')}</SectionHead>
           <p className={`mt-5 text-body-lg text-fg max-w-xl ${r1.className}`} style={r1.style}>{t('landing.finalCta.desc')}</p>

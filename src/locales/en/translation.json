@@ -781,22 +781,18 @@
     },
     "heroFeatures": {
       "healthscore": {
-        "eyebrow": "Financial health score",
         "title": "One number that says if this month is better",
         "desc": "A 0 to 100 score built from how closely you kept your budgets, how your spending compares to your income, how steady it was month to month, and how many months you finished in the positive."
       },
       "benchmarks": {
-        "eyebrow": "Smart benchmarks",
         "title": "Know what is normal for you, and when you break it",
         "desc": "Every category is measured against your own past months, not against strangers. When groceries are flagged as high, it means high for you, and that is the only comparison that should change what you do next."
       },
       "budgets": {
-        "eyebrow": "Monthly budgets",
         "title": "Find out you are overspending while you can still stop",
         "desc": "Set a limit per category and watch it fill in real time, with a forecast of where the month ends if you keep spending at this pace. You find out you are over while there is still time to do something about it."
       },
       "tracking": {
-        "eyebrow": "Dashboard and categories",
         "title": "A year of your money on one screen",
         "desc": "Log income and expenses by category and see every month side by side, so a bad month is obvious next to the eleven around it. Recurring entries post themselves, so rent and salary are never the thing you forgot."
       }
@@ -915,7 +911,6 @@
       "trustLine": "Free to start · No credit card · Export or delete anytime"
     },
     "demo": {
-      "yearToDate": "Your last 12 months",
       "onTrack": "Within your normal",
       "highSpend": "Above your normal",
       "income": "Income",
@@ -963,7 +958,7 @@
       "rows": {
         "device": {
           "title": "Encrypted on your device",
-          "desc": "Amounts, budgets, goals, net worth, transaction titles, tags, and notes are encrypted with a key only you hold. The server stores text it cannot read, and neither can we."
+          "desc": "Not just amounts: transaction titles, tags, and notes too, with a key only you hold. Not even we can read them."
         },
         "noSell": {
           "title": "Your data is never sold",

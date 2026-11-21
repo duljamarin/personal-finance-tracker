@@ -59,7 +59,9 @@ export default function HeroPreview({ className = '' }) {
         </div>
 
         {/* Health score, with its change beside the ring (no empty half) */}
-        <div className={`${p[1].className} ${CELL} tile p-tile-dense flex items-center gap-[18px]`} style={p[1].style}>
+        {/* 1024-1279: the 7-col preview leaves ~110px beside the ring, so the
+            text goes under it there; beside it everywhere else. */}
+        <div className={`${p[1].className} ${CELL} tile p-tile-dense flex items-center gap-[18px] lg:flex-col lg:items-start xl:flex-row xl:items-center`} style={p[1].style}>
           <ProgressRing value={HERO.health / 100} size={92} animate={false} label={String(HERO.health)} labelClassName="text-fg" />
           <div className="min-w-0 self-stretch flex flex-col justify-center">
             <p className="font-bold text-fg">{t('healthScore.title')}</p>
@@ -70,7 +72,7 @@ export default function HeroPreview({ className = '' }) {
         </div>
 
         {/* The three fullest budgets */}
-        <div className={`${p[2].className} ${CELL} tile p-tile-dense flex flex-col gap-3`} style={p[2].style}>
+        <div className={`${p[2].className} ${CELL} tile p-tile-dense flex flex-col justify-between gap-3`} style={p[2].style}>
           <p className="font-bold text-fg">{t('dashboard.budgetProgress')}</p>
           {HERO.budgets.map((b, i) => (
             <div key={b.key} data-budget={b.key}>

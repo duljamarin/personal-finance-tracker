@@ -33,7 +33,9 @@ export default function SalaryTeaser() {
   const config = getConfig(DEFAULT_YEAR);
   const [gross, setGross] = useState(config.CONTRIB.BASE_MIN);
   const b = useMemo(() => (gross > 0 ? fromGross(gross, DEFAULT_YEAR) : null), [gross]);
-  const netShown = useCountUp(b ? b.net : 0);
+  // Arrives showing its result; counts up when the visitor changes the amount.
+  const [initialNet] = useState(() => (b ? b.net : 0));
+  const netShown = useCountUp(b ? b.net : 0, { from: initialNet });
   const currency = t('salaryCalc.currency');
 
   // Tax is listed with the two contributions so the lines always add up to

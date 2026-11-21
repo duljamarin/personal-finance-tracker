@@ -781,22 +781,18 @@
     },
     "heroFeatures": {
       "healthscore": {
-        "eyebrow": "Rezultati i shëndetit financiar",
         "title": "Një numër që tregon nëse ky muaj është më i mirë",
         "desc": "Një rezultat nga 0 në 100, i ndërtuar mbi sa afër qëndruat me buxhetet, si krahasohen shpenzimet me të ardhurat tuaja, sa të qëndrueshme ishin nga muaji në muaj dhe sa muaj i mbyllët me plus."
       },
       "benchmarks": {
-        "eyebrow": "Krahasime të mençura",
         "title": "Njihni çfarë është normale për ju dhe kur e tejkaloni",
         "desc": "Çdo kategori matet me muajt tuaj të shkuar, jo me të huajt. Kur ushqimet shënohen si të larta, do të thotë të larta për ju, dhe ky është i vetmi krahasim që duhet të ndryshojë vendimin tuaj të radhës."
       },
       "budgets": {
-        "eyebrow": "Buxhete mujore",
         "title": "Kuptoni se po e teproni sa jeni ende në kohë",
         "desc": "Vendosni një limit për çdo kategori dhe shikoni si mbushet në kohë reale, me një parashikim se ku mbyllet muaji nëse vazhdoni me këtë ritëm. E merrni vesh që e keni tepruar sa jeni ende në kohë ta ndreqni."
       },
       "tracking": {
-        "eyebrow": "Paneli dhe kategoritë",
         "title": "Një vit i parave tuaja në një ekran",
         "desc": "Regjistroni të ardhurat dhe shpenzimet sipas kategorisë dhe shihni çdo muaj krah për krah, ku një muaj i keq bie në sy menjëherë përbri njëmbëdhjetë të tjerëve. Transaksionet e përsëritura regjistrohen vetë, kështu qiraja dhe paga nuk mbeten kurrë harresë."
       }
@@ -915,7 +911,6 @@
       "trustLine": "Falas për të filluar · Pa kartë krediti · Eksportoni ose fshini kurdo"
     },
     "demo": {
-      "yearToDate": "12 muajt tuaj të fundit",
       "onTrack": "Brenda normales tuaj",
       "highSpend": "Mbi normalen tuaj",
       "income": "Të ardhura",
@@ -963,7 +958,7 @@
       "rows": {
         "device": {
           "title": "Enkriptuar në pajisjen tuaj",
-          "desc": "Shumat, buxhetet, qëllimet, pasuria neto, titujt e transaksioneve, etiketat dhe shënimet enkriptohen me një çelës që e mbani vetëm ju. Serveri ruan tekst që nuk mund ta lexojë, dhe as ne nuk mund ta lexojmë."
+          "desc": "Jo vetëm shumat: edhe titujt e transaksioneve, etiketat dhe shënimet, me një çelës që e mbani vetëm ju. As ne nuk mund t'i lexojmë."
         },
         "noSell": {
           "title": "Të dhënat tuaja nuk shiten kurrë",

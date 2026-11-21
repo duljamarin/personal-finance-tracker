@@ -29,7 +29,9 @@ export function MiniHealthScore() {
     [goalsOnTrack, 'landing.demo.goals'],
   ];
   return (
-    <div className="flex items-center gap-5" data-score={health}>
+    // The parts sit beside the ring when there is room for them (10rem),
+    // under it on a phone.
+    <div className="flex flex-wrap items-center gap-5" data-score={health}>
       <ProgressRing
         value={health / 100}
         size={120}
@@ -37,7 +39,7 @@ export function MiniHealthScore() {
         label={String(health)}
         labelClassName="text-fg"
       />
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-[10rem]">
         <p className="text-sm font-bold text-brand-text">{t('landing.demo.scoreGood')}</p>
         <dl className="mt-2 flex flex-col gap-2">
           {stats.map(([v, k]) => (
@@ -100,10 +102,8 @@ export function MiniBudgetForecast() {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4" aria-hidden="true">
-      {/* The fourth row only shows on lg, where this tile shares a row with
-          the taller 12-month tile and would otherwise have an empty band. */}
-      {FEATURES.forecast.map(({ key, spent, limit, projected, exceedBy, willExceed }, i) => (
-        <div key={key} data-budget={key} className={i > 2 ? 'hidden lg:block' : undefined}>
+      {FEATURES.forecast.map(({ key, spent, limit, projected, exceedBy, willExceed }) => (
+        <div key={key} data-budget={key}>
           <div className="flex flex-wrap justify-between gap-x-3 text-sm font-bold text-fg">
             <span>{t(`landing.demo.budgetItems.${key}`)}</span>
             <span className="tabular-nums">{money(spent)} / {money(limit)}</span>
@@ -126,14 +126,13 @@ export function MiniYear() {
   const { months, max, totals } = FEATURES.year;
   return (
     <div>
-      <div className="flex flex-wrap justify-between items-center gap-2 mb-3 text-sm font-semibold text-fg">
-        <span>{t('landing.demo.yearToDate')}</span>
+      <div className="mb-3 text-sm font-semibold text-fg">
         <span className="flex flex-wrap items-center gap-x-3">
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: 'var(--brand-text)' }} />{t('landing.demo.onTrack')}</span>
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-swatch" style={{ backgroundColor: HEAVY_COLOR }} />{t('landing.demo.highSpend')}</span>
         </span>
       </div>
-      <div className="flex items-end gap-[3px] sm:gap-1 h-24 w-full" aria-hidden="true">
+      <div className="flex items-end gap-[3px] sm:gap-1 h-20 w-full" aria-hidden="true">
         {months.map(({ date, spending, aboveNormal }) => (
           <div key={date.getTime()} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
             <div
