@@ -23,7 +23,10 @@
  *   HIST_RATE     = median over the history months of
  *                   (non-recurring expenses of the month / days of the month);
  *                   a history month is one of the LOOKBACK_MONTHS full months
- *                   before MONTH_START with at least one transaction.
+ *                   before MONTH_START with at least one everyday
+ *                   (non-recurring) expense. A month with only salary and
+ *                   rent says nothing about everyday spending, and counting it
+ *                   as "0 a day" gave confident forecasts of 0.
  *                   CURRENT_RATE when there are none.
  *   WEIGHT        = DAYS_ELAPSED / DAYS_IN_MONTH
  *   BLENDED_RATE  = WEIGHT * CURRENT_RATE + (1 - WEIGHT) * HIST_RATE
@@ -155,20 +158,20 @@ export function computeForecast({ today, transactions = [], recurring = [], budg
     const days = daysInMonthOf(y, m);
     const start = ymd(y, m, 1);
     const end = ymd(y, m, days);
-    let transactionCount = 0;
+    let everydayCount = 0;
     let total = 0;
     const byCategory = new Map();
     for (const tx of txs) {
       const date = dateOnly(tx.date);
       if (date < start || date > end) continue;
-      transactionCount += 1;
       if (tx.type !== 'expense' || tx.source_recurring_id) continue;
+      everydayCount += 1;
       for (const part of expenseParts(tx)) {
         total += part.amount;
         byCategory.set(part.categoryId, (byCategory.get(part.categoryId) || 0) + part.amount);
       }
     }
-    if (transactionCount > 0) history.push({ days, total, byCategory });
+    if (everydayCount > 0) history.push({ days, total, byCategory });
   }
 
   // ── Pace ────────────────────────────────────────────────────────────────
@@ -220,6 +223,7 @@ export function computeForecast({ today, transactions = [], recurring = [], budg
       PROJECTED_EXPENSE: projected,
       BUDGET: budget,
       PROJECTED_OVERSPEND: budget === null ? null : Math.max(0, projected - budget),
+      PROJECTED_SHARE_OF_BUDGET: budget ? projected / budget : null,
     };
   });
 
@@ -237,6 +241,92 @@ export function computeForecast({ today, transactions = [], recurring = [], budg
   let CONFIDENCE = 'high';
   if (HISTORY_MONTHS === 0) CONFIDENCE = 'low';
   else if (HISTORY_MONTHS < CONFIDENCE_FULL_MONTHS) CONFIDENCE = 'medium';
+
+  // ── Month as a line: cumulative net, day by day ────────────────────────
+  // Actual up to TODAY; from TODAY on, projected: scheduled items on their
+  // dates (due-but-unposted ones at TODAY) and the everyday pace per day,
+  // with the pessimistic / optimistic rates for the band. The last point is
+  // pinned to the nets above so the line ends exactly on the headline.
+  const actualNetByDate = new Map();
+  for (const tx of txs) {
+    const date = dateOnly(tx.date);
+    if (date < MONTH_START || date > TODAY) continue;
+    const delta = tx.type === 'income' ? baseAmountOf(tx) : -sum(expenseParts(tx).map((p) => p.amount));
+    actualNetByDate.set(date, (actualNetByDate.get(date) || 0) + delta);
+  }
+  const scheduledNetByDate = new Map();
+  let dueScheduledNet = 0;
+  for (const item of scheduled) {
+    const delta = item.type === 'income' ? item.amount : -item.amount;
+    if (item.date <= TODAY) dueScheduledNet += delta;
+    else scheduledNetByDate.set(item.date, (scheduledNetByDate.get(item.date) || 0) + delta);
+  }
+  const highRate = Math.max(CURRENT_RATE, HIST_RATE);
+  const lowRate = Math.min(CURRENT_RATE, HIST_RATE);
+  const DAILY = [];
+  let actualRunning = 0;
+  let projected = 0;
+  let pessimistic = 0;
+  let optimistic = 0;
+  for (let day = 1; day <= DAYS_IN_MONTH; day += 1) {
+    const date = ymd(month.y, month.m, day);
+    if (date < TODAY) {
+      actualRunning += actualNetByDate.get(date) || 0;
+      DAILY.push({ day, date, actual: actualRunning, projected: null, pessimistic: null, optimistic: null });
+      continue;
+    }
+    if (date === TODAY) {
+      actualRunning += actualNetByDate.get(date) || 0;
+      projected = actualRunning + dueScheduledNet;
+      pessimistic = projected;
+      optimistic = projected;
+      DAILY.push({ day, date, actual: actualRunning, projected, pessimistic, optimistic });
+      continue;
+    }
+    const step = scheduledNetByDate.get(date) || 0;
+    projected += step - BLENDED_RATE;
+    pessimistic += step - highRate;
+    optimistic += step - lowRate;
+    DAILY.push({ day, date, actual: null, projected, pessimistic, optimistic });
+  }
+  const last = DAILY[DAILY.length - 1];
+  last.projected = PROJECTED_NET;
+  last.pessimistic = PESSIMISTIC_NET;
+  last.optimistic = OPTIMISTIC_NET;
+  for (const point of DAILY) {
+    point.range = point.projected === null ? null : [point.pessimistic, point.optimistic];
+  }
+
+  // ── Context for the verdict ─────────────────────────────────────────────
+  const prev = shiftMonth(month.y, month.m, -1);
+  const prevStart = ymd(prev.y, prev.m, 1);
+  const prevEnd = ymd(prev.y, prev.m, daysInMonthOf(prev.y, prev.m));
+  let prevCount = 0;
+  let prevNet = 0;
+  for (const tx of txs) {
+    const date = dateOnly(tx.date);
+    if (date < prevStart || date > prevEnd) continue;
+    prevCount += 1;
+    prevNet += tx.type === 'income' ? baseAmountOf(tx) : -sum(expenseParts(tx).map((p) => p.amount));
+  }
+  /** Last month's actual net (income - expenses), null without transactions. */
+  const PREV_MONTH_NET = prevCount > 0 ? prevNet : null;
+  const PREV_MONTH_START = prevStart;
+  /** Share of this month's income left at month end, null without income. */
+  const KEEP_RATE = PROJECTED_INCOME > 0 ? PROJECTED_NET / PROJECTED_INCOME : null;
+  /**
+   * What can still be spent per remaining day on everyday things and finish
+   * the month at 0: (income - posted - scheduled expenses) / DAYS_REMAINING.
+   * Negative when scheduled costs already exceed income. null on the last day.
+   */
+  const BREAK_EVEN_DAILY = DAYS_REMAINING > 0 ? (PROJECTED_INCOME - ACTUAL_EXPENSE - SCHEDULED_EXPENSE) / DAYS_REMAINING : null;
+  /** Whether any everyday spending exists to base the pace on. */
+  const HAS_EVERYDAY_DATA = DISCRETIONARY > 0 || HISTORY_MONTHS > 0;
+  /** Projected net split for the "where the money goes" bar. */
+  const LEFT_AT_MONTH_END = Math.max(0, PROJECTED_NET);
+  const SHORTFALL_AT_MONTH_END = Math.max(0, -PROJECTED_NET);
+  /** Projected net minus last month's net, null without last month. */
+  const VS_PREV_MONTH = PREV_MONTH_NET === null ? null : PROJECTED_NET - PREV_MONTH_NET;
 
   const BUDGETED_CATEGORIES = CATEGORIES
     .filter((c) => c.BUDGET !== null)
@@ -272,5 +362,14 @@ export function computeForecast({ today, transactions = [], recurring = [], budg
     CATEGORIES,
     BUDGETED_CATEGORIES,
     BUDGETED_PROJECTED_EXPENSE: sum(BUDGETED_CATEGORIES.map((c) => c.PROJECTED_EXPENSE)),
+    DAILY,
+    PREV_MONTH_NET,
+    PREV_MONTH_START,
+    KEEP_RATE,
+    BREAK_EVEN_DAILY,
+    HAS_EVERYDAY_DATA,
+    LEFT_AT_MONTH_END,
+    SHORTFALL_AT_MONTH_END,
+    VS_PREV_MONTH,
   };
 }

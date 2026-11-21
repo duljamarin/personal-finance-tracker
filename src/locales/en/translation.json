@@ -1916,7 +1916,6 @@
   "forecast": {
     "title": "End-of-month forecast",
     "subtitle": "Day {{day}} of {{days}} in {{month}}",
-    "headline": "Projected net for {{month}}",
     "range": "Likely between {{low}} and {{high}}",
     "confidence": {
       "low": "Low confidence",
@@ -1926,7 +1925,6 @@
     "earlyNote_one": "Early estimate: only {{count}} day of this month so far.",
     "earlyNote_other": "Early estimate: only {{count}} days of this month so far.",
     "indicative": "This forecast is indicative, not exact: it is based on what you have entered and your own history.",
-    "breakdownTitle": "What makes up this forecast",
     "actual": {
       "title": "Actual so far",
       "values": "{{income}} income · {{expense}} expenses"
@@ -1957,13 +1955,51 @@
     "locked": {
       "cta": "See Premium",
       "all": "The end-of-month forecast is part of Premium.",
-      "breakdown": "Premium shows what makes up the forecast: what already happened, what is scheduled and your everyday spending.",
-      "categories": "Premium shows where each budget will end the month."
+      "title": "Premium shows what drives this forecast",
+      "items": {
+        "safe": "How much you can spend per day",
+        "map": "Where this month's income goes",
+        "scheduled": "What is still scheduled, with dates",
+        "budgets": "Where each budget will end the month"
+      }
     },
     "empty": {
       "title": "No forecast yet",
       "desc": "Add a transaction or a recurring item and your end-of-month forecast appears here.",
       "recurring": "Set up recurring"
+    },
+    "verdict": {
+      "keep": "On track to keep in {{month}}",
+      "short": "At this pace, {{month}} ends short by"
+    },
+    "keepRate": "{{pct}} of your income",
+    "vsPrev": "{{amount}} vs {{month}}",
+    "chart": {
+      "label": "Your money through {{month}}: actual so far, then the forecast to the end of the month",
+      "today": "Today",
+      "actual": "So far",
+      "projected": "Forecast",
+      "range": "Range {{low}} to {{high}}",
+      "dayTick": "{{month}} {{day}}"
+    },
+    "map": {
+      "title": "Where this month's income goes ({{income}})",
+      "spent": "Spent so far",
+      "scheduled": "Still scheduled",
+      "everyday": "Everyday, estimated",
+      "left": "Left at month end",
+      "shortfall": "Short by {{amount}} at month end"
+    },
+    "safe": {
+      "title": "You can spend per day",
+      "note": "for the next {{days}} days without ending the month below zero",
+      "none": "Fixed and scheduled costs already use up this month's income.",
+      "lastDay": "Today is the last day of the month."
+    },
+    "noEveryday": {
+      "title": "No everyday spending recorded yet",
+      "desc": "So this forecast only counts your income, recurring entries and fixed costs. Add day-to-day expenses like groceries, transport or eating out to see where the month is really heading.",
+      "cta": "Add an expense"
     }
   }
 }

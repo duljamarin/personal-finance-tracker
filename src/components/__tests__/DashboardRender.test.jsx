@@ -51,9 +51,9 @@ describe('currency-aware components render', () => {
       { id: 'b', date: iso, type: 'expense', amount: 200, base_amount: 200, category_id: 'food' },
     ];
     render(<MemoryRouter><MonthForecastTile /></MemoryRouter>);
-    expect(await screen.findByText(/^Projected net for /)).toBeInTheDocument();
+    expect(await screen.findByText(/^On track to keep in /)).toBeInTheDocument();
     // Free plan with scope 'breakdown': headline shown, breakdown locked.
-    expect(screen.getByText('What makes up this forecast')).toBeInTheDocument();
+    expect(screen.getByText('Premium shows what drives this forecast')).toBeInTheDocument();
     mockTransactions = [];
   });
 

@@ -243,3 +243,48 @@ describe('forecastEngine: invariants', () => {
     expect(base({ transactions: [...HISTORY, ...THIS_MONTH, ...noise], recurring: noisyRules })).toEqual(base());
   });
 });
+
+describe('forecastEngine: history rule, chart series, verdict', () => {
+  it('a month with only salary and recurring rent is not a history month', () => {
+    const fixedOnly = [
+      tx('2026-10-01', 'income', 3000, { category_id: 'salary', source_recurring_id: 'salary' }),
+      tx('2026-10-01', 'expense', 650, { category_id: 'housing', source_recurring_id: 'rent' }),
+    ];
+    const f = base({ transactions: [...fixedOnly, ...THIS_MONTH] });
+    expect(f.HISTORY_MONTHS).toBe(0);
+    expect(f.CONFIDENCE).toBe('low');
+  });
+
+  it('no everyday spending anywhere: flagged, nothing estimated', () => {
+    const f = base({ transactions: THIS_MONTH.filter((t) => t.source_recurring_id), recurring: [] });
+    expect(f.HAS_EVERYDAY_DATA).toBe(false);
+    expect(f.DISCRETIONARY_REMAINING).toBe(0);
+  });
+
+  it('DAILY: a point per day, actual up to today, ends on the three nets', () => {
+    const f = base();
+    expect(f.DAILY).toHaveLength(f.DAYS_IN_MONTH);
+    expect(f.DAILY.filter((p) => p.actual !== null)).toHaveLength(f.DAYS_ELAPSED);
+    const todayPoint = f.DAILY.find((p) => p.date === TODAY);
+    expect(todayPoint.actual).toBeCloseTo(f.ACTUAL_INCOME - f.ACTUAL_EXPENSE, 9);
+    const last = f.DAILY.at(-1);
+    expect([last.projected, last.pessimistic, last.optimistic]).toEqual([f.PROJECTED_NET, f.PESSIMISTIC_NET, f.OPTIMISTIC_NET]);
+    for (const p of f.DAILY.filter((x) => x.projected !== null)) {
+      expect(p.pessimistic).toBeLessThanOrEqual(p.projected);
+      expect(p.projected).toBeLessThanOrEqual(p.optimistic);
+      expect(p.range).toEqual([p.pessimistic, p.optimistic]);
+    }
+  });
+
+  it('verdict context: keep rate, spend per day, last month', () => {
+    const f = base();
+    expect(f.KEEP_RATE).toBe(f.PROJECTED_NET / f.PROJECTED_INCOME);
+    expect(f.BREAK_EVEN_DAILY).toBe((f.PROJECTED_INCOME - f.ACTUAL_EXPENSE - f.SCHEDULED_EXPENSE) / f.DAYS_REMAINING);
+    expect(f.PREV_MONTH_NET).toBe(3000 - 650 - 330 - 120);
+    expect(f.VS_PREV_MONTH).toBe(f.PROJECTED_NET - f.PREV_MONTH_NET);
+    expect(f.LEFT_AT_MONTH_END).toBe(Math.max(0, f.PROJECTED_NET));
+    expect(f.SHORTFALL_AT_MONTH_END).toBe(0);
+    expect(base({ today: '2026-11-30' }).BREAK_EVEN_DAILY).toBeNull();
+  });
+});
+
