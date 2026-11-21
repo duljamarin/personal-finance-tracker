@@ -143,19 +143,75 @@ export function upcomingRecurring(recurrings, { now = new Date(), count = 3 } = 
 }
 
 /**
- * Health score pillars as weighted points (they sum to the total score).
- * Weights mirror computeHealthScore in utils/finance/healthScore.js.
+ * The three figures beside the health ring on the dashboard (and in the
+ * landing demo): saving rate, share of budgets kept, goals on track.
  */
-export const HEALTH_PILLARS = [
-  { key: 'budgetAdherenceScore', labelKey: 'healthScore.budgetAdherence', weight: 40 },
-  { key: 'incomeExpenseRatioScore', labelKey: 'healthScore.incomeRatio', weight: 30 },
-  { key: 'spendingVolatilityScore', labelKey: 'healthScore.consistency', weight: 20 },
-  { key: 'savingsConsistencyScore', labelKey: 'healthScore.savings', weight: 10 },
-];
 
-export function healthPoints(score) {
-  return HEALTH_PILLARS.map((p) => ({
-    ...p,
-    points: Math.round(((Number(score?.[p.key]) || 0) * p.weight) / 100),
-  }));
+/** Saving rate of a month in whole percent, null without income. */
+export function savingRate(totals) {
+  const income = Number(totals?.income) || 0;
+  if (income <= 0) return null;
+  return Math.round(((income - (Number(totals?.expense) || 0)) / income) * 100);
 }
+
+/**
+ * Budgets kept in a month: spend (by category) at or under the limit.
+ * Budgets without a positive limit are not counted.
+ */
+export function budgetsKept(budgets, expensesByCategory) {
+  const rows = (budgets || []).filter((b) => Number(b.amount) > 0);
+  const kept = rows.filter((b) => (Number(expensesByCategory?.[b.category_id]) || 0) <= Number(b.amount)).length;
+  return { kept, total: rows.length, pct: rows.length ? Math.round((kept / rows.length) * 100) : null };
+}
+
+/**
+ * A goal is on track when it is reached, or when the share saved is at least
+ * the share of time gone between creating it and its target date (a steady
+ * pace gets there on time). Without a target date there is no pace to miss:
+ * it is on track once money is going into it. Past its date and not reached:
+ * not on track.
+ */
+export function goalOnTrack(goal, now = new Date()) {
+  const target = Number(goal?.target_amount) || 0;
+  const current = Number(goal?.current_amount) || 0;
+  if (goal?.is_completed || (target > 0 && current >= target)) return true;
+  if (target <= 0) return false;
+  if (!goal.target_date) return current > 0;
+  const end = new Date(`${goal.target_date}T23:59:59`);
+  if (now >= end) return false;
+  const start = goal.created_at ? new Date(goal.created_at) : now;
+  const span = end - start;
+  const timeShare = span > 0 ? Math.min(1, Math.max(0, (now - start) / span)) : 1;
+  return current / target >= timeShare;
+}
+
+/** Goals on track among the active goals still in progress. */
+export function goalsOnTrack(goals, now = new Date()) {
+  const active = (goals || []).filter((g) => g.is_active !== false && !g.is_completed);
+  return { onTrack: active.filter((g) => goalOnTrack(g, now)).length, total: active.length };
+}
+
+/**
+ * Your normal monthly spending: the mean of up to `maxMonths` complete months
+ * before `now`, with the same tolerance band category benchmarks use (one
+ * standard deviation, or 20% of the mean when every month is identical). A
+ * month spending more than `upper` is "above your normal" (12-month chart).
+ * null until there is a complete month of history.
+ */
+export function spendingNormal(transactions, now = new Date(), maxMonths = 12) {
+  const curKey = monthKeyOf(now);
+  const byMonth = {};
+  for (const tx of transactions || []) {
+    if (tx.type !== 'expense') continue;
+    const key = (tx.date || '').slice(0, 7);
+    if (!key || key >= curKey) continue;
+    byMonth[key] = (byMonth[key] || 0) + baseAmountOf(tx);
+  }
+  const months = Object.keys(byMonth).sort().slice(-maxMonths).map((k) => byMonth[k]);
+  if (months.length === 0) return null;
+  const mean = months.reduce((s, v) => s + v, 0) / months.length;
+  const sd = Math.sqrt(months.reduce((s, v) => s + (v - mean) ** 2, 0) / months.length);
+  const band = sd === 0 ? mean * 0.2 : sd;
+  return { avg: mean, upper: mean + band, months: months.length };
+}
+

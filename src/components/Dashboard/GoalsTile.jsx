@@ -4,8 +4,6 @@ import { ArrowRight } from 'lucide-react';
 import Card from '../UI/Card';
 import ProgressRing from '../UI/ProgressRing';
 import Skeleton from '../UI/Skeleton';
-import { fetchGoals } from '../../utils/api';
-import { useAsyncData } from '../../hooks/useAsyncData';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 import { useCountUp } from '../../hooks/useCountUp';
 import { dataDelay, STAGGER } from '../../utils/motion';
@@ -28,11 +26,13 @@ function GoalCardMini({ goal, delay }) {
   );
 }
 
-/** Goals tile (spec 4.1, row 2): up to two active goals with a 104px ring. */
-export default function GoalsTile({ reloadTrigger, index = 3, className = '' }) {
+/**
+ * Goals tile (spec 4.1, row 2): up to two active goals with a 104px ring.
+ * Goals are fetched once by the Dashboard (the health tile counts them too).
+ */
+export default function GoalsTile({ goals, loading, index = 3, className = '' }) {
   const { t } = useTranslation();
   const delay = dataDelay(index);
-  const { data: goals, loading } = useAsyncData(() => fetchGoals(), [reloadTrigger], []);
   const active = (goals || []).filter((g) => !g.is_completed && g.is_active !== false).slice(0, 2);
 
   return (

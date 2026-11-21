@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTransactions } from '../../context/TransactionContext';
 import { useSubscription } from '../../context/SubscriptionContext';
-import { fetchBudgets, fetchMonthlyExpensesByCategory, fetchHealthScore, fetchHealthScoreHistory } from '../../utils/api';
+import { fetchBudgets, fetchMonthlyExpensesByCategory, fetchHealthScore, fetchHealthScoreHistory, fetchGoals } from '../../utils/api';
 import { useAsyncData } from '../../hooks/useAsyncData';
 import EncryptionPromptBanner from '../Encryption/EncryptionPromptBanner';
 import FreePlanUsageCounter from '../Subscription/FreePlanUsageCounter';
@@ -25,7 +25,7 @@ import Card from '../UI/Card';
 import { Plus } from 'lucide-react';
 import { formatMonthName } from '../../utils/date';
 import {
-  addMonths, balanceSeries, daysInMonth, isSameMonth, keptSeries, monthKeyOf, monthTotals,
+  addMonths, balanceSeries, budgetsKept, daysInMonth, goalsOnTrack, isSameMonth, keptSeries, monthKeyOf, monthTotals, savingRate,
 } from '../../utils/finance/dashboardModel';
 
 const Transactions = lazy(() => import('../Transactions/Transactions'));
@@ -65,7 +65,7 @@ export default function Dashboard() {
     mutationCount,
   } = useTransactions();
 
-  const { monthlyTransactionCount, transactionLimit, isPremium, isTrialing } = useSubscription();
+  const { monthlyTransactionCount, transactionLimit } = useSubscription();
 
   // Month shown by the month-scoped tiles. Never in the future.
   const now = new Date();
@@ -116,7 +116,16 @@ export default function Dashboard() {
   const prevKey = `${monthKeyOf(addMonths(monthRef, -1))}-01`;
   const prevScore = health?.history?.find((h) => h.monthDate === prevKey)?.totalScore;
 
+  // Goals: shared by the Goals tile and the "goals on track" figure.
+  const { data: goals, loading: goalsLoading } = useAsyncData(() => fetchGoals(), [mutationCount], []);
+
   const totals = useMemo(() => monthTotals(transactions, monthRef), [transactions, monthRef]);
+  // The three figures beside the health ring, for the selected month.
+  const healthStats = useMemo(() => ({
+    savingRate: savingRate(totals),
+    budgets: budgetsKept(monthData.budgets, monthData.expenses),
+    goals: goalsOnTrack(goals),
+  }), [totals, monthData, goals]);
   const balance = useMemo(() => balanceSeries(transactions, monthRef, 8), [transactions, monthRef]);
   const kept = useMemo(() => keptSeries(transactions, monthRef, 6), [transactions, monthRef]);
 
@@ -195,8 +204,8 @@ export default function Dashboard() {
         <HealthTile
           score={health?.score}
           prevScore={prevScore}
+          stats={healthStats}
           loading={healthLoading}
-          isPaid={isPremium || isTrialing}
           index={1}
           className={SPAN_5}
         />
@@ -210,7 +219,7 @@ export default function Dashboard() {
           index={2}
           className={SPAN_7}
         />
-        <GoalsTile reloadTrigger={mutationCount} index={3} className={SPAN_5} />
+        <GoalsTile goals={goals} loading={goalsLoading} index={3} className={SPAN_5} />
 
         {/* Row 3: Activity spans two rows next to Kept + Coming up */}
         <ActivityFeed
