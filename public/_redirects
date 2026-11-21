@@ -15,6 +15,15 @@
 /sq/tools/self-employed-calculator /sq/tools/self-employed-calculator.html  200
 /sq/tools/loan-calculator          /sq/tools/loan-calculator.html           200
 
+# /.well-known/* is for machine-readable files (ARD manifest, ai-catalog,
+# security.txt...). None exist here, so answer 404 instead of letting the SPA
+# catch-all serve index.html with 200: Lighthouse's Agentic Browsing audit
+# fetches /.well-known/ard.json, got HTML, and failed with "malformed JSON".
+# With a 404 the audit is "not applicable". A real file added later under
+# public/.well-known/ is still served (Netlify serves existing files before
+# non-forced rules). Must come before the catch-alls below.
+/.well-known/*     /index.html     404
+
 # Albanian language shell — must come BEFORE the SPA catch-all
 /sq        /sq.html     200
 /sq/*      /sq.html     200
