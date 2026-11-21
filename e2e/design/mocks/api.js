@@ -69,7 +69,23 @@ export async function fetchHealthScoreHistory(months = 12) {
     return { monthDate, ...computeHealthScore(store.transactions, CATEGORIES, monthDate) };
   });
 }
-export const fetchCategoryBenchmarks = () => ok([]);
+// A few categories with history so the benchmark cards (status pill and the
+// "% vs your normal" figure) render in the harness.
+const bench = (name, avg, current, sd, status) => {
+  const c = CATEGORIES.find((x) => x.name === name) || CATEGORIES[0];
+  const band = sd === 0 ? avg * 0.2 : sd;
+  return {
+    category_id: c.id, category_name: c.name, avg_monthly_spending: avg, std_deviation: sd,
+    lower_threshold: Math.max(0, avg - band), upper_threshold: avg + band,
+    current_month_spending: current, months_with_data: 6, status,
+  };
+};
+export const fetchCategoryBenchmarks = () => ok([
+  bench('Housing & Rent', 650, 650, 0, 'within'),
+  bench('Food & Dining', 349, 412, 40, 'above'),
+  bench('Entertainment', 100, 137, 30, 'above'),
+  bench('Transportation', 150, 96, 30, 'below'),
+]);
 
 const ASSETS = [
   { id: 'a1', name: 'Savings account', type: 'asset', asset_type: 'savings', current_value: 8200 },

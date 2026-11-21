@@ -132,10 +132,19 @@
     "budgetsTotal": "{{spent}} nga {{total}}",
     "balanceTrend": "Bilanci në fund të secilit nga {{count}} muajt e fundit",
     "healthDelta": "{{value}} nga muaji i kaluar",
-    "healthPoints": "{{value}} nga {{max}} pikë",
     "prevMonth": "Muaji i kaluar",
     "nextMonth": "Muaji tjetër",
-    "splitTransaction": "E ndarë në kategori"
+    "splitTransaction": "E ndarë në kategori",
+    "healthTrend": {
+      "up": "Në përmirësim",
+      "down": "Në rënie",
+      "flat": "Pa ndryshim"
+    },
+    "healthStats": {
+      "savingRate": "Norma e kursimit",
+      "budgetsKept": "Buxhete të respektuara",
+      "goalsOnTrack": "Qëllime në rrugë të mbarë"
+    }
   },
   "cashFlow": {
     "title": "Parashikimi i Fluksit të Parasë",
@@ -467,7 +476,8 @@
       "nov": "Nën",
       "dec": "Dhj"
     },
-    "cashFlow": "Fluksi i parasë"
+    "cashFlow": "Fluksi i parasë",
+    "aboveNormal": "Mbi normalen tuaj"
   },
   "toolsIndex": {
     "eyebrow": "Mjete falas",
@@ -1138,7 +1148,8 @@
     "buildingBaseline": "Shpenzimet tuaja deri tani këtë muaj",
     "buildingBaselineDesc": "Krahasimet kërkojnë të paktën një muaj të plotë historik. Importoni transaksione të vjetra nga banka për t'i marrë menjëherë, ose vazhdoni të regjistroni dhe shfaqen muajin tjetër.",
     "currentMonthOnly": "Vetëm muaji aktual",
-    "noBaselineYet": "Kaq keni shpenzuar këtu këtë muaj. Kur të mbyllet një muaj i plotë, kjo kartë do t'ju tregojë nëse kjo shumë është e lartë apo e ulët për ju."
+    "noBaselineYet": "Kaq keni shpenzuar këtu këtë muaj. Kur të mbyllet një muaj i plotë, kjo kartë do t'ju tregojë nëse kjo shumë është e lartë apo e ulët për ju.",
+    "vsNormal": "kundrejt normales suaj"
   },
   "healthScore": {
     "title": "Rezultati i Shëndetit Financiar",

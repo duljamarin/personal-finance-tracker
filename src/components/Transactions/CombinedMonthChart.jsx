@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Cell } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimation } from '../../utils/chartTheme';
@@ -8,6 +8,9 @@ import { AXIS_PROPS, BAR_RADIUS, CHART_GRID, CHART_TOOLTIP_CLASS, useChartAnimat
 // palette, never red (V4: red is for over-budget and errors only).
 const INCOME_COLOR = 'var(--brand-text)';
 const EXPENSE_COLOR = 'var(--c-data-sand)';
+// A month whose spending is above the user's own normal (dashboardModel
+// spendingNormal): WARNING, the same "heads up" color budgets use at 70%+.
+const ABOVE_NORMAL_COLOR = 'var(--c-warning)';
 import { useDisplayCurrency } from '../../hooks/useDisplayCurrency';
 
 // Month name mapping for translation
@@ -18,17 +21,18 @@ const MONTH_MAP = {
   'Shk': 'feb', 'Pri': 'apr', 'Gus': 'aug', 'Sht': 'sep', 'Tet': 'oct', 'Nën': 'nov', 'Dhj': 'dec'
 };
 
-function CombinedMonthChartLegend() {
+function CombinedMonthChartLegend({ showAboveNormal }) {
   const { t } = useTranslation();
 
   const items = [
     { key: 'income', color: INCOME_COLOR, label: t('chart.income') },
-    { key: 'expense', color: EXPENSE_COLOR, label: t('chart.expense') }
+    { key: 'expense', color: EXPENSE_COLOR, label: t('chart.expense') },
+    ...(showAboveNormal ? [{ key: 'above', color: ABOVE_NORMAL_COLOR, label: t('chart.aboveNormal') }] : []),
   ];
 
   return (
     <div
-      className="flex justify-center gap-[18px] mt-3 text-sm font-semibold text-fg"
+      className="flex flex-wrap justify-center gap-x-[18px] gap-y-1 mt-3 text-sm font-semibold text-fg"
     >
       {items.map(item => (
         <div key={item.key} className="flex items-center gap-2">
@@ -67,6 +71,7 @@ function CombinedMonthTooltip({ active, payload, label }) {
 
   const incomeValue = incomeEntry ? incomeEntry.value : 0;
   const expenseValue = expenseEntry ? expenseEntry.value : 0;
+  const aboveNormal = payload[0]?.payload?.aboveNormal;
 
   return (
     <div className={CHART_TOOLTIP_CLASS}>
@@ -77,11 +82,17 @@ function CombinedMonthTooltip({ active, payload, label }) {
       <p className="tabular-nums mt-0.5">
         {t('chart.expense')}: {formatCurrency(expenseValue)}
       </p>
+      {aboveNormal && <p className="mt-0.5 font-bold text-warning">{t('chart.aboveNormal')}</p>}
     </div>
   );
 }
 
-export default function CombinedMonthChart({ transactions }) {
+/**
+ * normalUpper: the "above your normal" line for one month's spending
+ * (dashboardModel.spendingNormal(...).upper, from the full history, not the
+ * visible range). Expense bars above it turn WARNING. Omit to disable.
+ */
+export default function CombinedMonthChart({ transactions, normalUpper = null }) {
   const { t, i18n: i18nInstance } = useTranslation();
   const anim = useChartAnimation();
   const { format: formatCurrency } = useDisplayCurrency();
@@ -127,9 +138,14 @@ export default function CombinedMonthChart({ transactions }) {
         dateObj: values.date
       }))
       .sort((a, b) => a.dateObj - b.dateObj)
-      .map(({ monthDisplay, income, expense }) => ({ month: monthDisplay, income, expense }));
+      .map(({ monthDisplay, income, expense }) => ({
+        month: monthDisplay,
+        income,
+        expense,
+        aboveNormal: normalUpper !== null && expense > normalUpper,
+      }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactions, i18nInstance.language]);
+  }, [transactions, i18nInstance.language, normalUpper]);
 
   if (data.length === 0) {
     return (
@@ -157,10 +173,12 @@ export default function CombinedMonthChart({ transactions }) {
             verticalAlign="bottom"
             align="center"
             height={40}
-            content={<CombinedMonthChartLegend />}
+            content={<CombinedMonthChartLegend showAboveNormal={normalUpper !== null} />}
           />
           <Bar dataKey="income" fill={INCOME_COLOR} name="income" radius={BAR_RADIUS} {...anim} />
-          <Bar dataKey="expense" fill={EXPENSE_COLOR} name="expense" radius={BAR_RADIUS} {...anim} />
+          <Bar dataKey="expense" fill={EXPENSE_COLOR} name="expense" radius={BAR_RADIUS} {...anim}>
+            {data.map((d) => <Cell key={d.month} fill={d.aboveNormal ? ABOVE_NORMAL_COLOR : EXPENSE_COLOR} />)}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

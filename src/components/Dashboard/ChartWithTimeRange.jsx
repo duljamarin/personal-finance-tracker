@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import CombinedMonthChart from '../Transactions/CombinedMonthChart';
 import Card from '../UI/Card';
 import SegmentedControl from '../UI/SegmentedControl';
+import { spendingNormal } from '../../utils/finance/dashboardModel';
 
 const RANGES = ['3m', '6m', '12m', 'all'];
 
@@ -20,6 +21,10 @@ export default function ChartWithTimeRange({ transactions, index, className = ''
     return transactions.filter(tx => new Date(tx.date) >= cutoff);
   }, [transactions, range]);
 
+  // Your normal monthly spending from the whole history, so the "above your
+  // normal" flag does not change with the visible range.
+  const normal = useMemo(() => spendingNormal(transactions), [transactions]);
+
   return (
     <Card index={index} className={className}>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-gap">
@@ -35,7 +40,7 @@ export default function ChartWithTimeRange({ transactions, index, className = ''
         />
       </div>
       <div className={isPending ? 'opacity-60 btn-motion' : ''}>
-        <CombinedMonthChart transactions={filtered} />
+        <CombinedMonthChart transactions={filtered} normalUpper={normal ? normal.upper : null} />
       </div>
     </Card>
   );

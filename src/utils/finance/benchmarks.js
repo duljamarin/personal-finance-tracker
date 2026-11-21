@@ -101,3 +101,14 @@ export async function computeCategoryBenchmarks(userId, pMonths = 6) {
 
   return results;
 }
+
+/**
+ * This month against the user's own average for a category, in whole
+ * percent (+18 = 18% above). null without a baseline. The landing demo's
+ * benchmark figures use the same formula (Landing/demoData.benchmarkPct).
+ */
+export function deviationPct(benchmark) {
+  const avgSpend = Number(benchmark?.avg_monthly_spending) || 0;
+  if (!benchmark?.months_with_data || avgSpend <= 0) return null;
+  return Math.round(((Number(benchmark.current_month_spending) || 0) - avgSpend) / avgSpend * 100);
+}

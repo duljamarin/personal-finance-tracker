@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchCategoryBenchmarks } from '../../utils/api';
+import { deviationPct } from '../../utils/finance/benchmarks';
+import { MINUS } from '../../utils/bento';
 import { translateCategoryName } from '../../utils/categoryTranslation';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { useCrypto } from '../../context/CryptoContext';
@@ -18,6 +20,9 @@ const STATUS_COLOR = {
   above: 'var(--c-expense)',
   new: 'var(--c-brand-accent)',
 };
+
+// Color of the "+18% vs your normal" figure, by benchmark status.
+const DEVIATION_COLOR = { above: 'text-warning', below: 'text-brand-text', within: 'text-fg' };
 
 export default function CategoryBenchmark({ onReloadTrigger }) {
   const { t } = useTranslation();
@@ -239,6 +244,7 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                     benchmark.current_month_spending,
                     benchmark.upper_threshold
                   );
+                  const deviation = deviationPct(benchmark);
 
                   return (
                     <div
@@ -268,10 +274,21 @@ export default function CategoryBenchmark({ onReloadTrigger }) {
                         <div className="flex items-baseline gap-2 flex-wrap">
                           <span className="text-sm font-bold text-fg">{t('benchmark.thisMonth')}</span>
                         </div>
-                        <div className="flex items-baseline gap-2 mt-1">
+                        <div className="flex items-baseline justify-between gap-x-3 gap-y-1 mt-1 flex-wrap">
                           <span className="font-semibold tracking-[-0.01em] text-2xl text-fg">
                             {formatCurrency(Number(benchmark.current_month_spending))}
                           </span>
+                          {/* This month vs your own average, colored by the
+                              same status as the pill (a small move that is
+                              still within normal stays neutral). */}
+                          {deviation !== null && (
+                            <span className="flex items-baseline gap-1.5">
+                              <span className={`text-h3 font-extrabold tabular-nums ${DEVIATION_COLOR[benchmark.status] || 'text-fg'}`}>
+                                {deviation === 0 ? '0%' : `${deviation > 0 ? '+' : MINUS}${Math.abs(deviation)}%`}
+                              </span>
+                              <span className="text-sm font-semibold text-fg">{t('benchmark.vsNormal')}</span>
+                            </span>
+                          )}
                         </div>
                       </div>
 

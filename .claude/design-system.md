@@ -210,9 +210,17 @@ tabular numbers; donut center shows the total; `animationDuration = D_DATA`,
 
 ## 5. Decisions taken during the build
 
-- **Health score parts** (2026-11-18): the dashboard shows the four pillars as
-  weighted points `x/40, x/30, x/20, x/10` (they sum to the score), not the
-  brief's `x/25`. Weights mirror `computeHealthScore`.
+- **Health score parts** (2026-11-18): the four pillars are weighted points
+  `x/40, x/30, x/20, x/10` (they sum to the score), not the brief's `x/25`.
+  Weights mirror `computeHealthScore`. Since 2026-11-21 they show in the
+  HealthScore details card only (Premium gating unchanged); the dashboard
+  Health tile shows, like the landing demo, the trend (improving / slipping /
+  steady vs last month) and three plain figures for the month: saving rate,
+  budgets kept, goals on track (`utils/finance/dashboardModel`).
+- **"Your normal"** (2026-11-21): benchmark cards show this month vs the
+  category average as a signed % ("+18% vs your normal"), colored by status;
+  the cash-flow chart turns a month's expense bar WARNING when it is above
+  `spendingNormal` (mean of up to 12 complete months + the benchmark band).
 - **Progress thresholds** (2026-11-18): keep `progressColor` 70% / 100%.
 - **Design harness**: `e2e/design/` renders the real pages on fixtures;
   `node e2e/design/shoot.mjs` writes screenshots to `docs/redesign/screenshots/`.
